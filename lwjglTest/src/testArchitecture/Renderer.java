@@ -4,7 +4,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
 
 public class Renderer {
 	protected ShaderProgram sh;
@@ -22,8 +21,8 @@ public class Renderer {
 	public Renderer() throws Exception{
 		//on prépare le shader programme
 		sh = new ShaderProgram();
-		sh.createVertexShader(new String(Files.readAllBytes(Paths.get("src\\testTexturedCube\\vertShader.vs"))));
-		sh.createFragmentShader(new String(Files.readAllBytes(Paths.get("src\\testTexturedCube\\fragShader.fs"))));
+		sh.createVertexShader(new String(Files.readAllBytes(Paths.get("src/testArchitecture/vertShader.vs"))));
+		sh.createFragmentShader(new String(Files.readAllBytes(Paths.get("src/testArchitecture/fragShader.fs"))));
 		sh.link();
 		sh.createUniform("projectionMatrice");
 		sh.createUniform("worldMatrice");
@@ -45,11 +44,8 @@ public class Renderer {
 
 	public void render(Scene sc, boolean isResized){
 		sh.bind();
-		if(isResized){
-			System.out.println("modifier");
+		if(isResized)
 			projectionM = new Matrix4f().perspective(fieldOfView, (float) Window.aspectRatio(), zNear, zFar);
-			
-		}
 		sh.setUniform("projectionMatrice", projectionM);
 		sc.draw(sh);
 

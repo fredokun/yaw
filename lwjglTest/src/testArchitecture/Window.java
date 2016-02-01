@@ -88,6 +88,6 @@ public class Window {
 	}
 	
 	public static double aspectRatio(){
-		return width/height;
+		return width/(double)height;
 	}
 }
