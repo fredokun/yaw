@@ -22,7 +22,7 @@ public class Window {
 	private static GLFWKeyCallback keyCallback;
 	private static GLFWWindowSizeCallback windowSizeCallback;
 	
-	//Initialise et ouvre une fenêtre.
+	//Initialise et ouvre une fenetre.
 	public static void init(){
 		if(glfwInit()== 0){
 			throw new IllegalStateException("Unable to initialize GLFW");
@@ -66,12 +66,12 @@ public class Window {
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	}
 	
-	//Désalloue le materielle utilisé pour la fenêtre
+	//Desalloue le materielle utilise pour la fenetre
 	public static void cleanUp(){
 		glfwTerminate();
 	}
 	
-	//A appeller avant de mettre à jour le contenue de la fenêtre
+	//A appeller avant de mettre a jour le contenue de la fenetre
 	public static boolean clear(){
 		 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		 if(resized){
@@ -81,7 +81,7 @@ public class Window {
 		 }
 		 return false;
 	}
-	//Dessine le contenue de la fenêtre
+	//Dessine le contenue de la fenetre
 	public static void update(){
 			 glfwSwapBuffers(window);
 			 glfwPollEvents();		
