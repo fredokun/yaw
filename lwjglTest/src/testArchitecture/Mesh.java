@@ -51,7 +51,7 @@ public class Mesh {
 				verticeBuffer.put(vertices).flip();
 				glBufferData(GL_ARRAY_BUFFER, verticeBuffer, GL_STATIC_DRAW);
 
-				//on explique à opengl comment lire les valeurs.
+				//on explique a opengl comment lire les valeurs.
 				glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
 			
 			//VBO des couleurs
@@ -62,7 +62,7 @@ public class Mesh {
 				colorBuffer.put(couleur).flip();
 				glBufferData(GL_ARRAY_BUFFER, colorBuffer, GL_STATIC_DRAW);
 				
-				//on explique à opengl comment lire les valeurs.
+				//on explique a opengl comment lire les valeurs.
 				glVertexAttribPointer(1, 4, GL_FLOAT, false, 0, 0);
 				
 			//VBO des indices
@@ -82,7 +82,7 @@ public class Mesh {
 				 glEnableVertexAttribArray(0);
 				 glEnableVertexAttribArray(1);
 				 
-				 // Draw the vertices (les deux dernier paramètre indique respectivement first et length)
+				 // Draw the vertices (les deux dernier parametre indique respectivement first et length)
 				 glDrawElements(GL_TRIANGLES, 6,GL_UNSIGNED_INT, 0);
 
 				 // Restore state
@@ -98,7 +98,7 @@ public class Mesh {
 		glEnableVertexAttribArray(1);
 		for(MyItem i: items){
 			sh.setUniform("worldMatrice", i.getWorldMatrix());
-			// Draw the vertices (les deux dernier paramètre indique respectivement first et length)
+			// Draw the vertices (les deux dernier parametre indique respectivement first et length)
 			glDrawElements(GL_TRIANGLES, 6,GL_UNSIGNED_INT, 0);
 		}
 		// Restore state

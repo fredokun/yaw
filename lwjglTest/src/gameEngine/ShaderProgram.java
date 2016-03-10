@@ -76,7 +76,7 @@ public class ShaderProgram {
         glUseProgram(0);
     }
 
-    //Désalloue le shader programme
+    //Desalloue le shader programme
     public void cleanup() {
         unbind();
         if (programId != 0) {

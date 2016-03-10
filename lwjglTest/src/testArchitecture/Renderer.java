@@ -19,7 +19,7 @@ public class Renderer {
 
 
 	public Renderer() throws Exception{
-		//on prépare le shader programme
+		//on prepare le shader programme
 		sh = new ShaderProgram();
 		sh.createVertexShader(new String(Files.readAllBytes(Paths.get("src/testArchitecture/vertShader.vs"))));
 		sh.createFragmentShader(new String(Files.readAllBytes(Paths.get("src/testArchitecture/fragShader.fs"))));
