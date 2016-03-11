@@ -10,7 +10,6 @@
   []
   (comp 
 	(pom :project 'YAW-project :version "0.1.0")  
-	(javac "./src/testArchitecture/*.java")
 	(javac "./src/gameEngine/*.java")
 	(javac "./src/gameEngine/light/*.java")
 	(jar :file "YAW.jar")
