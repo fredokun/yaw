@@ -27,7 +27,8 @@ public class Window {
 		if(glfwInit()== 0){
 			throw new IllegalStateException("Unable to initialize GLFW");
 		}
-		
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 		glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 		
