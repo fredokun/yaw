@@ -17,8 +17,8 @@ public class Renderer {
 		
 		//Initialisation of the shader program
 		sh = new ShaderProgram();
-		sh.createVertexShader(new String(Files.readAllBytes(Paths.get("src/testLight/vertShader.vs"))));
-		sh.createFragmentShader(new String(Files.readAllBytes(Paths.get("src/testLight/fragShader.fs"))));
+		sh.createVertexShader(new String(Files.readAllBytes(Paths.get("src/gameEngine/vertShader.vs"))));
+		sh.createFragmentShader(new String(Files.readAllBytes(Paths.get("src/gameEngine/fragShader.fs"))));
 		sh.link();
 		//Initialisation of the camera's uniform
 		sh.createUniform("projectionMatrice");
