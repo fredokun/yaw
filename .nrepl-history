@@ -1,0 +1,160 @@
+(boot (build))
+quit
+(boot (buildà))
+(boot (build))
+(.import gameEngine.World)
+(import gameEngine.World)
+(def prog (.newInstance World))
+(.start (Thread. (.init prog)))
+(boot (build))
+(import gameEngine.World)
+(def prog (.newInstance World))
+(.start (Thread. (.init prog)))
+quit
+(boot (build))
+(import gameEngine.World)
+(def prog (.newInstance World))
+(.start (Thread. (.init prog)))
+quit
+(import gameEngine.World)
+(boot (build))
+(import gameEngine.World)
+(def prog (.newInstance World))
+(.start (Thread. (.init prog)))
+(.start (Thread. (.init prog)))&
+quit
+(boot (build))
+(import gameEngine.World)
+(def prog(.newInstance World))
+(let [world (.init prog)])
+(let [world (future (.init prog))])
+t
+lsquit
+quit
+(import (gameEngine.World))
+(def prog(.newInstance World))
+l
+(import gameEngine.World)
+(def prog(.newInstance World))
+(import gameEngine.World)
+(boot (build))
+(import gameEngine.World)
+(def prog(.newInstanceWorld))
+(def prog(.newInstance World))
+(let [world (future (.init prog))])
+quit
+(import gameEngine.World)
+quit
+(import gameEngine.World)
+quit
+(boot (build))
+(clj.world/exec)
+(:import [clj.world])
+(import clj.world)
+quit
+(boot (build))
+(import gameEngine.World)
+(def prog(.newInstance World))
+(let [world (future (.init prog))])
+quit
+(import gameEngine.World)
+(boot (build))
+(import gameEngine.World)
+(def prog(.newInstance World))
+(let [world (.start(Thread. (.init prog)))])
+(boot (build))
+(use 'yaw.world)
+(use 'yaw.clojure.world)
+(require 'yaw.world)
+(require 'yaw.clojure.world)
+(boot (build))
+(require 'yaw.clojure.world)
+(require 'clojure.world)
+(refer 'clojure.world)
+(use 'clojure.world)
+(require 'clojure.world)
+start-yaw
+(boot (build))
+(use 'clojure.world)
+(require 'clojure.world)
+(clojure.world/start-yaw)
+boot aot :all
+(use 'clojure.world)
+boot aot :a
+quit
+(boot (build))
+(require 'clojure.world)
+(refer 'clojure.world)
+quit
+(boot (build))
+(require 'yaw.world)
+(refer 'yaw.world)
+star-yaw
+start-yaw
+quit
+(boot (build)d))
+(boot (build))
+(use 'yaw.world)
+yaw.world/start-yaw
+let x yaw.world/start-yaw
+(let x (yaw.world/start-yaw))
+(let [x (yaw.world/start-yaw)])
+quit
+(boot (build))
+(use 'yaw.world)
+start-yaw
+(createCube world)
+createCube world)
+(createCube (:world @world))
+quit
+(boot (build))
+(use 'yaw.world)
+start-yaw
+(createCube (:world @world))
+quit
+(boot (build))
+(use 'yaw.world)
+(let [universe (start-yaw)])
+quit
+(boot (build))
+(use 'yaw.world)
+(let x [start-yaw])
+])
+(let [universe (start-yaw))
+(let [universe (start-yaw)])
+(createCube universe)
+(createCube (:world @world))
+@world
+:world
+:t
+(:world @world)
+@âtom
+@atom
+atom
+quit
+(boot (buildà))
+(boot (build))
+(use 'yaw.world)
+(def universe(start-yaw))
+(createCube universe)
+(createCube (:world @universe))
+quit
+(boot (build))
+(use 'yaw.world)
+(def universe (start-yaw))
+(createCube (:world @universe))
+Cube (:world @universe))
+(def [item1 (createCube (:world @universe))])
+(def item1 (createCube (:world @universe))])
+(def item1 (createCube (:world @universe)))
+quit
+(boot (build))
+(use 'yaw.world)
+(boot (build))
+(use 'yaw.world)
+quit
+(boot (build))
+(use 'yaw.world)
+(def universe(start-yaw))
+(def item (createCube (:world @universe)))
+quit

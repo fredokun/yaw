@@ -2,7 +2,7 @@
 
 (set-env! :repositories #(conj % ["mavencentral" {:url "https://repo.maven.apache.org/maven2"}])
 	:dependencies '[[org.joml/joml "1.7.1"] [org.lwjgl/lwjgl "3.0.0b"] [org.lwjgl/lwjgl-platform "3.0.0b" :classifier "natives-linux"]]
-	:resource-paths #{"src/"})
+	:resource-paths #{"yaw/"})
 
 
 (deftask build
@@ -10,8 +10,9 @@
   []
   (comp 
 	(pom :project 'yaw :version "0.1.0")  
-	(javac "./src/gameEngine/*.java")
-	(javac "./src/gameEngine/light/*.java")
+	(javac "./yaw/java/src/gameEngine/*.java")
+	(javac "./yaw/java/src/gameEngine/light/*.java")
+	(aot :all)
 ;;	(jar :file "YAW.jar")
 ;;	(install)
 	))

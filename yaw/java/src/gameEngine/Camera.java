@@ -112,19 +112,19 @@ public class Camera {
 
 	public void update(){
 		if(Input.isKeyDown(GLFW_KEY_W)){
-			System.out.println("W");
+			//System.out.println("W");
 			position.y += 0.05f;
 		}
 		if(Input.isKeyDown(GLFW_KEY_S)){
-			System.out.println("S");
+			//System.out.println("S");
 			position.y -= 0.05f;
 		}
 		if(Input.isKeyDown(GLFW_KEY_D)){
-			System.out.println("D");
+			//System.out.println("D");
 			position.x += 0.05f;
 		}
 		if(Input.isKeyDown(GLFW_KEY_A)){
-			System.out.println("A");
+			//System.out.println("A");
 			position.x -= 0.05f;
 		}
 	}

@@ -27,6 +27,14 @@ public class SceneVertex {
 		}
 	}
 
+	public void update() {
+		for(Mesh m: mapMesh.keySet()){
+			for(MyItem i : mapMesh.get(m))
+				i.update();
+		}
+	}
+
+
 	public void add(MyItem item){
 		if(mapMesh.keySet().contains(item.getApparence()))
 			mapMesh.get(item.getApparence()).add(item);
@@ -41,13 +49,13 @@ public class SceneVertex {
 		MyItem item = new MyItem(m);
 		this.add(item);
 	}
-	
+
 	public void add(float[] vertices, Material material , float[] normales, int[] indices){
 		Mesh newMesh = new Mesh(vertices,material, normales,indices);
 		MyItem item = new MyItem(newMesh);
 		this.add(item);
 	}
-	
+
 	public void add(float[] vertices, Material material, float[] normales, int[] indices,
 			float scale, Vector3f rotation, Vector3f position) {
 		Mesh newMesh = new Mesh(vertices,material,normales,indices);
