@@ -57,6 +57,8 @@ public class Renderer {
 		//Rendering of the light
 		sl.render(sh,mvm);
 		
+		//Update objects
+		sc.update();
 		//Rendering of the object
 		sc.draw(sh,mvm);
 

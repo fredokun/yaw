@@ -43,6 +43,33 @@ public class MyItem {
                 scale(scale);
         return worldMatrix;
     }
+
+
+
+	public Vector3f getRotation() {
+		return rotation;
+	}
+
+
+
+	public void setRotation(Vector3f rotation) {
+		this.rotation = rotation;
+	}
+
+
+
+	public Vector3f getTranslation() {
+		return translation;
+	}
+
+
+
+	public void setTranslation(Vector3f translation) {
+		this.translation = translation;
+	}
 	
+	public void update(){
+		
+	}
 	
 }
