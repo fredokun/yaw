@@ -10,7 +10,6 @@ import org.joml.Vector3f;
 import org.lwjgl.opengl.GL;
 
 import basicMeshes.CubeItem;
-import basicMeshes.CubeMesh;
 
 public class Main {
 
