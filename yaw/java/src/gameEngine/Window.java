@@ -1,16 +1,13 @@
 package gameEngine;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glClearColor;
-import static org.lwjgl.opengl.GL11.glViewport;
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GLCapabilities;
 
 public class Window {
 	public static long window;
@@ -21,6 +18,9 @@ public class Window {
 	//protege des erreurs du au garbage collector
 	private static GLFWKeyCallback keyCallback;
 	private static GLFWWindowSizeCallback windowSizeCallback;
+	
+	//Capabilities
+	public static GLCapabilities caps;
 	
 	//Initialise et ouvre une fenetre.
 	public static void init(){
@@ -52,8 +52,10 @@ public class Window {
         
 		glfwMakeContextCurrent(window);
 		
-		GL.createCapabilities();
+		caps = GL.createCapabilities();
 		
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
 		
 		glfwSwapInterval(1);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);

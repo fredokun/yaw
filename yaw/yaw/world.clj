@@ -7,6 +7,8 @@
   []
   (let [world (.newInstance World)
         thread (future (.init world))]
+	(.init world)
+	(.start (Thread. world))
     (atom {:world world :thread thread})
     ))
 
@@ -19,9 +21,9 @@
       (.CreateCube world))
 
 (defn translate [item x y z]
-      (. translate item x y z))
+      (.translate item x y z))
 (defn rotate [item x y z]
-      (. rotate item x y z))
+      (.rotate item x y z))
 	
 
 

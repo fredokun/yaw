@@ -25,7 +25,7 @@ public class Main {
 		Material material = new Material( new Vector3f(0.4f,0,0.7f),0.f);
 		sc.add(new CubeItem(material, 1f, new Vector3f(), new Vector3f(0f,0f,-2f)));
 		
-		//sl.setPointLight(new PointLight(new Vector3f(0.2f,1f,0.3f), new Vector3f(), 1, 0, 0, 0), 0);
+		sl.setPointLight(new PointLight(new Vector3f(0.2f,1f,0.3f), new Vector3f(), 1, 0, 0, 0), 0);
 		
 		try{
 			//Initialisation of the window we currently use

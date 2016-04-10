@@ -158,3 +158,60 @@ quit
 (def universe(start-yaw))
 (def item (createCube (:world @universe)))
 quit
+(def item (createCube (:world @universe)))clear
+quit
+(boot (build))
+(use 'yaw.world)
+(def universe(start-yaw))
+(def item (createCube (:world @universe)))clear
+quit
+(boot (build))
+(use 'yaw.world)
+(def universe(start-yaw))
+quit
+(boot (build))
+(use 'yaw.world)
+(def universe(start-yaw))
+(def item (createCube (:world @universe)))
+(translate item 1 0 0)
+l
+(rotate item 2.0 1.0 1.0)
+(rotate [item 2.0 1.0 1.0])
+quit
+(boot (build))
+(use 'yaw.world)
+(def universe(start-yaw))
+(def item (createCube (:world @universe)))
+(rotate item 2.0 1.0 1.0)
+quit
+(boot (build))
+(use 'yaw.world)
+(def universe(start-yaw))
+(def item (createCube (:world @universe)))
+(rotate item 2.0 1.0 1.0)
+(translate item 1.0 5.0 0.0)
+(translate item -1.0 -5.0 0.0)
+(translate item 1.0 1.0 0.0)
+(def item2 (createCube(:world @universe)))
+quit
+(boot (build))
+(use 'yaw.world)
+(def universe(start-yaw))
+(def item (createCube (:world @universe)))
+(translate item 0.0 0.0 -5)
+(translate item 0.0 0.0 -2)
+(translate item 0.0 0.0 +7)
+quit
+(boot (build))
+(def universe(start-yaw))
+(use 'yaw.world)
+(def universe(start-yaw))
+(def item (createCube (:world @universe)))
+(translate item 0.0 0.0 -7)
+quit
+(boot (build))
+(use 'yaw.world)
+(def universe(start-yaw))
+(def item (createCube (:world @universe)))
+(translate item 0.0 0.0 -7)
+quit

@@ -6,6 +6,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import org.joml.Matrix4f;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL30;
 
 public class Renderer {
 	protected ShaderProgram sh;
@@ -17,8 +19,8 @@ public class Renderer {
 		
 		//Initialisation of the shader program
 		sh = new ShaderProgram();
-		sh.createVertexShader(new String(Files.readAllBytes(Paths.get("src/gameEngine/vertShader.vs"))));
-		sh.createFragmentShader(new String(Files.readAllBytes(Paths.get("src/gameEngine/fragShader.fs"))));
+		sh.createVertexShader(new String(Files.readAllBytes(Paths.get("./yaw/java/src/gameEngine/vertShader.vs"))));
+		sh.createFragmentShader(new String(Files.readAllBytes(Paths.get("./yaw/java/src/gameEngine/fragShader.fs"))));
 		sh.link();
 		//Initialisation of the camera's uniform
 		sh.createUniform("projectionMatrice");
@@ -47,9 +49,17 @@ public class Renderer {
 	public void render(SceneVertex sc, SceneLight sl, boolean isResized){
 		sh.bind();
 		//Preparation of the camera
-		if(isResized){
+		if(isResized || SceneVertex.itemAdded){
 			cam.updateCameraMat();
 		}
+		
+//		 int err = GL11.GL_NO_ERROR;
+//		if((err = GL11.glGetError()) != GL11.GL_NO_ERROR)
+//		{
+//			
+//		  System.out.println(err);
+//		}
+		
 		sh.setUniform("projectionMatrice", cam.getCameraMat());
 		sh.setUniform("camera_pos", cam.position);
 		Matrix4f mvm = cam.setupViewMatrix();
@@ -57,8 +67,13 @@ public class Renderer {
 		//Rendering of the light
 		sl.render(sh,mvm);
 		
+		//Init Objects
+		sc.initMesh();
+		
 		//Update objects
 		sc.update();
+		
+		
 		//Rendering of the object
 		sc.draw(sh,mvm);
 

@@ -24,6 +24,7 @@ import java.util.ArrayList;
 
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL;
 
 public class Mesh {
 	private int vaoId;
@@ -41,43 +42,43 @@ public class Mesh {
 	public Mesh(float[] vertices, Material material,float[] normales, int[] indices) {
 		super();
 		this.material = material;
-		vaoId = glGenVertexArrays();
-		glBindVertexArray(vaoId);
-		
 		//Initialisation of VBO
-				vboVertex = glGenBuffers();
-				glBindBuffer(GL_ARRAY_BUFFER, vboVertex);
-
 			//VBO of vertex
 				verticeBuffer = BufferUtils.createFloatBuffer(vertices.length);
-				
 				verticeBuffer.put(vertices).flip();
-				glBufferData(GL_ARRAY_BUFFER, verticeBuffer, GL_STATIC_DRAW);
-
-				//We explain to OpenGL how to read our Buffers.
-				glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
-			
 			//VBO of normals
-				vboNorm = glGenBuffers();
-				glBindBuffer(GL_ARRAY_BUFFER, vboNorm);
-				
 				normBuffer = BufferUtils.createFloatBuffer(normales.length);
-				normBuffer.put(normales).flip();
-				glBufferData(GL_ARRAY_BUFFER, normBuffer, GL_STATIC_DRAW);
-				
-				//We explain to OpenGL how to read our Buffers.
-				glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, 0);
+				normBuffer.put(normales).flip();			
 			//VBO of indices
-				vboIndices = glGenBuffers();
-				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIndices);
 				indicesBuffer = BufferUtils.createIntBuffer(indices.length);
-				indicesBuffer.put(indices).flip();
-				glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
-				
-				glBindBuffer(GL_ARRAY_BUFFER,0);
-				glBindVertexArray(0);
+				indicesBuffer.put(indices).flip();		
 	}
 
+	public void init(){
+		vaoId = glGenVertexArrays();
+		glBindVertexArray(vaoId);
+		vboVertex = glGenBuffers();
+		glBindBuffer(GL_ARRAY_BUFFER, vboVertex);
+		glBufferData(GL_ARRAY_BUFFER, verticeBuffer, GL_STATIC_DRAW);
+
+		//We explain to OpenGL how to read our Buffers.
+		glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
+		
+		vboNorm = glGenBuffers();
+		glBindBuffer(GL_ARRAY_BUFFER, vboNorm);
+		glBufferData(GL_ARRAY_BUFFER, normBuffer, GL_STATIC_DRAW);
+		
+		//We explain to OpenGL how to read our Buffers.
+		glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, 0);
+		
+		vboIndices = glGenBuffers();
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIndices);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
+		
+		glBindBuffer(GL_ARRAY_BUFFER,0);
+		glBindVertexArray(0);
+	}
+	
 	public void draw(MyItem item, ShaderProgram sh,Matrix4f viewMatrix){
 		// Bind to the VAO
 		glBindVertexArray(vaoId);
@@ -104,7 +105,7 @@ public class Mesh {
 			Matrix4f modelViewMat = new Matrix4f(viewMatrix).mul( i.getWorldMatrix());
 			sh.setUniform("modelViewMatrix", modelViewMat);
 			// Draw the vertices
-			glDrawElements(GL_TRIANGLES, 6,GL_UNSIGNED_INT, 0);
+			glDrawElements(GL_TRIANGLES, indicesBuffer.limit(),GL_UNSIGNED_INT, 0);
 		}
 		// Restore state
 		glDisableVertexAttribArray(0);

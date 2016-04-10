@@ -7,12 +7,13 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 public class SceneVertex {
-
+	public static boolean itemAdded=false;
 	protected HashMap<Mesh, ArrayList<MyItem>> mapMesh;
-
+	protected ArrayList<Mesh> notInit;
 
 	public SceneVertex(){
 		mapMesh = new HashMap<Mesh, ArrayList<MyItem>>();
+		notInit = new ArrayList<Mesh>();
 	}
 
 	public void cleanUp() {
@@ -21,6 +22,12 @@ public class SceneVertex {
 		}
 	}
 
+	public void initMesh(){
+		for(Mesh m:notInit){
+			m.init();
+		}
+		notInit.clear();
+	}
 	public void draw(ShaderProgram sh, Matrix4f viewMatrix) {
 		for(Mesh m: mapMesh.keySet()){
 			m.draw(mapMesh.get(m),sh, viewMatrix);
@@ -36,12 +43,16 @@ public class SceneVertex {
 
 
 	public void add(MyItem item){
+		synchronized(this){
+			itemAdded=true;
 		if(mapMesh.keySet().contains(item.getApparence()))
 			mapMesh.get(item.getApparence()).add(item);
 		else{
 			ArrayList<MyItem> l = new ArrayList<MyItem>();
 			l.add(item);
 			mapMesh.put(item.getApparence(),l);
+			notInit.add(item.getApparence());
+		}
 		}
 	}
 
