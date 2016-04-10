@@ -4,14 +4,14 @@ import org.joml.Vector3f;
 
 public class PointLight {
 	//Light basic attribute
-	private Vector3f color;
-	private Vector3f position;
-	private float intensity;
+	public Vector3f color;
+	public Vector3f position;
+	public float intensity;
 	
 	//Attenuation Attribute
-	private float constantAtt;
-	private float linearAtt;
-	private float quadraticAtt;
+	public float constantAtt;
+	public float linearAtt;
+	public float quadraticAtt;
 	
 	public PointLight(Vector3f color, Vector3f position, float intensity,
 			float constantAtt, float linearAtt, float quadraticAtt) {

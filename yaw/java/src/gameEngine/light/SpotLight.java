@@ -15,7 +15,7 @@ public class SpotLight extends PointLight {
     
     public SpotLight(){
     	super();
-    	conedir = new Vector3f(0,0,0);
+    	conedir = new Vector3f(0,0,-1);
     	cutoffAngle = 0;
     }
 

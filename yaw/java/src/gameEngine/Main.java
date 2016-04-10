@@ -3,8 +3,11 @@ package gameEngine;
 import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 import static org.lwjgl.opengl.GL11.*;
+import gameEngine.light.AmbiantLight;
 import gameEngine.light.PointLight;
 import gameEngine.light.SceneLight;
+import gameEngine.meshGenerator.HalfBlockGenerator;
+import gameEngine.meshGenerator.PyramidGenerator;
 
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL;
@@ -22,10 +25,11 @@ public class Main {
 		
 		
 		//Generation of a cube
-		Material material = new Material( new Vector3f(0.4f,0,0.7f),0.f);
-		sc.add(new CubeItem(material, 1f, new Vector3f(), new Vector3f(0f,0f,-2f)));
+		Material material = new Material( new Vector3f(1f,0,1f),0.f);
+		sc.add(new CubeItem(PyramidGenerator.generate(1f,1f,1f,material), 1f, new Vector3f(), new Vector3f(0f,0f,-2f)));
 		
-		sl.setPointLight(new PointLight(new Vector3f(0.2f,1f,0.3f), new Vector3f(), 1, 0, 0, 0), 0);
+		sl.setAmbiant(new AmbiantLight(new Vector3f(1f,1f,0f), 1));
+		sl.setPointLight(new PointLight(new Vector3f(00f,0f,1f), new Vector3f(), 1, 0, 1, 0), 0);
 		
 		try{
 			//Initialisation of the window we currently use

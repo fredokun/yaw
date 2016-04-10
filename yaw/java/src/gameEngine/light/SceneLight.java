@@ -63,7 +63,7 @@ public class SceneLight {
         for (int i = 0; i < maxPointlight; i++) {
             // Get a copy of the point light object and transform its position to view coordinates
             PointLight currPointLight = new PointLight(pointTable[i]);
-            Vector3f lightPos = currPointLight.getPosition();
+            Vector3f lightPos = new Vector3f(currPointLight.getPosition());
             Vector4f aux = new Vector4f(lightPos, 1);
             aux.mul(viewMatrix);
             lightPos.x = aux.x;
@@ -80,7 +80,7 @@ public class SceneLight {
             dir.mul(viewMatrix);
             currSpotLight.conedir=new Vector3f(dir.x, dir.y, dir.z);
 
-            Vector3f lightPos = currSpotLight.getPosition();
+            Vector3f lightPos = new Vector3f(currSpotLight.getPosition());
             Vector4f aux = new Vector4f(lightPos, 1);
             aux.mul(viewMatrix);
             lightPos.x = aux.x;
