@@ -1,17 +1,19 @@
-package testArchitecture;
+package gameEngine;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
-public class Scene {
-
+public class SceneVertex {
+	public static boolean itemAdded=false;
 	protected HashMap<Mesh, ArrayList<MyItem>> mapMesh;
+	protected ArrayList<Mesh> notInit;
 
-
-	public Scene(){
+	public SceneVertex(){
 		mapMesh = new HashMap<Mesh, ArrayList<MyItem>>();
+		notInit = new ArrayList<Mesh>();
 	}
 
 	public void cleanUp() {
@@ -20,19 +22,37 @@ public class Scene {
 		}
 	}
 
-	public void draw(ShaderProgram sh) {
+	public void initMesh(){
+		for(Mesh m:notInit){
+			m.init();
+		}
+		notInit.clear();
+	}
+	public void draw(ShaderProgram sh, Matrix4f viewMatrix) {
 		for(Mesh m: mapMesh.keySet()){
-			m.draw(mapMesh.get(m),sh);
+			m.draw(mapMesh.get(m),sh, viewMatrix);
 		}
 	}
 
+	public void update() {
+		for(Mesh m: mapMesh.keySet()){
+			for(MyItem i : mapMesh.get(m))
+				i.update();
+		}
+	}
+
+
 	public void add(MyItem item){
+		synchronized(this){
+			itemAdded=true;
 		if(mapMesh.keySet().contains(item.getApparence()))
 			mapMesh.get(item.getApparence()).add(item);
 		else{
 			ArrayList<MyItem> l = new ArrayList<MyItem>();
 			l.add(item);
 			mapMesh.put(item.getApparence(),l);
+			notInit.add(item.getApparence());
+		}
 		}
 	}
 
@@ -40,16 +60,16 @@ public class Scene {
 		MyItem item = new MyItem(m);
 		this.add(item);
 	}
-	
-	public void add(float[] vertices, float[] couleur, int[] indices){
-		Mesh newMesh = new Mesh(vertices,couleur,indices);
+
+	public void add(float[] vertices, Material material , float[] normales, int[] indices){
+		Mesh newMesh = new Mesh(vertices,material, normales,indices);
 		MyItem item = new MyItem(newMesh);
 		this.add(item);
 	}
-	
-	public void add(float[] vertices, float[] couleur, int[] indices,
+
+	public void add(float[] vertices, Material material, float[] normales, int[] indices,
 			float scale, Vector3f rotation, Vector3f position) {
-		Mesh newMesh = new Mesh(vertices,couleur,indices);
+		Mesh newMesh = new Mesh(vertices,material,normales,indices);
 		MyItem newItem = new MyItem(newMesh, scale, rotation, position);
 		this.add(newItem);
 	}

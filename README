@@ -1,0 +1,22 @@
+Move to this repository. and execute:
+
+	boot repl
+	(boot (build))
+
+It should have begin a REPL and execute the build.boot.
+Then for execute the exemple execute:
+
+Initialisation of the world :
+boot.user=> (use 'yaw.world)
+boot.user=> (def universe(start-yaw))
+
+Creating the cube :
+boot.user=> (def item (createCube (:world @universe)))
+
+Rotate the cube :
+boot.user=> (rotate item 2.0 1.0 1.0)
+
+Translate the cube :
+boot.user=> (translate item 1.0 2.0 0.0)
+
+
