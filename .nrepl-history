@@ -1,0 +1,38 @@
+(boot (build))
+(use 'yaw.world)
+(def universe(start-yaw))
+(def item1 (createCube (:world @universe)))
+(def item2 (createCube (:world @universe)))
+(translate item1 0 0 -1)
+quit
+(boot (build))
+(use 'yaw.world)
+quit
+(boot (build))
+(use 'yaw.world)
+(boot (build))
+(use 'yaw.world)
+quit
+(boot (build))
+(use 'yaw.world)
+quit
+(boot (build))
+(use 'yaw.world)
+(boot (build))
+(use 'yaw.world)
+help
+quit
+(boot (build))
+(use 'yaw.world)
+quit
+(boot (build))
+(use 'yaw.world)
+(def universe(start-yaw))
+(def item (createCube (:world @universe)))
+(def camera (addCamera (:world @universe)))
+(setLiveCamera (:world @universe) camera)
+(setLiveCamera (:world @universe) (getCamera (:world @universe) 0)
+)
+(setLiveCamera (:world @universe) (getCamera (:world @universe) 0))
+(setLiveCamera (:world @universe) (getCamera (:world @universe) 1))
+(setLiveCamera (:world @universe) (getCamera (:world @universe) 0))
