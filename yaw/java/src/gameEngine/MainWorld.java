@@ -1,8 +1,6 @@
 package gameEngine;
 
-import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
-
-import org.lwjgl.opengl.GL;
+import basicMeshes.CubeItem;
 
 public class MainWorld {
 
@@ -14,8 +12,10 @@ public class MainWorld {
 		World world=new World();
 		world.init();
 		(new Thread(world)).start();
-		world.CreateCube();
-
+		CubeItem c1 =world.CreateCube(0,1,0);
+		c1.rotate(1, 1, 1);
+		c1.translate(0,0,-5);
+		world.CreateCube(1,0,1);
 	}
 
 }

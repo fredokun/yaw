@@ -40,6 +40,15 @@ public class World implements Runnable{
 	public SceneLight getSceneLight(){
 		return sl;
 	}
+	
+
+	public CubeItem CreateCube(float red, float green, float blue){
+		Material material = new Material( new Vector3f(red,green,blue),0.f);
+		CubeItem cube = new CubeItem(material, 1f, new Vector3f(), new Vector3f(0f,0f,-2f));
+		sc.add(cube);
+		return cube;
+	}
+	
 	public CubeItem CreateCube(){
 		Material material = new Material( new Vector3f(1f,1f,1f),0.f);
 		CubeItem cube = new CubeItem(material, 1f, new Vector3f(), new Vector3f(0f,0f,-2f));

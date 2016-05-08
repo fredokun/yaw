@@ -54,9 +54,6 @@ public class Window {
 		
 		caps = GL.createCapabilities();
 		
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
-		
 		glfwSwapInterval(1);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	}

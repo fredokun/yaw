@@ -144,5 +144,15 @@ public class Camera {
 				(float) Window.aspectRatio(), zNear, zFar);
 		perspectiveMat = perspectiveMat.mul(setupViewMatrix());
 	}
+
+	public float getzNear() {
+		return zNear;
+	}
+
+	public float getzFar() {
+		return zFar;
+	}
+	
+	
 }
 
