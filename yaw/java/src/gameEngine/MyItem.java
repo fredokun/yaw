@@ -2,6 +2,7 @@ package gameEngine;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 public class MyItem {
 	private Mesh apparence;
@@ -62,8 +63,30 @@ public class MyItem {
 		return translation;
 	}
 
+	public void revolveAround(Vector3f center, float degX, float degY, float degZ){
+		Vector4f pos = new Vector4f(translation,1f);
+		pos.add(-center.x, -center.y,-center.z,0);
+		Matrix4f trans = new Matrix4f();
+		trans.rotateX((float) Math.toRadians(degX));
+		trans.rotateY((float) Math.toRadians(degY));
+		trans.rotateZ((float) Math.toRadians(degZ));
+		trans.transform(pos);
+		pos.add(center.x, center.y,center.z,0);
+		translation = new Vector3f(pos.x,pos.y,pos.z);
+		rotation.add(degX,degY,degZ);
+	}
 
-
+	public void repelBy(Vector3f center, float dist){
+		Vector3f dif = new Vector3f(translation.x - center.x, translation.y - center.y, translation.z - center.z);
+		float norme = dif.length();
+		if(norme != 0){
+			float move =(dist / norme) + 1;
+			dif.mul(move);
+			dif.add(center);
+			translation = dif;
+		}
+	}
+	
 	public void setTranslation(Vector3f translation) {
 		this.translation = translation;
 	}

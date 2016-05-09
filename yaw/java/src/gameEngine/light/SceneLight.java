@@ -102,7 +102,7 @@ public class SceneLight {
 		pointTable[pos]=pl;
 	}
 	
-	public void setPointLight(SpotLight sl, int pos){
+	public void setSpotLight(SpotLight sl, int pos){
 		spotTable[pos]=sl;
 	}
 
