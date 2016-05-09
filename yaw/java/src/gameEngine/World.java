@@ -70,8 +70,6 @@ public class World implements Runnable{
 			e1.printStackTrace();
 			return;
 		}
-		sl.setAmbiant(new AmbiantLight(new Vector3f(0,1f,1f),1f));
-		sl.setPointLight(new PointLight(new Vector3f(1f,1f,0.0f), new Vector3f(), 1, 0, 0.1f, 0), 0);
 
 		try{
 			//Initialisation of the window we currently use
