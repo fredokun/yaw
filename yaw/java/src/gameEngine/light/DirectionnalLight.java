@@ -20,6 +20,11 @@ public class DirectionnalLight extends AmbiantLight {
 		this.direction = direction;
 	}
 	
+	public DirectionnalLight(float cx, float cy, float cz, float intensity, float dx, float dy, float dz){
+		super(cx, cy, cz, intensity);
+		this.direction = new Vector3f(dx, dy, dz);
+	}
+	
 	//Default: vertical white light
 	public DirectionnalLight(){
 		super(0);

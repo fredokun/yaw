@@ -13,6 +13,13 @@ public class SpotLight extends PointLight {
 		this.cutoffAngle = cutoffAngle;
 	}
     
+    public SpotLight(float cx, float cy, float cz, float px, float py, float pz, float intensity,
+			float constantAtt, float linearAtt, float quadraticAtt, float cdx, float cdy, float cdz, float cutoffAngle) {
+		super(cx,cy,cz,px,py,pz,intensity,constantAtt,linearAtt,quadraticAtt);
+		this.conedir = new Vector3f(cdx, cdy, cdz);
+		this.cutoffAngle = cutoffAngle;
+	}
+    
     public SpotLight(){
     	super();
     	conedir = new Vector3f(0,0,-1);

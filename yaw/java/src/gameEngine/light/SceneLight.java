@@ -105,4 +105,20 @@ public class SceneLight {
 	public void setPointLight(SpotLight sl, int pos){
 		spotTable[pos]=sl;
 	}
+
+	public AmbiantLight getAmbiantLight() {
+		return ambiant;
+	}
+	
+	public DirectionnalLight getSun() {
+		return sun;
+	}
+
+	public PointLight[] getPointTable() {
+		return pointTable;
+	}
+
+	public SpotLight[] getSpotTable() {
+		return spotTable;
+	}
 }

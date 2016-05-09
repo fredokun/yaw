@@ -23,6 +23,16 @@ public class PointLight {
 		this.quadraticAtt = quadraticAtt;
 	}
 	
+	public PointLight(float cx, float cy, float cz, float px, float py, float pz, float intensity,
+			float constantAtt, float linearAtt, float quadraticAtt) {
+		this.color = new Vector3f(cx, cy, cz);
+		this.position = new Vector3f(px, py, pz);
+		this.intensity = intensity;
+		this.constantAtt = constantAtt;
+		this.linearAtt = linearAtt;
+		this.quadraticAtt = quadraticAtt;
+	}
+	
 	public PointLight(){
 		intensity = 0;
 		color = new Vector3f(0,0,0);

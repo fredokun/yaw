@@ -60,6 +60,15 @@ public class Camera {
 		this.position = position;
 	}
 	
+	public Camera(float fieldOfView,float zNear,float zFar, float px, float py, float pz){
+		this.position = new Vector3f(px, py, pz);
+		this.perspectiveMat = new Matrix4f().perspective(fieldOfView, 
+			(float) Window.aspectRatio(), zNear, zFar).translate(this.position);
+		this.fieldOfView = fieldOfView;
+		this.zFar= zFar;
+		this.zNear = zNear;
+	}
+	
 	public Camera(float zNear,float zFar, Vector3f position){
 		this.perspectiveMat = new Matrix4f().perspective((float) Math.toRadians(60.0f), 
 				(float) Window.aspectRatio(), zNear, zFar).translate(position);
@@ -153,6 +162,8 @@ public class Camera {
 		return zFar;
 	}
 	
-	
+	public float getFieldOfView() {
+		return fieldOfView;
+	}
 }
 
