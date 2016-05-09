@@ -1,5 +1,5 @@
 (ns yaw.world
-  (:import [gameEngine World][gameEngine MyItem][gameEngine.camera CameraGestion][gameEngine.light LightManagement])
+  (:import [gameEngine World][gameEngine MyItem][gameEngine.camera CameraGestion][gameEngine.light LightManagement][gameEngine Camera])
   (:gen-class))
 
 
@@ -25,8 +25,8 @@
 (defn setAmbiantLight [world r g b intensity]
       (LightManagement/setAmbiantLight world r g b intensity))
 
-(defn addSpotLight [world r g b x y z  intensity constantA linearAtt quadraticAtt conedir cutoffAngle]
-      (LightManagement/addSpotLight world r g b x y z  intensity constantA linearAtt quadraticAtt conedir cutoffAngle))
+(defn addSpotLight [world r g b x y z  intensity constantA linearAtt quadraticAtt xcone ycone zcone cutoffAngle number]
+      (LightManagement/addSpotLight world r g b x y z  intensity constantA linearAtt quadraticAtt xcone ycone zcone cutoffAngle number))
       
 (defn addPointLight [world r g b x y z intensity constantAtt linearAtt quadraticAtt number]
       (LightManagement/addPointLight world r g b x y z intensity constantAtt linearAtt quadraticAtt number))
@@ -52,7 +52,7 @@
       (CameraGestion/removeCamera world camera))
 
 (defn setPositionCamera [camera x y z]
-      (CameraGestion/setPositionCamera camera x y z))
+      (.setPosition camera (new org.joml.Vector3f x y z)))
       
 ;; Objects Manangement
 
