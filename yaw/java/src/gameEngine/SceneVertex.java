@@ -31,6 +31,10 @@ public class SceneVertex {
 			items.addAll(mapMesh.get(m));
 		return items;
 	}
+	
+	public HashMap<Mesh, ArrayList<MyItem>> getMapMesh() {
+		return mapMesh;
+	}
 
 	public void cleanUp() {
 		for(Mesh m : mapMesh.keySet()){
