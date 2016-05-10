@@ -3,6 +3,7 @@ package gameEngine;
 import gameEngine.items.MyItem;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 import org.joml.Matrix4f;
@@ -17,13 +18,21 @@ public class SceneVertex {
 		mapMesh = new HashMap<Mesh, ArrayList<MyItem>>();
 		notInit = new ArrayList<Mesh>();
 	}
-	
+
 	public void removeItem(MyItem item){
 		ArrayList<MyItem> temp=mapMesh.get(item.getApparence());
 		temp.remove(item);
 		if(temp.isEmpty())
 			mapMesh.remove(item.getApparence());
 	}
+
+	public ArrayList<MyItem> getListItems(){
+		ArrayList<MyItem> items=new ArrayList<MyItem>();
+		for(Mesh m:mapMesh.keySet())
+			items.addAll(mapMesh.get(m));
+		return items;
+	}
+
 	public void cleanUp() {
 		for(Mesh m : mapMesh.keySet()){
 			m.cleanUp();
@@ -53,14 +62,14 @@ public class SceneVertex {
 	public void add(MyItem item){
 		synchronized(this){
 			itemAdded=true;
-		if(mapMesh.keySet().contains(item.getApparence()))
-			mapMesh.get(item.getApparence()).add(item);
-		else{
-			ArrayList<MyItem> l = new ArrayList<MyItem>();
-			l.add(item);
-			mapMesh.put(item.getApparence(),l);
-			notInit.add(item.getApparence());
-		}
+			if(mapMesh.keySet().contains(item.getApparence()))
+				mapMesh.get(item.getApparence()).add(item);
+			else{
+				ArrayList<MyItem> l = new ArrayList<MyItem>();
+				l.add(item);
+				mapMesh.put(item.getApparence(),l);
+				notInit.add(item.getApparence());
+			}
 		}
 	}
 

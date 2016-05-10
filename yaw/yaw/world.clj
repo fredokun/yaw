@@ -69,7 +69,8 @@
       
 (defn removeItem [world item]
       (ItemManagement/removeItem world item))
-      
+(defn getListItems [world]
+      (vec (.getListItems(.getSceneVertex world))))
 (defn translate [item x y z]
       (.translate item x y z))
 (defn rotate [item x y z]
