@@ -1,5 +1,5 @@
 (ns yaw.world
-  (:import [gameEngine World][gameEngine MyItem][gameEngine.camera CameraManagement]
+  (:import [gameEngine World][gameEngine.items MyItem][gameEngine.camera CameraManagement]
   [gameEngine.light LightManagement][gameEngine.camera Camera][gameEngine.items ItemManagement])
   (:gen-class))
 
@@ -216,3 +216,32 @@
 		(loadEdnList (lazy-seq (get loadedLights 3)))
 	))
 
+;; Save items (development in progress)
+(defn myItemToVector [myItem]
+	(let [rotation (.getRotation myItem)
+				translation (.getTranslation myItem)]
+	(vector (.getScale myItem) (.x rotation) (.y rotation) (.z rotation) (.x translation) (.y translation) (.z translation))))
+
+(defn createMyItemVector [itemListVec]
+	"Saves all MyItem in the given List (as vector) in EDN format."
+	(if (= (.length itemListVec) 1)
+		(vector (myItemToVector (first itemListVec)))
+		(conj (createMyItemVector (pop itemListVec)) (myItemToVector (last itemListVec)))
+	))
+
+(defn saveMeshMap [meshMapVec]
+	"Saves all items of the given meshMap (as vector) in EDN format."
+	(if (= (.length meshMapVec) 0)
+		(vector)
+		(if (= (.length meshMapVec) 1)
+			(vector (createMyItemVector (vec (.getValue (first meshMapVec)))))
+			(conj (saveMeshMap (pop meshMapVec)) (createMyItemVector (vec (.getValue (first meshMapVec))))))
+	))
+
+(defn saveItems [filename world]
+	"Saves all items of the given world in EDN format."
+	(let [sceneVertex (.getSceneVertex world)
+				meshMapVec (vec (.getMapMesh sceneVertex))
+				vectorToSave (saveMeshMap meshMapVec)]
+				(spit filename (with-out-str (pr vectorToSave)))
+		))

@@ -53,7 +53,9 @@ public class MyItem {
 		return rotation;
 	}
 
-
+	public float getScale() {
+		return scale;
+	}
 
 	public void setRotation(Vector3f rotation) {
 		this.rotation = rotation;
