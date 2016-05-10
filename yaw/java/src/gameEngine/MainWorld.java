@@ -1,6 +1,5 @@
 package gameEngine;
 
-import gameEngine.items.CubeItem;
 import gameEngine.items.GenericItem;
 import gameEngine.items.ItemManagement;
 import gameEngine.light.AmbiantLight;
@@ -11,10 +10,6 @@ import org.joml.Vector3f;
 
 public class MainWorld {
 
-	/**
-	 * @param args
-	 * @throws Exception 
-	 */
 	public static void main(String[] args) throws Exception {
 		World world=new World();
 		world.init();

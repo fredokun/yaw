@@ -1,5 +1,7 @@
 package gameEngine;
 
+import gameEngine.items.MyItem;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
