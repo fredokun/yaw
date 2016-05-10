@@ -3,6 +3,8 @@ package gameEngine;
 import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 import static org.lwjgl.opengl.GL11.*;
+import gameEngine.camera.Camera;
+import gameEngine.items.CubeItem;
 import gameEngine.light.AmbiantLight;
 import gameEngine.light.PointLight;
 import gameEngine.light.SceneLight;
@@ -12,7 +14,6 @@ import gameEngine.meshGenerator.PyramidGenerator;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL;
 
-import basicMeshes.CubeItem;
 
 public class Main {
 

@@ -1,9 +1,13 @@
-package gameEngine;
+package gameEngine.camera;
 
 
 import static org.lwjgl.glfw.GLFW.*;
+import gameEngine.Input;
+import gameEngine.Window;
 
+import org.joml.AxisAngle4f;
 import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 
@@ -152,6 +156,10 @@ public class Camera {
 		perspectiveMat=new Matrix4f().perspective(fieldOfView,
 				(float) Window.aspectRatio(), zNear, zFar);
 		perspectiveMat = perspectiveMat.mul(setupViewMatrix());
+	}
+	
+	public void rotateCamera(float angle,Vector3f v){
+		perspectiveMat.rotate(angle, v);
 	}
 
 	public float getzNear() {

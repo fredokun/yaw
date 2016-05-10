@@ -15,7 +15,13 @@ public class SceneVertex {
 		mapMesh = new HashMap<Mesh, ArrayList<MyItem>>();
 		notInit = new ArrayList<Mesh>();
 	}
-
+	
+	public void removeItem(MyItem item){
+		ArrayList<MyItem> temp=mapMesh.get(item.getApparence());
+		temp.remove(item);
+		if(temp.isEmpty())
+			mapMesh.remove(item.getApparence());
+	}
 	public void cleanUp() {
 		for(Mesh m : mapMesh.keySet()){
 			m.cleanUp();

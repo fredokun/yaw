@@ -127,4 +127,8 @@ public class Mesh {
 		glBindVertexArray(0);
 		glDeleteVertexArrays(vaoId);
 	}
+	
+	public void setMaterial(Material material){
+		this.material=material;
+	}
 }

@@ -1,6 +1,7 @@
 package gameEngine;
 
 import static org.lwjgl.opengl.GL11.*;
+import gameEngine.camera.Camera;
 import gameEngine.light.SceneLight;
 
 import java.nio.file.Files;

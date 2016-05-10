@@ -1,5 +1,6 @@
 (ns yaw.world
-  (:import [gameEngine World][gameEngine MyItem][gameEngine.camera CameraGestion][gameEngine.light LightManagement][gameEngine Camera])
+  (:import [gameEngine World][gameEngine MyItem][gameEngine.camera CameraGestion]
+  [gameEngine.light LightManagement][gameEngine Camera][gameEngine.items ItemManagement])
   (:gen-class))
 
 
@@ -53,16 +54,31 @@
 
 (defn setPositionCamera [camera x y z]
       (.setPosition camera (new org.joml.Vector3f x y z)))
+
+(defn rotateCamera [camera degree x y z]
+      (.rotateCamera camera degree (new org.joml.Vector3f x y z)))
       
-;; Objects Manangement
+;; Objects Management
+(defn createBlock [world r g b xL yL zL scale]
+      (ItemManagement/createBlock world r g b xL yL zL scale))
 
-(defn createCube [world]
-      (.CreateCube world))
+(defn createHalfBlock [world r g b xL yL zL scale]
+      (ItemManagement/createHalfBlock world r g b xL yL zL scale))
 
+(defn createPyramid [world r g b xL yL zL scale]
+      (ItemManagement/createPyramid world r g b xL yL zL scale))
+      
+(defn removeItem [world item]
+      (ItemManagement/removeItem world item))
+      
 (defn translate [item x y z]
       (.translate item x y z))
 (defn rotate [item x y z]
       (.rotate item x y z))
+(defn setPosition [item x y z]
+      (.setPosition item x y z))
+(defn setColor [item r g b]
+      (.setColor item r g b))
 
 ;; Save Tools
 ;; Each object is converted to a Clojure vector to be saved. The vector

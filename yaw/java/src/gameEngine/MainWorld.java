@@ -1,11 +1,13 @@
 package gameEngine;
 
+import gameEngine.items.CubeItem;
+import gameEngine.items.GenericItem;
+import gameEngine.items.ItemManagement;
 import gameEngine.light.AmbiantLight;
 import gameEngine.light.PointLight;
 
 import org.joml.Vector3f;
 
-import basicMeshes.CubeItem;
 
 public class MainWorld {
 
@@ -17,9 +19,9 @@ public class MainWorld {
 		World world=new World();
 		world.init();
 		(new Thread(world)).start();
-		CubeItem c1 =world.CreateCube(1,0,1);
+		GenericItem c1 =ItemManagement.createBlock(world,1,0,0, 5, 5, 5, 1);
 		c1.translate(0, 0, 0);
-		world.sl.setPointLight(new PointLight(new Vector3f(00f,0f,1f), new Vector3f(), 1, 0, 1, 0), 0);
+		world.sl.setPointLight(new PointLight(new Vector3f(0f,0f,1f), new Vector3f(), 1, 0, 1, 0), 0);
 		world.sl.setAmbiant(new AmbiantLight(0.5f));
 		while(true){
 			Thread.sleep(50);

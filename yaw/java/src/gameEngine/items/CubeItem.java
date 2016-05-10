@@ -1,4 +1,4 @@
-package basicMeshes;
+package gameEngine.items;
 
 import static org.lwjgl.glfw.GLFW.*;
 import gameEngine.Input;

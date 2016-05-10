@@ -2,7 +2,6 @@ package gameEngine.camera;
 
 import org.joml.Vector3f;
 
-import gameEngine.Camera;
 import gameEngine.World;
 
 public class CameraGestion {
