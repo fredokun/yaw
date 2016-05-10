@@ -35,8 +35,4 @@ public class CameraManagement {
 	public static void setPositionCamera(Camera c,float x,float y,float z){
 		c.setPosition(new Vector3f(x,y,z));
 	}
-	
-	public static void setPositionCameraSec(Camera c,Vector3f v){
-		c.setPosition(v);
-	}
 }

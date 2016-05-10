@@ -3,16 +3,10 @@ package gameEngine;
 import java.util.ArrayList;
 
 import gameEngine.camera.Camera;
-import gameEngine.items.CubeItem;
-import gameEngine.light.AmbiantLight;
-import gameEngine.light.PointLight;
 import gameEngine.light.SceneLight;
 import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
-import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 import static org.lwjgl.opengl.GL11.*;
-import org.joml.Vector3f;
-import org.lwjgl.opengl.GL;
 
 
 public class World implements Runnable{
@@ -21,6 +15,7 @@ public class World implements Runnable{
 	Renderer renderer;
 	SceneVertex sc ;
 	SceneLight sl;
+	Callback callback;
 	
 	
 	public Camera getCamera(){
@@ -41,6 +36,9 @@ public class World implements Runnable{
 	public SceneLight getSceneLight(){
 		return sl;
 	}
+	public Callback getCallback(){
+		return callback;
+	}
 	
 	public void init() throws Exception{
 		this.listCamera=new ArrayList<Camera>();
@@ -48,6 +46,7 @@ public class World implements Runnable{
 		listCamera.add(c);
 		this.sc= new SceneVertex();
 		this.sl= new SceneLight();
+		this.callback=new Callback();
 	}
 	public void run(){
 		Window.init();
@@ -63,6 +62,7 @@ public class World implements Runnable{
 			glViewport(0, 0, 500,500);
 			while ( glfwWindowShouldClose(Window.window) == GLFW_FALSE ) {
 				c.update();
+				callback.update();
 				//Clean the window
 				boolean isResized = Window.clear();
 				synchronized(sc){

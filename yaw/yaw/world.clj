@@ -1,6 +1,6 @@
 (ns yaw.world
-  (:import [gameEngine World][gameEngine MyItem][gameEngine.camera CameraGestion]
-  [gameEngine.light LightManagement][gameEngine Camera][gameEngine.items ItemManagement])
+  (:import [gameEngine World][gameEngine MyItem][gameEngine.camera CameraManagement]
+  [gameEngine.light LightManagement][gameEngine.camera Camera][gameEngine.items ItemManagement])
   (:gen-class))
 
 
@@ -8,7 +8,6 @@
   []
   (let [world (.newInstance World)
         thread (future (.init world))]
-	(.init world)
 	(.start (Thread. world))
     (atom {:world world :thread thread})
     ))
@@ -35,28 +34,28 @@
 
 ;; Camera Management
 (defn addCamera [world]
-      (CameraGestion/addCamera world))
+      (CameraManagement/addCamera world))
       
 (defn setLiveCamera [world camera]
-      (CameraGestion/setLiveCamera world camera))
+      (CameraManagement/setLiveCamera world camera))
 
 (defn getCamera [world numero]
-      (CameraGestion/getCamera world numero))
+      (CameraManagement/getCamera world numero))
+
+(defn getListCamera [world]
+      (vec (.getListCamera world)))
 
 (defn getLiveCamera [world]
-      (CameraGestion/getLiveCamera world))
+      (CameraManagement/getLiveCamera world))
 
 (defn removeCameraNumber [world numero]
-      (CameraGestion/removeCamera world numero))
+      (CameraManagement/removeCamera world numero))
 
 (defn removeCamera [world camera]
-      (CameraGestion/removeCamera world camera))
+      (CameraManagement/removeCamera world camera))
 
 (defn setPositionCamera [camera x y z]
       (.setPosition camera (new org.joml.Vector3f x y z)))
-
-(defn rotateCamera [camera degree x y z]
-      (.rotateCamera camera degree (new org.joml.Vector3f x y z)))
       
 ;; Objects Management
 (defn createBlock [world r g b xL yL zL scale]
@@ -79,6 +78,10 @@
       (.setPosition item x y z))
 (defn setColor [item r g b]
       (.setColor item r g b))
+
+;;CallBack Management
+(defn registerCallback [world keyString function]
+      (.registerCallback (.getCallback world) keyString function))
 
 ;; Save Tools
 ;; Each object is converted to a Clojure vector to be saved. The vector

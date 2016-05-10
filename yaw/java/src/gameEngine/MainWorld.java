@@ -24,12 +24,10 @@ public class MainWorld {
 		System.out.println(c1.getTranslation());
 		world.sl.setPointLight(new PointLight(new Vector3f(0.5f,0f,0.5f), new Vector3f(), 1, 0, 0.5f, 0), 0);
 		world.sl.setAmbiant(new AmbiantLight(0.5f));
-//		while(true){
-//			Thread.sleep(50);
-//			Vector3f dest = new Vector3f(5,0,0);
-//			dest.add(world.c.getOrientation());
-//			world.c.setOrientation(dest);
-//		}
+		while(true){
+			Thread.sleep(500);
+			System.out.println(world.getListCamera().size());
+		}
 	}
 
 }

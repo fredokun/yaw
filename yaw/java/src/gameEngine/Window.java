@@ -36,7 +36,7 @@ public class Window {
 		height = 500;
 		resized = false;
 		
-		window =  glfwCreateWindow(500,500,"Lumiere", NULL,NULL);
+		window =  glfwCreateWindow(500,500,"Yet Another World", NULL,NULL);
 		
 		glfwSetKeyCallback(window, keyCallback = new Input());
 		

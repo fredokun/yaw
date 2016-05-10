@@ -111,6 +111,14 @@ public class Camera {
 		return orientation;
 	}
 	
+	public void rotate(float x, float y, float z){
+		orientation.add(x,y,z);
+	}
+	
+	public void translate(float x, float y, float z){
+		position.add(x,y,z);
+	}
+	
 	public void update(){
 		if(Input.isKeyDown(GLFW_KEY_W)){
 			//System.out.println("W");
