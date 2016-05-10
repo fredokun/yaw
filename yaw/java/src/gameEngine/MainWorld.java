@@ -19,14 +19,17 @@ public class MainWorld {
 		World world=new World();
 		world.init();
 		(new Thread(world)).start();
-		GenericItem c1 =ItemManagement.createBlock(world,1,0,0, 5, 5, 5, 1);
-		c1.translate(0, 0, 0);
-		world.sl.setPointLight(new PointLight(new Vector3f(0f,0f,1f), new Vector3f(), 1, 0, 1, 0), 0);
+		GenericItem c1 =ItemManagement.createBlock(world,1,0,1, 1, 1, 1, 1);
+		c1.translate(2, 0, -8);
+		System.out.println(c1.getTranslation());
+		world.sl.setPointLight(new PointLight(new Vector3f(0.5f,0f,0.5f), new Vector3f(), 1, 0, 0.5f, 0), 0);
 		world.sl.setAmbiant(new AmbiantLight(0.5f));
-		while(true){
-			Thread.sleep(50);
-			c1.repelBy(new Vector3f(0,0,-2), 0.2f);
-		}
+//		while(true){
+//			Thread.sleep(50);
+//			Vector3f dest = new Vector3f(5,0,0);
+//			dest.add(world.c.getOrientation());
+//			world.c.setOrientation(dest);
+//		}
 	}
 
 }

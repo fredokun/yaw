@@ -5,9 +5,7 @@ import static org.lwjgl.glfw.GLFW.*;
 import gameEngine.Input;
 import gameEngine.Window;
 
-import org.joml.AxisAngle4f;
 import org.joml.Matrix4f;
-import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 
@@ -22,18 +20,15 @@ public class Camera {
 	private  float zNear = 0.01f;
 	private  float zFar = 1000.f;
 	
-	float rot = 0.00f;
-	/* TODO
-	private float pitch;
-	private float yaw;
-	private float roll;
-*/
+	public Vector3f orientation;
+
 	public Camera(float fieldOfView,float zNear,float zFar){
 		this.perspectiveMat = new Matrix4f().perspective(fieldOfView, (float) Window.aspectRatio(), zNear, zFar);
 		this.fieldOfView = fieldOfView;
 		this.zFar= zFar;
 		this.zNear = zNear;
 		this.position = new Vector3f(0f,0f,0f);
+		this.orientation = new Vector3f();
 	}
 	
 	public Camera(float zNear,float zFar){
@@ -43,7 +38,7 @@ public class Camera {
 		this.zFar= zFar;
 		this.zNear = zNear;
 		this.position = new Vector3f(0f,0f,0f);
-
+		this.orientation = new Vector3f();
 	}
 	
 	public Camera(){
@@ -53,6 +48,7 @@ public class Camera {
 		this.zFar= 0.01f;
 		this.zNear = 1000.f;
 		this.position = new Vector3f(0f,0f,0f);
+		this.orientation = new Vector3f();
 	}
 	
 	public Camera(float fieldOfView,float zNear,float zFar, Vector3f position){
@@ -62,6 +58,7 @@ public class Camera {
 		this.zFar= zFar;
 		this.zNear = zNear;
 		this.position = position;
+		this.orientation = new Vector3f();
 	}
 	
 	public Camera(float fieldOfView,float zNear,float zFar, float px, float py, float pz){
@@ -71,6 +68,7 @@ public class Camera {
 		this.fieldOfView = fieldOfView;
 		this.zFar= zFar;
 		this.zNear = zNear;
+		this.orientation = new Vector3f();
 	}
 	
 	public Camera(float zNear,float zFar, Vector3f position){
@@ -80,6 +78,7 @@ public class Camera {
 		this.zFar= zFar;
 		this.zNear = zNear;
 		this.position = position;
+		this.orientation = new Vector3f();
 	}
 	
 	public Camera(Vector3f position){
@@ -89,14 +88,11 @@ public class Camera {
 		this.zFar= 0.01f;
 		this.zNear = 1000.f;
 		this.position = position;
+		this.orientation = new Vector3f();
 }
 	
 	public Matrix4f getCameraMat() {
 		return perspectiveMat;
-	}
-
-	public void setCameraMat(Matrix4f cameraMat) {
-		this.perspectiveMat = cameraMat;
 	}
 
 	public void setPosition(Vector3f pos){
@@ -107,22 +103,14 @@ public class Camera {
 		return position;
 	}
 
-	public float getRot() {
-		return rot;
+	public void setOrientation(Vector3f pos){
+		this.orientation = pos;
 	}
 
-//	public float getPitch() {
-//		return pitch;
-//	}
-//
-//	public float getYaw() {
-//		return yaw;
-//	}
-//
-//	public float getRoll() {
-//		return roll;
-//	}
-
+	public Vector3f getOrientation() {
+		return orientation;
+	}
+	
 	public void update(){
 		if(Input.isKeyDown(GLFW_KEY_W)){
 			//System.out.println("W");
@@ -147,7 +135,7 @@ public class Camera {
 		Matrix4f viewMatrix = new Matrix4f();
 		//TODO pitch yaw roll
 		Vector3f negativeCameraPos = new Vector3f(-position.x, -position.y, -position.z);
-		viewMatrix.translate(negativeCameraPos);
+		viewMatrix.translate(negativeCameraPos).rotateX((float) Math.toRadians(-orientation.x)).rotateY((float) Math.toRadians(-orientation.y)).rotateZ((float) Math.toRadians(-orientation.z));
 		return viewMatrix;
 
 	}
@@ -156,10 +144,6 @@ public class Camera {
 		perspectiveMat=new Matrix4f().perspective(fieldOfView,
 				(float) Window.aspectRatio(), zNear, zFar);
 		perspectiveMat = perspectiveMat.mul(setupViewMatrix());
-	}
-	
-	public void rotateCamera(float angle,Vector3f v){
-		perspectiveMat.rotate(angle, v);
 	}
 
 	public float getzNear() {
@@ -174,4 +158,3 @@ public class Camera {
 		return fieldOfView;
 	}
 }
-
