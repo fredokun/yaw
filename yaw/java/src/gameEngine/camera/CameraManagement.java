@@ -4,7 +4,7 @@ import org.joml.Vector3f;
 
 import gameEngine.World;
 
-public class CameraGestion {
+public class CameraManagement {
 
 	public static Camera addCamera(World world){
 		Camera c = new Camera();
