@@ -13,4 +13,4 @@ pom.xml.asc
 .nrepl-port
 .nrepl-history
 *~
-./yaw/java/bin/
+/yaw/java/bin/
