@@ -81,6 +81,6 @@ public class PyramidGenerator {
 					12,13,15,12,15,14
 			};
 			
-			return new Mesh(vertices, m,normales, indices);
+			return new Mesh(vertices, m,normales, indices, 5);
 	}
 }

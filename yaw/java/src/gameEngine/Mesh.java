@@ -26,7 +26,6 @@ import java.util.ArrayList;
 
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL;
 
 public class Mesh {
 	private int vaoId;
@@ -39,23 +38,42 @@ public class Mesh {
 	private FloatBuffer normBuffer;
 	private IntBuffer indicesBuffer;
 
+	private int weight;
+	
 	private Material material;
 	
+	public Mesh(float[] vertices, Material material,float[] normales, int[] indices, int weight) {
+		super();
+		this.material = material;
+		//Initialisation of VBO
+		//VBO of vertex
+		verticeBuffer = BufferUtils.createFloatBuffer(vertices.length);
+		verticeBuffer.put(vertices).flip();
+		//VBO of normals
+		normBuffer = BufferUtils.createFloatBuffer(normales.length);
+		normBuffer.put(normales).flip();			
+		//VBO of indices
+		indicesBuffer = BufferUtils.createIntBuffer(indices.length);
+		indicesBuffer.put(indices).flip();	
+		
+		this.weight = weight;
+	}
 	public Mesh(float[] vertices, Material material,float[] normales, int[] indices) {
 		super();
 		this.material = material;
 		//Initialisation of VBO
-			//VBO of vertex
-				verticeBuffer = BufferUtils.createFloatBuffer(vertices.length);
-				verticeBuffer.put(vertices).flip();
-			//VBO of normals
-				normBuffer = BufferUtils.createFloatBuffer(normales.length);
-				normBuffer.put(normales).flip();			
-			//VBO of indices
-				indicesBuffer = BufferUtils.createIntBuffer(indices.length);
-				indicesBuffer.put(indices).flip();		
+		//VBO of vertex
+		verticeBuffer = BufferUtils.createFloatBuffer(vertices.length);
+		verticeBuffer.put(vertices).flip();
+		//VBO of normals
+		normBuffer = BufferUtils.createFloatBuffer(normales.length);
+		normBuffer.put(normales).flip();			
+		//VBO of indices
+		indicesBuffer = BufferUtils.createIntBuffer(indices.length);
+		indicesBuffer.put(indices).flip();	
+		
+		this.weight = vertices.length;
 	}
-
 	public void init(){
 		vaoId = glGenVertexArrays();
 		glBindVertexArray(vaoId);
@@ -132,5 +150,9 @@ public class Mesh {
 	
 	public void setMaterial(Material material){
 		this.material=material;
+	}
+	
+	public int getWeight(){
+		return weight;
 	}
 }

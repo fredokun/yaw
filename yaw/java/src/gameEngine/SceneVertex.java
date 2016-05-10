@@ -3,7 +3,6 @@ package gameEngine;
 import gameEngine.items.MyItem;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 
 import org.joml.Matrix4f;
@@ -91,6 +90,19 @@ public class SceneVertex {
 		this.add(newItem);
 	}
 
+	public void add(float[] vertices, Material material , float[] normales, int[] indices, int weight){
+		Mesh newMesh = new Mesh(vertices,material, normales,indices, weight);
+		MyItem item = new MyItem(newMesh);
+		this.add(item);
+	}
+
+	public void add(float[] vertices, Material material, float[] normales, int[] indices, int weight,
+			float scale, Vector3f rotation, Vector3f position) {
+		Mesh newMesh = new Mesh(vertices,material,normales,indices,weight);
+		MyItem newItem = new MyItem(newMesh, scale, rotation, position);
+		this.add(newItem);
+	}
+	
 	public void add(Mesh apparence, float scale, Vector3f rotation,
 			Vector3f position) {
 		MyItem newItem = new MyItem(apparence, scale, rotation, position);

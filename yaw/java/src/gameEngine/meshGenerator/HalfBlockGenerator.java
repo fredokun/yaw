@@ -79,7 +79,7 @@ public class HalfBlockGenerator {
 					15,16,17
 			};
 			
-			return new Mesh(vertices, m,normales, indices);
+			return new Mesh(vertices, m,normales, indices, 6);
 	}
 	
 	public static Mesh generate(float xLength, float zLength,int angle, Material m){

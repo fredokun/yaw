@@ -91,6 +91,6 @@ public class BlockGenerator {
 					20,22,21,22,23,21
 			};
 			
-			return new Mesh(vertices, m,normales, indices);
+			return new Mesh(vertices, m,normales, indices, 8);
 	}
 }
