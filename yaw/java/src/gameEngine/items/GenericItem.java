@@ -11,7 +11,6 @@ import org.joml.Vector3f;
 import gameEngine.Input;
 import gameEngine.Material;
 import gameEngine.Mesh;
-import gameEngine.MyItem;
 
 public class GenericItem extends MyItem{
 

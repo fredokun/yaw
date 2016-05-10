@@ -4,7 +4,6 @@ import static org.lwjgl.glfw.GLFW.*;
 import gameEngine.Input;
 import gameEngine.Material;
 import gameEngine.Mesh;
-import gameEngine.MyItem;
 import gameEngine.meshGenerator.BlockGenerator;
 
 import org.joml.Quaternionf;
