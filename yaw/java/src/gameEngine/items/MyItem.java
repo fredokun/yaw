@@ -31,8 +31,6 @@ public class MyItem {
 		translation = new Vector3f();
 	}
 
-
-
 	public Mesh getApparence() {
 		return apparence;
 	}
@@ -57,6 +55,10 @@ public class MyItem {
 		return scale;
 	}
 
+	public void setScale(float val) {
+		scale=val;
+	}
+	
 	public void setRotation(Vector3f rotation) {
 		this.rotation = rotation;
 	}
@@ -77,7 +79,6 @@ public class MyItem {
 		trans.transform(pos);
 		pos.add(center.x, center.y,center.z,0);
 		translation = new Vector3f(pos.x,pos.y,pos.z);
-		rotation.add(degX,degY,degZ);
 	}
 
 	public void repelBy(Vector3f center, float dist){
