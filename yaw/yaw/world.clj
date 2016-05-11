@@ -89,7 +89,7 @@
 ;; contains in its first position the Class of the object, which is followed
 ;; by the arguments to be given to the constructor during loading.
 (defn meshToVector [mesh]
-	"If it is a custom Mesh, converts it into a savable vector. If it is a predefined Mesh, converts it to its Class."
+	"Converts Meshes into a savable vector. Predefined Meshes not yet supported."
 	(if (= (.getClass mesh) gameEngine.Mesh)
 		(let [material (.getMaterial mesh)
 					color (.getColor material)]
@@ -209,7 +209,7 @@
 		(if (= ednData '())
 				'()
 				(if (vector? (first ednData))
-					(conj (ednToObject (rest ednData)) (ednToObject (first ednData)))
+					(conj (ednToObject (rest ednData)) (into-array (first ednData)))
 					(conj (ednToObject (rest ednData)) (first ednData))
         )
     )
@@ -236,7 +236,46 @@
 				(loadEdnList (rest ednList)))
   ))
 
+(defn loadMesh [mesh]
+	"Loads a Mesh. Does not support subclasses of Mesh yet."
+	(let [loadedMesh (gameEngine.Mesh. (float-array (get mesh 1)) (get mesh 2) (get mesh 3) (get mesh 4) (get mesh 5) (float-array (get mesh 6)) (int-array (get mesh 7)) (get mesh 8))]
+		(println "Loaded object: " (.toString loadedMesh))
+		loadedMesh
+))
+
+(defn loadGenericItems [mesh items]
+	"Loads GenericItems, associating them with their Mesh."
+	(let [item (first items)]
+		(if (= (.size items) 1)
+			(println "Loaded object: " (.toString (gameEngine.items.GenericItem. mesh (get item 0) (get item 1) (get item 2) (get item 3) (get item 4) (get item 5) (get item 6))))
+			(do
+				(println "Loaded object: " (.toString (gameEngine.items.GenericItem. mesh (get item 0) (get item 1) (get item 2) (get item 3) (get item 4) (get item 5) (get item 6))))
+				(loadGenericItems mesh (rest items))))
+	))
+
+(defn loadMeshItems [meshItems]
+	"Loads items sharing one Mesh."
+	(let [mesh (loadMesh (first meshItems))]
+		(loadGenericItems mesh (rest meshItems))))
+  
+(defn loadMeshMap [meshMapVec]
+	"Loads all items of the given meshMap (as vector)."
+	(if (= (.length meshMapVec) 0)
+		nil
+		(if (= (.length meshMapVec) 1)
+			(loadMeshItems (first meshMapVec))
+			(do
+				(loadMeshItems (last meshMapVec))
+				(loadMeshMap (pop meshMapVec))))
+	))
+
 ;; Load Functions
+(defn loadItems [filename]
+	"Loads all MyItem objects from a file created with saveItems. Only for demonstration purposes."
+	(let [loadedItems (read-string (slurp filename))]
+		(loadMeshMap loadedItems)
+	))
+
 (defn loadCameras [filename]
 	"Loads all Camera objects from a file created with saveCameras. Only for demonstration purposes."
 	(let [loadedCameras (read-string (slurp filename))]

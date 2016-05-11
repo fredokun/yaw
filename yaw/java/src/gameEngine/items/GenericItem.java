@@ -17,6 +17,9 @@ public class GenericItem extends MyItem{
 	public GenericItem(Mesh apparence, float scale, Vector3f rotation, Vector3f position) {
 		super(apparence, scale, rotation, position);
 	}
+	public GenericItem(Mesh apparence, float scale, float rx, float ry, float rz, float px, float py, float pz) {
+		super(apparence, scale, new Vector3f(rx, ry, rz), new Vector3f(px, py, pz));
+	}
 	public void setColor(float r,float g,float b){
 		this.getAppearance().setMaterial(new Material( new Vector3f(r,g,b),0.f));
 	}
