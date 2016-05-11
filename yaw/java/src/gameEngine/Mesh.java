@@ -38,6 +38,10 @@ public class Mesh {
 	private FloatBuffer verticeBuffer;
 	private FloatBuffer normBuffer;
 	private IntBuffer indicesBuffer;
+	
+	private float[] vertices;
+	private float[] normales;
+	private int[] indices;
 
 	private int weight;
 	
@@ -45,6 +49,9 @@ public class Mesh {
 	
 	public Mesh(float[] vertices, float cx, float cy, float cz, float reflectance,float[] normales, int[] indices, int weight) {
 		super();
+		this.vertices = vertices;
+		this.normales = normales;
+		this.indices = indices;
 		this.material = new Material(new Vector3f(cx, cy, cz), reflectance);
 		//Initialisation of VBO
 		//VBO of vertex
@@ -62,6 +69,9 @@ public class Mesh {
 	
 	public Mesh(float[] vertices, Material material,float[] normales, int[] indices, int weight) {
 		super();
+		this.vertices = vertices;
+		this.normales = normales;
+		this.indices = indices;
 		this.material = material;
 		//Initialisation of VBO
 		//VBO of vertex
@@ -78,6 +88,9 @@ public class Mesh {
 	}
 	public Mesh(float[] vertices, Material material,float[] normales, int[] indices) {
 		super();
+		this.vertices = vertices;
+		this.normales = normales;
+		this.indices = indices;
 		this.material = material;
 		//Initialisation of VBO
 		//VBO of vertex
@@ -171,7 +184,7 @@ public class Mesh {
 	}
 	
 	public float[] getVertices() {
-		return verticeBuffer.array();
+		return vertices;
 	}
 	
 	public FloatBuffer getVerticeBuffer() {
@@ -183,11 +196,11 @@ public class Mesh {
 	}
 	
 	public float[] getNormales() {
-		return normBuffer.array();
+		return normales;
 	}
 	
 	public int[] getIndices() {
-		return indicesBuffer.array();
+		return indices;
 	}
 	
 	public int getWeight(){

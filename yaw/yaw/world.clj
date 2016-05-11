@@ -88,6 +88,50 @@
 ;; Each object is converted to a Clojure vector to be saved. The vector
 ;; contains in its first position the Class of the object, which is followed
 ;; by the arguments to be given to the constructor during loading.
+(defn meshToVector [mesh]
+	"If it is a custom Mesh, converts it into a savable vector. If it is a predefined Mesh, converts it to its Class."
+	(if (= (.getClass mesh) gameEngine.Mesh)
+		(let [material (.getMaterial mesh)
+					color (.getColor material)]
+					(vector (.getClass mesh) (vec (.getVertices mesh)) (.x color) (.y color) (.z color) (.getReflectance material) (vec (.getNormales mesh)) (vec (.getIndices mesh)) (.getWeight mesh)))
+		(vector (.getClass mesh))
+	))
+
+(defn myItemToVector [myItem]
+	"Converts a MyItem into a savable vector."
+	(let [rotation (.getRotation myItem)
+				translation (.getTranslation myItem)]
+	(vector (.getScale myItem) (.x rotation) (.y rotation) (.z rotation) (.x translation) (.y translation) (.z translation))))
+
+(defn createMyItemVector [itemListVec]
+	"Saves all MyItem in the given List (as vector) in EDN format."
+	(if (= (.length itemListVec) 1)
+		(vector (meshToVector (.getAppearance (first itemListVec))) (myItemToVector (first itemListVec)))
+		(conj (createMyItemVector (pop itemListVec)) (myItemToVector (last itemListVec)))
+	))
+
+(defn saveMeshMap [meshMapVec]
+	"Saves all items of the given meshMap (as vector) in EDN format."
+	(if (= (.length meshMapVec) 0)
+		(vector)
+		(if (= (.length meshMapVec) 1)
+			(vector (createMyItemVector (vec (.getValue (first meshMapVec)))))
+			(conj (saveMeshMap (pop meshMapVec)) (createMyItemVector (vec (.getValue (first meshMapVec))))))
+	))
+
+(defn cameraToVector [cam]
+	"Converts a Camera into a savable vector."
+  (let [position (.getPosition cam)]
+    (vector (.getClass cam) (.getFieldOfView cam) (.getzNear cam) (.getzFar cam) (.x position) (.y position) (.z position))
+  ))
+  
+(defn createCameraVector [cameraListVec]
+	"Creates a vector containing all Cameras, converted into savable vectors."
+  (if (= (.length cameraListVec) 1)
+    (vector (cameraToVector (first cameraListVec)))
+    (conj (createCameraVector (pop cameraListVec)) (cameraToVector (last cameraListVec)))
+  ))
+
 (defn pointLightToVector [pl]
 	"Converts a PointLight into a savable vector."
 	(let [color (.getColor pl)
@@ -117,20 +161,15 @@
 		(conj (createSpotLightVector (pop spotLightArrVec)) (spotLightToVector (last spotLightArrVec)))
 	))
 
-(defn cameraToVector [cam]
-	"Converts a Camera into a savable vector."
-  (let [position (.getPosition cam)]
-    (vector (.getClass cam) (.getFieldOfView cam) (.getzNear cam) (.getzFar cam) (.x position) (.y position) (.z position))
-  ))
-  
-(defn createCameraVector [cameraListVec]
-	"Creates a vector containing all Cameras, converted into savable vectors."
-  (if (= (.length cameraListVec) 1)
-    (vector (cameraToVector (first cameraListVec)))
-    (conj (createCameraVector (pop cameraListVec)) (cameraToVector (last cameraListVec)))
-  ))
+;; Save Functions
+(defn saveItems [filename world]
+	"Saves all items of the given world in EDN format."
+	(let [sceneVertex (.getSceneVertex world)
+				meshMapVec (vec (.getMapMesh sceneVertex))
+				vectorToSave (saveMeshMap meshMapVec)]
+				(spit filename (with-out-str (pr vectorToSave)))
+		))
 
-;; Save
 (defn saveCameras [filename world]
 	"Saves all cameras of the given world in EDN format."
 	(let
@@ -174,8 +213,7 @@
 					(conj (ednToObject (rest ednData)) (first ednData))
         )
     )
-  ))
-						
+  ))				
 		
 (defn loadEdnVect [ednVect]
 	"Loads all objects from all vectors contained in the provided vector. Only for demonstration purposes."
@@ -198,7 +236,7 @@
 				(loadEdnList (rest ednList)))
   ))
 
-;; Load
+;; Load Functions
 (defn loadCameras [filename]
 	"Loads all Camera objects from a file created with saveCameras. Only for demonstration purposes."
 	(let [loadedCameras (read-string (slurp filename))]
@@ -215,33 +253,3 @@
 		(println "SpotLights: ")
 		(loadEdnList (lazy-seq (get loadedLights 3)))
 	))
-
-;; Save items (development in progress)
-(defn myItemToVector [myItem]
-	(let [rotation (.getRotation myItem)
-				translation (.getTranslation myItem)]
-	(vector (.getScale myItem) (.x rotation) (.y rotation) (.z rotation) (.x translation) (.y translation) (.z translation))))
-
-(defn createMyItemVector [itemListVec]
-	"Saves all MyItem in the given List (as vector) in EDN format."
-	(if (= (.length itemListVec) 1)
-		(vector (myItemToVector (first itemListVec)))
-		(conj (createMyItemVector (pop itemListVec)) (myItemToVector (last itemListVec)))
-	))
-
-(defn saveMeshMap [meshMapVec]
-	"Saves all items of the given meshMap (as vector) in EDN format."
-	(if (= (.length meshMapVec) 0)
-		(vector)
-		(if (= (.length meshMapVec) 1)
-			(vector (createMyItemVector (vec (.getValue (first meshMapVec)))))
-			(conj (saveMeshMap (pop meshMapVec)) (createMyItemVector (vec (.getValue (first meshMapVec))))))
-	))
-
-(defn saveItems [filename world]
-	"Saves all items of the given world in EDN format."
-	(let [sceneVertex (.getSceneVertex world)
-				meshMapVec (vec (.getMapMesh sceneVertex))
-				vectorToSave (saveMeshMap meshMapVec)]
-				(spit filename (with-out-str (pr vectorToSave)))
-		))
