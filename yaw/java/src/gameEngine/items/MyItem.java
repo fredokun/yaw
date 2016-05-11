@@ -7,7 +7,7 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 public class MyItem {
-	private Mesh apparence;
+	private Mesh appearance;
 	
 	private float scale;
 	private Vector3f rotation;
@@ -16,7 +16,7 @@ public class MyItem {
 	public MyItem(Mesh apparence, float scale, Vector3f rotation,
 			Vector3f position) {
 		super();
-		this.apparence=apparence;
+		this.appearance=apparence;
 		this.scale = scale;
 		this.rotation = rotation;
 		this.translation = position;
@@ -25,14 +25,14 @@ public class MyItem {
 	
 	
 	public MyItem(Mesh m) {
-		this.apparence=m;
+		this.appearance=m;
 		scale = 1f;
 		rotation = new Vector3f();
 		translation = new Vector3f();
 	}
 
-	public Mesh getApparence() {
-		return apparence;
+	public Mesh getAppearance() {
+		return appearance;
 	}
 
 

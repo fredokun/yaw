@@ -18,7 +18,7 @@ public class GenericItem extends MyItem{
 		super(apparence, scale, rotation, position);
 	}
 	public void setColor(float r,float g,float b){
-		this.getApparence().setMaterial(new Material( new Vector3f(r,g,b),0.f));
+		this.getAppearance().setMaterial(new Material( new Vector3f(r,g,b),0.f));
 	}
 	public void translate(float x,float y,float z){
 		this.setTranslation(getTranslation().add(x, y, z)); 

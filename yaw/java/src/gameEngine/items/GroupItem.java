@@ -20,7 +20,7 @@ public class GroupItem {
 		weight =0;
 		double x=0,y=0,z=0;
 		for(MyItem i : objs){
-			int w = i.getApparence().getWeight();
+			int w = i.getAppearance().getWeight();
 			x+= i.getTranslation().x*w;
 			y+= i.getTranslation().y*w;
 			z+= i.getTranslation().z*w;
@@ -35,7 +35,7 @@ public class GroupItem {
 	public void updateCenter(){
 		double x=0,y=0,z=0;
 		for(MyItem i : items){
-			int w = i.getApparence().getWeight();
+			int w = i.getAppearance().getWeight();
 			x+= i.getTranslation().x*w;
 			y+= i.getTranslation().y*w;
 			z+= i.getTranslation().z*w;
@@ -47,8 +47,8 @@ public class GroupItem {
 	}
 	
 	public void add(MyItem i){
-		int nWeight = weight + i.getApparence().getWeight();
-		double ratioGr = weight / (double)nWeight, ratioI = i.getApparence().getWeight()/(double)nWeight;
+		int nWeight = weight + i.getAppearance().getWeight();
+		double ratioGr = weight / (double)nWeight, ratioI = i.getAppearance().getWeight()/(double)nWeight;
 		weight = nWeight;
 		Vector3f newCenter = new Vector3f((float)((center.x*ratioGr) + (i.getTranslation().x*ratioI)), (float)((center.y*ratioGr) + (i.getTranslation().y*ratioI)),(float)((center.z*ratioGr) + (i.getTranslation().z*ratioI)));
 		center = newCenter;

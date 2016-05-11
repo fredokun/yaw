@@ -24,6 +24,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 
+import org.joml.Vector3f;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 
@@ -41,6 +42,23 @@ public class Mesh {
 	private int weight;
 	
 	private Material material;
+	
+	public Mesh(float[] vertices, float cx, float cy, float cz, float reflectance,float[] normales, int[] indices, int weight) {
+		super();
+		this.material = new Material(new Vector3f(cx, cy, cz), reflectance);
+		//Initialisation of VBO
+		//VBO of vertex
+		verticeBuffer = BufferUtils.createFloatBuffer(vertices.length);
+		verticeBuffer.put(vertices).flip();
+		//VBO of normals
+		normBuffer = BufferUtils.createFloatBuffer(normales.length);
+		normBuffer.put(normales).flip();			
+		//VBO of indices
+		indicesBuffer = BufferUtils.createIntBuffer(indices.length);
+		indicesBuffer.put(indices).flip();	
+		
+		this.weight = weight;
+	}
 	
 	public Mesh(float[] vertices, Material material,float[] normales, int[] indices, int weight) {
 		super();
@@ -150,6 +168,26 @@ public class Mesh {
 	
 	public void setMaterial(Material material){
 		this.material=material;
+	}
+	
+	public float[] getVertices() {
+		return verticeBuffer.array();
+	}
+	
+	public FloatBuffer getVerticeBuffer() {
+		return verticeBuffer;
+	}
+	
+	public Material getMaterial() {
+		return material;
+	}
+	
+	public float[] getNormales() {
+		return normBuffer.array();
+	}
+	
+	public int[] getIndices() {
+		return indicesBuffer.array();
 	}
 	
 	public int getWeight(){

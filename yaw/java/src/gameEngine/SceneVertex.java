@@ -19,10 +19,10 @@ public class SceneVertex {
 	}
 
 	public void removeItem(MyItem item){
-		ArrayList<MyItem> temp=mapMesh.get(item.getApparence());
+		ArrayList<MyItem> temp=mapMesh.get(item.getAppearance());
 		temp.remove(item);
 		if(temp.isEmpty())
-			mapMesh.remove(item.getApparence());
+			mapMesh.remove(item.getAppearance());
 	}
 
 	public ArrayList<MyItem> getListItems(){
@@ -65,13 +65,13 @@ public class SceneVertex {
 	public void add(MyItem item){
 		synchronized(this){
 			itemAdded=true;
-			if(mapMesh.keySet().contains(item.getApparence()))
-				mapMesh.get(item.getApparence()).add(item);
+			if(mapMesh.keySet().contains(item.getAppearance()))
+				mapMesh.get(item.getAppearance()).add(item);
 			else{
 				ArrayList<MyItem> l = new ArrayList<MyItem>();
 				l.add(item);
-				mapMesh.put(item.getApparence(),l);
-				notInit.add(item.getApparence());
+				mapMesh.put(item.getAppearance(),l);
+				notInit.add(item.getAppearance());
 			}
 		}
 	}
