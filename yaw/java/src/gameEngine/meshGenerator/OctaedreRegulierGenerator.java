@@ -13,7 +13,7 @@ public class OctaedreRegulierGenerator {
 				//RTF
 				0.5f, 0f, 0f,
 				0f, 0.5f, 0f,
-				0f, 0f, 0.5f
+				0f, 0f, 0.5f,
 				//LBF
 				-0.5f, 0f, 0f,
 				0f, -0.5f, 0f,
@@ -21,7 +21,7 @@ public class OctaedreRegulierGenerator {
 				//RBF
 				0.5f, 0f, 0f,
 				0f, -0.5f, 0f,
-				0f, 0f, 0.5f
+				0f, 0f, 0.5f,
 				//LTB
 				-0.5f, 0f, 0f,
 				0f, 0.5f, 0f,
@@ -29,7 +29,7 @@ public class OctaedreRegulierGenerator {
 				//RTB
 				0.5f, 0f, 0f,
 				0f, 0.5f, 0f,
-				0f, 0f, -0.5f
+				0f, 0f, -0.5f,
 				//LBB
 				-0.5f, 0f, 0f,
 				0f, -0.5f, 0f,
