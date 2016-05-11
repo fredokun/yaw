@@ -35,10 +35,6 @@ public class Mesh {
 	private int vboNorm;
 	private int vboIndices;
 	
-	private FloatBuffer verticeBuffer;
-	private FloatBuffer normBuffer;
-	private IntBuffer indicesBuffer;
-	
 	private float[] vertices;
 	private float[] normales;
 	private int[] indices;
@@ -52,18 +48,7 @@ public class Mesh {
 		this.vertices = vertices;
 		this.normales = normales;
 		this.indices = indices;
-		this.material = new Material(new Vector3f(cx, cy, cz), reflectance);
-		//Initialisation of VBO
-		//VBO of vertex
-		verticeBuffer = BufferUtils.createFloatBuffer(vertices.length);
-		verticeBuffer.put(vertices).flip();
-		//VBO of normals
-		normBuffer = BufferUtils.createFloatBuffer(normales.length);
-		normBuffer.put(normales).flip();			
-		//VBO of indices
-		indicesBuffer = BufferUtils.createIntBuffer(indices.length);
-		indicesBuffer.put(indices).flip();	
-		
+		this.material = new Material(new Vector3f(cx, cy, cz), reflectance);		
 		this.weight = weight;
 	}
 	
@@ -73,17 +58,6 @@ public class Mesh {
 		this.normales = normales;
 		this.indices = indices;
 		this.material = material;
-		//Initialisation of VBO
-		//VBO of vertex
-		verticeBuffer = BufferUtils.createFloatBuffer(vertices.length);
-		verticeBuffer.put(vertices).flip();
-		//VBO of normals
-		normBuffer = BufferUtils.createFloatBuffer(normales.length);
-		normBuffer.put(normales).flip();			
-		//VBO of indices
-		indicesBuffer = BufferUtils.createIntBuffer(indices.length);
-		indicesBuffer.put(indices).flip();	
-		
 		this.weight = weight;
 	}
 	public Mesh(float[] vertices, Material material,float[] normales, int[] indices) {
@@ -92,36 +66,40 @@ public class Mesh {
 		this.normales = normales;
 		this.indices = indices;
 		this.material = material;
-		//Initialisation of VBO
-		//VBO of vertex
-		verticeBuffer = BufferUtils.createFloatBuffer(vertices.length);
-		verticeBuffer.put(vertices).flip();
-		//VBO of normals
-		normBuffer = BufferUtils.createFloatBuffer(normales.length);
-		normBuffer.put(normales).flip();			
-		//VBO of indices
-		indicesBuffer = BufferUtils.createIntBuffer(indices.length);
-		indicesBuffer.put(indices).flip();	
+		
+					
+			
 		
 		this.weight = vertices.length;
 	}
 	public void init(){
 		vaoId = glGenVertexArrays();
 		glBindVertexArray(vaoId);
+		
+		//Initialisation of VBO
+		//VBO of vertex
+		FloatBuffer verticeBuffer = BufferUtils.createFloatBuffer(vertices.length);
+		verticeBuffer.put(vertices).flip();
 		vboVertex = glGenBuffers();
 		glBindBuffer(GL_ARRAY_BUFFER, vboVertex);
 		glBufferData(GL_ARRAY_BUFFER, verticeBuffer, GL_STATIC_DRAW);
 
 		//We explain to OpenGL how to read our Buffers.
 		glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
-		
+
+		//VBO of normals
+		FloatBuffer normBuffer = BufferUtils.createFloatBuffer(normales.length);
+		normBuffer.put(normales).flip();
 		vboNorm = glGenBuffers();
 		glBindBuffer(GL_ARRAY_BUFFER, vboNorm);
 		glBufferData(GL_ARRAY_BUFFER, normBuffer, GL_STATIC_DRAW);
-		
+
 		//We explain to OpenGL how to read our Buffers.
 		glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, 0);
-		
+
+		//VBO of indices
+		IntBuffer indicesBuffer = BufferUtils.createIntBuffer(indices.length);
+		indicesBuffer.put(indices).flip();
 		vboIndices = glGenBuffers();
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIndices);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
@@ -138,7 +116,7 @@ public class Mesh {
 		sh.setUniform("material", material);
 		sh.setUniform("modelViewMatrix", item.getWorldMatrix());
 		// Draw the vertices
-		glDrawElements(GL_TRIANGLES, indicesBuffer.limit(),GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, indices.length,GL_UNSIGNED_INT, 0);
 
 		// Restore state
 		glDisableVertexAttribArray(0);
@@ -156,7 +134,7 @@ public class Mesh {
 			Matrix4f modelViewMat = new Matrix4f(viewMatrix).mul( i.getWorldMatrix());
 			sh.setUniform("modelViewMatrix", modelViewMat);
 			// Draw the vertices
-			glDrawElements(GL_TRIANGLES, indicesBuffer.limit(),GL_UNSIGNED_INT, 0);
+			glDrawElements(GL_TRIANGLES, indices.length,GL_UNSIGNED_INT, 0);
 		}
 		// Restore state
 		glDisableVertexAttribArray(0);
@@ -186,11 +164,7 @@ public class Mesh {
 	public float[] getVertices() {
 		return vertices;
 	}
-	
-	public FloatBuffer getVerticeBuffer() {
-		return verticeBuffer;
-	}
-	
+
 	public Material getMaterial() {
 		return material;
 	}

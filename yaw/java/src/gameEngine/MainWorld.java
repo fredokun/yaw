@@ -14,7 +14,7 @@ public class MainWorld {
 		World world=new World();
 		world.init();
 		(new Thread(world)).start();
-		GenericItem c1 =ItemManagement.createBlock(world,1,0,1, 1, 1, 1, 1);
+		GenericItem c1 =ItemManagement.createOctaedreReg(world, 1, 1, 1, 1);
 		c1.translate(2, 0, -8);
 		world.sl.setPointLight(new PointLight(new Vector3f(0.5f,0f,0.5f), new Vector3f(), 1, 0, 0.5f, 0), 0);
 		world.sl.setAmbiant(new AmbiantLight(0.5f));
