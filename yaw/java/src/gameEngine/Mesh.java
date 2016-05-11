@@ -18,13 +18,15 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
+import gameEngine.items.MyItem;
+
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 
+import org.joml.Vector3f;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL;
 
 public class Mesh {
 	private int vaoId;
@@ -36,24 +38,73 @@ public class Mesh {
 	private FloatBuffer verticeBuffer;
 	private FloatBuffer normBuffer;
 	private IntBuffer indicesBuffer;
+	
+	private float[] vertices;
+	private float[] normales;
+	private int[] indices;
 
+	private int weight;
+	
 	private Material material;
 	
-	public Mesh(float[] vertices, Material material,float[] normales, int[] indices) {
+	public Mesh(float[] vertices, float cx, float cy, float cz, float reflectance,float[] normales, int[] indices, int weight) {
 		super();
+		this.vertices = vertices;
+		this.normales = normales;
+		this.indices = indices;
+		this.material = new Material(new Vector3f(cx, cy, cz), reflectance);
+		//Initialisation of VBO
+		//VBO of vertex
+		verticeBuffer = BufferUtils.createFloatBuffer(vertices.length);
+		verticeBuffer.put(vertices).flip();
+		//VBO of normals
+		normBuffer = BufferUtils.createFloatBuffer(normales.length);
+		normBuffer.put(normales).flip();			
+		//VBO of indices
+		indicesBuffer = BufferUtils.createIntBuffer(indices.length);
+		indicesBuffer.put(indices).flip();	
+		
+		this.weight = weight;
+	}
+	
+	public Mesh(float[] vertices, Material material,float[] normales, int[] indices, int weight) {
+		super();
+		this.vertices = vertices;
+		this.normales = normales;
+		this.indices = indices;
 		this.material = material;
 		//Initialisation of VBO
-			//VBO of vertex
-				verticeBuffer = BufferUtils.createFloatBuffer(vertices.length);
-				verticeBuffer.put(vertices).flip();
-			//VBO of normals
-				normBuffer = BufferUtils.createFloatBuffer(normales.length);
-				normBuffer.put(normales).flip();			
-			//VBO of indices
-				indicesBuffer = BufferUtils.createIntBuffer(indices.length);
-				indicesBuffer.put(indices).flip();		
+		//VBO of vertex
+		verticeBuffer = BufferUtils.createFloatBuffer(vertices.length);
+		verticeBuffer.put(vertices).flip();
+		//VBO of normals
+		normBuffer = BufferUtils.createFloatBuffer(normales.length);
+		normBuffer.put(normales).flip();			
+		//VBO of indices
+		indicesBuffer = BufferUtils.createIntBuffer(indices.length);
+		indicesBuffer.put(indices).flip();	
+		
+		this.weight = weight;
 	}
-
+	public Mesh(float[] vertices, Material material,float[] normales, int[] indices) {
+		super();
+		this.vertices = vertices;
+		this.normales = normales;
+		this.indices = indices;
+		this.material = material;
+		//Initialisation of VBO
+		//VBO of vertex
+		verticeBuffer = BufferUtils.createFloatBuffer(vertices.length);
+		verticeBuffer.put(vertices).flip();
+		//VBO of normals
+		normBuffer = BufferUtils.createFloatBuffer(normales.length);
+		normBuffer.put(normales).flip();			
+		//VBO of indices
+		indicesBuffer = BufferUtils.createIntBuffer(indices.length);
+		indicesBuffer.put(indices).flip();	
+		
+		this.weight = vertices.length;
+	}
 	public void init(){
 		vaoId = glGenVertexArrays();
 		glBindVertexArray(vaoId);
@@ -126,5 +177,33 @@ public class Mesh {
 		// Delete the VAO
 		glBindVertexArray(0);
 		glDeleteVertexArrays(vaoId);
+	}
+	
+	public void setMaterial(Material material){
+		this.material=material;
+	}
+	
+	public float[] getVertices() {
+		return vertices;
+	}
+	
+	public FloatBuffer getVerticeBuffer() {
+		return verticeBuffer;
+	}
+	
+	public Material getMaterial() {
+		return material;
+	}
+	
+	public float[] getNormales() {
+		return normales;
+	}
+	
+	public int[] getIndices() {
+		return indices;
+	}
+	
+	public int getWeight(){
+		return weight;
 	}
 }

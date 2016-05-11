@@ -126,6 +126,5 @@ void main()
             totalLight += calcSpotLight(spotLights[i], vPos, vNorm);
         }
     }
-    
-    fragColor = baseColour * totalLight;
+    fragColor = vec4((baseColour * totalLight).xyz,1);
 }

@@ -36,7 +36,7 @@ public class Window {
 		height = 500;
 		resized = false;
 		
-		window =  glfwCreateWindow(500,500,"Lumiere", NULL,NULL);
+		window =  glfwCreateWindow(500,500,"Yet Another World", NULL,NULL);
 		
 		glfwSetKeyCallback(window, keyCallback = new Input());
 		
@@ -53,9 +53,6 @@ public class Window {
 		glfwMakeContextCurrent(window);
 		
 		caps = GL.createCapabilities();
-		
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
 		
 		glfwSwapInterval(1);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);

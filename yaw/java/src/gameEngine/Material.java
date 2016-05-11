@@ -26,4 +26,12 @@ public class Material {
     	this.color = new Vector3f(1.f,1.f,1.f);
     	this.reflectance= 0;
     }
+    
+    public Vector3f getColor() {
+    	return color;
+    }
+    
+    public float getReflectance() {
+    	return reflectance;
+    }
 }

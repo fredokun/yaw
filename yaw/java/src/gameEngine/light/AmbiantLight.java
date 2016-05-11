@@ -14,6 +14,12 @@ public class AmbiantLight {
 		this.shaderValue= new Vector3f(color.x*intensity,color.y *intensity,color.z*intensity);
 	}
 	
+	public AmbiantLight(float cx, float cy, float cz, float intensity){
+		this.color = new Vector3f(cx, cy, cz);
+		this.intensity = intensity;
+		this.shaderValue= new Vector3f(color.x*intensity,color.y *intensity,color.z*intensity);
+	}
+	
 	public AmbiantLight(){
 		this.color = new Vector3f(1f,1f,1f);
 		this.intensity=1f;
