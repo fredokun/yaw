@@ -86,8 +86,10 @@
 
 ;; Save Tools
 ;; Each object is converted to a Clojure vector to be saved. The vector
-;; contains in its first position the Class of the object, which is followed
-;; by the arguments to be given to the constructor during loading.
+;; contains generally in its first position the Class of the object, which is 
+;; followed by the arguments to be given to the constructor during loading.
+
+;; Save Tools for Items
 (defn meshToVector [mesh]
 	"Converts Meshes into a savable vector. Predefined Meshes not yet supported."
 	(if (= (.getClass mesh) gameEngine.Mesh)
@@ -119,6 +121,7 @@
 			(conj (saveMeshMap (pop meshMapVec)) (createMyItemVector (vec (.getValue (first meshMapVec))))))
 	))
 
+;; Save Tools for Cameras
 (defn cameraToVector [cam]
 	"Converts a Camera into a savable vector."
   (let [position (.getPosition cam)]
@@ -132,6 +135,7 @@
     (conj (createCameraVector (pop cameraListVec)) (cameraToVector (last cameraListVec)))
   ))
 
+;; Save Tools for Lights
 (defn pointLightToVector [pl]
 	"Converts a PointLight into a savable vector."
 	(let [color (.getColor pl)
@@ -162,23 +166,20 @@
 	))
 
 ;; Save Functions
-(defn saveItems [filename world]
-	"Saves all items of the given world in EDN format."
+(defn saveItems [world]
+	"Returns a vector containing all items of the given world in EDN format."
 	(let [sceneVertex (.getSceneVertex world)
-				meshMapVec (vec (.getMapMesh sceneVertex))
-				vectorToSave (saveMeshMap meshMapVec)]
-				(spit filename (with-out-str (pr vectorToSave)))
+				meshMapVec (vec (.getMapMesh sceneVertex))]
+				(saveMeshMap meshMapVec)
 		))
 
-(defn saveCameras [filename world]
-	"Saves all cameras of the given world in EDN format."
-	(let
-		[cameraVector (createCameraVector (vec (.getListCamera world)))]
-		(spit filename (with-out-str (pr cameraVector)))
-	))
+(defn saveCameras [world]
+	"Returns a vector containing all cameras of the given world in EDN format."
+	(createCameraVector (vec (.getListCamera world)))
+	)
 
-(defn saveLights [filename world]
-	"Saves all lights of the given world in EDN format."
+(defn saveLights [world]
+	"Returns a vector containing all lights of the given world in EDN format."
 	(let [sceneLight (.getSceneLight world)
 				ambiantLight (.getAmbiantLight sceneLight)
 				aColor (.getColor ambiantLight)
@@ -194,8 +195,15 @@
 			 	;; Representation of spotLights as a Clojure vector
 			 	spotLightVector (createSpotLightVector (vec (.getSpotTable sceneLight)))
 		 	]
-		;; Save to file
-		(spit filename (with-out-str (pr (vector ambiantVector sunVector pointLightVector spotLightVector))))
+		(vector ambiantVector sunVector pointLightVector spotLightVector)
+	))
+	
+(defn saveFile [filename world]
+	"Saves all items, cameras and lights of the given world into a file, in EDN format."
+	(let [itemsVector (saveItems world)
+				camerasVector (saveCameras world)
+				lightsVector (saveLights world)]
+		(spit filename (with-out-str (pr (vector itemsVector camerasVector lightsVector))))
 	))
 
 ;; Load Tools
@@ -204,7 +212,6 @@
 	(if (vector? ednData)
     (let [c (resolve (first ednData))
     					a (ednToObject (rest (lazy-seq ednData)))]
-    		(println "Creating object of class: " c " with args: " a)
         (clojure.lang.Reflector/invokeConstructor c (into-array a)))
 		(if (= ednData '())
 				'()
@@ -213,82 +220,96 @@
 					(conj (ednToObject (rest ednData)) (first ednData))
         )
     )
-  ))				
-		
-(defn loadEdnVect [ednVect]
-	"Loads all objects from all vectors contained in the provided vector. Only for demonstration purposes."
-	(if (= (.length ednVect) 0)
-			nil
-			(if (= (.length ednVect) 1)
-				(println "Loaded object: " (.toString (ednToObject (first ednVect))))
-				(do
-					(println "Loaded object: " (.toString (ednToObject (last ednVect))))
-					(loadEdnVect (pop ednVect)))
-      )
-  ))
-  
-(defn loadEdnList [ednList]
-	"Loads all objects from all vectors contained in the provided list. Only for demonstration purposes."
-	(if (= ednList '())
-			nil
-			(do
-				(println "Loaded object: " (.toString (ednToObject (first ednList))))
-				(loadEdnList (rest ednList)))
   ))
 
+;; Load Tools for Items
 (defn loadMesh [mesh]
 	"Loads a Mesh. Does not support subclasses of Mesh yet."
 	(let [loadedMesh (gameEngine.Mesh. (float-array (get mesh 1)) (get mesh 2) (get mesh 3) (get mesh 4) (get mesh 5) (float-array (get mesh 6)) (int-array (get mesh 7)) (get mesh 8))]
-		(println "Loaded object: " (.toString loadedMesh))
 		loadedMesh
 ))
 
-(defn loadGenericItems [mesh items]
-	"Loads GenericItems, associating them with their Mesh."
-	(let [item (first items)]
+(defn loadGenericItems [mesh items world]
+	"Loads GenericItems, associating them with their Mesh, and adds them to the sceneVertex."
+	(let [item (first items)
+				sceneVertex (.getSceneVertex world)]
 		(if (= (.size items) 1)
-			(println "Loaded object: " (.toString (gameEngine.items.GenericItem. mesh (get item 0) (get item 1) (get item 2) (get item 3) (get item 4) (get item 5) (get item 6))))
+			 (.add sceneVertex (gameEngine.items.GenericItem. mesh (get item 0) (get item 1) (get item 2) (get item 3) (get item 4) (get item 5) (get item 6)))
 			(do
-				(println "Loaded object: " (.toString (gameEngine.items.GenericItem. mesh (get item 0) (get item 1) (get item 2) (get item 3) (get item 4) (get item 5) (get item 6))))
-				(loadGenericItems mesh (rest items))))
+				(.add sceneVertex (gameEngine.items.GenericItem. mesh (get item 0) (get item 1) (get item 2) (get item 3) (get item 4) (get item 5) (get item 6)))
+				(loadGenericItems mesh (rest items) world)))
 	))
 
-(defn loadMeshItems [meshItems]
+(defn loadMeshItems [meshItems world]
 	"Loads items sharing one Mesh."
 	(let [mesh (loadMesh (first meshItems))]
-		(loadGenericItems mesh (rest meshItems))))
+		(loadGenericItems mesh (rest meshItems) world)))
   
-(defn loadMeshMap [meshMapVec]
+(defn loadMeshMap [meshMapVec world]
 	"Loads all items of the given meshMap (as vector)."
 	(if (= (.length meshMapVec) 0)
 		nil
 		(if (= (.length meshMapVec) 1)
-			(loadMeshItems (first meshMapVec))
+			(loadMeshItems (first meshMapVec) world)
 			(do
-				(loadMeshItems (last meshMapVec))
-				(loadMeshMap (pop meshMapVec))))
+				(loadMeshItems (last meshMapVec) world)
+				(loadMeshMap (pop meshMapVec) world)))
 	))
+
+;; Load Tools for Cameras
+(defn addCameras [cameraList world index]
+	"Adds all cameras contained in the provided list to the World."
+	(if (= cameraList '())
+			nil
+			(do
+				(.setCamera world index (ednToObject (first cameraList)))
+				(addCameras (rest cameraList) world (+ index 1)))
+  ))
+
+;; Load Tools for Lights
+(defn addPointLights [pointLights sceneLight index]
+	"Adds all pointLights contained in the provided list to the SceneLight."
+	(if (= pointLights '())
+			nil
+			(do
+				(.setPointTable sceneLight (ednToObject (first pointLights)) index)
+				(addPointLights (rest pointLights) sceneLight (+ index 1)))
+  ))
+  
+(defn addSpotLights [spotLights sceneLight index]
+	"Adds all spotLights contained in the provided list to the SceneLight."
+	(if (= spotLights '())
+			nil
+			(do
+				(.setSpotTable sceneLight (ednToObject (first spotLights)) index)
+				(addSpotLights (rest spotLights) sceneLight (+ index 1)))
+  ))
 
 ;; Load Functions
-(defn loadItems [filename]
-	"Loads all MyItem objects from a file created with saveItems. Only for demonstration purposes."
-	(let [loadedItems (read-string (slurp filename))]
-		(loadMeshMap loadedItems)
-	))
+(defn loadItems [loadedItems world]
+	"Loads all MyItem objects from an EDN vector created with saveItems."
+	(loadMeshMap loadedItems world)
+	)
 
-(defn loadCameras [filename]
-	"Loads all Camera objects from a file created with saveCameras. Only for demonstration purposes."
-	(let [loadedCameras (read-string (slurp filename))]
-		(loadEdnList (lazy-seq loadedCameras))
-  ))
+(defn loadCameras [loadedCameras world]
+	"Loads all Camera objects from an EDN vector created with saveCameras."
+	(addCameras (lazy-seq loadedCameras) world 0)
+  )
 		
-(defn loadLights [filename]
-	"Loads all lights from a file created with saveLights. Only for demonstration purposes."
-	(let [loadedLights (read-string (slurp filename))]
-		(println "Ambiant: " (.toString (ednToObject (get loadedLights 0))))
-		(println "Sun: " (.toString (ednToObject (get loadedLights 1))))
-		(println "PointLights: ")
-		(loadEdnList (lazy-seq (get loadedLights 2)))
-		(println "SpotLights: ")
-		(loadEdnList (lazy-seq (get loadedLights 3)))
+(defn loadLights [loadedLights world]
+	"Loads all lights from an EDN vector created with saveLights."
+	(let [sceneLight (.getSceneLight world)]
+		(.setAmbiant sceneLight (ednToObject (get loadedLights 0)))
+		(.setSun sceneLight (ednToObject (get loadedLights 1)))
+		(addPointLights (lazy-seq (get loadedLights 2)) sceneLight 0)
+		(addSpotLights (lazy-seq (get loadedLights 3)) sceneLight 0)
+	))
+	
+(defn loadFile [filename world]
+	"Reinitializes the world and loads items, cameras and lights contained in the given file."
+		(let [loadedVector (read-string (slurp filename))]
+		(.init world)
+		(loadItems (get loadedVector 0) world)
+		(loadCameras (get loadedVector 1) world)
+		(loadLights (get loadedVector 2) world)
 	))

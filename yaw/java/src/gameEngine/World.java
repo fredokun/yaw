@@ -48,6 +48,13 @@ public class World implements Runnable{
 		this.sl= new SceneLight();
 		this.callback=new Callback();
 	}
+	
+	public void setCamera(int index, Camera camera) {
+		if (index == 0)
+			c = camera;
+		listCamera.add(index, camera);
+	}
+	
 	public void run(){
 		Window.init();
 		try {
