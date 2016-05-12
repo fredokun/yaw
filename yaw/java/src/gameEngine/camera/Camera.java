@@ -98,6 +98,12 @@ public class Camera {
 	public void setPosition(Vector3f pos){
 		this.position = pos;
 	}
+	
+	public void setPosition(float x,float y,float z){
+		this.position.x=x;
+		this.position.y=y;
+		this.position.z=z;
+	}
 
 	public Vector3f getPosition() {
 		return position;
@@ -105,6 +111,12 @@ public class Camera {
 
 	public void setOrientation(Vector3f pos){
 		this.orientation = pos;
+	}
+	
+	public void setOrientation(float x,float y,float z){
+		this.orientation.x=x;
+		this.orientation.y=y;
+		this.orientation.z=z;
 	}
 
 	public Vector3f getOrientation() {

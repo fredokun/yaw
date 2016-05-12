@@ -51,6 +51,12 @@
 
 (defn setPositionCamera [camera x y z]
       (.setPosition camera (new org.joml.Vector3f x y z)))
+
+(defn setOrientation [camera x y z]
+      (.setOrientation camera x y z))
+
+(defn setOrientation [camera vector]
+      (.setOrientation camera vector))
       
 ;; Objects Management
 (defn createBlock [world r g b xL yL zL scale]
@@ -83,6 +89,12 @@
       (.setColor item r g b))
 (defn setColor [item vector]
       (.setColor item vector))
+(defn setRotation [item x y z]
+      (.setRotation x y z))
+(defn setRotation [item vector]
+      (.setRotation item vector))
+(defn getRotation [item]
+      (.getRotation item vector))
       
 ;; Group Item
 (defn getListGroup [world]
@@ -97,6 +109,7 @@
       (.separate group distance))
 (defn multScale [group scale]
       (.multScale group scale))
+
 
 ;; Camera
 (defn translate [item x y z]
