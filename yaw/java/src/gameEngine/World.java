@@ -3,6 +3,7 @@ package gameEngine;
 import java.util.ArrayList;
 
 import gameEngine.camera.Camera;
+import gameEngine.items.GroupItem;
 import gameEngine.light.SceneLight;
 import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
@@ -16,6 +17,7 @@ public class World implements Runnable{
 	SceneVertex sc ;
 	SceneLight sl;
 	Callback callback;
+	ArrayList<GroupItem> listGroup;
 	
 	
 	public Camera getCamera(){
@@ -32,7 +34,9 @@ public class World implements Runnable{
 	public SceneVertex getSceneVertex(){
 		return sc;
 	}
-	
+	public ArrayList<GroupItem> getListGroup(){
+		return listGroup;
+	}
 	public SceneLight getSceneLight(){
 		return sl;
 	}
@@ -47,6 +51,7 @@ public class World implements Runnable{
 		this.sc= new SceneVertex();
 		this.sl= new SceneLight();
 		this.callback=new Callback();
+		this.listGroup=new ArrayList<GroupItem>();
 	}
 	
 	public void setCamera(int index, Camera camera) {

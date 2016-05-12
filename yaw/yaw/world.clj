@@ -80,8 +80,12 @@
       (.setColor item r g b))
       
 ;; Group Item
-(defn createGroup []
-      (ItemManagement/createGroup))
+(defn getListGroup [world]
+      (vec (.getListGroup world)))
+(defn removeGroup [world group]
+      (.remove (.getListGroup world) group))
+(defn createGroup [world]
+      (ItemManagement/createGroup world))
 (defn addItem [group item]
      (.add group item))
 (defn seperate [group distance]
