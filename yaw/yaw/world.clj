@@ -91,12 +91,14 @@
 
 ;; Save Tools for Items
 (defn meshToVector [mesh]
-	"Converts Meshes into a savable vector. Predefined Meshes not yet supported."
-	(if (= (.getClass mesh) gameEngine.Mesh)
+	"Converts Meshes into a savable vector. Special Meshes not yet supported."
+	(if (= (.getClass mesh) gameEngine.meshs.Mesh)
 		(let [material (.getMaterial mesh)
 					color (.getColor material)]
 					(vector (.getClass mesh) (vec (.getVertices mesh)) (.x color) (.y color) (.z color) (.getReflectance material) (vec (.getNormales mesh)) (vec (.getIndices mesh)) (.getWeight mesh)))
-		(vector (.getClass mesh))
+		(let [material (.getMaterial mesh)
+					color (.getColor material)]
+					(vector (.getClass mesh) (vec (.getVertices mesh)) (.x color) (.y color) (.z color) (.getReflectance material) (vec (.getNormales mesh)) (vec (.getIndices mesh)) (.getWeight mesh)))
 	))
 
 (defn myItemToVector [myItem]
@@ -225,7 +227,7 @@
 ;; Load Tools for Items
 (defn loadMesh [mesh]
 	"Loads a Mesh. Does not support subclasses of Mesh yet."
-	(let [loadedMesh (gameEngine.Mesh. (float-array (get mesh 1)) (get mesh 2) (get mesh 3) (get mesh 4) (get mesh 5) (float-array (get mesh 6)) (int-array (get mesh 7)) (get mesh 8))]
+	(let [loadedMesh (gameEngine.meshs.Mesh. (float-array (get mesh 1)) (get mesh 2) (get mesh 3) (get mesh 4) (get mesh 5) (float-array (get mesh 6)) (int-array (get mesh 7)) (get mesh 8))]
 		loadedMesh
 ))
 
