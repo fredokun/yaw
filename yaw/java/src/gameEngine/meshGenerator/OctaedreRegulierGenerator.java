@@ -43,8 +43,8 @@ public class OctaedreRegulierGenerator {
 
 		float pos = (float)(1/ Math.sqrt(3));
 		float neg = (float)(-1/ Math.sqrt(3));
-		for(int i=0; i< vertices.length; i++)
-		System.out.println(vertices[i]+ " ");
+		//for(int i=0; i< vertices.length; i++)
+		//System.out.println(vertices[i]+ " ");
 		
 		float[] normales= new float[]{
 			//LTF

@@ -1,5 +1,7 @@
 package gameEngine.items;
 
+import gameEngine.meshs.Material;
+
 import java.util.ArrayList;
 
 import org.joml.Vector3f;
@@ -85,7 +87,14 @@ public class GroupItem {
 		for(MyItem i : items)
 			i.repelBy(center, dist);
 	}
-	
+	public void setColor(float r,float g,float b){
+		for(MyItem i : items)
+			i.getAppearance().setMaterial(new Material( new Vector3f(r,g,b),0.f));
+	}
+	public void setColor(Vector3f color){
+		for(MyItem i : items)
+			i.getAppearance().setMaterial(new Material(color,0.f));
+	}
 	public void multScale(float val){
 		for(MyItem i : items)
 			i.setScale(i.getScale()*val);

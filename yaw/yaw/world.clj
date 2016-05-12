@@ -77,8 +77,12 @@
       (vec (.getListItems(.getSceneVertex world))))
 (defn setScale [item scale]
       (.setScale item scale))
+(defn setReflectance [item refl]
+      (.setReflectance item refl))
 (defn setColor [item r g b]
       (.setColor item r g b))
+(defn setColor [item vector]
+      (.setColor item vector))
       
 ;; Group Item
 (defn getListGroup [world]
@@ -90,7 +94,7 @@
 (defn addItem [group item]
      (.add group item))
 (defn seperate [group distance]
-      (.seperate group distance))
+      (.separate group distance))
 (defn multScale [group scale]
       (.multScale group scale))
 
@@ -101,11 +105,17 @@
       (.rotate item x y z))
 (defn setPosition [item x y z]
       (.setPosition item x y z))
+(defn setPosition [item vector]
+      (.setPosition item vector))
 
 
 ;;CallBack Management
 (defn registerCallback [world keyString function]
       (.registerCallback (.getCallback world) keyString function))
+
+;;Tools
+(defn createVector [r g b]
+      (new org.joml.Vector3f r g b))
 
 ;; Save Tools
 ;; Each object is converted to a Clojure vector to be saved. The vector
