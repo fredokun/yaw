@@ -1,7 +1,8 @@
 package gameEngine.meshGenerator;
 
-import gameEngine.Material;
-import gameEngine.Mesh;
+import gameEngine.meshs.HalphBlockMesh;
+import gameEngine.meshs.Material;
+import gameEngine.meshs.Mesh;
 
 public class HalfBlockGenerator {
 	public static Mesh generate(float xLength, float yLength,float zLength, Material m){
@@ -79,7 +80,7 @@ public class HalfBlockGenerator {
 					15,16,17
 			};
 			
-			return new Mesh(vertices, m,normales, indices, 6);
+			return new HalphBlockMesh(vertices, m,normales, indices, xLength,yLength,zLength);
 	}
 	
 	public static Mesh generate(float xLength, float zLength,int angle, Material m){

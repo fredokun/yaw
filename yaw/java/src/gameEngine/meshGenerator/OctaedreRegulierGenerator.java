@@ -1,7 +1,8 @@
 package gameEngine.meshGenerator;
 
-import gameEngine.Material;
-import gameEngine.Mesh;
+import gameEngine.meshs.Material;
+import gameEngine.meshs.Mesh;
+import gameEngine.meshs.OctaedreMesh;
 
 public class OctaedreRegulierGenerator {
 	public static Mesh generate(Material m){
@@ -99,6 +100,6 @@ public class OctaedreRegulierGenerator {
 				21,22,23
 			};
 		
-		return new Mesh(vertices, m, normales, indices,6);
+		return new OctaedreMesh(vertices, m, normales, indices);
 	}
 }

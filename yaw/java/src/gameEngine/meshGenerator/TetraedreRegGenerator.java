@@ -1,7 +1,8 @@
 package gameEngine.meshGenerator;
 
-import gameEngine.Material;
-import gameEngine.Mesh;
+import gameEngine.meshs.Material;
+import gameEngine.meshs.Mesh;
+import gameEngine.meshs.TetraedreMesh;
 
 public class TetraedreRegGenerator {
 	public static Mesh generate(Material m){
@@ -56,6 +57,6 @@ public class TetraedreRegGenerator {
 				//Last Face
 				9,10,11
 		};
-		return new Mesh(vertices, m, normales, indices,4);
+		return new TetraedreMesh(vertices, m, normales, indices);
 	}
 }

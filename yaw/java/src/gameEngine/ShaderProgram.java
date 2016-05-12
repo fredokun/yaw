@@ -11,6 +11,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GLUtil;
 
 import gameEngine.light.*;
+import gameEngine.meshs.Material;
 
 public class ShaderProgram {
 

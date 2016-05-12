@@ -1,13 +1,13 @@
 package gameEngine.items;
 
-import gameEngine.Material;
-import gameEngine.Mesh;
 import gameEngine.World;
 import gameEngine.meshGenerator.BlockGenerator;
 import gameEngine.meshGenerator.HalfBlockGenerator;
 import gameEngine.meshGenerator.OctaedreRegulierGenerator;
 import gameEngine.meshGenerator.PyramidGenerator;
 import gameEngine.meshGenerator.TetraedreRegGenerator;
+import gameEngine.meshs.Material;
+import gameEngine.meshs.Mesh;
 
 import org.joml.Vector3f;
 

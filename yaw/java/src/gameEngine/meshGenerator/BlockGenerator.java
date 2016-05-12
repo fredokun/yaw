@@ -1,7 +1,8 @@
 package gameEngine.meshGenerator;
 
-import gameEngine.Material;
-import gameEngine.Mesh;
+import gameEngine.meshs.BlockMesh;
+import gameEngine.meshs.Material;
+import gameEngine.meshs.Mesh;
 
 public class BlockGenerator {
 	public static Mesh generate(float xLength, float yLength, float zLength, Material m){
@@ -91,6 +92,6 @@ public class BlockGenerator {
 					20,22,21,22,23,21
 			};
 			
-			return new Mesh(vertices, m,normales, indices, 8);
+			return new BlockMesh(vertices, m,normales, indices, xLength, yLength, zLength);
 	}
 }

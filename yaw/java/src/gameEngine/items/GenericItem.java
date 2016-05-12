@@ -8,9 +8,10 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_T;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_X;
 
 import org.joml.Vector3f;
+
 import gameEngine.Input;
-import gameEngine.Material;
-import gameEngine.Mesh;
+import gameEngine.meshs.Material;
+import gameEngine.meshs.Mesh;
 
 public class GenericItem extends MyItem{
 

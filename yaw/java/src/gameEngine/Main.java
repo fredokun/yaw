@@ -7,6 +7,8 @@ import gameEngine.camera.Camera;
 import gameEngine.light.AmbiantLight;
 import gameEngine.light.PointLight;
 import gameEngine.light.SceneLight;
+import gameEngine.meshs.Material;
+
 import org.joml.Vector3f;
 
 

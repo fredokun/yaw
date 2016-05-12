@@ -1,6 +1,6 @@
 package gameEngine.items;
 
-import gameEngine.Mesh;
+import gameEngine.meshs.Mesh;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;

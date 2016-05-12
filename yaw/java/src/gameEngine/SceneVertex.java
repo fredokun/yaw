@@ -1,6 +1,8 @@
 package gameEngine;
 
 import gameEngine.items.MyItem;
+import gameEngine.meshs.Material;
+import gameEngine.meshs.Mesh;
 
 import java.util.ArrayList;
 import java.util.HashMap;

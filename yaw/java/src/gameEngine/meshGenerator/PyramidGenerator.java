@@ -1,7 +1,8 @@
 package gameEngine.meshGenerator;
 
-import gameEngine.Material;
-import gameEngine.Mesh;
+import gameEngine.meshs.Material;
+import gameEngine.meshs.Mesh;
+import gameEngine.meshs.PyramideMesh;
 
 public class PyramidGenerator {
 	public static Mesh generate(float xLength, float yLength, float zLength, Material m){
@@ -81,6 +82,6 @@ public class PyramidGenerator {
 					12,13,15,12,15,14
 			};
 			
-			return new Mesh(vertices, m,normales, indices, 5);
+			return new PyramideMesh(vertices, m,normales, indices, xLength,yLength,zLength);
 	}
 }
