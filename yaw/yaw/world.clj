@@ -12,11 +12,6 @@
     (atom {:world world :thread thread})
     ))
 
-;; Calleback Management
-(defn register-callback
-  [world callback]
-  (.registerCallback (:world @world) callback))
-
 ;; Light Management
 
 (defn setSunLight [world r g b intensity x y z]
@@ -79,14 +74,29 @@
       (ItemManagement/removeItem world item))
 (defn getListItems [world]
       (vec (.getListItems(.getSceneVertex world))))
+(defn setScale [item scale]
+      (.setScale item scale))
+(defn setColor [item r g b]
+      (.setColor item r g b))
+      
+;; Group Item
+(defn createGroup []
+      (ItemManagement/createGroup))
+(defn addItem [group item]
+     (.add group item))
+(defn seperate [group distance]
+      (.seperate group distance))
+(defn multScale [group scale]
+      (.multScale group scale))
+
+;; Camera
 (defn translate [item x y z]
       (.translate item x y z))
 (defn rotate [item x y z]
       (.rotate item x y z))
 (defn setPosition [item x y z]
       (.setPosition item x y z))
-(defn setColor [item r g b]
-      (.setColor item r g b))
+
 
 ;;CallBack Management
 (defn registerCallback [world keyString function]

@@ -60,7 +60,21 @@ public class GroupItem {
 			i.getTranslation().add(translation);
 	}
 	
+	public void translate(float x,float y,float z){
+		Vector3f translation=new Vector3f(x,y,z);
+		for(MyItem i : items)
+			i.getTranslation().add(translation);
+	}
+	
 	public void rotate(Vector3f rotation){
+		for(MyItem i : items){
+			i.getRotation().add(rotation);
+			i.revolveAround(center, rotation.x, rotation.y, rotation.z);
+		}
+	}
+	
+	public void rotate(float x,float y,float z){
+		Vector3f rotation=new Vector3f(x,y,z);
 		for(MyItem i : items){
 			i.getRotation().add(rotation);
 			i.revolveAround(center, rotation.x, rotation.y, rotation.z);

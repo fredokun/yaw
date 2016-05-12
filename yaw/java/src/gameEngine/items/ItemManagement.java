@@ -62,4 +62,8 @@ public class ItemManagement {
 	public static void removeItem(World world,GenericItem item){
 		world.getSceneVertex().removeItem(item);
 	}
+	
+	public static GroupItem createItem(){
+		return new GroupItem();
+	}
 }
