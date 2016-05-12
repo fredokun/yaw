@@ -67,6 +67,14 @@
 (defn createPyramid [world r g b xL yL zL scale]
       (ItemManagement/createPyramid world r g b xL yL zL scale))
       
+(defn createTetraedre [world r g b scale]
+      (ItemManagement/createTetraedreReg world r g b scale))
+
+(defn createOctaedre [world r g b scale]
+      (ItemManagement/createOctaedreReg world r g b scale))
+
+(defn clone [world item]
+      (ItemManagement/clone world item))
 (defn removeItem [world item]
       (ItemManagement/removeItem world item))
 (defn getListItems [world]

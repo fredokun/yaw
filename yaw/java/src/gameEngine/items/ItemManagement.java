@@ -53,6 +53,12 @@ public class ItemManagement {
 		return item;
 	}
 	
+	public static GenericItem clone(World world, GenericItem i){
+		GenericItem item = new GenericItem(i);
+		world.getSceneVertex().add(item);
+		return item;
+	}
+	
 	public static void removeItem(World world,GenericItem item){
 		world.getSceneVertex().removeItem(item);
 	}
