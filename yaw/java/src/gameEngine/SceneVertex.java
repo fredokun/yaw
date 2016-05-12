@@ -114,4 +114,8 @@ public class SceneVertex {
 		MyItem newItem = new MyItem(apparence, scale, rotation, position);
 		this.add(newItem);
 	}
+	
+	public void clone(MyItem i){
+		this.add(new MyItem(i));
+	}
 }

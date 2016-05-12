@@ -22,7 +22,12 @@ public class MyItem {
 		this.translation = position;
 	}
 
-	
+	public MyItem(MyItem source){
+		this.appearance = source.appearance;
+		this.scale= source.scale;
+		this.rotation = new Vector3f(source.rotation);
+		this.translation = new Vector3f(source.translation);
+	}
 	
 	public MyItem(Mesh m) {
 		this.appearance=m;
@@ -94,6 +99,10 @@ public class MyItem {
 	
 	public void setTranslation(Vector3f translation) {
 		this.translation = translation;
+	}
+	
+	public MyItem clone(){
+		return new MyItem(this);
 	}
 	
 	public void update(){
