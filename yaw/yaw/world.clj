@@ -70,6 +70,7 @@
 
 (defn clone [world item]
       (ItemManagement/clone world item))
+      
 (defn removeItem [world item]
       (ItemManagement/removeItem world item))
 (defn getListItems [world]

@@ -63,7 +63,7 @@ public class ItemManagement {
 		world.getSceneVertex().removeItem(item);
 	}
 	
-	public static GroupItem createItem(World world){
+	public static GroupItem createGroup(World world){
 		GroupItem group=new GroupItem();
 		world.getListGroup().add(group);
 		return group;
