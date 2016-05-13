@@ -26,36 +26,7 @@ public class GenericItem extends MyItem{
 	public GenericItem(Mesh apparence, float scale, float rx, float ry, float rz, float px, float py, float pz) {
 		super(apparence, scale, new Vector3f(rx, ry, rz), new Vector3f(px, py, pz));
 	}
-	public void setColor(float r,float g,float b){
-		this.getAppearance().setMaterial(new Material( new Vector3f(r,g,b),0.f));
-	}
-	public void setColor(Vector3f color){
-		this.getAppearance().setMaterial(new Material(color,0.f));
-	}
-	public void translate(float x,float y,float z){
-		this.setTranslation(getTranslation().add(x, y, z)); 
-	}
-	public void setReflectance(float refl){
-		this.getAppearance().getMaterial().reflectance=refl;
-	}
-	public Vector3f getColor(){
-		return this.getAppearance().getMaterial().color;
-	}
-	
-	public Vector3f getPosition(){
-		return this.getPosition();
-	}
-	
-	public void setPosition(float x,float y,float z){
-		this.setTranslation(new Vector3f(x,y,z));
-	}
-	
-	public void setPosition(Vector3f pos){
-		this.setTranslation(pos);
-	}
-	public void rotate(float x,float y,float z){
-		this.setRotation(getRotation().add(x,y,z));	
-	}
+
 	public void update(){
 		if(Input.isKeyDown(GLFW_KEY_X)){
 			this.setTranslation(getTranslation().add(0.0f, 0.0f, -0.1f)); 

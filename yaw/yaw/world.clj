@@ -12,7 +12,7 @@
     (atom {:world world :thread thread})
     ))
 
-;; Light Management
+;; Light Management----------------------------------------------------------------------------------
 
 (defn setSunLight [world r g b intensity x y z]
       (LightManagement/setSunLight world r g b intensity x y z))
@@ -25,9 +25,53 @@
       
 (defn addPointLight [world r g b x y z intensity constantAtt linearAtt quadraticAtt number]
       (LightManagement/addPointLight world r g b x y z intensity constantAtt linearAtt quadraticAtt number))
+      
+(defn getSpotLightList [world]
+      (.getSpotTable (.getSceneLight world)))
+      
+(defn getPointLightList [world]
+      (.getPointTable (.getSceneLight world)))
 
+(defn getIntensity [pointlight]
+      (.getIntensity pointlight))
+      
+(defn setIntensity [pointlight intensity]
+      (.setIntensity pointlight intensity))
 
-;; Camera Management
+(defn getConstantAtt [pointlight]
+      (.getConstantAtt pointlight))
+
+(defn setConstantAtt [pointlight att]
+      (.setConstantAtt pointlight att))
+
+(defn getLinearAtt [pointlight]
+      (.getLinearAtt pointlight))
+
+(defn setLinearAtt [pointlight att]
+      (.setLinearAtt pointlight att))
+
+(defn getQuadraticAtt [pointlight]
+      (.getQuadraticAtt pointlight))
+
+(defn setQuadraticAtt [pointlight att]
+      (.setQuadraticAtt pointlight att))
+      
+(defn getConedir [spotlight]
+      (.getConedir spotlight))
+
+(defn setConedir [spotlight x y z]
+      (.setConedir spotlight x y z))
+
+(defn setConedir [spotlight vector]
+      (.setConedir spotlight vector))
+
+(defn getCutoffAngle [spotlight]
+      (.getCutoffAngle spotlight))
+
+(defn setCutoffAngle [spotlight float]
+      (.setCutoffAngle spotlight float))
+
+;; Camera Management--------------------------------------------------------------
 (defn addCamera [world]
       (CameraManagement/addCamera world))
       
@@ -58,7 +102,7 @@
 (defn setOrientation [camera vector]
       (.setOrientation camera vector))
       
-;; Objects Management
+;; Objects Management------------------------------------------------
 (defn createBlock [world r g b xL yL zL scale]
       (ItemManagement/createBlock world r g b xL yL zL scale))
 
@@ -79,47 +123,85 @@
       
 (defn removeItem [world item]
       (ItemManagement/removeItem world item))
+      
 (defn getListItems [world]
       (vec (.getListItems(.getSceneVertex world))))
+      
 (defn setScale [item scale]
       (.setScale item scale))
+
+(defn getScale [item]
+      (.getScale item))
+
+(defn getReflectance [item]
+      (.getReflectance item))
+      
 (defn setReflectance [item refl]
       (.setReflectance item refl))
+      
 (defn setColor [item r g b]
       (.setColor item r g b))
+      
 (defn setColor [item vector]
       (.setColor item vector))
+      
 (defn setRotation [item x y z]
       (.setRotation x y z))
+      
 (defn setRotation [item vector]
       (.setRotation item vector))
+      
 (defn getRotation [item]
       (.getRotation item vector))
+
+(defn revolveAround [item center degX degY degZ]
+      (.revolveAround item center degX degY degZ))
+
+(defn revolveAround [item centerX centerY centerZ degX degY degZ]
+      (.revolveAround item (new org.joml.Vector3f centerX centerY centerZ) degX degY degZ))
+
+(defn repelBy [item center dist]
+      (.repelBy item center dist))
+
+(defn repelBy [item centerX centerY centerZ dist]
+      (.repelBy item (new org.joml.Vector3f centerX centerY centerZ) dist))
       
-;; Group Item
+;; Group Item -----------------------------------------------
 (defn getListGroup [world]
       (vec (.getListGroup world)))
+      
 (defn removeGroup [world group]
       (.remove (.getListGroup world) group))
+      
 (defn createGroup [world]
       (ItemManagement/createGroup world))
+      
 (defn addItem [group item]
      (.add group item))
+     
 (defn seperate [group distance]
       (.separate group distance))
+      
 (defn multScale [group scale]
       (.multScale group scale))
 
 
-;; Camera
-(defn translate [item x y z]
-      (.translate item x y z))
+;;Multiple usage [Camera, Item]-----------------------------
 (defn rotate [item x y z]
       (.rotate item x y z))
+
+;; Multiple usage [Camera, Item, Light]----------------------
+(defn translate [item x y z]
+      (.translate item x y z))
+      
 (defn setPosition [item x y z]
       (.setPosition item x y z))
+      
 (defn setPosition [item vector]
       (.setPosition item vector))
+      
+(defn getPosition [item]
+      (.getPosition item))
 
 
 ;;CallBack Management

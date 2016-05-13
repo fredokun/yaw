@@ -38,5 +38,9 @@ public class DirectionnalLight extends AmbiantLight {
 	public void setDirection(Vector3f direction) {
 		this.direction = direction;
 	}
+	
+	public void setDirection(float x,float y,float z){
+		this.direction=new Vector3f(x,y,z);
+	}
 
 }
