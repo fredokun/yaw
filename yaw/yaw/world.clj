@@ -232,7 +232,7 @@
 (defn myItemToVector [myItem]
 	"Converts a MyItem into a savable vector."
 	(let [rotation (.getRotation myItem)
-				translation (.getTranslation myItem)]
+				translation (.getPosition myItem)]
 	(vector (.getScale myItem) (.x rotation) (.y rotation) (.z rotation) (.x translation) (.y translation) (.z translation))))
 
 (defn createMyItemVector [itemListVec]
