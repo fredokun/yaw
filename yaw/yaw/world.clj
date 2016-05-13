@@ -171,20 +171,25 @@
       (vec (.getListGroup world)))
       
 (defn removeGroup [world group]
-      (.remove (.getListGroup world) group))
+      (ItemManagement/deleteGroupe world group))
       
 (defn createGroup [world]
       (ItemManagement/createGroup world))
       
 (defn addItem [group item]
      (.add group item))
-     
+
+(def removeItem [group item]
+     (.remove group item))
+
 (defn seperate [group distance]
       (.separate group distance))
       
 (defn multScale [group scale]
       (.multScale group scale))
 
+(defn groupItems [group]
+      (.getItems group))
 
 ;;Multiple usage [Camera, Item]-----------------------------
 (defn rotate [item x y z]

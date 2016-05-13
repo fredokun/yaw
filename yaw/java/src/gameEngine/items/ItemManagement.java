@@ -61,11 +61,20 @@ public class ItemManagement {
 	
 	public static void removeItem(World world,GenericItem item){
 		world.getSceneVertex().removeItem(item);
+		for(GroupItem g : item.getGroupes()){
+			g.remove(item);
+		}
 	}
 	
 	public static GroupItem createGroup(World world){
 		GroupItem group=new GroupItem();
 		world.getListGroup().add(group);
 		return group;
+	}
+	
+	public static void deleteGroupe(World world, GroupItem g){
+		world.getListGroup().remove(g);
+		for(MyItem i : g.getItems())
+			i.removeGroupe(g);
 	}
 }

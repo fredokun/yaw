@@ -1,5 +1,7 @@
 package gameEngine.items;
 
+import java.util.ArrayList;
+
 import gameEngine.meshs.Material;
 import gameEngine.meshs.Mesh;
 
@@ -14,6 +16,9 @@ public class MyItem {
 	private Vector3f rotation;
 	private Vector3f translation;
 
+	private ArrayList<GroupItem> groupes;
+	
+	//Constructor
 	public MyItem(Mesh apparence, float scale, Vector3f rotation,
 			Vector3f position) {
 		super();
@@ -21,6 +26,7 @@ public class MyItem {
 		this.scale = scale;
 		this.rotation = rotation;
 		this.translation = position;
+		this.groupes = new ArrayList<GroupItem>();
 	}
 
 	public MyItem(MyItem source){
@@ -28,6 +34,7 @@ public class MyItem {
 		this.scale= source.scale;
 		this.rotation = new Vector3f(source.rotation);
 		this.translation = new Vector3f(source.translation);
+		this.groupes = new ArrayList<GroupItem>();
 	}
 
 	public MyItem(Mesh m) {
@@ -35,13 +42,18 @@ public class MyItem {
 		scale = 1f;
 		rotation = new Vector3f();
 		translation = new Vector3f();
+		this.groupes = new ArrayList<GroupItem>();
 	}
 
+	public MyItem clone(){
+		return new MyItem(this);
+	}
+	
 	public Mesh getAppearance() {
 		return appearance;
 	}
 
-
+// OpenGl function
 	public Matrix4f getWorldMatrix() {
 		Matrix4f worldMatrix=new Matrix4f().identity().translate(translation).
 				rotateX((float)Math.toRadians(rotation.x)).
@@ -51,11 +63,7 @@ public class MyItem {
 		return worldMatrix;
 	}
 
-
-	public Vector3f getRotation() {
-		return rotation;
-	}
-
+	//Scale
 	public float getScale() {
 		return scale;
 	}
@@ -64,48 +72,46 @@ public class MyItem {
 		scale=val;
 	}
 
+	//Rotation
+	public Vector3f getRotation() {
+		return rotation;
+	}
+	
 	public void setRotation(Vector3f rotation) {
 		this.rotation = rotation;
 	}
 
-	public Vector3f getTranslation() {
-		return translation;
+	public void rotate(float x,float y,float z){
+		this.setRotation(getRotation().add(x,y,z));	
 	}
-
+	
+	//Translation
 	public Vector3f getPosition(){
 		return translation;
 	}
 
 	public void setPosition(float x,float y,float z){
-		this.translation=new Vector3f(x,y,z);
+		setPosition(new Vector3f(x,y,z),null);
 	}
-
 	public void setPosition(Vector3f pos){
-		this.translation=pos;
-	}
-	public void setColor(float r,float g,float b){
-		this.getAppearance().setMaterial(new Material( new Vector3f(r,g,b),0.f));
-	}
-	public void setColor(Vector3f color){
-		this.getAppearance().setMaterial(new Material(color,0.f));
+		setPosition(pos,null);
 	}
 	public void translate(float x,float y,float z){
-		this.setTranslation(getTranslation().add(x, y, z)); 
+		translate(x, y, z,null); 
 	}
-	public void setReflectance(float refl){
-		this.getAppearance().getMaterial().reflectance=refl;
+	public void translate(float x,float y,float z, GroupItem g){
+		Vector3f old = getPosition(),vect = new Vector3f(x+old.x,y+old.y,z+old.z);
+		this.setPosition(vect,g); 
+	}
+	public void setPosition(Vector3f pos, GroupItem g){
+		this.translation=pos;
+		for(GroupItem gr : groupes){
+			if(gr != g )
+				gr.updateCenter();
+		}
 	}
 	
-	public float getReflectance(){
-		return this.getAppearance().getMaterial().reflectance;
-	}
-	public Vector3f getColor(){
-		return this.getAppearance().getMaterial().color;
-	}
-	public void rotate(float x,float y,float z){
-		this.setRotation(getRotation().add(x,y,z));	
-	}
-
+	//Group Moves
 	public void revolveAround(Vector3f center, float degX, float degY, float degZ){
 		Vector4f pos = new Vector4f(translation,1f);
 		pos.add(-center.x, -center.y,-center.z,0);
@@ -128,17 +134,40 @@ public class MyItem {
 			translation = dif;
 		}
 	}
-
-	public void setTranslation(Vector3f translation) {
-		this.translation = translation;
+	
+	//Groupe Management.
+	public ArrayList<GroupItem> getGroupes(){
+		return groupes;
 	}
-
-	public MyItem clone(){
-		return new MyItem(this);
+	//Don't use in clojure add and remove Groupe.
+	public void addGroupe(GroupItem g){
+		groupes.add(g);
 	}
-
+	
+	public void removeGroupe(GroupItem g){
+		groupes.remove(g);
+	}
+	
+	//Input Function
 	public void update(){
 
+	}
+	
+	//Material accessor.
+	public void setColor(float r,float g,float b){
+		this.getAppearance().setMaterial(new Material( new Vector3f(r,g,b),0.f));
+	}
+	public void setColor(Vector3f color){
+		this.getAppearance().setMaterial(new Material(color,0.f));
+	}
+	public void setReflectance(float refl){
+		this.getAppearance().getMaterial().reflectance=refl;
+	}
+	public float getReflectance(){
+		return this.getAppearance().getMaterial().reflectance;
+	}
+	public Vector3f getColor(){
+		return this.getAppearance().getMaterial().color;
 	}
 
 }

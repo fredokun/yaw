@@ -23,9 +23,9 @@ public class GroupItem {
 		double x=0,y=0,z=0;
 		for(MyItem i : objs){
 			int w = i.getAppearance().getWeight();
-			x+= i.getTranslation().x*w;
-			y+= i.getTranslation().y*w;
-			z+= i.getTranslation().z*w;
+			x+= i.getPosition().x*w;
+			y+= i.getPosition().y*w;
+			z+= i.getPosition().z*w;
 			weight += w;
 		}
 		x/= weight;
@@ -38,9 +38,9 @@ public class GroupItem {
 		double x=0,y=0,z=0;
 		for(MyItem i : items){
 			int w = i.getAppearance().getWeight();
-			x+= i.getTranslation().x*w;
-			y+= i.getTranslation().y*w;
-			z+= i.getTranslation().z*w;
+			x+= i.getPosition().x*w;
+			y+= i.getPosition().y*w;
+			z+= i.getPosition().z*w;
 		}
 		x/= weight;
 		y/= weight;
@@ -52,20 +52,28 @@ public class GroupItem {
 		int nWeight = weight + i.getAppearance().getWeight();
 		double ratioGr = weight / (double)nWeight, ratioI = i.getAppearance().getWeight()/(double)nWeight;
 		weight = nWeight;
-		Vector3f newCenter = new Vector3f((float)((center.x*ratioGr) + (i.getTranslation().x*ratioI)), (float)((center.y*ratioGr) + (i.getTranslation().y*ratioI)),(float)((center.z*ratioGr) + (i.getTranslation().z*ratioI)));
+		Vector3f newCenter = new Vector3f((float)((center.x*ratioGr) + (i.getPosition().x*ratioI)), (float)((center.y*ratioGr) + (i.getPosition().y*ratioI)),(float)((center.z*ratioGr) + (i.getPosition().z*ratioI)));
 		center = newCenter;
 		items.add(i);
+		i.addGroupe(this);
+	}
+	
+	public void remove(MyItem i){
+		items.remove(i);
+		i.removeGroupe(this);
+		this.weight-= i.getAppearance().getWeight();
+		updateCenter();
 	}
 	
 	public void translate(Vector3f translation){
 		for(MyItem i : items)
-			i.getTranslation().add(translation);
+			i.getPosition().add(translation);
 	}
 	
 	public void translate(float x,float y,float z){
 		Vector3f translation=new Vector3f(x,y,z);
 		for(MyItem i : items)
-			i.getTranslation().add(translation);
+			i.getPosition().add(translation);
 	}
 	
 	public void rotate(Vector3f rotation){
@@ -98,5 +106,8 @@ public class GroupItem {
 	public void multScale(float val){
 		for(MyItem i : items)
 			i.setScale(i.getScale()*val);
+	}
+	public ArrayList<MyItem> getItems(){
+		return items;
 	}
 }

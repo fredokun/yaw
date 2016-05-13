@@ -10,7 +10,6 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_X;
 import org.joml.Vector3f;
 
 import gameEngine.Input;
-import gameEngine.meshs.Material;
 import gameEngine.meshs.Mesh;
 
 public class GenericItem extends MyItem{
@@ -29,11 +28,11 @@ public class GenericItem extends MyItem{
 
 	public void update(){
 		if(Input.isKeyDown(GLFW_KEY_X)){
-			this.setTranslation(getTranslation().add(0.0f, 0.0f, -0.1f)); 
+			this.setPosition(getPosition().add(0.0f, 0.0f, -0.1f)); 
 		}
 
 		if(Input.isKeyDown(GLFW_KEY_C)){
-			this.setTranslation(getTranslation().add(0.0f, 0.0f, 0.1f)); 
+			this.setPosition(getPosition().add(0.0f, 0.0f, 0.1f)); 
 		}
 		if(Input.isKeyDown(GLFW_KEY_Q)){
 			//Matrix4f.translate(position).multiply(Matrix4f.rotateX(rot)
