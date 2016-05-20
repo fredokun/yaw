@@ -179,7 +179,7 @@
 (defn addItem [group item]
      (.add group item))
 
-(def removeItem [group item]
+(defn removeFromGroup [group item]
      (.remove group item))
 
 (defn seperate [group distance]
