@@ -3,6 +3,7 @@ package gameEngine.meshGenerator;
 import gameEngine.meshs.BlockMesh;
 import gameEngine.meshs.Material;
 import gameEngine.meshs.Mesh;
+import org.joml.Vector3f;
 
 public class BlockGenerator {
 	public static Mesh generate(float xLength, float yLength, float zLength, Material m){
@@ -93,5 +94,9 @@ public class BlockGenerator {
 			};
 			
 			return new BlockMesh(vertices, m,normales, indices, xLength, yLength, zLength);
+	}
+	
+	public static Mesh generate(float xLength, float yLength, float zLength, float cx, float cy, float cz, float r){
+		return generate(xLength, yLength, zLength, new Material(new Vector3f(cx, cy, cz), r));
 	}
 }

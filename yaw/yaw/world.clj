@@ -225,14 +225,19 @@
 ;; Save Tools for Items
 (defn meshToVector [mesh]
 	"Converts Meshes into a savable vector. Special Meshes not yet supported."
-	(if (= (.getClass mesh) gameEngine.meshs.Mesh)
+	(println "Mesh to vector called with " (.getClass mesh))
+	(if (= (.getClass mesh) gameEngine.meshs.Mesh) ;; If custom Mesh
 		(let [material (.getMaterial mesh)
 					color (.getColor material)]
-					(vector (.getClass mesh) (vec (.getVertices mesh)) (.x color) (.y color) (.z color) (.getReflectance material) (vec (.getNormales mesh)) (vec (.getIndices mesh)) (.getWeight mesh)))
-		(let [material (.getMaterial mesh)
+			(vector (.getClass mesh) (vec (.getVertices mesh)) (.x color) (.y color) (.z color) (.getReflectance material) (vec (.getNormales mesh)) (vec (.getIndices mesh)) (.getWeight mesh)))
+		(if (= (.getClass mesh) gameEngine.meshs.BlockMesh) ;; If BlockMesh
+			(let [material (.getMaterial mesh)
 					color (.getColor material)]
-					(vector (.getClass mesh) (vec (.getVertices mesh)) (.x color) (.y color) (.z color) (.getReflectance material) (vec (.getNormales mesh)) (vec (.getIndices mesh)) (.getWeight mesh)))
-	))
+				(vector gameEngine.meshGenerator.BlockGenerator (.xLength mesh) (.yLength mesh) (.zLength mesh) (.x color) (.y color) (.z color) (.getReflectance material)))
+			(let [material (.getMaterial mesh) ;; Else, treat as custom Mesh
+						color (.getColor material)]
+				(vector (.getClass mesh) (vec (.getVertices mesh)) (.x color) (.y color) (.z color) (.getReflectance material) (vec (.getNormales mesh)) (vec (.getIndices mesh)) (.getWeight mesh))))
+  ))
 
 (defn myItemToVector [myItem]
 	"Converts a MyItem into a savable vector."
@@ -240,11 +245,11 @@
 				translation (.getPosition myItem)]
 	(vector (.getScale myItem) (.x rotation) (.y rotation) (.z rotation) (.x translation) (.y translation) (.z translation))))
 
-(defn createMyItemVector [itemListVec]
+(defn createMyItemVector [mesh itemListVec]
 	"Saves all MyItem in the given List (as vector) in EDN format."
 	(if (= (.length itemListVec) 1)
-		(vector (meshToVector (.getAppearance (first itemListVec))) (myItemToVector (first itemListVec)))
-		(conj (createMyItemVector (pop itemListVec)) (myItemToVector (last itemListVec)))
+		(vector (meshToVector mesh) (myItemToVector (first itemListVec)))
+		(conj (createMyItemVector mesh (pop itemListVec)) (myItemToVector (last itemListVec)))
 	))
 
 (defn saveMeshMap [meshMapVec]
@@ -252,8 +257,8 @@
 	(if (= (.length meshMapVec) 0)
 		(vector)
 		(if (= (.length meshMapVec) 1)
-			(vector (createMyItemVector (vec (.getValue (first meshMapVec)))))
-			(conj (saveMeshMap (pop meshMapVec)) (createMyItemVector (vec (.getValue (first meshMapVec))))))
+			(vector (createMyItemVector (.getKey (first meshMapVec)) (vec (.getValue (first meshMapVec)))))
+			(conj (saveMeshMap (pop meshMapVec)) (createMyItemVector (.getKey (last meshMapVec)) (vec (.getValue (last meshMapVec))))))
 	))
 
 ;; Save Tools for Cameras
@@ -360,9 +365,10 @@
 ;; Load Tools for Items
 (defn loadMesh [mesh]
 	"Loads a Mesh. Does not support subclasses of Mesh yet."
-	(let [loadedMesh (gameEngine.meshs.Mesh. (float-array (get mesh 1)) (get mesh 2) (get mesh 3) (get mesh 4) (get mesh 5) (float-array (get mesh 6)) (int-array (get mesh 7)) (get mesh 8))]
-		loadedMesh
-))
+	(if (= (get mesh 0) gameEngine.meshs.Mesh)
+		(gameEngine.meshs.Mesh. (float-array (get mesh 1)) (get mesh 2) (get mesh 3) (get mesh 4) (get mesh 5) (float-array (get mesh 6)) (int-array (get mesh 7)) (get mesh 8))
+		(gameEngine.meshGenerator.BlockGenerator/generate (get mesh 1) (get mesh 2) (get mesh 3) (get mesh 4) (get mesh 5) (get mesh 6) (get mesh 7)))
+)
 
 (defn loadGenericItems [mesh items world]
 	"Loads GenericItems, associating them with their Mesh, and adds them to the sceneVertex."
