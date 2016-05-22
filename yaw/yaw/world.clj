@@ -102,7 +102,7 @@
 (defn setOrientation [camera x y z]
       (.setOrientation camera x y z))
 
-(defn setOrientation [camera vector]
+(defn setOrientationVector [camera vector]
       (.setOrientation camera vector))
       
 ;; Objects Management------------------------------------------------
