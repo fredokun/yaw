@@ -373,7 +373,7 @@
 			 	;; Representation of spotLights as a Clojure vector
 			 	spotLightVector (createSpotLightVector (vec (.getSpotTable sceneLight)))
 		 	]
-		(vector ambiantVector sunVector pointLightVector spotLightVector)
+		(vector (.specularPower sceneLight) ambiantVector sunVector pointLightVector spotLightVector)
 	))
 	
 (defn saveFile [filename world]
@@ -522,10 +522,11 @@
 (defn loadLights [loadedLights world]
 	"Loads all lights from an EDN vector created with saveLights."
 	(let [sceneLight (.getSceneLight world)]
-		(.setAmbiant sceneLight (ednToObject (get loadedLights 0)))
-		(.setSun sceneLight (ednToObject (get loadedLights 1)))
-		(addPointLights (lazy-seq (get loadedLights 2)) sceneLight 0)
-		(addSpotLights (lazy-seq (get loadedLights 3)) sceneLight 0)
+		(set! (.specularPower sceneLight) (get loadedLights 0))
+		(.setAmbiant sceneLight (ednToObject (get loadedLights 1)))
+		(.setSun sceneLight (ednToObject (get loadedLights 2)))
+		(addPointLights (lazy-seq (get loadedLights 3)) sceneLight 0)
+		(addSpotLights (lazy-seq (get loadedLights 4)) sceneLight 0)
 	))
 
 (defn loadFile [filename world]
