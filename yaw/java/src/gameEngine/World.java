@@ -53,6 +53,10 @@ public class World implements Runnable{
 		this.listGroup=new ArrayList<GroupItem>();
 	}
 	
+	public void emptyListCamera() {
+		listCamera=new ArrayList<Camera>();
+	}
+	
 	public void setCamera(int index, Camera camera) {
 		if (index == 0)
 			c = camera;

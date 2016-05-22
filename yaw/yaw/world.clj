@@ -299,8 +299,8 @@
   
 (defn createCameraVector [cameraListVec]
 	"Creates a vector containing all Cameras, converted into savable vectors."
-  (if (= (.length cameraListVec) 1)
-    (vector (cameraToVector (first cameraListVec)))
+  (if (= (.length cameraListVec) 0)
+    (vector)
     (conj (createCameraVector (pop cameraListVec)) (cameraToVector (last cameraListVec)))
   ))
 
@@ -337,22 +337,27 @@
 ;; Save Functions
 (defn saveItems [world]
 	"Returns a vector containing all items of the given world in EDN format."
+	(println "Items")
 	(let [meshMapVec (vec (.getMapMesh (.getSceneVertex world)))]
 				(saveMeshMap meshMapVec)
 		))
 
 (defn saveGroups [world]
 	"Returns a vector containing all groups of the given world in EDN format."
+	(println "Groups")
 	(saveGroupsList (vec (.getListGroup world)) (.getListItems (.getSceneVertex world)))
 	)
 
 (defn saveCameras [world]
+;; 1) Charger LiveCamera 2) Vider liste 3) charger lsite
 	"Returns a vector containing all cameras of the given world in EDN format."
-	(createCameraVector (vec (.getListCamera world)))
-	)
+	(println "Cameras")
+	(vector (cameraToVector (.getCamera world)) (createCameraVector (vec (.getListCamera world)))
+	))
 
 (defn saveLights [world]
 	"Returns a vector containing all lights of the given world in EDN format."
+	(println "Lights")
 	(let [sceneLight (.getSceneLight world)
 				ambiantLight (.getAmbiantLight sceneLight)
 				aColor (.getColor ambiantLight)
@@ -509,7 +514,9 @@
 
 (defn loadCameras [loadedCameras world]
 	"Loads all Camera objects from an EDN vector created with saveCameras."
-	(addCameras (lazy-seq loadedCameras) world 0)
+	(.setCamera world (ednToObject (get loadedCameras 0)))
+	(.emptyListCamera world)
+	(addCameras (lazy-seq (get loadedCameras 1)) world 0)
   )
 		
 (defn loadLights [loadedLights world]
