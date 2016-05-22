@@ -224,7 +224,7 @@
 
 ;; Save Tools for Items
 (defn meshToVector [mesh]
-	"Converts Meshes into a savable vector. Special Meshes not yet supported."
+	"Converts Meshes into a savable vector. Special Meshes not yet entirely supported."
 	(println "Mesh to vector called with " (.getClass mesh))
 	(if (= (.getClass mesh) gameEngine.meshs.Mesh) ;; If custom Mesh
 		(let [material (.getMaterial mesh)
@@ -243,7 +243,8 @@
 	"Converts a MyItem into a savable vector."
 	(let [rotation (.getRotation myItem)
 				translation (.getPosition myItem)]
-	(vector (.getScale myItem) (.x rotation) (.y rotation) (.z rotation) (.x translation) (.y translation) (.z translation))))
+	(vector (.getScale myItem) (.x rotation) (.y rotation) (.z rotation) (.x translation) (.y translation) (.z translation))
+	))
 
 (defn createMyItemVector [mesh itemListVec]
 	"Saves all MyItem in the given List (as vector) in EDN format."
@@ -259,6 +260,25 @@
 		(if (= (.length meshMapVec) 1)
 			(vector (createMyItemVector (.getKey (first meshMapVec)) (vec (.getValue (first meshMapVec)))))
 			(conj (saveMeshMap (pop meshMapVec)) (createMyItemVector (.getKey (last meshMapVec)) (vec (.getValue (last meshMapVec))))))
+	))
+
+;; Save Tools for Groups
+(defn createGroupVector [groupItemListVec allItemsList]
+	"Converts a GroupItem into a savable vector."
+	(if (= (.length groupItemListVec) 0)
+		(vector)
+		(if (= (.length groupItemListVec) 1)
+			(vector (.indexOf allItemsList (first groupItemListVec)))
+			(conj (createGroupVector (pop groupItemListVec) allItemsList) (.indexOf allItemsList (last groupItemListVec))))
+	))
+
+(defn saveGroupsList [groupsListVec allItemsList]
+	"Saves all groups of the given groupsList (as vector) in EDN format."
+	(if (= (.length groupsListVec) 0)
+		(vector)
+		(if (= (.length groupsListVec) 1)
+			(vector (createGroupVector (vec (.getItems (first groupsListVec))) allItemsList))
+			(conj (saveGroupsList (pop groupsListVec) allItemsList) (createGroupVector (vec (.getItems (last groupsListVec))) allItemsList)))
 	))
 
 ;; Save Tools for Cameras
@@ -308,10 +328,14 @@
 ;; Save Functions
 (defn saveItems [world]
 	"Returns a vector containing all items of the given world in EDN format."
-	(let [sceneVertex (.getSceneVertex world)
-				meshMapVec (vec (.getMapMesh sceneVertex))]
+	(let [meshMapVec (vec (.getMapMesh (.getSceneVertex world)))]
 				(saveMeshMap meshMapVec)
 		))
+
+(defn saveGroups [world]
+	"Returns a vector containing all groups of the given world in EDN format."
+	(saveGroupsList (vec (.getListGroup world)) (.getListItems (.getSceneVertex world)))
+	)
 
 (defn saveCameras [world]
 	"Returns a vector containing all cameras of the given world in EDN format."
@@ -341,9 +365,10 @@
 (defn saveFile [filename world]
 	"Saves all items, cameras and lights of the given world into a file, in EDN format."
 	(let [itemsVector (saveItems world)
+				groupsVector (saveGroups world)
 				camerasVector (saveCameras world)
 				lightsVector (saveLights world)]
-		(spit filename (with-out-str (pr (vector itemsVector camerasVector lightsVector))))
+		(spit filename (with-out-str (pr (vector itemsVector groupsVector camerasVector lightsVector))))
 	))
 
 ;; Load Tools
@@ -364,7 +389,7 @@
 
 ;; Load Tools for Items
 (defn loadMesh [mesh]
-	"Loads a Mesh. Does not support subclasses of Mesh yet."
+	"Loads a Mesh. Does not support all subclasses of Mesh yet."
 	(if (= (get mesh 0) gameEngine.meshs.Mesh)
 		(gameEngine.meshs.Mesh. (float-array (get mesh 1)) (get mesh 2) (get mesh 3) (get mesh 4) (get mesh 5) (float-array (get mesh 6)) (int-array (get mesh 7)) (get mesh 8))
 		(gameEngine.meshGenerator.BlockGenerator/generate (get mesh 1) (get mesh 2) (get mesh 3) (get mesh 4) (get mesh 5) (get mesh 6) (get mesh 7)))
@@ -395,6 +420,38 @@
 			(do
 				(loadMeshItems (last meshMapVec) world)
 				(loadMeshMap (pop meshMapVec) world)))
+	))
+
+;; Load Tools for Groups
+(defn createNGroups [n world]
+	"Creates n groups in the world."
+	(println "createNGroups called with " n world)
+	(if (= n 0)
+		nil
+		(do
+			(ItemManagement/createGroup world)
+			(createNGroups (- n 1) world))
+	))
+
+
+(defn addItemsToGroup [groupItemsList groupId world]
+	"Adds items from the groupItemsList vector to the group corresponding to the given groupId."
+	(println "addItemsToGroup called with " groupItemsList groupId world)
+	(cond (> (.size groupItemsList) 0)
+		(let [groupsList (.getListGroup world)
+					itemsList (.getListItems (.getSceneVertex world))]
+			(addItem (.get groupsList groupId) (.get itemsList (first groupItemsList)))
+			(addItemsToGroup (rest groupItemsList) groupId world))
+	))
+
+
+(defn addItemsToGroups [groupsList curId world]
+	"Adds items from the groupsList vector to corresponding groups."
+	(println "addItemsToGroups called with " groupsList curId world)
+	(cond (> (.length groupsList) 0)
+		(do
+			(addItemsToGroup (lazy-seq (last groupsList)) curId world)
+			(addItemsToGroups (pop groupsList) (- curId 1) world))
 	))
 
 ;; Load Tools for Cameras
@@ -431,6 +488,15 @@
 	"Loads all MyItem objects from an EDN vector created with saveItems."
 	(loadMeshMap loadedItems world)
 	)
+	
+(defn loadGroups [loadedGroups world]
+	"Loads all groups from an EDN vector created with saveGroups."
+	(println "loadGroups called with " loadedGroups world)
+	(cond (> (.size loadedGroups) 0)
+		(do
+			(createNGroups (.size loadedGroups) world)
+			(addItemsToGroups loadedGroups (- (.size loadedGroups) 1) world))
+	))
 
 (defn loadCameras [loadedCameras world]
 	"Loads all Camera objects from an EDN vector created with saveCameras."
@@ -445,12 +511,13 @@
 		(addPointLights (lazy-seq (get loadedLights 2)) sceneLight 0)
 		(addSpotLights (lazy-seq (get loadedLights 3)) sceneLight 0)
 	))
-	
+
 (defn loadFile [filename world]
 	"Reinitializes the world and loads items, cameras and lights contained in the given file."
 		(let [loadedVector (read-string (slurp filename))]
 		(.init world)
 		(loadItems (get loadedVector 0) world)
-		(loadCameras (get loadedVector 1) world)
-		(loadLights (get loadedVector 2) world)
+		(loadGroups (get loadedVector 1) world)
+		(loadCameras (get loadedVector 2) world)
+		(loadLights (get loadedVector 3) world)
 	))
