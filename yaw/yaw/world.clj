@@ -20,7 +20,7 @@
 (defn setAmbiantLight [world r g b intensity]
       (LightManagement/setAmbiantLight world r g b intensity))
 
-(defn addSpotLight [world r g b x y z  intensity constantA linearAtt quadraticAtt xcone ycone zcone cutoffAngle number]
+(defn addSpotLight [world r g b x y z intensity constantA linearAtt quadraticAtt xcone ycone zcone cutoffAngle number]
       (LightManagement/addSpotLight world r g b x y z  intensity constantA linearAtt quadraticAtt xcone ycone zcone cutoffAngle number))
       
 (defn addPointLight [world r g b x y z intensity constantAtt linearAtt quadraticAtt number]
@@ -427,13 +427,13 @@
   
 (defn loadMeshMap [meshMapVec world]
 	"Loads all items of the given meshMap (as vector)."
-	(if (= (.length meshMapVec) 0)
+	(if (= (.size meshMapVec) 0)
 		nil
-		(if (= (.length meshMapVec) 1)
+		(if (= (.size meshMapVec) 1)
 			(loadMeshItems (first meshMapVec) world)
 			(do
-				(loadMeshItems (last meshMapVec) world)
-				(loadMeshMap (pop meshMapVec) world)))
+				(loadMeshItems (first meshMapVec) world)
+				(loadMeshMap (rest meshMapVec) world)))
 	))
 
 ;; Load Tools for Groups
@@ -500,7 +500,7 @@
 ;; Load Functions
 (defn loadItems [loadedItems world]
 	"Loads all MyItem objects from an EDN vector created with saveItems."
-	(loadMeshMap loadedItems world)
+	(loadMeshMap (lazy-seq loadedItems) world)
 	)
 	
 (defn loadGroups [loadedGroups world]
