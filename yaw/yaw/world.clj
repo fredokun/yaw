@@ -72,7 +72,7 @@
       (.setCutoffAngle spotlight float))
 
 ;; Camera Management--------------------------------------------------------------
-(defn addCamera [world]
+(defn createCamera [world]
       (CameraManagement/addCamera world))
 
 (defn addCamera [world camera]
