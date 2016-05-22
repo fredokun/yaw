@@ -474,7 +474,7 @@
 	(if (= cameraList '())
 			nil
 			(do
-				(.setCamera world index (ednToObject (first cameraList)))
+				(CameraManagement/addCamera world (ednToObject (first cameraList)))
 				(addCameras (rest cameraList) world (+ index 1)))
   ))
 
