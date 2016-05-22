@@ -22,7 +22,9 @@ public class Callback {
 	public void clearCallback(String s){
 		map.remove(StringToKeyCode(s));
 	}
-	
+	public void clearFunctionOfKey(String s,Object o){
+		map.get(StringToKeyCode(s)).remove(o);
+	}
 	public void update(){
 		for(Integer i : map.keySet()){
 			if(Input.isKeyDown(i)){

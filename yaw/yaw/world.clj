@@ -74,6 +74,9 @@
 ;; Camera Management--------------------------------------------------------------
 (defn addCamera [world]
       (CameraManagement/addCamera world))
+
+(defn addCamera [world camera]
+      (CameraManagement/addCamera world camera))
       
 (defn setLiveCamera [world camera]
       (CameraManagement/setLiveCamera world camera))
@@ -212,6 +215,12 @@
 ;;CallBack Management
 (defn registerCallback [world keyString function]
       (.registerCallback (.getCallback world) keyString function))
+
+(defn clearCallback [world keyString]
+      (.clearCallback (.getCallback world) keyString))
+
+(defn clearFunctionOfKey [world keyString function]
+      (.clearFunctionOfKey (.getCallback world) keyString function))
 
 ;;Tools
 (defn createVector [r g b]

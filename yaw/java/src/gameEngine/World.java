@@ -47,7 +47,6 @@ public class World implements Runnable{
 	public void init() throws Exception{
 		this.listCamera=new ArrayList<Camera>();
 		this.c= new Camera();
-		listCamera.add(c);
 		this.sc= new SceneVertex();
 		this.sl= new SceneLight();
 		this.callback=new Callback();
