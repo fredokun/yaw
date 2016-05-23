@@ -194,11 +194,11 @@
 (defn groupItems [group]
       (.getItems group))
 
-;;Multiple usage [Camera, Item]-----------------------------
+;;Multiple usage [Camera, Item, groupe]-----------------------------
 (defn rotate [item x y z]
       (.rotate item x y z))
 
-;; Multiple usage [Camera, Item, Light]----------------------
+;; Multiple usage [Camera, Item, Light, groupe]----------------------
 (defn translate [item x y z]
       (.translate item x y z))
       

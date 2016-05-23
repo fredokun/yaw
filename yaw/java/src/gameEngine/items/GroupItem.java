@@ -91,6 +91,18 @@ public class GroupItem {
 		}
 	}
 	
+	public void setPosition(float x, float y, float z){
+		setPosition(new Vector3f(x,y,z));
+	}
+	
+	public void setPosition(Vector3f pos){
+		float x =  pos.x -center.x, y = pos.y-center.y, z = pos.z - center.z;
+		for(MyItem i : items){
+			i.translate(x, y, z, this);
+		}
+		center = pos;
+	}
+	
 	public void separate(float dist){
 		for(MyItem i : items)
 			i.repelBy(center, dist);
