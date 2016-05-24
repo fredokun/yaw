@@ -19,15 +19,15 @@ Now you can access the world with : (:world @universe)
 ## Exemple
 
 Initialisation
->boot repl
->boot.user=> (boot (build))
->boot.user=> (use 'yaw.world)
->boot.user=> (def universe(start-yaw))
->boot.user=> (def world (:world @universe))
+>boot repl  
+>boot.user=> (boot (build))  
+>boot.user=> (use 'yaw.world)  
+>boot.user=> (def universe(start-yaw))  
+>boot.user=> (def world (:world @universe))  
 
 
 Create a Block and move it in front of the Camera
->(def cube(createBlock world 1 1 1 1 1 1 1))
+>(def cube(createBlock world 1 1 1 1 1 1 1))  
 >(translate cube 0 0 -2)
 
 Add a Green Spotlight
@@ -40,7 +40,7 @@ Change the color of the spotlight to Red
 >(setColor sl 1 0 0)
 
 Set the sun Light to blue and rotate the cube to see the differences
->(rotate cube 25 0 0)
+>(rotate cube 25 0 0)  
 >(setSunLight world 0 0 1 1 0 -1 1)
 
 
