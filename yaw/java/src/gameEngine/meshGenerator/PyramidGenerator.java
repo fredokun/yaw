@@ -1,8 +1,10 @@
 package gameEngine.meshGenerator;
 
+import org.joml.Vector3f;
+
 import gameEngine.meshs.Material;
 import gameEngine.meshs.Mesh;
-import gameEngine.meshs.PyramideMesh;
+import gameEngine.meshs.PyramidMesh;
 
 public class PyramidGenerator {
 	public static Mesh generate(float xLength, float yLength, float zLength, Material m){
@@ -82,6 +84,9 @@ public class PyramidGenerator {
 					12,13,15,12,15,14
 			};
 			
-			return new PyramideMesh(vertices, m,normales, indices, xLength,yLength,zLength);
+			return new PyramidMesh(vertices, m,normales, indices, xLength,yLength,zLength);
+	}
+	public static Mesh generate(float xLength, float yLength,float zLength, float cx, float cy, float cz, float r){
+		return generate(xLength, yLength,zLength, new Material(new Vector3f(cx, cy, cz), r));
 	}
 }

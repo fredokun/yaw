@@ -1,10 +1,12 @@
 package gameEngine.meshGenerator;
 
+import org.joml.Vector3f;
+
 import gameEngine.meshs.Material;
 import gameEngine.meshs.Mesh;
-import gameEngine.meshs.OctaedreMesh;
+import gameEngine.meshs.OctahedronMesh;
 
-public class OctaedreRegulierGenerator {
+public class RegOctahedronGenerator {
 	public static Mesh generate(Material m){
 		float[] vertices= new float[]{
 				//LTF
@@ -100,6 +102,10 @@ public class OctaedreRegulierGenerator {
 				21,22,23
 			};
 		
-		return new OctaedreMesh(vertices, m, normales, indices);
+		return new OctahedronMesh(vertices, m, normales, indices);
+	}
+	
+	public static Mesh generate(float cx, float cy, float cz, float r) {
+		return generate(new Material(new Vector3f(cx, cy, cz), r));
 	}
 }

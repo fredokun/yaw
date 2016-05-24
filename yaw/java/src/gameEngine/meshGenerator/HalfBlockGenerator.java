@@ -1,6 +1,8 @@
 package gameEngine.meshGenerator;
 
-import gameEngine.meshs.HalphBlockMesh;
+import org.joml.Vector3f;
+
+import gameEngine.meshs.HalfBlockMesh;
 import gameEngine.meshs.Material;
 import gameEngine.meshs.Mesh;
 
@@ -80,7 +82,7 @@ public class HalfBlockGenerator {
 					15,16,17
 			};
 			
-			return new HalphBlockMesh(vertices, m,normales, indices, xLength,yLength,zLength);
+			return new HalfBlockMesh(vertices, m,normales, indices, xLength,yLength,zLength);
 	}
 	
 	public static Mesh generate(float xLength, float zLength,int angle, Material m){
@@ -90,5 +92,9 @@ public class HalfBlockGenerator {
 		angle = Math.abs(angle);
 		float yLength = (float) (Math.tan(angle)*zLength);
 		return generate(xLength,yLength,zLength, m);
+	}
+	
+	public static Mesh generate(float xLength, float yLength,float zLength, float cx, float cy, float cz, float r){
+		return generate(xLength, yLength,zLength, new Material(new Vector3f(cx, cy, cz), r));
 	}
 }

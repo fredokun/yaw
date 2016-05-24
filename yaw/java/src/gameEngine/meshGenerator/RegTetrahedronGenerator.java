@@ -1,10 +1,12 @@
 package gameEngine.meshGenerator;
 
+import org.joml.Vector3f;
+
 import gameEngine.meshs.Material;
 import gameEngine.meshs.Mesh;
-import gameEngine.meshs.TetraedreMesh;
+import gameEngine.meshs.TetrahedronMesh;
 
-public class TetraedreRegGenerator {
+public class RegTetrahedronGenerator {
 	public static Mesh generate(Material m){
 		float[] vertices = new float[]{
 				//First Face
@@ -57,6 +59,9 @@ public class TetraedreRegGenerator {
 				//Last Face
 				9,10,11
 		};
-		return new TetraedreMesh(vertices, m, normales, indices);
+		return new TetrahedronMesh(vertices, m, normales, indices);
+	}
+	public static Mesh generate(float cx, float cy, float cz, float r) {
+		return generate(new Material(new Vector3f(cx, cy, cz), r));
 	}
 }

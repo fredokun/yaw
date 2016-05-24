@@ -40,7 +40,7 @@ public class ItemManagement {
 	
 	public static GenericItem createTetraedreReg(World world,float red, float green, float blue,float scale){
 		Material material = new Material( new Vector3f(red,green,blue),0.f);
-		Mesh apparence=TetraedreRegGenerator.generate(material);
+		Mesh apparence=RegTetrahedronGenerator.generate(material);
 		GenericItem item=new GenericItem(apparence,scale,new Vector3f(),new Vector3f(0f,0f,-2f));
 		world.getSceneVertex().add(item);
 		return item;
@@ -48,7 +48,7 @@ public class ItemManagement {
 	
 	public static GenericItem createOctaedreReg(World world,float red, float green, float blue,float scale){
 		Material material = new Material( new Vector3f(red,green,blue),0.f);
-		Mesh apparence=OctaedreRegulierGenerator.generate(material);
+		Mesh apparence=RegOctahedronGenerator.generate(material);
 		GenericItem item=new GenericItem(apparence,scale,new Vector3f(),new Vector3f(0f,0f,-2f));
 		world.getSceneVertex().add(item);
 		return item;
