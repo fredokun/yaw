@@ -62,7 +62,7 @@
 (defn setConedir [spotlight x y z]
       (.setConedir spotlight x y z))
 
-(defn setConedir [spotlight vector]
+(defn setConedirVector [spotlight vector]
       (.setConedir spotlight vector))
 
 (defn getCutoffAngle [spotlight]
@@ -70,6 +70,12 @@
 
 (defn setCutoffAngle [spotlight float]
       (.setCutoffAngle spotlight float))
+
+(defn setSpecularPower [world power]
+      (.setSpecularPower (.getSceneLight world) power))
+
+(defn getSpecularPower [world]
+      (.getSpecularPower (.getSceneLight world)))
 
 ;; Camera Management--------------------------------------------------------------
 (defn createCamera [world]
@@ -145,25 +151,25 @@
 (defn setColor [item r g b]
       (.setColor item r g b))
       
-(defn setColor [item vector]
+(defn setColorVector [item vector]
       (.setColor item vector))
       
 (defn setRotation [item x y z]
       (.setRotation x y z))
       
-(defn setRotation [item vector]
+(defn setRotationVector [item vector]
       (.setRotation item vector))
       
 (defn getRotation [item]
       (.getRotation item vector))
 
-(defn revolveAround [item center degX degY degZ]
+(defn revolveAroundVector [item center degX degY degZ]
       (.revolveAround item center degX degY degZ))
 
 (defn revolveAround [item centerX centerY centerZ degX degY degZ]
       (.revolveAround item (new org.joml.Vector3f centerX centerY centerZ) degX degY degZ))
 
-(defn repelBy [item center dist]
+(defn repelByVector [item center dist]
       (.repelBy item center dist))
 
 (defn repelBy [item centerX centerY centerZ dist]
@@ -205,7 +211,7 @@
 (defn setPosition [item x y z]
       (.setPosition item x y z))
       
-(defn setPosition [item vector]
+(defn setPositionVector [item vector]
       (.setPosition item vector))
       
 (defn getPosition [item]

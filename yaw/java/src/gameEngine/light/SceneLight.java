@@ -121,4 +121,12 @@ public class SceneLight {
 	public SpotLight[] getSpotTable() {
 		return spotTable;
 	}
+	
+	public float getSpecularPower(){
+		return specularPower;
+	}
+	
+	public void setSpecularPower(float x){
+		specularPower=x;
+	}
 }
