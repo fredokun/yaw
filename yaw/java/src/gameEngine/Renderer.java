@@ -56,7 +56,7 @@ public class Renderer {
 		sh.cleanup();
 	}
 
-	public void render(SceneVertex sc, SceneLight sl, boolean isResized,Camera cam, SkyBox sk,boolean skInit){
+	public void render(SceneVertex sc, SceneLight sl, boolean isResized,Camera cam, SkyBox sk){
 		sh.bind();
 		//Preparation of the camera
 		if(isResized || SceneVertex.itemAdded){
