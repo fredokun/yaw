@@ -46,6 +46,13 @@ public class SkyBox {
 		this.color = color;
 	}
 	
+	public SkyBox(float width, float length, float height, float r,float g,float b){
+		this.width = width;
+		this.height = height;
+		this.length = length;
+		this.color = new Vector3f(r,g,b);
+	}
+	
 	public void init() throws Exception{
 		
 		shaderProg = new ShaderProgram();

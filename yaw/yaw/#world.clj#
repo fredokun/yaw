@@ -11,16 +11,14 @@
 	(.start (Thread. world))
     (atom {:world world :thread thread})
     ))
-
-
 ;; SkyBox
 
 (defn setSkyBox [world width length height r g b]
       (.setSkyBox world width length height r g b))
 
 (defn removeSkyBox [world]
-     (.removeSkyBox world))
-
+     (.removeSkyBox wolrd))
+     
 ;; Light Management----------------------------------------------------------------------------------
 
 (defn setSunLight [world r g b intensity x y z]
@@ -261,16 +259,17 @@
 (defn meshToVector [mesh]
 	"Converts Meshes into a savable vector. Special Meshes not yet entirely supported."
 	(println "Mesh to vector called with " (.getClass mesh))
-	(let [material (.getMaterial mesh)
-				color (.getColor material)]
-		(condp  = (.getClass mesh)		
-			gameEngine.meshs.BlockMesh (vector gameEngine.meshGenerator.BlockGenerator (.xLength mesh) (.yLength mesh) (.zLength mesh) (.x color) (.y color) (.z color) (.getReflectance material))
-			gameEngine.meshs.HalfBlockMesh (vector gameEngine.meshGenerator.HalfBlockGenerator (.xLength mesh) (.yLength mesh) (.zLength mesh) (.x color) (.y color) (.z color) (.getReflectance material))
-			gameEngine.meshs.PyramidMesh (vector gameEngine.meshGenerator.PyramidGenerator (.xLength mesh) (.yLength mesh) (.zLength mesh) (.x color) (.y color) (.z color) (.getReflectance material))
-			gameEngine.meshs.TetrahedronMesh (vector gameEngine.meshGenerator.RegTetrahedronGenerator (.x color) (.y color) (.z color) (.getReflectance material))
-			gameEngine.meshs.OctahedronMesh (vector gameEngine.meshGenerator.RegOctahedronGenerator (.x color) (.y color) (.z color) (.getReflectance material))
-			gameEngine.meshs.Mesh	(vector gameEngine.meshs.Mesh (vec (.getVertices mesh)) (.x color) (.y color) (.z color) (.getReflectance material) (vec (.getNormales mesh)) (vec (.getIndices mesh)) (.getWeight mesh))
-    )
+	(if (= (.getClass mesh) gameEngine.meshs.Mesh) ;; If custom Mesh
+		(let [material (.getMaterial mesh)
+					color (.getColor material)]
+			(vector (.getClass mesh) (vec (.getVertices mesh)) (.x color) (.y color) (.z color) (.getReflectance material) (vec (.getNormales mesh)) (vec (.getIndices mesh)) (.getWeight mesh)))
+		(if (= (.getClass mesh) gameEngine.meshs.BlockMesh) ;; If BlockMesh
+			(let [material (.getMaterial mesh)
+					color (.getColor material)]
+				(vector gameEngine.meshGenerator.BlockGenerator (.xLength mesh) (.yLength mesh) (.zLength mesh) (.x color) (.y color) (.z color) (.getReflectance material)))
+			(let [material (.getMaterial mesh) ;; Else, treat as custom Mesh
+						color (.getColor material)]
+				(vector (.getClass mesh) (vec (.getVertices mesh)) (.x color) (.y color) (.z color) (.getReflectance material) (vec (.getNormales mesh)) (vec (.getIndices mesh)) (.getWeight mesh))))
   ))
 
 (defn myItemToVector [myItem]
@@ -429,42 +428,36 @@
 ;; Load Tools for Items
 (defn loadMesh [mesh]
 	"Loads a Mesh. Does not support all subclasses of Mesh yet."
-	(println "loading mesh" (get mesh 0))
-	(case (get mesh 0)
-		gameEngine.meshGenerator.BlockGenerator (gameEngine.meshGenerator.BlockGenerator/generate (get mesh 1) (get mesh 2) (get mesh 3) (get mesh 4) (get mesh 5) (get mesh 6) (get mesh 7))
-		gameEngine.meshGenerator.HalfBlockGenerator (gameEngine.meshGenerator.HalfBlockGenerator/generate (get mesh 1) (get mesh 2) (get mesh 3) (get mesh 4) (get mesh 5) (get mesh 6) (get mesh 7))
-		gameEngine.meshGenerator.PyramidGenerator (gameEngine.meshGenerator.PyramidGenerator/generate (get mesh 1) (get mesh 2) (get mesh 3) (get mesh 4) (get mesh 5) (get mesh 6) (get mesh 7))
-		gameEngine.meshGenerator.RegTetrahedronGenerator (gameEngine.meshGenerator.RegTetrahedronGenerator/generate (get mesh 1) (get mesh 2) (get mesh 3) (get mesh 4))
-		gameEngine.meshGenerator.RegOctahedronGenerator (gameEngine.meshGenerator.RegOctahedronGenerator/generate (get mesh 1) (get mesh 2) (get mesh 3) (get mesh 4))
-		gameEngine.meshs.Mesh (gameEngine.meshs.Mesh. (float-array (get mesh 1)) (get mesh 2) (get mesh 3) (get mesh 4) (get mesh 5) (float-array (get mesh 6)) (int-array (get mesh 7)) (get mesh 8))
-	))
-	
-(defn loadGenericItems [mesh items itemRefsMap world]
+	(if (= (get mesh 0) gameEngine.meshs.Mesh)
+		(gameEngine.meshs.Mesh. (float-array (get mesh 1)) (get mesh 2) (get mesh 3) (get mesh 4) (get mesh 5) (float-array (get mesh 6)) (int-array (get mesh 7)) (get mesh 8))
+		(gameEngine.meshGenerator.BlockGenerator/generate (get mesh 1) (get mesh 2) (get mesh 3) (get mesh 4) (get mesh 5) (get mesh 6) (get mesh 7)))
+)
+
+(defn loadGenericItems [mesh items world]
 	"Loads GenericItems, associating them with their Mesh, and adds them to the sceneVertex."
 	(let [item (first items)
 				sceneVertex (.getSceneVertex world)]
 		(if (= (.size items) 1)
-			 (let [javaItem (gameEngine.items.GenericItem. mesh (get item 0) (get item 1) (get item 2) (get item 3) (get item 4) (get item 5) (get item 6))]
-			 	(.add sceneVertex javaItem)
-			 	(assoc itemRefsMap (.size itemRefsMap) javaItem)
-			 	(println "liste " (assoc itemRefsMap (.size itemRefsMap) javaItem)) ;; TODO
-			 	(assoc itemRefsMap (.size itemRefsMap) javaItem))
-			(let [javaItem (gameEngine.items.GenericItem. mesh (get item 0) (get item 1) (get item 2) (get item 3) (get item 4) (get item 5) (get item 6))]
-				(.add sceneVertex javaItem)
-				(loadGenericItems mesh (rest items) (assoc itemRefsMap (.size itemRefsMap) javaItem) world)))
+			 (.add sceneVertex (gameEngine.items.GenericItem. mesh (get item 0) (get item 1) (get item 2) (get item 3) (get item 4) (get item 5) (get item 6)))
+			(do
+				(.add sceneVertex (gameEngine.items.GenericItem. mesh (get item 0) (get item 1) (get item 2) (get item 3) (get item 4) (get item 5) (get item 6)))
+				(loadGenericItems mesh (rest items) world)))
 	))
 
-(defn loadMeshItems [meshItems itemRefsMap world]
+(defn loadMeshItems [meshItems world]
 	"Loads items sharing one Mesh."
 	(let [mesh (loadMesh (first meshItems))]
-		(loadGenericItems mesh (rest meshItems) itemRefsMap world)))
+		(loadGenericItems mesh (rest meshItems) world)))
   
-(defn loadMeshMap [meshMapList itemRefsMap world]
-	"Loads all items of the given meshMap (as list)."
-	(if (= (.size meshMapList) 0)
-		itemRefsMap
-		(let [itemRefsMap (loadMeshItems (first meshMapList) itemRefsMap world)]
-			(loadMeshMap (rest meshMapList) itemRefsMap world))
+(defn loadMeshMap [meshMapVec world]
+	"Loads all items of the given meshMap (as vector)."
+	(if (= (.size meshMapVec) 0)
+		nil
+		(if (= (.size meshMapVec) 1)
+			(loadMeshItems (first meshMapVec) world)
+			(do
+				(loadMeshItems (first meshMapVec) world)
+				(loadMeshMap (rest meshMapVec) world)))
 	))
 
 ;; Load Tools for Groups
@@ -479,23 +472,24 @@
 	))
 
 
-(defn addItemsToGroup [groupItemsList groupId itemRefsMap world]
+(defn addItemsToGroup [groupItemsList groupId world]
 	"Adds items from the groupItemsList vector to the group corresponding to the given groupId."
-	(println "addItemsToGroup called with " groupItemsList groupId itemRefsMap world)
+	(println "addItemsToGroup called with " groupItemsList groupId world)
 	(cond (> (.size groupItemsList) 0)
-		(let [groupsList (.getListGroup world)]
-			(addItem (.get groupsList groupId) (.get itemRefsMap (first groupItemsList)))
-			(addItemsToGroup (rest groupItemsList) groupId itemRefsMap world))
+		(let [groupsList (.getListGroup world)
+					itemsList (.getListItems (.getSceneVertex world))]
+			(addItem (.get groupsList groupId) (.get itemsList (first groupItemsList)))
+			(addItemsToGroup (rest groupItemsList) groupId world))
 	))
 
 
-(defn addItemsToGroups [groupsList curId itemRefsMap world]
+(defn addItemsToGroups [groupsList curId world]
 	"Adds items from the groupsList vector to corresponding groups."
 	(println "addItemsToGroups called with " groupsList curId world)
 	(cond (> (.length groupsList) 0)
 		(do
-			(addItemsToGroup (lazy-seq (last groupsList)) curId itemRefsMap world)
-			(addItemsToGroups (pop groupsList) (- curId 1) itemRefsMap world))
+			(addItemsToGroup (lazy-seq (last groupsList)) curId world)
+			(addItemsToGroups (pop groupsList) (- curId 1) world))
 	))
 
 ;; Load Tools for Cameras
@@ -528,19 +522,18 @@
   ))
 
 ;; Load Functions
-(defn loadItems [loadedItems itemRefsMap world]
+(defn loadItems [loadedItems world]
 	"Loads all MyItem objects from an EDN vector created with saveItems."
-	(loadMeshMap (lazy-seq loadedItems) itemRefsMap world)
+	(loadMeshMap (lazy-seq loadedItems) world)
 	)
 	
-(defn loadGroups [loadedGroups itemRefsMap world]
+(defn loadGroups [loadedGroups world]
 	"Loads all groups from an EDN vector created with saveGroups."
-	(println "loading group")
 	(println "loadGroups called with " loadedGroups world)
 	(cond (> (.size loadedGroups) 0)
 		(do
 			(createNGroups (.size loadedGroups) world)
-			(addItemsToGroups loadedGroups (- (.size loadedGroups) 1) itemRefsMap world))
+			(addItemsToGroups loadedGroups (- (.size loadedGroups) 1) world))
 	))
 
 (defn loadCameras [loadedCameras world]
@@ -562,11 +555,10 @@
 
 (defn loadFile [filename world]
 	"Reinitializes the world and loads items, cameras and lights contained in the given file."
-	(.init world)	
-	(let [loadedVector (read-string (slurp filename))
-				itemRefsMap (loadItems (get loadedVector 0) '{} world)]
-		(println "liste " itemRefsMap)
-		(loadGroups (get loadedVector 1) itemRefsMap world)
+		(let [loadedVector (read-string (slurp filename))]
+		(.init world)
+		(loadItems (get loadedVector 0) world)
+		(loadGroups (get loadedVector 1) world)
 		(loadCameras (get loadedVector 2) world)
 		(loadLights (get loadedVector 3) world)
 	))

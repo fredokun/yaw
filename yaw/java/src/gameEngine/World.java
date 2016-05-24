@@ -2,6 +2,8 @@ package gameEngine;
 
 import java.util.ArrayList;
 
+import org.joml.Vector3f;
+
 import gameEngine.camera.Camera;
 import gameEngine.items.GroupItem;
 import gameEngine.light.SceneLight;
@@ -33,6 +35,15 @@ public class World implements Runnable{
 	
 	public ArrayList<Camera> getListCamera(){
 		return listCamera;
+	}
+	
+	public void setSkyBox(float width, float length, float height, float r,float g,float b){
+		SkyBox sky=new SkyBox(width,length,height,new Vector3f(r,g,b));
+		if(this.sk != null)
+			removeSkyBox();
+		this.sk = sky;
+		this.initSkyBox = true;
+		//return sky;
 	}
 	
 	public void setSkyBox(SkyBox sk){
