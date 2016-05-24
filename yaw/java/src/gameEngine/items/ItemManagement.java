@@ -4,9 +4,9 @@ import gameEngine.World;
 import gameEngine.meshGenerator.BlockGenerator;
 import gameEngine.meshGenerator.GroundGenerator;
 import gameEngine.meshGenerator.HalfBlockGenerator;
-import gameEngine.meshGenerator.OctaedreRegulierGenerator;
+import gameEngine.meshGenerator.RegOctahedronGenerator;
 import gameEngine.meshGenerator.PyramidGenerator;
-import gameEngine.meshGenerator.TetraedreRegGenerator;
+import gameEngine.meshGenerator.RegTetrahedronGenerator;
 import gameEngine.meshs.Material;
 import gameEngine.meshs.Mesh;
 
