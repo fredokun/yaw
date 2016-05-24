@@ -79,7 +79,7 @@ public class SceneLight {
             Vector4f dir = new Vector4f(currSpotLight.conedir, 0);
             dir.mul(viewMatrix);
             currSpotLight.conedir=new Vector3f(dir.x, dir.y, dir.z);
-
+            currSpotLight.cutoffAngle = (float) Math.cos(Math.toRadians(currSpotLight.cutoffAngle));
             Vector3f lightPos = new Vector3f(currSpotLight.getPosition());
             Vector4f aux = new Vector4f(lightPos, 1);
             aux.mul(viewMatrix);
