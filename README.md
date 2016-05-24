@@ -153,8 +153,9 @@ Now you can access the world with : (:world @universe)
 ##### Remove Camera
 >boot.user=> (removeCamera world camera)
 
-##### set the Orientation of the Camera (camera x y z)
+##### Set the Orientation of the Camera (camera x y z)
 >boot.user=> (setOrientation camera 1.0 0.0 0.0)
+
 ----
 ## Light
 
