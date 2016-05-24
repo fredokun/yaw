@@ -99,8 +99,7 @@ public class World implements Runnable{
 			//Initialisation of the window we currently use
 			glViewport(0, 0, 500,500);
 			while ( glfwWindowShouldClose(Window.window) == GLFW_FALSE ) {
-				//if(initSkyBox)
-					//sk.init();
+				Thread.sleep(20);
 				c.update();
 				callback.update();
 				//Clean the window
