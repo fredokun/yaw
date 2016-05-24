@@ -27,6 +27,7 @@ public class World implements Runnable{
 	public void setCamera(Camera c){
 		this.c=c;
 	}
+	
 	public ArrayList<Camera> getListCamera(){
 		return listCamera;
 	}
