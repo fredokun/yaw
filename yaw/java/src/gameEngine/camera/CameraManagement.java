@@ -32,6 +32,8 @@ public class CameraManagement {
 		
 	}
 	public static Camera getCamera(World world,int i){
+		if(i<0 || i>=world.getListCamera().size())
+			return null;
 		return world.getListCamera().get(i);
 	}
 	
@@ -40,14 +42,17 @@ public class CameraManagement {
 	}
 	
 	public static void removeCameraNumber(World world,int i){
-		int max=world.getListCamera().size();
-		if(i<0)
-			world.getListCamera().remove(0);
-		else
-		world.getListCamera().remove(Math.min(max-1, i));
+		if(i<0 || i>=world.getListCamera().size())
+			return;
+		world.getListCamera().remove(i);
 	}
 	
 	public static void setPositionCamera(Camera c,float x,float y,float z){
 		c.setPosition(new Vector3f(x,y,z));
 	}
+	
+	public static Vector3f getPosition(Camera c){
+		return c.getPosition();
+	}
+
 }

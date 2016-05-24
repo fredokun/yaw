@@ -57,7 +57,8 @@
       (.setQuadraticAtt pointlight att))
       
 (defn getConedir [spotlight]
-      (.getConedir spotlight))
+       (let [pos (.getConedir spotlight)]
+      (vec ((.x pos) (.y pos) (.z pos)))))
 
 (defn setConedir [spotlight x y z]
       (.setConedir spotlight x y z))
@@ -112,6 +113,10 @@
       (.setOrientation camera vector))
       
 ;; Objects Management------------------------------------------------
+
+(defn createGround [world r g b width length ]
+      (ItemManagement/createGround world r g b width length))
+
 (defn createBlock [world r g b xL yL zL scale]
       (ItemManagement/createBlock world r g b xL yL zL scale))
 
@@ -147,6 +152,10 @@
       
 (defn setReflectance [item refl]
       (.setReflectance item refl))
+
+(defn getColor [item]
+ (let [pos (.getColor item)]
+      (vector (.x pos) (.y pos) (.z pos))))
       
 (defn setColor [item r g b]
       (.setColor item r g b))
@@ -161,7 +170,8 @@
       (.setRotation item vector))
       
 (defn getRotation [item]
-      (.getRotation item vector))
+       (let [pos (.getRotation item)]
+      (vector (.x pos) (.y pos) (.z pos))))
 
 (defn revolveAroundVector [item center degX degY degZ]
       (.revolveAround item center degX degY degZ))
@@ -215,7 +225,8 @@
       (.setPosition item vector))
       
 (defn getPosition [item]
-      (.getPosition item))
+      (let [pos (.getPosition item)]
+      (vector (.x pos) (.y pos) (.z pos))))
 
 
 ;;CallBack Management

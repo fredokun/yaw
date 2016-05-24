@@ -16,6 +16,34 @@ Initialize the world : (def universe(start-yaw))
 
 Now you can access the world with : (:world @universe)
 
+## Exemple
+
+Initialisation
+>boot repl  
+>boot.user=> (boot (build))  
+>boot.user=> (use 'yaw.world)  
+>boot.user=> (def universe(start-yaw))  
+>boot.user=> (def world (:world @universe))  
+
+
+Create a Block and move it in front of the Camera
+>(def cube(createBlock world 1 1 1 1 1 1 1))  
+>(translate cube 0 0 -2)
+
+Add a Green Spotlight
+>(def sl(addSpotLight world 0 1 0 0 0 0 1 0 0.5 0 0 0 -1 10 0))
+
+Change the ambiant light (Darker)
+>(setAmbiantLight world 1.0 1.0 1.0 0.5)
+
+Change the color of the spotlight to Red
+>(setColor sl 1 0 0)
+
+Set the sun Light to blue and rotate the cube to see the differences
+>(rotate cube 25 0 0)  
+>(setSunLight world 0 0 1 1 0 -1 1)
+
+
 ---
 # How to use the Clojure Functions
 
@@ -35,6 +63,9 @@ Now you can access the world with : (:world @universe)
 
 ----
 ## Item
+
+#####Creating the Ground of the world (world red green blue width length)
+>boot.user=> (def ground(createGround world 1 1 1 400 400))
 
 #####Creating  Block : (world red green blue xLength yLength zLength scale)
 >boot.user=> (def item (createBlock (:world @universe) 1.0 0.0 0.0 2.0 2.0 2.0 1.0))
@@ -221,8 +252,18 @@ Set the AmbiantLight : (world r g b intensity)
 (world keyString)
 >boot.user=> (.clearCallback (.getCallback world) keyString)
 
+##### Remove a function associated with a key
+(world keyString function)
+>boot.user=> (.clearFunctionOfKey (.getCallback world) keyString function)
+
 ----
 ## Save & Load
+
+#### Save the World (filename world)
+>boot.user=> (saveFile "yaw/save/u.edn" world)
+
+#### Load the World (filename world)
+>boot.user=> (loadFile "yaw/save/u.edn" world)
 
 
 
