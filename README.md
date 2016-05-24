@@ -5,16 +5,16 @@
 
 ## Requirements
 
-Boot : [Building Tool for Clojure] http://boot-clj.com/
+Boot : [Building Tool for Clojure] http://boot-clj.com/  
 Java : 1.8 +
 
 ## How to start
 
-Go to the root of the project where the file build.boot is located
-Launch the REPL of boot with : "boot repl"
-Initialize the project inside the REPL : (boot (build))
-Import the clojure functions : (use 'yaw.world)
-Initialize the world : (def universe(start-yaw))
+Go to the root of the project where the file build.boot is located  
+Launch the REPL of boot with : "boot repl"  
+Initialize the project inside the REPL : (boot (build))  
+Import the clojure functions : (use 'yaw.world)  
+Initialize the world : (def universe(start-yaw))  
 
 Now you can access the world with : (:world @universe)
 
