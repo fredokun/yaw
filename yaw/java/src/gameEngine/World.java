@@ -21,6 +21,7 @@ public class World implements Runnable{
 	SceneLight sl;
 	Callback callback;
 	ArrayList<GroupItem> listGroup;
+	ArrayList<SkyBox> skyToRemove;
 
 	private SkyBox sk = null;
 	
@@ -38,19 +39,20 @@ public class World implements Runnable{
 	
 	public void setSkyBox(float width, float length, float height, float r,float g,float b){
 		SkyBox sky=new SkyBox(width,length,height,new Vector3f(r,g,b));
-		if(this.sk != null)
-			removeSkyBox();
+		if(this.sk != null){
+			skyToRemove.add(sk);
+		}
 		this.sk = sky;
 	}
 	
 	public void setSkyBox(SkyBox sk){
 		if(this.sk != null)
-			removeSkyBox();
+			skyToRemove.add(sk);
 		this.sk = sk;
 	}
 	
 	public void removeSkyBox(){
-		this.sk.cleanUp();
+		skyToRemove.add(sk);
 		this.sk = null;
 	}
 	
@@ -74,6 +76,7 @@ public class World implements Runnable{
 		this.sl= new SceneLight();
 		this.callback=new Callback();
 		this.listGroup=new ArrayList<GroupItem>();
+		this.skyToRemove=new ArrayList<SkyBox>();
 	}
 	
 	public void emptyListCamera() {
@@ -107,6 +110,8 @@ public class World implements Runnable{
 				synchronized(sc){
 			
 				//Update the world
+					for(SkyBox s : skyToRemove)
+						s.cleanUp();
 				renderer.render(sc, sl, isResized,c, sk);
 				}
 				//Thread.sleep(1000);
