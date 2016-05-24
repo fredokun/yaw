@@ -56,7 +56,7 @@ public class Renderer {
 		sh.cleanup();
 	}
 
-	public void render(SceneVertex sc, SceneLight sl, boolean isResized,Camera cam, SkyBox sk){
+	public void render(SceneVertex sc, SceneLight sl, boolean isResized,Camera cam, SkyBox sk,boolean skInit){
 		sh.bind();
 		//Preparation of the camera
 		if(isResized || SceneVertex.itemAdded){
@@ -103,6 +103,14 @@ public class Renderer {
 
 		sh.unbind();
 		if(sk!= null){
+			if(sk.init==false)
+				SceneVertex.itemAdded=true;
+				try {
+					sk.init();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			sk.draw(cam);
 		}
 	}

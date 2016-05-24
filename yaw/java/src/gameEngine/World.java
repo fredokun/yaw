@@ -24,6 +24,7 @@ public class World implements Runnable{
 
 	private SkyBox sk = null;
 	private boolean initSkyBox = false;
+	private boolean skInit=false;
 	
 	public Camera getCamera(){
 		return c;
@@ -104,8 +105,8 @@ public class World implements Runnable{
 			//Initialisation of the window we currently use
 			glViewport(0, 0, 500,500);
 			while ( glfwWindowShouldClose(Window.window) == GLFW_FALSE ) {
-				if(initSkyBox)
-					sk.init();
+				//if(initSkyBox)
+					//sk.init();
 				c.update();
 				callback.update();
 				//Clean the window
@@ -113,7 +114,7 @@ public class World implements Runnable{
 				synchronized(sc){
 			
 				//Update the world
-				renderer.render(sc, sl, isResized,c, sk);
+				renderer.render(sc, sl, isResized,c, sk,skInit);
 				}
 				//Thread.sleep(1000);
 				//Update the window's picture

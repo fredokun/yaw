@@ -34,7 +34,7 @@ import org.lwjgl.opengl.GL11;
 public class SkyBox {
 	public Vector3f color;
 	private ShaderProgram shaderProg;
-	
+	public boolean init=false;
 	public final float width, length, height;
 	
 	private int vaoId,vboVertex,vboIndices;
@@ -132,6 +132,7 @@ public class SkyBox {
 
 		glBindBuffer(GL_ARRAY_BUFFER,0);
 		glBindVertexArray(0);
+		init=true;
 	}
 	
 	public void draw(Camera cam){
