@@ -25,7 +25,7 @@ Now you can access the world with : (:world @universe)
 >boot.user=> (translate object 10.0 0.0 1.0)
 
 ##### Get / Set the Position (object x y z)
->boot.user=> (getPosition object)
+>boot.user=> (getPosition object)  
 >boot.user=> (setPosition object 0.0 0.0 0.0)
 
 ## Functions that can be used by Camera / Item / Group
@@ -178,32 +178,32 @@ Set the AmbiantLight : (world r g b intensity)
 ### Manipulation of the lights (Point & Spot)
 
 #####Get the List of the SpotLight & PointLight
->boot.user=> (getPointLightList world)
+>boot.user=> (getPointLightList world)  
 >boot.user=> (getSpotLightList world)
 
 #####Get / Set the intensity of the light [0.0 -> 1.0]
->boot.user=> (setIntensity light 0.8)
+>boot.user=> (setIntensity light 0.8)  
 >boot.user=> (getIntensity light)
 
 #####Get / set the Attenuation of the light
->boot.user=> (setConstantAtt light 0.5)
+>boot.user=> (setConstantAtt light 0.5)  
 >boot.user=> (getConstantAtt light)
 
->boot.user=> (setLinearAtt light 0.5)
+>boot.user=> (setLinearAtt light 0.5)  
 >boot.user=> (getLinearAtt light)
 
->boot.user=> (setQuadraticAtt light 0.5)
+>boot.user=> (setQuadraticAtt light 0.5)  
 >boot.user=> (getQuadraticAtt light)
 
 ##### Get / Set Directional Cone & Angle of the Spot light
->boot.user=> (setConedir light 1.0 2.0 3.0)
+>boot.user=> (setConedir light 1.0 2.0 3.0)  
 >boot.user=> (getConedir light)
 
->boot.user=> (setCutoffAngle light 0.8)
+>boot.user=> (setCutoffAngle light 0.8)  
 >boot.user=> (getCutoffAngle light)
 
 ##### Get / Set the Specular Power of all the lights
->boot.user=> (setSpecularPower world 32)
+>boot.user=> (setSpecularPower world 32)  
 >boot.user=> (getSpecularPower world)
 
 ----
