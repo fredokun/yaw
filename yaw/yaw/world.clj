@@ -113,6 +113,10 @@
       (.setOrientation camera vector))
       
 ;; Objects Management------------------------------------------------
+
+(defn createGround [world r g b width length height]
+      (ItemManagement/createGround world r g b width length height))
+
 (defn createBlock [world r g b xL yL zL scale]
       (ItemManagement/createBlock world r g b xL yL zL scale))
 

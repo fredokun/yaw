@@ -2,6 +2,7 @@ package gameEngine.items;
 
 import gameEngine.World;
 import gameEngine.meshGenerator.BlockGenerator;
+import gameEngine.meshGenerator.GroundGenerator;
 import gameEngine.meshGenerator.HalfBlockGenerator;
 import gameEngine.meshGenerator.OctaedreRegulierGenerator;
 import gameEngine.meshGenerator.PyramidGenerator;
@@ -49,6 +50,14 @@ public class ItemManagement {
 		Material material = new Material( new Vector3f(red,green,blue),0.f);
 		Mesh apparence=OctaedreRegulierGenerator.generate(material);
 		GenericItem item=new GenericItem(apparence,scale,new Vector3f(),new Vector3f(0f,0f,0f));
+		world.getSceneVertex().add(item);
+		return item;
+	}
+	
+	public static GenericItem createGround(World world,float red, float green,float blue,float width,float length,float height){
+		Material material = new Material( new Vector3f(red,green,blue),0.f);
+		Mesh apparence=GroundGenerator.generate(width,length,height,material);
+		GenericItem item=new GenericItem(apparence,1.0f,new Vector3f(),new Vector3f(0f,0f,0f));
 		world.getSceneVertex().add(item);
 		return item;
 	}
