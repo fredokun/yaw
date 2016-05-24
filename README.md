@@ -239,6 +239,15 @@ Set the AmbiantLight : (world r g b intensity)
 >boot.user=> (getSpecularPower world)
 
 ----
+##SkyBox
+
+##### Set the SkyBox (world width length height red green blue)
+>boot.user=> (setSkyBox world 500 500 500 1 0 0)
+
+#### Remove the SkyBox
+>boot.user=> (removeSkyBox world)
+
+----
 ## Callback
 
 ##### The function has to implement IFn
