@@ -249,8 +249,18 @@ Set the AmbiantLight : (world r g b intensity)
 (world keyString)
 >boot.user=> (.clearCallback (.getCallback world) keyString)
 
+##### Remove a function associated with a key
+(world keyString function)
+>boot.user=> (.clearFunctionOfKey (.getCallback world) keyString function)
+
 ----
 ## Save & Load
+
+#### Save the World (filename world)
+>boot.user=> (saveFile "yaw/save/u.edn" world)
+
+#### Load the World (filename world)
+>boot.user=> (loadFile "yaw/save/u.edn" world)
 
 
 
