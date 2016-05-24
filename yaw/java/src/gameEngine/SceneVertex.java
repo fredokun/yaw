@@ -23,8 +23,11 @@ public class SceneVertex {
 	public void removeItem(MyItem item){
 		ArrayList<MyItem> temp=mapMesh.get(item.getAppearance());
 		temp.remove(item);
-		if(temp.isEmpty())
-			mapMesh.remove(item.getAppearance());
+		if(temp.isEmpty()){
+			Mesh m = item.getAppearance();
+			mapMesh.remove(m);
+			m.cleanUp();
+		}
 	}
 
 	public ArrayList<MyItem> getListItems(){

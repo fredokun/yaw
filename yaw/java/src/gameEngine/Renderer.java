@@ -3,6 +3,7 @@ package gameEngine;
 import static org.lwjgl.opengl.GL11.*;
 import gameEngine.camera.Camera;
 import gameEngine.light.SceneLight;
+import gameEngine.skyBox.SkyBox;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -55,7 +56,7 @@ public class Renderer {
 		sh.cleanup();
 	}
 
-	public void render(SceneVertex sc, SceneLight sl, boolean isResized,Camera cam){
+	public void render(SceneVertex sc, SceneLight sl, boolean isResized,Camera cam, SkyBox sk){
 		sh.bind();
 		//Preparation of the camera
 		if(isResized || SceneVertex.itemAdded){
@@ -101,5 +102,8 @@ public class Renderer {
 		sc.draw(sh,mvm);
 
 		sh.unbind();
+		if(sk!= null){
+			sk.draw(cam);
+		}
 	}
 }

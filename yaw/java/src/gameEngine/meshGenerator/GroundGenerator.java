@@ -5,7 +5,7 @@ import gameEngine.meshs.Material;
 import gameEngine.meshs.Mesh;
 
 public class GroundGenerator {
-	public Mesh generate(float width, float length,float height, Material m){
+	public static Mesh generate(float width, float length,float height, Material m){
 		float halfW = width / 2;
 		float halfL = length / 2;
 		

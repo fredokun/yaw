@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import gameEngine.camera.Camera;
 import gameEngine.items.GroupItem;
 import gameEngine.light.SceneLight;
+import gameEngine.skyBox.SkyBox;
 import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 import static org.lwjgl.opengl.GL11.*;
@@ -18,7 +19,9 @@ public class World implements Runnable{
 	SceneLight sl;
 	Callback callback;
 	ArrayList<GroupItem> listGroup;
-	
+
+	private SkyBox sk = null;
+	private boolean initSkyBox = false;
 	
 	public Camera getCamera(){
 		return c;
@@ -29,6 +32,19 @@ public class World implements Runnable{
 	}
 	public ArrayList<Camera> getListCamera(){
 		return listCamera;
+	}
+	
+	public void setSkyBox(SkyBox sk){
+		if(this.sk != null)
+			removeSkyBox();
+		this.sk = sk;
+		this.initSkyBox = true;
+	}
+	
+	public void removeSkyBox(){
+		this.sk.cleanUp();
+		this.sk = null;
+		this.initSkyBox = false;
 	}
 	
 	public SceneVertex getSceneVertex(){
@@ -71,11 +87,13 @@ public class World implements Runnable{
 			e1.printStackTrace();
 			return;
 		}
-
+		
 		try{
 			//Initialisation of the window we currently use
 			glViewport(0, 0, 500,500);
 			while ( glfwWindowShouldClose(Window.window) == GLFW_FALSE ) {
+				if(initSkyBox)
+					sk.init();
 				c.update();
 				callback.update();
 				//Clean the window
@@ -83,7 +101,7 @@ public class World implements Runnable{
 				synchronized(sc){
 			
 				//Update the world
-				renderer.render(sc, sl, isResized,c);
+				renderer.render(sc, sl, isResized,c, sk);
 				}
 				//Thread.sleep(1000);
 				//Update the window's picture
@@ -93,6 +111,8 @@ public class World implements Runnable{
 		finally{
 			renderer.cleanUp();
 			sc.cleanUp();
+			if(sk!= null)
+				sk.cleanUp();
 			//On desaloue le materiel de la fenetre
 			Window.cleanUp();
 		}
