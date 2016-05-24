@@ -64,6 +64,9 @@ Set the sun Light to blue and rotate the cube to see the differences
 ----
 ## Item
 
+#####Creating the Ground of the world (world red green blue width length)
+>boot.user=> (def ground(createGround world 1 1 1 400 400))
+
 #####Creating  Block : (world red green blue xLength yLength zLength scale)
 >boot.user=> (def item (createBlock (:world @universe) 1.0 0.0 0.0 2.0 2.0 2.0 1.0))
 
