@@ -23,8 +23,6 @@ public class World implements Runnable{
 	ArrayList<GroupItem> listGroup;
 
 	private SkyBox sk = null;
-	private boolean initSkyBox = false;
-	private boolean skInit=false;
 	
 	public Camera getCamera(){
 		return c;
@@ -43,21 +41,17 @@ public class World implements Runnable{
 		if(this.sk != null)
 			removeSkyBox();
 		this.sk = sky;
-		this.initSkyBox = true;
-		//return sky;
 	}
 	
 	public void setSkyBox(SkyBox sk){
 		if(this.sk != null)
 			removeSkyBox();
 		this.sk = sk;
-		this.initSkyBox = true;
 	}
 	
 	public void removeSkyBox(){
 		this.sk.cleanUp();
 		this.sk = null;
-		this.initSkyBox = false;
 	}
 	
 	public SceneVertex getSceneVertex(){
@@ -114,7 +108,7 @@ public class World implements Runnable{
 				synchronized(sc){
 			
 				//Update the world
-				renderer.render(sc, sl, isResized,c, sk,skInit);
+				renderer.render(sc, sl, isResized,c, sk);
 				}
 				//Thread.sleep(1000);
 				//Update the window's picture
