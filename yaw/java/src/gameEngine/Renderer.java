@@ -107,6 +107,7 @@ public class Renderer {
 				SceneVertex.itemAdded=true;
 				try {
 					sk.init();
+					sk.init=false;
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

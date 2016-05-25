@@ -8,22 +8,24 @@ import clojure.lang.IFn;
 
 public class Callback {
 	HashMap<Integer,ArrayList<Object>> map;
-	
+
 	public Callback(){
 		map=new HashMap<Integer,ArrayList<Object>>();
 	}
-	
+
 	public void registerCallback(String s,Object o){
-		if(map.get(StringToKeyCode(s))==null){
+		if(map.get(StringToKeyCode(s))==null)
 			map.put(StringToKeyCode(s),new ArrayList<Object>());
-			map.get(StringToKeyCode(s)).add(o);
-		}
+		map.get(StringToKeyCode(s)).add(o);
 	}
 	public void clearCallback(String s){
-		map.remove(StringToKeyCode(s));
+		if(map.containsKey(StringToKeyCode(s)))
+			map.remove(StringToKeyCode(s));
 	}
 	public void clearFunctionOfKey(String s,Object o){
-		map.get(StringToKeyCode(s)).remove(o);
+		if(map.containsKey(StringToKeyCode(s)))
+			if(map.get(StringToKeyCode(s)).contains(o))
+				map.get(StringToKeyCode(s)).remove(o);
 	}
 	public void update(){
 		for(Integer i : map.keySet()){
@@ -36,7 +38,7 @@ public class Callback {
 	}
 	public Integer StringToKeyCode(String s){
 		switch(s){
-		case("a"): return GLFW_KEY_A;
+		case("a"): return GLFW_KEY_Q;
 		case("b"): return GLFW_KEY_B;
 		case("c"): return GLFW_KEY_C;
 		case("d"): return GLFW_KEY_D;
@@ -52,16 +54,16 @@ public class Callback {
 		case("n"): return GLFW_KEY_N;
 		case("o"): return GLFW_KEY_O;
 		case("p"): return GLFW_KEY_P;
-		case("q"): return GLFW_KEY_Q;
+		case("q"): return GLFW_KEY_A;
 		case("r"): return GLFW_KEY_R;
 		case("s"): return GLFW_KEY_S;
 		case("t"): return GLFW_KEY_T;
 		case("u"): return GLFW_KEY_U;
 		case("v"): return GLFW_KEY_V;
-		case("w"): return GLFW_KEY_W;
+		case("w"): return GLFW_KEY_Z;
 		case("x"): return GLFW_KEY_X;
 		case("y"): return GLFW_KEY_Y;
-		case("z"): return GLFW_KEY_Z;
+		case("z"): return GLFW_KEY_W;
 		case("0"): return GLFW_KEY_KP_0;
 		case("1"): return GLFW_KEY_KP_1;
 		case("2"): return GLFW_KEY_KP_2;
@@ -73,8 +75,8 @@ public class Callback {
 		case("8"): return GLFW_KEY_KP_8;
 		case("9"): return GLFW_KEY_KP_9;
 		default: return GLFW_KEY_KP_ADD;
-		
+
 		}
 	}
-	
+
 }

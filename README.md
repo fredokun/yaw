@@ -76,11 +76,11 @@ Set the sun light to blue and rotate the cube to see the differences
 #####Creating a Pyramid:
 >boot.user=> (def item (createPyramid (:world @universe) 1.0 0.0 0.0 2.0 2.0 2.0 1.0))
 
-#####Creating a Tetrahedron:
->boot.user=> (def item (createTetrahedron (:world @universe) 1.0 0.0 0.0 2.0 2.0 2.0 1.0))
+#####Creating a Tetrahedron: (world r g b scale)
+>boot.user=> (def item (createTetrahedron (:world @universe) 1.0 0.0 0.0 1.0))
 
-#####Creating an Octahedron:
->boot.user=> (def item (createOctahedron (:world @universe) 1.0 0.0 0.0 2.0 2.0 2.0 1.0))
+#####Creating an Octahedron: (world r g b scale)
+>boot.user=> (def item (createOctahedron (:world @universe) 1.0 0.0 0.0 1.0))
 
 #####Clone: (item)
 >boot.user=> (clone world item)
@@ -258,11 +258,11 @@ Set the AmbientLight: (world r g b intensity)
 
 ##### Remove all Callbacks associated with a key
 (world keyString)
->boot.user=> (clearCallback (.getCallback world) keyString)
+>boot.user=> (clearCallback (:world @universe) keyString)
 
 ##### Remove a function associated with a key
 (world keyString function)
->boot.user=> (clearFunctionOfKey (.getCallback world) keyString function)
+>boot.user=> (clearFunctionOfKey (:world @universe) keyString function)
 
 ----
 ## Save & Load
