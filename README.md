@@ -259,11 +259,11 @@ Set the AmbiantLight : (world r g b intensity)
 
 ##### Remove all Callbacks associated with a key
 (world keyString)
->boot.user=> (.clearCallback (.getCallback world) keyString)
+>boot.user=> (clearCallback (.getCallback world) keyString)
 
 ##### Remove a function associated with a key
 (world keyString function)
->boot.user=> (.clearFunctionOfKey (.getCallback world) keyString function)
+>boot.user=> (clearFunctionOfKey (.getCallback world) keyString function)
 
 ----
 ## Save & Load

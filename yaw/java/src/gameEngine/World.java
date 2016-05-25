@@ -3,7 +3,6 @@ package gameEngine;
 import java.util.ArrayList;
 
 import org.joml.Vector3f;
-import org.lwjgl.glfw.GLFW;
 
 import gameEngine.camera.Camera;
 import gameEngine.items.GroupItem;
@@ -25,6 +24,7 @@ public class World implements Runnable{
 	ArrayList<SkyBox> skyToRemove;
 
 	private SkyBox sk = null;
+	private boolean loop;
 	
 	public Camera getCamera(){
 		return c;
@@ -82,6 +82,7 @@ public class World implements Runnable{
 		this.callback=new Callback();
 		this.listGroup=new ArrayList<GroupItem>();
 		this.skyToRemove=new ArrayList<SkyBox>();
+		loop=true;
 	}
 	
 	public void emptyListCamera() {
@@ -106,7 +107,7 @@ public class World implements Runnable{
 		try{
 			//Initialisation of the window we currently use
 			glViewport(0, 0, 500,500);
-			while ( glfwWindowShouldClose(Window.window) == GLFW_FALSE) {
+			while ( glfwWindowShouldClose(Window.window) == GLFW_FALSE && loop) {
 				Thread.sleep(20);
 				c.update();
 				callback.update();
@@ -140,7 +141,7 @@ public class World implements Runnable{
 	}
 	
 	public synchronized void close() throws InterruptedException {
-		GLFW.glfwSetWindowShouldClose(Window.window, 1);
+		loop=false;
 		this.wait();
 	}
 }
