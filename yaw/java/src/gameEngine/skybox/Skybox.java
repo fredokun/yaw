@@ -56,15 +56,15 @@ public class Skybox {
 		
 		shaderProg = new ShaderProgram();
 		try{
-			shaderProg.createVertexShader(new String(Files.readAllBytes(Paths.get("./java/src/gameEngine/skyBox/skyBoxVertexShader.vs"))));
-			shaderProg.createFragmentShader(new String(Files.readAllBytes(Paths.get("./java/src/gameEngine/skyBox/skyBoxFragmentShader.fs"))));
+			shaderProg.createVertexShader(new String(Files.readAllBytes(Paths.get("./java/src/gameEngine/skybox/skyboxVertexShader.vs"))));
+			shaderProg.createFragmentShader(new String(Files.readAllBytes(Paths.get("./java/src/gameEngine/skybox/skyboxFragmentShader.fs"))));
 		}catch(Exception e){
 			try{
-				shaderProg.createVertexShader(new String(Files.readAllBytes(Paths.get("./src/gameEngine/skyBox/skyBoxVertexShader.vs"))));
-				shaderProg.createFragmentShader(new String(Files.readAllBytes(Paths.get("./src/gameEngine/skyBox/skyBoxFragmentShader.fs"))));
+				shaderProg.createVertexShader(new String(Files.readAllBytes(Paths.get("./src/gameEngine/skybox/skyboxVertexShader.vs"))));
+				shaderProg.createFragmentShader(new String(Files.readAllBytes(Paths.get("./src/gameEngine/skybox/skyboxFragmentShader.fs"))));
 			}catch(Exception x){
-				shaderProg.createVertexShader(new String(Files.readAllBytes(Paths.get("./yaw/java/src/gameEngine/skyBox/skyBoxVertexShader.vs"))));
-				shaderProg.createFragmentShader(new String(Files.readAllBytes(Paths.get("./yaw/java/src/gameEngine/skyBox/skyBoxFragmentShader.fs"))));
+				shaderProg.createVertexShader(new String(Files.readAllBytes(Paths.get("./yaw/java/src/gameEngine/skybox/skyboxVertexShader.vs"))));
+				shaderProg.createFragmentShader(new String(Files.readAllBytes(Paths.get("./yaw/java/src/gameEngine/skybox/skyboxFragmentShader.fs"))));
 			}
 
 		}
