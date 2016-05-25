@@ -563,7 +563,7 @@
 
 (defn loadFile [filename world]
 	"Removes the world and loads the items, cameras, lights and skybox contained in the given file in a new world."
-	(.close oldworld)
+	(.close world)
 	(Thread/sleep 200)
 	(let [universe (start-yaw)
 				world (:world @universe)
