@@ -74,7 +74,7 @@ public class Renderer {
 		//Set the camera to render.
 		sh.setUniform("projectionMatrix", cam.getCameraMat());
 		sh.setUniform("camera_pos", cam.position);
-		Matrix4f mvm = cam.setupViewMatrix();
+		Matrix4f viewMat = cam.setupViewMatrix();
 
 		//Enable the option needed to render.
 		glEnable(GL_CULL_FACE);
@@ -89,7 +89,7 @@ public class Renderer {
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
 		//Rendering of the light
-		sl.render(sh,mvm);
+		sl.render(sh,viewMat);
 
 		//Init Objects
 		sc.initMesh();
@@ -99,18 +99,19 @@ public class Renderer {
 
 
 		//Rendering of the object
-		sc.draw(sh,mvm);
+		sc.draw(sh,viewMat);
 
 		sh.unbind();
 		if(sk!= null){
-			if(sk.init==false)
+			if(sk.init==false){
+				System.out.println("la");
 				SceneVertex.itemAdded=true;
 				try {
 					sk.init();
-					sk.init=false;
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+			}
 			sk.draw(cam);
 		}
 	}
