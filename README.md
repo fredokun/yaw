@@ -272,7 +272,13 @@ Set the AmbiantLight : (world r g b intensity)
 >boot.user=> (saveFile "yaw/save/u.edn" world)
 
 #### Load the World (filename world)
->boot.user=> (loadFile "yaw/save/u.edn" world)
+ ! WARNING !  
+This function remove the current world to load a new one.  
+This function return the new universe so you need to keep it (def universe (...)).  
+If you used (def world(:world @universe)) you need to use it again 
+because it will lead to the last world (and cause an error if you try to load a new world with it.
+
+> boot.user=> (def universe(loadFile "yaw/save/allfeatures.edn" (:world @universe)))
 
 
 
