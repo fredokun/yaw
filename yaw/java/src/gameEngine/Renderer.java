@@ -3,7 +3,7 @@ package gameEngine;
 import static org.lwjgl.opengl.GL11.*;
 import gameEngine.camera.Camera;
 import gameEngine.light.SceneLight;
-import gameEngine.skyBox.SkyBox;
+import gameEngine.skybox.Skybox;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -16,7 +16,7 @@ public class Renderer {
 
 	public Renderer() throws Exception{
 
-		//Initialisation of the shader program
+		//Initialization of the shader program
 		sh = new ShaderProgram();
 		try{
 			sh.createVertexShader(new String(Files.readAllBytes(Paths.get("./java/src/gameEngine/vertShader.vs"))));
@@ -32,31 +32,31 @@ public class Renderer {
 
 		}
 		sh.link();
-		//Initialisation of the camera's uniform
-		sh.createUniform("projectionMatrice");
-		//Initialisation of the mesh's uniform
+		//Initialization of the camera's uniform
+		sh.createUniform("projectionMatrix");
+		//Initialization of the mesh's uniform
 		sh.createUniform("modelViewMatrix");
 
 		// Create uniform for material
 		sh.createMaterialUniform("material");
 
-		//Initialisation of the light's uniform
+		//Initialization of the light's uniform
 		sh.createUniform("camera_pos");
 		sh.createUniform("specularPower");
 		sh.createUniform("ambientLight");
 		sh.createPointLightListUniform("pointLights",SceneLight.maxPointlight);
-		sh.createSpotLightListUniform("spotLights", SceneLight.maxSpotlight);
+		sh.createSpotLightUniformList("spotLights", SceneLight.maxSpotlight);
 		sh.createDirectionalLightUniform("directionalLight");
 
 	}
 
 
 	public void cleanUp(){
-		//on desaloue le shaderProgramme
+		// The Shader Program is deallocated
 		sh.cleanup();
 	}
 
-	public void render(SceneVertex sc, SceneLight sl, boolean isResized,Camera cam, SkyBox sk){
+	public void render(SceneVertex sc, SceneLight sl, boolean isResized,Camera cam, Skybox sk){
 		sh.bind();
 		//Preparation of the camera
 		if(isResized || SceneVertex.itemAdded){
@@ -72,7 +72,7 @@ public class Renderer {
 		//		}
 
 		//Set the camera to render.
-		sh.setUniform("projectionMatrice", cam.getCameraMat());
+		sh.setUniform("projectionMatrix", cam.getCameraMat());
 		sh.setUniform("camera_pos", cam.position);
 		Matrix4f mvm = cam.setupViewMatrix();
 
@@ -108,7 +108,6 @@ public class Renderer {
 				try {
 					sk.init();
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			sk.draw(cam);

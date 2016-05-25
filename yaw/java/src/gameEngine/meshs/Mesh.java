@@ -36,44 +36,44 @@ public class Mesh {
 	private int vboIndices;
 	
 	private float[] vertices;
-	private float[] normales;
+	private float[] normals;
 	private int[] indices;
 
 	private int weight;
 	
 	private Material material;
 	
-	public Mesh(float[] vertices, float cx, float cy, float cz, float reflectance,float[] normales, int[] indices, int weight) {
+	public Mesh(float[] vertices, float cx, float cy, float cz, float reflectance,float[] normals, int[] indices, int weight) {
 		super();
 		this.vertices = vertices;
-		this.normales = normales;
+		this.normals = normals;
 		this.indices = indices;
 		this.material = new Material(new Vector3f(cx, cy, cz), reflectance);		
 		this.weight = weight;
 	}
 	
-	public Mesh(float[] vertices, Material material,float[] normales, int[] indices, int weight) {
+	public Mesh(float[] vertices, Material material,float[] normals, int[] indices, int weight) {
 		super();
 		this.vertices = vertices;
-		this.normales = normales;
+		this.normals = normals;
 		this.indices = indices;
 		this.material = material;
 		this.weight = weight;
 	}
 	
-	public Mesh(float[] vertices, Material material,float[] normales, int[] indices) {
+	public Mesh(float[] vertices, Material material,float[] normals, int[] indices) {
 		super();
 		this.vertices = vertices;
-		this.normales = normales;
+		this.normals = normals;
 		this.indices = indices;
 		this.material = material;
 		this.weight = vertices.length;
 	}
 	
-	public Mesh(float[] vertices, float cx, float cy, float cz, float reflectance,float[] normales, int[] indices) {
+	public Mesh(float[] vertices, float cx, float cy, float cz, float reflectance,float[] normals, int[] indices) {
 		super();
 		this.vertices = vertices;
-		this.normales = normales;
+		this.normals = normals;
 		this.indices = indices;
 		this.material = new Material(new Vector3f(cx, cy, cz), reflectance);		
 		this.weight = vertices.length;
@@ -83,7 +83,7 @@ public class Mesh {
 		vaoId = glGenVertexArrays();
 		glBindVertexArray(vaoId);
 		
-		//Initialisation of VBO
+		//Initialization of VBO
 		//VBO of vertex
 		FloatBuffer verticeBuffer = BufferUtils.createFloatBuffer(vertices.length);
 		verticeBuffer.put(vertices).flip();
@@ -95,8 +95,8 @@ public class Mesh {
 		glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
 
 		//VBO of normals
-		FloatBuffer normBuffer = BufferUtils.createFloatBuffer(normales.length);
-		normBuffer.put(normales).flip();
+		FloatBuffer normBuffer = BufferUtils.createFloatBuffer(normals.length);
+		normBuffer.put(normals).flip();
 		vboNorm = glGenBuffers();
 		glBindBuffer(GL_ARRAY_BUFFER, vboNorm);
 		glBufferData(GL_ARRAY_BUFFER, normBuffer, GL_STATIC_DRAW);
@@ -150,7 +150,7 @@ public class Mesh {
 	}
 
 	public void cleanUp(){
-		//on desaloue les VAO et VBO
+		//deallocation of VAO and VBO
 		glDisableVertexAttribArray(0);
 
 		// Delete the VBO
@@ -176,8 +176,8 @@ public class Mesh {
 		return material;
 	}
 	
-	public float[] getNormales() {
-		return normales;
+	public float[] getNormals() {
+		return normals;
 	}
 	
 	public int[] getIndices() {

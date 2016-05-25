@@ -47,7 +47,7 @@ public class PyramidGenerator {
 		float xNormal = y/lateralNormal;
 		float yLNormal = z/lateralNormal;
 
-	float[] normales = {
+	float[] normals = {
 					//Front face
 					0,yFNormal,zNormal,
 					0,yFNormal,zNormal,
@@ -84,7 +84,7 @@ public class PyramidGenerator {
 					12,13,15,12,15,14
 			};
 			
-			return new PyramidMesh(vertices, m,normales, indices, xLength,yLength,zLength);
+			return new PyramidMesh(vertices, m,normals, indices, xLength,yLength,zLength);
 	}
 	public static Mesh generate(float xLength, float yLength,float zLength, float cx, float cy, float cz, float r){
 		return generate(xLength, yLength,zLength, new Material(new Vector3f(cx, cy, cz), r));

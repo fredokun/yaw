@@ -16,17 +16,17 @@ public class MyItem {
 	private Vector3f rotation;
 	private Vector3f translation;
 
-	private ArrayList<GroupItem> groupes;
+	private ArrayList<ItemGroup> groups;
 	
 	//Constructor
-	public MyItem(Mesh apparence, float scale, Vector3f rotation,
+	public MyItem(Mesh appearance, float scale, Vector3f rotation,
 			Vector3f position) {
 		super();
-		this.appearance=apparence;
+		this.appearance=appearance;
 		this.scale = scale;
 		this.rotation = rotation;
 		this.translation = position;
-		this.groupes = new ArrayList<GroupItem>();
+		this.groups = new ArrayList<ItemGroup>();
 	}
 
 	public MyItem(MyItem source){
@@ -34,7 +34,7 @@ public class MyItem {
 		this.scale= source.scale;
 		this.rotation = new Vector3f(source.rotation);
 		this.translation = new Vector3f(source.translation);
-		this.groupes = new ArrayList<GroupItem>();
+		this.groups = new ArrayList<ItemGroup>();
 	}
 
 	public MyItem(Mesh m) {
@@ -42,7 +42,7 @@ public class MyItem {
 		scale = 1f;
 		rotation = new Vector3f();
 		translation = new Vector3f();
-		this.groupes = new ArrayList<GroupItem>();
+		this.groups = new ArrayList<ItemGroup>();
 	}
 
 	public MyItem clone(){
@@ -99,13 +99,13 @@ public class MyItem {
 	public void translate(float x,float y,float z){
 		translate(x, y, z,null); 
 	}
-	public void translate(float x,float y,float z, GroupItem g){
+	public void translate(float x,float y,float z, ItemGroup g){
 		Vector3f old = getPosition(),vect = new Vector3f(x+old.x,y+old.y,z+old.z);
 		this.setPosition(vect,g); 
 	}
-	public void setPosition(Vector3f pos, GroupItem g){
+	public void setPosition(Vector3f pos, ItemGroup g){
 		this.translation=pos;
-		for(GroupItem gr : groupes){
+		for(ItemGroup gr : groups){
 			if(gr != g )
 				gr.updateCenter();
 		}
@@ -126,34 +126,34 @@ public class MyItem {
 
 	public void repelBy(Vector3f center, float dist){
 		Vector3f dif = new Vector3f(translation.x - center.x, translation.y - center.y, translation.z - center.z);
-		float norme = dif.length();
-		if(norme != 0){
-			float move =(dist / norme) + 1;
+		float norm = dif.length();
+		if(norm != 0){
+			float move =(dist / norm) + 1;
 			dif.mul(move);
 			dif.add(center);
 			translation = dif;
 		}
 	}
 	
-	//Groupe Management.
-	public ArrayList<GroupItem> getGroupes(){
-		return groupes;
+	// Groups Management
+	public ArrayList<ItemGroup> getGroups(){
+		return groups;
 	}
-	//Don't use in clojure add and remove Groupe.
-	public void addGroupe(GroupItem g){
-		groupes.add(g);
-	}
-	
-	public void removeGroupe(GroupItem g){
-		groupes.remove(g);
+	// Don't use in Clojure addToGroup and removeFromGroup
+	public void addToGroup(ItemGroup g){
+		groups.add(g);
 	}
 	
-	//Input Function
+	public void removeFromGroup(ItemGroup g){
+		groups.remove(g);
+	}
+	
+	// Input Function
 	public void update(){
 
 	}
 	
-	//Material accessor.
+	// Material getter
 	public void setColor(float r,float g,float b){
 		this.getAppearance().setMaterial(new Material( new Vector3f(r,g,b),0.f));
 	}

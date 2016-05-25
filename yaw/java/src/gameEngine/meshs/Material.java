@@ -4,7 +4,7 @@ import org.joml.Vector3f;
 
 public class Material {
     public Vector3f color;
-  //Reflectance should be between 0 and 1
+    // Reflectance should be between 0 and 1
     public float reflectance;
     
     public Material(Vector3f color, float reflectance){

@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import org.joml.Vector3f;
 
 import gameEngine.camera.Camera;
-import gameEngine.items.GroupItem;
+import gameEngine.items.ItemGroup;
 import gameEngine.light.SceneLight;
-import gameEngine.skyBox.SkyBox;
+import gameEngine.skybox.Skybox;
 import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 import static org.lwjgl.opengl.GL11.*;
@@ -15,15 +15,15 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class World implements Runnable{
 	Camera c ;
-	ArrayList<Camera> listCamera;
+	ArrayList<Camera> camerasList;
 	Renderer renderer;
 	SceneVertex sc ;
 	SceneLight sl;
 	Callback callback;
-	ArrayList<GroupItem> listGroup;
-	ArrayList<SkyBox> skyToRemove;
+	ArrayList<ItemGroup> groupsList;
+	ArrayList<Skybox> skyboxToBeRemoved;
 
-	private SkyBox sk = null;
+	private Skybox sk = null;
 	private boolean loop;
 	
 	public Camera getCamera(){
@@ -34,38 +34,38 @@ public class World implements Runnable{
 		this.c=c;
 	}
 	
-	public ArrayList<Camera> getListCamera(){
-		return listCamera;
+	public ArrayList<Camera> getCamerasList(){
+		return camerasList;
 	}
 	
-	public void setSkyBox(float width, float length, float height, float r,float g,float b){
-		SkyBox sky=new SkyBox(width,length,height,new Vector3f(r,g,b));
+	public void setSkybox(float width, float length, float height, float r,float g,float b){
+		Skybox sky=new Skybox(width,length,height,new Vector3f(r,g,b));
 		if(this.sk != null){
-			skyToRemove.add(sk);
+			skyboxToBeRemoved.add(sk);
 		}
 		this.sk = sky;
 	}
 	
-	public void setSkyBox(SkyBox sk){
+	public void setSkybox(Skybox sk){
 		if(this.sk != null)
-			skyToRemove.add(sk);
+			skyboxToBeRemoved.add(sk);
 		this.sk = sk;
 	}
 	
-	public void removeSkyBox(){
-		skyToRemove.add(sk);
+	public void removeSkybox(){
+		skyboxToBeRemoved.add(sk);
 		this.sk = null;
 	}
 	
-	public SkyBox getSkyBox(){
+	public Skybox getSkybox(){
 		return sk;
 	}
 	
 	public SceneVertex getSceneVertex(){
 		return sc;
 	}
-	public ArrayList<GroupItem> getListGroup(){
-		return listGroup;
+	public ArrayList<ItemGroup> getGroupsList(){
+		return groupsList;
 	}
 	public SceneLight getSceneLight(){
 		return sl;
@@ -75,24 +75,24 @@ public class World implements Runnable{
 	}
 	
 	public void init() throws Exception{
-		this.listCamera=new ArrayList<Camera>();
+		this.camerasList=new ArrayList<Camera>();
 		this.c= new Camera();
 		this.sc= new SceneVertex();
 		this.sl= new SceneLight();
 		this.callback=new Callback();
-		this.listGroup=new ArrayList<GroupItem>();
-		this.skyToRemove=new ArrayList<SkyBox>();
+		this.groupsList=new ArrayList<ItemGroup>();
+		this.skyboxToBeRemoved=new ArrayList<Skybox>();
 		loop=true;
 	}
 	
 	public void emptyListCamera() {
-		listCamera=new ArrayList<Camera>();
+		camerasList=new ArrayList<Camera>();
 	}
 	
 	public void setCamera(int index, Camera camera) {
 		if (index == 0)
 			c = camera;
-		listCamera.add(index, camera);
+		camerasList.add(index, camera);
 	}
 	
 	public void run(){
@@ -105,7 +105,7 @@ public class World implements Runnable{
 		}
 		
 		try{
-			//Initialisation of the window we currently use
+			//Initialization of the window we currently use
 			glViewport(0, 0, 500,500);
 			while ( glfwWindowShouldClose(Window.window) == GLFW_FALSE && loop) {
 				Thread.sleep(20);
@@ -116,7 +116,7 @@ public class World implements Runnable{
 				synchronized(sc){
 			
 				//Update the world
-					for(SkyBox s : skyToRemove)
+					for(Skybox s : skyboxToBeRemoved)
 						s.cleanUp();
 				renderer.render(sc, sl, isResized,c, sk);
 				}
@@ -130,7 +130,7 @@ public class World implements Runnable{
 			sc.cleanUp();
 			if(sk!= null)
 				sk.cleanUp();
-			//On desaloue le materiel de la fenetre
+			// Deallocation of the window's resources
 			Window.cleanUp();
 			this.notifyFinished();
 		}

@@ -1,4 +1,4 @@
-package gameEngine.skyBox;
+package gameEngine.skybox;
 
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
@@ -29,9 +29,8 @@ import gameEngine.camera.Camera;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
 
-public class SkyBox {
+public class Skybox {
 	public Vector3f color;
 	private ShaderProgram shaderProg;
 	public boolean init=false;
@@ -39,14 +38,14 @@ public class SkyBox {
 	
 	private int vaoId,vboVertex,vboIndices;
 	
-	public SkyBox(float width, float length, float height, Vector3f color) {
+	public Skybox(float width, float length, float height, Vector3f color) {
 		this.width = width;
 		this.height = height;
 		this.length = length;
 		this.color = color;
 	}
 	
-	public SkyBox(float width, float length, float height, float r,float g,float b){
+	public Skybox(float width, float length, float height, float r,float g,float b){
 		this.width = width;
 		this.height = height;
 		this.length = length;
@@ -70,7 +69,7 @@ public class SkyBox {
 
 		}
 		shaderProg.link();
-		//Initialisation of the uniforms
+		//Initialization of the uniforms
 		shaderProg.createUniform("projectionMatrix");
 		shaderProg.createUniform("viewMatrix");
 		shaderProg.createUniform("color");
@@ -112,13 +111,13 @@ public class SkyBox {
 		vaoId = glGenVertexArrays();
 		glBindVertexArray(vaoId);
 		
-		//Initialisation of VBO
+		//Initialization of VBO
 		//VBO of vertex
-		FloatBuffer verticeBuffer = BufferUtils.createFloatBuffer(vertices.length);
-		verticeBuffer.put(vertices).flip();
+		FloatBuffer verticesBuffer = BufferUtils.createFloatBuffer(vertices.length);
+		verticesBuffer.put(vertices).flip();
 		vboVertex = glGenBuffers();
 		glBindBuffer(GL_ARRAY_BUFFER, vboVertex);
-		glBufferData(GL_ARRAY_BUFFER, verticeBuffer, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, verticesBuffer, GL_STATIC_DRAW);
 
 		//We explain to OpenGL how to read our Buffers.
 		glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
@@ -159,7 +158,7 @@ public class SkyBox {
 	}
 	
 	public void cleanUp(){
-		//on desaloue les VAO et VBO
+		// Deallocation of VAO and VBO
 		glDisableVertexAttribArray(0);
 
 		// Delete the VBO

@@ -1,6 +1,6 @@
 (ns yaw.world
-  (:import [gameEngine World][gameEngine Window][gameEngine.items MyItem][gameEngine.camera CameraManagement]
-  [gameEngine.light LightManagement][gameEngine.camera Camera][gameEngine.items ItemManagement][org.lwjgl.glfw GLFW])
+  (:import [gameEngine World][gameEngine.items MyItem][gameEngine.camera CameraManagement]
+  [gameEngine.light LightManagement][gameEngine.camera Camera][gameEngine.items ItemManagement])
   (:gen-class))
 
 
@@ -13,21 +13,21 @@
     ))
 
 
-;; SkyBox
+;; Skybox
 
-(defn setSkyBox [world width length height r g b]
-      (.setSkyBox world width length height r g b))
+(defn setSkybox [world width length height r g b]
+      (.setSkybox world width length height r g b))
 
-(defn removeSkyBox [world]
-     (.removeSkyBox world))
+(defn removeSkybox [world]
+     (.removeSkybox world))
 
 ;; Light Management----------------------------------------------------------------------------------
 
 (defn setSunLight [world r g b intensity x y z]
       (LightManagement/setSunLight world r g b intensity x y z))
 
-(defn setAmbiantLight [world r g b intensity]
-      (LightManagement/setAmbiantLight world r g b intensity))
+(defn setAmbientLight [world r g b intensity]
+      (LightManagement/setAmbientLight world r g b intensity))
 
 (defn addSpotLight [world r g b x y z intensity constantA linearAtt quadraticAtt xcone ycone zcone cutoffAngle number]
       (LightManagement/addSpotLight world r g b x y z  intensity constantA linearAtt quadraticAtt xcone ycone zcone cutoffAngle number))
@@ -100,8 +100,8 @@
 (defn getCamera [world numero]
       (CameraManagement/getCamera world numero))
 
-(defn getListCamera [world]
-      (vec (.getListCamera world)))
+(defn getCamerasList [world]
+      (vec (.getCamerasList world)))
 
 (defn getLiveCamera [world]
       (CameraManagement/getLiveCamera world))
@@ -135,11 +135,11 @@
 (defn createPyramid [world r g b xL yL zL scale]
       (ItemManagement/createPyramid world r g b xL yL zL scale))
       
-(defn createTetraedre [world r g b scale]
-      (ItemManagement/createTetraedreReg world r g b scale))
+(defn createTetrahedron [world r g b scale]
+      (ItemManagement/createRegTetrahedron world r g b scale))
 
-(defn createOctaedre [world r g b scale]
-      (ItemManagement/createOctaedreReg world r g b scale))
+(defn createOctahedron [world r g b scale]
+      (ItemManagement/createRegOctahedron world r g b scale))
 
 (defn clone [world item]
       (ItemManagement/clone world item))
@@ -147,8 +147,8 @@
 (defn removeItem [world item]
       (ItemManagement/removeItem world item))
       
-(defn getListItems [world]
-      (vec (.getListItems(.getSceneVertex world))))
+(defn getItemsList [world]
+      (vec (.getItemsList(.getSceneVertex world))))
       
 (defn setScale [item scale]
       (.setScale item scale))
@@ -194,12 +194,12 @@
 (defn repelBy [item centerX centerY centerZ dist]
       (.repelBy item (new org.joml.Vector3f centerX centerY centerZ) dist))
       
-;; Group Item -----------------------------------------------
-(defn getListGroup [world]
-      (vec (.getListGroup world)))
+;; Item Group -----------------------------------------------
+(defn getGroupsList [world]
+      (vec (.getGroupsList world)))
       
 (defn removeGroup [world group]
-      (ItemManagement/deleteGroupe world group))
+      (ItemManagement/removeGroup world group))
       
 (defn createGroup [world]
       (ItemManagement/createGroup world))
@@ -210,7 +210,7 @@
 (defn removeFromGroup [group item]
      (.remove group item))
 
-(defn seperate [group distance]
+(defn separate [group distance]
       (.separate group distance))
       
 (defn multScale [group scale]
@@ -219,11 +219,11 @@
 (defn groupItems [group]
       (.getItems group))
 
-;;Multiple usage [Camera, Item, groupe]-----------------------------
+;; Multiple usage [Camera, Item, Group]-----------------------------
 (defn rotate [item x y z]
       (.rotate item x y z))
 
-;; Multiple usage [Camera, Item, Light, groupe]----------------------
+;; Multiple usage [Camera, Item, Light, Group]----------------------
 (defn translate [item x y z]
       (.translate item x y z))
       
@@ -238,7 +238,7 @@
       (vector (.x pos) (.y pos) (.z pos))))
 
 
-;;CallBack Management
+;; Callback Management
 (defn registerCallback [world keyString function]
       (.registerCallback (.getCallback world) keyString function))
 
@@ -247,10 +247,6 @@
 
 (defn clearFunctionOfKey [world keyString function]
       (.clearFunctionOfKey (.getCallback world) keyString function))
-
-;;Tools
-(defn createVector [r g b]
-      (new org.joml.Vector3f r g b))
 
 ;; Save Tools
 ;; Each object is converted to a Clojure vector to be saved. The vector
@@ -269,7 +265,7 @@
 			gameEngine.meshs.PyramidMesh (vector gameEngine.meshGenerator.PyramidGenerator (.xLength mesh) (.yLength mesh) (.zLength mesh) (.x color) (.y color) (.z color) (.getReflectance material))
 			gameEngine.meshs.TetrahedronMesh (vector gameEngine.meshGenerator.RegTetrahedronGenerator (.x color) (.y color) (.z color) (.getReflectance material))
 			gameEngine.meshs.OctahedronMesh (vector gameEngine.meshGenerator.RegOctahedronGenerator (.x color) (.y color) (.z color) (.getReflectance material))
-			gameEngine.meshs.Mesh	(vector gameEngine.meshs.Mesh (vec (.getVertices mesh)) (.x color) (.y color) (.z color) (.getReflectance material) (vec (.getNormales mesh)) (vec (.getIndices mesh)) (.getWeight mesh))
+			gameEngine.meshs.Mesh	(vector gameEngine.meshs.Mesh (vec (.getVertices mesh)) (.x color) (.y color) (.z color) (.getReflectance material) (vec (.getNormals mesh)) (vec (.getIndices mesh)) (.getWeight mesh))
     )
   ))
 
@@ -297,22 +293,22 @@
 	))
 
 ;; Save Tools for Groups
-(defn createGroupVector [groupItemListVec allItemsList]
-	"Converts a GroupItem into a savable vector."
-	(if (= (.length groupItemListVec) 0)
+(defn createGroupVector [groupItemsListVec allItemsArrayList]
+	"Converts an ItemGroup into a savable vector."
+	(if (= (.length groupItemsListVec) 0)
 		(vector)
-		(if (= (.length groupItemListVec) 1)
-			(vector (.indexOf allItemsList (first groupItemListVec)))
-			(conj (createGroupVector (pop groupItemListVec) allItemsList) (.indexOf allItemsList (last groupItemListVec))))
+		(if (= (.length groupItemsListVec) 1)
+			(vector (.indexOf allItemsArrayList (first groupItemsListVec)))
+			(conj (createGroupVector (pop groupItemsListVec) allItemsArrayList) (.indexOf allItemsArrayList (last groupItemsListVec))))
 	))
 
-(defn saveGroupsList [groupsListVec allItemsList]
+(defn saveGroupsList [groupsListVec allItemsArrayList]
 	"Saves all groups of the given groupsList (as vector) in EDN format."
 	(if (= (.length groupsListVec) 0)
 		(vector)
 		(if (= (.length groupsListVec) 1)
-			(vector (createGroupVector (vec (.getItems (first groupsListVec))) allItemsList))
-			(conj (saveGroupsList (pop groupsListVec) allItemsList) (createGroupVector (vec (.getItems (last groupsListVec))) allItemsList)))
+			(vector (createGroupVector (vec (.getItems (first groupsListVec))) allItemsArrayList))
+			(conj (saveGroupsList (pop groupsListVec) allItemsArrayList) (createGroupVector (vec (.getItems (last groupsListVec))) allItemsArrayList)))
 	))
 
 ;; Save Tools for Cameras
@@ -362,43 +358,42 @@
 ;; Save Functions
 (defn saveItems [world]
 	"Returns a vector containing all items of the given world in EDN format."
-	(let [meshMapVec (vec (.getMapMesh (.getSceneVertex world)))]
+	(let [meshMapVec (vec (.getMeshMap (.getSceneVertex world)))]
 				(saveMeshMap meshMapVec)
 		))
 
 (defn saveGroups [world]
 	"Returns a vector containing all groups of the given world in EDN format."
-	(saveGroupsList (vec (.getListGroup world)) (.getListItems (.getSceneVertex world)))
+	(saveGroupsList (vec (.getGroupsList world)) (.getItemsList (.getSceneVertex world)))
 	)
 
 (defn saveCameras [world]
-;; 1) Charger LiveCamera 2) Vider liste 3) charger lsite
 	"Returns a vector containing all cameras of the given world in EDN format."
-	(vector (cameraToVector (.getCamera world)) (createCameraVector (vec (.getListCamera world)))
+	(vector (cameraToVector (.getCamera world)) (createCameraVector (vec (.getCamerasList world)))
 	))
 
 (defn saveLights [world]
 	"Returns a vector containing all lights of the given world in EDN format."
 	(let [sceneLight (.getSceneLight world)
-				ambiantLight (.getAmbiantLight sceneLight)
-				aColor (.getColor ambiantLight)
+				ambientLight (.getAmbientLight sceneLight)
+				aColor (.getColor ambientLight)
 				sun (.getSun sceneLight)
 				sColor (.getColor sun)
 				sDirection (.getDirection sun)
-				;; Representation of the ambiantLight as a Clojure vector
-			 	ambiantVector [(.getClass ambiantLight) (.x aColor) (.y aColor) (.z aColor) (.getIntensity ambiantLight)]
-			 	;;Representation of the Sun as a Clojure vector
+				;; Representation of the ambientLight as a Clojure vector
+			 	ambientVector [(.getClass ambientLight) (.x aColor) (.y aColor) (.z aColor) (.getIntensity ambientLight)]
+			 	;; Representation of the Sun as a Clojure vector
 			 	sunVector [(.getClass sun) (.x sColor) (.y sColor) (.z sColor) (.getIntensity sun) (.x sDirection) (.y sDirection) (.z sDirection)]	
 			 	;; Representation of PointLights as a Clojure vector
 			 	pointLightVector (createPointLightVector (vec (.getPointTable sceneLight)))
 			 	;; Representation of spotLights as a Clojure vector
 			 	spotLightVector (createSpotLightVector (vec (.getSpotTable sceneLight)))
 		 	]
-		(vector (.specularPower sceneLight) ambiantVector sunVector pointLightVector spotLightVector)
+		(vector (.specularPower sceneLight) ambientVector sunVector pointLightVector spotLightVector)
 	))
 
 (defn saveSkybox [world]
-	(let [skybox (.getSkyBox world)]
+	(let [skybox (.getSkybox world)]
 		(if (= skybox nil)
 			(vector)
 			(let [color (.color skybox)]
@@ -420,7 +415,7 @@
 	"Loads an object previously saved in a vector."
 	(if (vector? ednData)
     (let [c (resolve (first ednData))
-    					a (ednToObject (rest (lazy-seq ednData)))]
+    			a (ednToObject (rest (lazy-seq ednData)))]
         (clojure.lang.Reflector/invokeConstructor c (into-array a)))
 		(if (= ednData '())
 				'()
@@ -444,17 +439,17 @@
 		gameEngine.meshs.Mesh (gameEngine.meshs.Mesh. (float-array (get mesh 1)) (get mesh 2) (get mesh 3) (get mesh 4) (get mesh 5) (float-array (get mesh 6)) (int-array (get mesh 7)) (get mesh 8))
 	))
 	
-(defn loadGenericItems [mesh items itemRefsMap world]
+(defn loadGenericItems [mesh itemsList itemRefsMap world]
 	"Loads GenericItems, associating them with their Mesh, and adds them to the sceneVertex."
-	(let [item (first items)
+	(let [itemVec (first itemsList)
 				sceneVertex (.getSceneVertex world)]
-		(if (= (.size items) 1)
-			 (let [javaItem (gameEngine.items.GenericItem. mesh (get item 0) (get item 1) (get item 2) (get item 3) (get item 4) (get item 5) (get item 6))]
+		(if (= (.size itemsList) 1)
+			 (let [javaItem (gameEngine.items.GenericItem. mesh (get itemVec 0) (get itemVec 1) (get itemVec 2) (get itemVec 3) (get itemVec 4) (get itemVec 5) (get itemVec 6))]
 			 	(.add sceneVertex javaItem)
 			 	(assoc itemRefsMap (.size itemRefsMap) javaItem))
-			(let [javaItem (gameEngine.items.GenericItem. mesh (get item 0) (get item 1) (get item 2) (get item 3) (get item 4) (get item 5) (get item 6))]
+			(let [javaItem (gameEngine.items.GenericItem. mesh (get itemVec 0) (get itemVec 1) (get itemVec 2) (get itemVec 3) (get itemVec 4) (get itemVec 5) (get itemVec 6))]
 				(.add sceneVertex javaItem)
-				(loadGenericItems mesh (rest items) (assoc itemRefsMap (.size itemRefsMap) javaItem) world)))
+				(loadGenericItems mesh (rest itemsList) (assoc itemRefsMap (.size itemRefsMap) javaItem) world)))
 	))
 
 (defn loadMeshItems [meshItems itemRefsMap world]
@@ -482,9 +477,9 @@
 
 
 (defn addItemsToGroup [groupItemsList groupId itemRefsMap world]
-	"Adds items from the groupItemsList vector to the group corresponding to the given groupId."
+	"Adds items from the groupItemsList to the group corresponding to the given groupId."
 	(cond (> (.size groupItemsList) 0)
-		(let [groupsList (.getListGroup world)]
+		(let [groupsList (.getGroupsList world)]
 			(addItem (.get groupsList groupId) (.get itemRefsMap (first groupItemsList)))
 			(addItemsToGroup (rest groupItemsList) groupId itemRefsMap world))
 	))
@@ -552,7 +547,7 @@
 	"Loads all lights from an EDN vector created with saveLights."
 	(let [sceneLight (.getSceneLight world)]
 		(set! (.specularPower sceneLight) (get loadedLights 0))
-		(.setAmbiant sceneLight (ednToObject (get loadedLights 1)))
+		(.setAmbient sceneLight (ednToObject (get loadedLights 1)))
 		(.setSun sceneLight (ednToObject (get loadedLights 2)))
 		(addPointLights (lazy-seq (get loadedLights 3)) sceneLight 0)
 		(addSpotLights (lazy-seq (get loadedLights 4)) sceneLight 0)
@@ -562,12 +557,12 @@
 	"Loads the Skybox, if there is one."
 	(if (= (.length skyboxVec) 0)
 		nil
-		(let [skybox (gameEngine.skyBox.SkyBox. (get skyboxVec 0) (get skyboxVec 1) (get skyboxVec 2) (get skyboxVec 3) (get skyboxVec 4) (get skyboxVec 5))]
-			(.setSkyBox world skybox))
+		(let [skybox (gameEngine.skybox.Skybox. (get skyboxVec 0) (get skyboxVec 1) (get skyboxVec 2) (get skyboxVec 3) (get skyboxVec 4) (get skyboxVec 5))]
+			(.setSkybox world skybox))
 	))
 
-(defn loadFile [filename oldworld]
-	"Reinitializes the world and loads items, cameras, lights and skybox contained in the given file."
+(defn loadFile [filename world]
+	"Removes the world and loads the items, cameras, lights and skybox contained in the given file in a new world."
 	(.close oldworld)
 	(Thread/sleep 200)
 	(let [universe (start-yaw)

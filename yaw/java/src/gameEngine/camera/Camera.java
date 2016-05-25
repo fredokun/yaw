@@ -1,8 +1,6 @@
 package gameEngine.camera;
 
 
-import static org.lwjgl.glfw.GLFW.*;
-import gameEngine.Input;
 import gameEngine.Window;
 
 import org.joml.Matrix4f;
@@ -132,28 +130,12 @@ public class Camera {
 	}
 	
 	public void update(){
-		if(Input.isKeyDown(GLFW_KEY_W)){
-			//System.out.println("W");
-			position.y += 0.05f;
-		}
-		if(Input.isKeyDown(GLFW_KEY_S)){
-			//System.out.println("S");
-			position.y -= 0.05f;
-		}
-		if(Input.isKeyDown(GLFW_KEY_D)){
-			//System.out.println("D");
-			position.x += 0.05f;
-		}
-		if(Input.isKeyDown(GLFW_KEY_A)){
-			//System.out.println("A");
-			position.x -= 0.05f;
-		}
+		
 	}
 
 	//Generate the Matrix for the camera position
 	public Matrix4f setupViewMatrix(){
 		Matrix4f viewMatrix = new Matrix4f();
-		//TODO pitch yaw roll
 		Vector3f negativeCameraPos = new Vector3f(-position.x, -position.y, -position.z);
 		viewMatrix.translate(negativeCameraPos).rotateX((float) Math.toRadians(-orientation.x)).rotateY((float) Math.toRadians(-orientation.y)).rotateZ((float) Math.toRadians(-orientation.z));
 		return viewMatrix;

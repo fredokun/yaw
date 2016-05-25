@@ -43,7 +43,7 @@ public class HalfBlockGenerator {
 	float yNormal = z/frontNormal;
 	float zNormal = y/frontNormal;
 	
-	float[] normales = {
+	float[] normals = {
 					//Front face
 					0,yNormal,zNormal,
 					0,yNormal,zNormal,
@@ -82,7 +82,7 @@ public class HalfBlockGenerator {
 					15,16,17
 			};
 			
-			return new HalfBlockMesh(vertices, m,normales, indices, xLength,yLength,zLength);
+			return new HalfBlockMesh(vertices, m,normals, indices, xLength,yLength,zLength);
 	}
 	
 	public static Mesh generate(float xLength, float zLength,int angle, Material m){

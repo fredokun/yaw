@@ -9,14 +9,14 @@ Java : 1.8 +
 ## How to start
 
 Go to the root of the project where the file build.boot is located  
-Launch the REPL of boot with : "boot repl"  
-Initialize the project inside the REPL : (boot (build))  
-Import the clojure functions : (use 'yaw.world)  
-Initialize the world : (def universe(start-yaw))  
+Launch the REPL of boot with: "boot repl"  
+Initialize the project inside the REPL: (boot (build))  
+Import the Clojure functions: (use 'yaw.world)  
+Initialize the world: (def universe(start-yaw))  
 
-Now you can access the world with : (:world @universe)
+Now you can access the world with: (:world @universe)
 
-## Exemple
+## Example
 
 Initialisation
 >boot repl  
@@ -30,16 +30,16 @@ Create a Block and move it in front of the Camera
 >(def cube(createBlock world 1 1 1 1 1 1 1))  
 >(translate cube 0 0 -2)
 
-Add a Green Spotlight
+Add a green SpotLight
 >(def sl(addSpotLight world 0 1 0 0 0 0 1 0 0.5 0 0 0 -1 10 0))
 
-Change the ambiant light (Darker)
->(setAmbiantLight world 1.0 1.0 1.0 0.5)
+Change the ambient light (Darker)
+>(setAmbientLight world 1.0 1.0 1.0 0.5)
 
-Change the color of the spotlight to Red
+Change the color of the SpotLight to red
 >(setColor sl 1 0 0)
 
-Set the sun Light to blue and rotate the cube to see the differences
+Set the sun light to blue and rotate the cube to see the differences
 >(rotate cube 25 0 0)  
 >(setSunLight world 0 0 1 1 0 -1 1)
 
@@ -64,95 +64,95 @@ Set the sun Light to blue and rotate the cube to see the differences
 ----
 ## Item
 
-#####Creating the Ground of the world (world red green blue width length)
+#####Creating the Ground of the world: (world red green blue width length)
 >boot.user=> (def ground(createGround world 1 1 1 400 400))
 
-#####Creating  Block : (world red green blue xLength yLength zLength scale)
+#####Creating a Block: (world red green blue xLength yLength zLength scale)
 >boot.user=> (def item (createBlock (:world @universe) 1.0 0.0 0.0 2.0 2.0 2.0 1.0))
 
-#####Creating  HalfBlock : 
+#####Creating a HalfBlock: 
 >boot.user=> (def item (createHalfBlock (:world @universe) 1.0 0.0 0.0 2.0 2.0 2.0 1.0))
 
-#####Creating  Pyramid :
+#####Creating a Pyramid:
 >boot.user=> (def item (createPyramid (:world @universe) 1.0 0.0 0.0 2.0 2.0 2.0 1.0))
 
-#####Creating  Tetraedre :
->boot.user=> (def item (createTetraedreReg (:world @universe) 1.0 0.0 0.0 2.0 2.0 2.0 1.0))
+#####Creating a Tetrahedron:
+>boot.user=> (def item (createTetrahedron (:world @universe) 1.0 0.0 0.0 2.0 2.0 2.0 1.0))
 
-#####Creating Octaedre  :
->boot.user=> (def item (createOctaedre (:world @universe) 1.0 0.0 0.0 2.0 2.0 2.0 1.0))
+#####Creating an Octahedron:
+>boot.user=> (def item (createOctahedron (:world @universe) 1.0 0.0 0.0 2.0 2.0 2.0 1.0))
 
-#####Clone : (item)
+#####Clone: (item)
 >boot.user=> (clone world item)
 
-#####Remove Item : (world item)
+#####Remove an item: (world item)
 >boot.user=> (removeItem (:world @universe) item)
       
-#####Get a vector with all the items :
->boot.user=> (getListItems (:world @universe))
+#####Get a vector with all the items:
+>boot.user=> (getItemsList (:world @universe))
 
-#####Move : (item x y z)
+#####Move: (item x y z)
 >boot.user=> (translate item 1.0 2.0 0.0)
 
-#####Rotate : (item x y z)
+#####Rotate: (item x y z)
 >boot.user=> (rotate item 2.0 1.0 1.0)
 
-#####Set the Scale (item scale)
+#####Set the scale: (item scale)
 >boot.user=> (setScale item 0.5)
 
-#####Get the Scale (item)
+#####Get the scale: (item)
 >boot.user=> (getScale item)
 
-#####Set the reflectance (item refl)
+#####Set the reflectance: (item refl)
 >boot.user=> (setReflectance item 0.9)
 
-#####Get the reflectance (item)
+#####Get the reflectance: (item)
 >boot.user=> (getReflectance item)
 
-#####Set the Color (item r g b)
+#####Set the color: (item r g b)
 >boot.user=> (setColor item 1.0 0.0 0.0)
 
-#####Set the Rotation (item x y z)
+#####Set the rotation: (item x y z)
 >boot.user=> (setRotation item 2.0 1.0 1.0)
 
-#####Get the Rotation (item)
+#####Get the rotation: (item)
 >boot.user=> (getRotation item)
 
-#####Revolve around a point (item pointX pointY pointZ degX degY degZ)
+#####Revolve around a point: (item pointX pointY pointZ degX degY degZ)
 >boot.user=> (revolveAround item 1.0 2.0 2.0 1.0 1.0 1.0)
 
-#####Repel (item pointX pointY pointZ distance)
+#####Repel: (item pointX pointY pointZ distance)
 >boot.user=> (repelBy 0.0 0.0 0.0 10.0)
 
-#####Get the Color (item)
+#####Get the color: (item)
 >boot.user=> (getColor item)
 
-#####Change the position : (item x y z)
+#####Change the position: (item x y z)
 >boot.user=> (setPosition item 0.0 10.0 0.0)
 
-#####Change the color : (item r g b) (0 to 1 for the color)
+#####Change the color: (item r g b) (0 to 1 for the color)
 >boot.user=> (setColor item 1.0 0.0 0.0)
 
 ----
-## Group of Item
+## Item Group
 
-##### Get all the groups of items
->boot.user=> (getListGroup world)
+##### Get all the item groups
+>boot.user=> (getGroupsList world)
 
-##### Remove a group of item
+##### Remove an item group
 >boot.user=> (removeGroup world group)
 
-##### Create a Group
+##### Create a group
 >boot.user=> (createGroup world)
 
-##### Add item to a group
+##### Add an item to a group
 >boot.user=> (addItem group item)
 
-##### Remove Item from group
+##### Remove an item from a group
 >boot.user=> (removeFromGroup group item)
 
 ##### Separate the items (group distance)
->boot.user=> (seperate group 5.0)
+>boot.user=> (separate group 5.0)
 
 ##### Scale all the items of the group
 >boot.user=> (multScale group 2.0)
@@ -166,16 +166,16 @@ Set the sun Light to blue and rotate the cube to see the differences
 ##### Create a Camera
 >boot.user=> (createCamera world)
 
-##### Add Camera
+##### Add a Camera
 >boot.user=> (addCamera world camera)
 
-##### Set the Live Camera
+##### Set the live camera
 >boot.user=> (setLiveCamera world camera)
 
 ##### Get Camera number X
 >boot.user=> (getCamera world 1)
 
-##### Get the Live Camera
+##### Get the live camera
 >boot.user=> (getLiveCamera world)
 
 ##### Remove Camera number X
@@ -184,26 +184,25 @@ Set the sun Light to blue and rotate the cube to see the differences
 ##### Remove Camera
 >boot.user=> (removeCamera world camera)
 
-##### Set the Orientation of the Camera (camera x y z)
+##### Set the orientation of the Camera (camera x y z)
 >boot.user=> (setOrientation camera 1.0 0.0 0.0)
 
 ----
 ## Light
 
-##### Directional Light
-Set the directional light : (world r g b intensity x y z)
+##### DirectionalLight
+Set the directional light: (world r g b intensity x y z)
 >boot.user=> (setSunLight (:world @universe) 1.0 1.0 1.0 1.0 0.0 0.0 0.0)
 
-##### Ambiant Light
-Set the AmbiantLight : (world r g b intensity)
->boot.user=> (setAmbiantLight (:world @universe) 1.0 1.0 1.0 0.8)
+##### AmbientLight
+Set the AmbientLight: (world r g b intensity)
+>boot.user=> (setAmbientLight (:world @universe) 1.0 1.0 1.0 0.8)
 
-##### Add Point Light [Maximum of Five]
+##### Add PointLight [Maximum of Five]
 (world r g b x y z intensity constantAtt linearAtt quadraticAtt number)
 >boot.user=>(addPointLight (:world @universe) 1.0 1.0 1.0 0.0 0.0 0.0 0.5)
 
 ##### Add SpotLight [Maximum of Five]
-
 (world r g b x y z  intensity constantA linearAtt quadraticAtt xcone ycone zcone cutoffAngle number)
 >boot.user=> (addSpotLight (:world @universe) 1.0 1.0 1.0 0.0 0.0 0.0 0.8 1.0 1.0 1.0 1.0 1.0 1.0 1.0 0)
 
@@ -239,13 +238,13 @@ Set the AmbiantLight : (world r g b intensity)
 >boot.user=> (getSpecularPower world)
 
 ----
-##SkyBox
+##Skybox
 
-##### Set the SkyBox (world width length height red green blue)
->boot.user=> (setSkyBox world 500 500 500 1 0 0)
+##### Set the Skybox (world width length height red green blue)
+>boot.user=> (setSkybox world 500 500 500 1 0 0)
 
-#### Remove the SkyBox
->boot.user=> (removeSkyBox world)
+#### Remove the Skybox
+>boot.user=> (removeSkybox world)
 
 ----
 ## Callback
@@ -273,10 +272,10 @@ Set the AmbiantLight : (world r g b intensity)
 
 #### Load the World (filename world)
  ! WARNING !  
-This function remove the current world to load a new one.  
-This function return the new universe so you need to keep it (def universe (...)).  
-If you used (def world(:world @universe)) you need to use it again 
-because it will lead to the last world (and cause an error if you try to load a new world with it.
+This function removes the current world to load the file's content into a new one.  
+This function returns the new universe so you need to keep it (def universe (...)).  
+If you used (def world(:world @universe)), you need to do it again after the loadFile,
+because otherwise, it will lead to the previous world (and cause an error if you try to load a new world with it).
 
 > boot.user=> (def universe(loadFile "yaw/save/allfeatures.edn" (:world @universe)))
 

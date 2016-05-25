@@ -48,7 +48,7 @@ public class RegOctahedronGenerator {
 		//for(int i=0; i< vertices.length; i++)
 		//System.out.println(vertices[i]+ " ");
 		
-		float[] normales= new float[]{
+		float[] normals= new float[]{
 			//LTF
 			neg,pos,pos,
 			neg,pos,pos,
@@ -102,7 +102,7 @@ public class RegOctahedronGenerator {
 				21,22,23
 			};
 		
-		return new OctahedronMesh(vertices, m, normales, indices);
+		return new OctahedronMesh(vertices, m, normals, indices);
 	}
 	
 	public static Mesh generate(float cx, float cy, float cz, float r) {

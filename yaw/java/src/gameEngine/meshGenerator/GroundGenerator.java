@@ -18,7 +18,7 @@ public class GroundGenerator {
 			halfW, height, halfL	
 		};
 		
-		float[] normales = new float[]{
+		float[] normals = new float[]{
 			0,1,0,
 			0,1,0,
 			0,1,0,
@@ -30,7 +30,7 @@ public class GroundGenerator {
 			1,3,2
 		};
 		
-		return new GroundMesh(vertices,normales,indices,m,width,length,height );
+		return new GroundMesh(vertices,normals,indices,m,width,length,height );
 	}
 	
 	public static Mesh generate(float width, float length,float height, float cx, float cy, float cz, float r){

@@ -6,18 +6,18 @@ import java.util.ArrayList;
 
 import org.joml.Vector3f;
 
-public class GroupItem {
+public class ItemGroup {
 	private ArrayList<MyItem> items;
 	public Vector3f center;
 	private int weight;
 	
-	public GroupItem(){
+	public ItemGroup(){
 		items = new ArrayList<MyItem>();
 		center = new Vector3f();
 		weight =0;
 	}
 	
-	public GroupItem(ArrayList<MyItem> objs){
+	public ItemGroup(ArrayList<MyItem> objs){
 		items = objs;
 		weight =0;
 		double x=0,y=0,z=0;
@@ -55,12 +55,12 @@ public class GroupItem {
 		Vector3f newCenter = new Vector3f((float)((center.x*ratioGr) + (i.getPosition().x*ratioI)), (float)((center.y*ratioGr) + (i.getPosition().y*ratioI)),(float)((center.z*ratioGr) + (i.getPosition().z*ratioI)));
 		center = newCenter;
 		items.add(i);
-		i.addGroupe(this);
+		i.addToGroup(this);
 	}
 	
 	public void remove(MyItem i){
 		items.remove(i);
-		i.removeGroupe(this);
+		i.removeFromGroup(this);
 		this.weight-= i.getAppearance().getWeight();
 		updateCenter();
 	}

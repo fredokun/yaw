@@ -30,7 +30,7 @@ public class RegTetrahedronGenerator {
 		float pos = (float)(1/ Math.sqrt(3));
 		float neg = (float)(-1/ Math.sqrt(3));
 		
-		float[] normales = new float[]{
+		float[] normals = new float[]{
 				//First Face
 				pos,pos,pos,
 				pos,pos,pos,
@@ -59,7 +59,7 @@ public class RegTetrahedronGenerator {
 				//Last Face
 				9,10,11
 		};
-		return new TetrahedronMesh(vertices, m, normales, indices);
+		return new TetrahedronMesh(vertices, m, normals, indices);
 	}
 	public static Mesh generate(float cx, float cy, float cz, float r) {
 		return generate(new Material(new Vector3f(cx, cy, cz), r));

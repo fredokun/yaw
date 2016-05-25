@@ -16,48 +16,48 @@ import org.joml.Vector3f;
 public class ItemManagement {
 	public static GenericItem createBlock(World world,float red, float green, float blue,float xLength,float yLength,float zLength,float scale){
 		Material material = new Material( new Vector3f(red,green,blue),0.f);
-		Mesh apparence=BlockGenerator.generate(xLength, yLength, zLength, material);
-		GenericItem item=new GenericItem(apparence,scale,new Vector3f(),new Vector3f(0f,0f,-2f));
+		Mesh appearance=BlockGenerator.generate(xLength, yLength, zLength, material);
+		GenericItem item=new GenericItem(appearance,scale,new Vector3f(),new Vector3f(0f,0f,-2f));
 		world.getSceneVertex().add(item);
 		return item;
 	}
 	
 	public static GenericItem createHalfBlock(World world,float red, float green, float blue,float xLength,float yLength,float zLength,float scale){
 		Material material = new Material( new Vector3f(red,green,blue),0.f);
-		Mesh apparence=HalfBlockGenerator.generate(xLength, yLength, zLength, material);
-		GenericItem item=new GenericItem(apparence,scale,new Vector3f(),new Vector3f(0f,0f,-2f));
+		Mesh appearance=HalfBlockGenerator.generate(xLength, yLength, zLength, material);
+		GenericItem item=new GenericItem(appearance,scale,new Vector3f(),new Vector3f(0f,0f,-2f));
 		world.getSceneVertex().add(item);
 		return item;
 	}
 	
 	public static GenericItem createPyramid(World world,float red, float green, float blue,float xLength,float yLength,float zLength,float scale){
 		Material material = new Material( new Vector3f(red,green,blue),0.f);
-		Mesh apparence=PyramidGenerator.generate(xLength, yLength, zLength, material);
-		GenericItem item=new GenericItem(apparence,scale,new Vector3f(),new Vector3f(0f,0f,-2f));
+		Mesh appearance=PyramidGenerator.generate(xLength, yLength, zLength, material);
+		GenericItem item=new GenericItem(appearance,scale,new Vector3f(),new Vector3f(0f,0f,-2f));
 		world.getSceneVertex().add(item);
 		return item;
 	}
 	
-	public static GenericItem createTetraedreReg(World world,float red, float green, float blue,float scale){
+	public static GenericItem createRegTetrahedron(World world,float red, float green, float blue,float scale){
 		Material material = new Material( new Vector3f(red,green,blue),0.f);
-		Mesh apparence=RegTetrahedronGenerator.generate(material);
-		GenericItem item=new GenericItem(apparence,scale,new Vector3f(),new Vector3f(0f,0f,-2f));
+		Mesh appearance=RegTetrahedronGenerator.generate(material);
+		GenericItem item=new GenericItem(appearance,scale,new Vector3f(),new Vector3f(0f,0f,-2f));
 		world.getSceneVertex().add(item);
 		return item;
 	}
 	
-	public static GenericItem createOctaedreReg(World world,float red, float green, float blue,float scale){
+	public static GenericItem createRegOctahedron(World world,float red, float green, float blue,float scale){
 		Material material = new Material( new Vector3f(red,green,blue),0.f);
-		Mesh apparence=RegOctahedronGenerator.generate(material);
-		GenericItem item=new GenericItem(apparence,scale,new Vector3f(),new Vector3f(0f,0f,-2f));
+		Mesh appearance=RegOctahedronGenerator.generate(material);
+		GenericItem item=new GenericItem(appearance,scale,new Vector3f(),new Vector3f(0f,0f,-2f));
 		world.getSceneVertex().add(item);
 		return item;
 	}
 	
 	public static GenericItem createGround(World world,float red, float green,float blue,float width,float length){
 		Material material = new Material( new Vector3f(red,green,blue),0.f);
-		Mesh apparence=GroundGenerator.generate(width,length,0,material);
-		GenericItem item=new GenericItem(apparence,1.0f,new Vector3f(),new Vector3f(0f,-2f,0f));
+		Mesh appearance=GroundGenerator.generate(width,length,0,material);
+		GenericItem item=new GenericItem(appearance,1.0f,new Vector3f(),new Vector3f(0f,-2f,0f));
 		world.getSceneVertex().add(item);
 		return item;
 	}
@@ -70,21 +70,21 @@ public class ItemManagement {
 	
 	public static void removeItem(World world,GenericItem item){
 		world.getSceneVertex().removeItem(item);
-		for(GroupItem g : item.getGroupes()){
+		for(ItemGroup g : item.getGroups()){
 			g.remove(item);
 		}
 	}
 	
-	public static GroupItem createGroup(World world){
-		GroupItem group=new GroupItem();
-		world.getListGroup().add(group);
+	public static ItemGroup createGroup(World world){
+		ItemGroup group=new ItemGroup();
+		world.getGroupsList().add(group);
 		return group;
 	}
 	
-	public static void deleteGroupe(World world, GroupItem g){
-		world.getListGroup().remove(g);
+	public static void removeGroup(World world, ItemGroup g){
+		world.getGroupsList().remove(g);
 		for(MyItem i : g.getItems())
-			i.removeGroupe(g);
+			i.removeFromGroup(g);
 	}
 	
 
