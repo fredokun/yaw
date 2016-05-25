@@ -4,6 +4,10 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
@@ -14,6 +18,8 @@ public class Window {
 	protected static int width;
 	protected static int height;
 	protected static boolean resized;
+	static final Lock lock = new ReentrantLock();
+	static final Condition cleaned  = lock.newCondition();
 	
 	//protege des erreurs du au garbage collector
 	private static GLFWKeyCallback keyCallback;
@@ -61,6 +67,10 @@ public class Window {
 	//Desalloue le materielle utilise pour la fenetre
 	public static void cleanUp(){
 		glfwTerminate();
+	}
+	
+	public static Condition getLockInstance() {
+		return cleaned;
 	}
 	
 	//A appeller avant de mettre a jour le contenue de la fenetre

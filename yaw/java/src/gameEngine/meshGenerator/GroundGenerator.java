@@ -1,5 +1,7 @@
 package gameEngine.meshGenerator;
 
+import org.joml.Vector3f;
+
 import gameEngine.meshs.GroundMesh;
 import gameEngine.meshs.Material;
 import gameEngine.meshs.Mesh;
@@ -29,5 +31,9 @@ public class GroundGenerator {
 		};
 		
 		return new GroundMesh(vertices,normales,indices,m,width,length,height );
+	}
+	
+	public static Mesh generate(float width, float length,float height, float cx, float cy, float cz, float r){
+		return generate(width, length, height, new Material(new Vector3f(cx, cy, cz), r));
 	}
 }

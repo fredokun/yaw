@@ -24,6 +24,7 @@ public class World implements Runnable{
 	ArrayList<SkyBox> skyToRemove;
 
 	private SkyBox sk = null;
+	private boolean loop;
 	
 	public Camera getCamera(){
 		return c;
@@ -56,6 +57,10 @@ public class World implements Runnable{
 		this.sk = null;
 	}
 	
+	public SkyBox getSkyBox(){
+		return sk;
+	}
+	
 	public SceneVertex getSceneVertex(){
 		return sc;
 	}
@@ -77,6 +82,7 @@ public class World implements Runnable{
 		this.callback=new Callback();
 		this.listGroup=new ArrayList<GroupItem>();
 		this.skyToRemove=new ArrayList<SkyBox>();
+		loop=true;
 	}
 	
 	public void emptyListCamera() {
@@ -101,7 +107,7 @@ public class World implements Runnable{
 		try{
 			//Initialisation of the window we currently use
 			glViewport(0, 0, 500,500);
-			while ( glfwWindowShouldClose(Window.window) == GLFW_FALSE ) {
+			while ( glfwWindowShouldClose(Window.window) == GLFW_FALSE && loop) {
 				Thread.sleep(20);
 				c.update();
 				callback.update();
@@ -126,7 +132,18 @@ public class World implements Runnable{
 				sk.cleanUp();
 			//On desaloue le materiel de la fenetre
 			Window.cleanUp();
+			this.notifyFinished();
 		}
 	}
+	
+	private synchronized void notifyFinished() {
+		this.notify();
+	}
+	
+	public synchronized void close() throws InterruptedException {
+		loop=false;
+		this.wait();
+	}
 }
+
 

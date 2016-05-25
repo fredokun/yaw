@@ -1,6 +1,6 @@
 (ns yaw.world
-  (:import [gameEngine World][gameEngine.items MyItem][gameEngine.camera CameraManagement]
-  [gameEngine.light LightManagement][gameEngine.camera Camera][gameEngine.items ItemManagement])
+  (:import [gameEngine World][gameEngine Window][gameEngine.items MyItem][gameEngine.camera CameraManagement]
+  [gameEngine.light LightManagement][gameEngine.camera Camera][gameEngine.items ItemManagement][org.lwjgl.glfw GLFW])
   (:gen-class))
 
 
@@ -259,13 +259,13 @@
 
 ;; Save Tools for Items
 (defn meshToVector [mesh]
-	"Converts Meshes into a savable vector. Special Meshes not yet entirely supported."
-	(println "Mesh to vector called with " (.getClass mesh))
+	"Converts Meshes into a savable vector."
 	(let [material (.getMaterial mesh)
 				color (.getColor material)]
 		(condp  = (.getClass mesh)		
 			gameEngine.meshs.BlockMesh (vector gameEngine.meshGenerator.BlockGenerator (.xLength mesh) (.yLength mesh) (.zLength mesh) (.x color) (.y color) (.z color) (.getReflectance material))
 			gameEngine.meshs.HalfBlockMesh (vector gameEngine.meshGenerator.HalfBlockGenerator (.xLength mesh) (.yLength mesh) (.zLength mesh) (.x color) (.y color) (.z color) (.getReflectance material))
+			gameEngine.meshs.GroundMesh (vector gameEngine.meshGenerator.GroundGenerator (.width mesh) (.length mesh) (.height mesh) (.x color) (.y color) (.z color) (.getReflectance material))
 			gameEngine.meshs.PyramidMesh (vector gameEngine.meshGenerator.PyramidGenerator (.xLength mesh) (.yLength mesh) (.zLength mesh) (.x color) (.y color) (.z color) (.getReflectance material))
 			gameEngine.meshs.TetrahedronMesh (vector gameEngine.meshGenerator.RegTetrahedronGenerator (.x color) (.y color) (.z color) (.getReflectance material))
 			gameEngine.meshs.OctahedronMesh (vector gameEngine.meshGenerator.RegOctahedronGenerator (.x color) (.y color) (.z color) (.getReflectance material))
@@ -362,27 +362,23 @@
 ;; Save Functions
 (defn saveItems [world]
 	"Returns a vector containing all items of the given world in EDN format."
-	(println "Items")
 	(let [meshMapVec (vec (.getMapMesh (.getSceneVertex world)))]
 				(saveMeshMap meshMapVec)
 		))
 
 (defn saveGroups [world]
 	"Returns a vector containing all groups of the given world in EDN format."
-	(println "Groups")
 	(saveGroupsList (vec (.getListGroup world)) (.getListItems (.getSceneVertex world)))
 	)
 
 (defn saveCameras [world]
 ;; 1) Charger LiveCamera 2) Vider liste 3) charger lsite
 	"Returns a vector containing all cameras of the given world in EDN format."
-	(println "Cameras")
 	(vector (cameraToVector (.getCamera world)) (createCameraVector (vec (.getListCamera world)))
 	))
 
 (defn saveLights [world]
 	"Returns a vector containing all lights of the given world in EDN format."
-	(println "Lights")
 	(let [sceneLight (.getSceneLight world)
 				ambiantLight (.getAmbiantLight sceneLight)
 				aColor (.getColor ambiantLight)
@@ -400,14 +396,23 @@
 		 	]
 		(vector (.specularPower sceneLight) ambiantVector sunVector pointLightVector spotLightVector)
 	))
-	
+
+(defn saveSkybox [world]
+	(let [skybox (.getSkyBox world)]
+		(if (= skybox nil)
+			(vector)
+			(let [color (.color skybox)]
+				(vector (.width skybox) (.length skybox) (.height skybox) (.x color) (.y color) (.z color))))
+	))
+
 (defn saveFile [filename world]
 	"Saves all items, cameras and lights of the given world into a file, in EDN format."
 	(let [itemsVector (saveItems world)
 				groupsVector (saveGroups world)
 				camerasVector (saveCameras world)
-				lightsVector (saveLights world)]
-		(spit filename (with-out-str (pr (vector itemsVector groupsVector camerasVector lightsVector))))
+				lightsVector (saveLights world)
+				skyboxVector (saveSkybox world)]
+		(spit filename (with-out-str (pr (vector itemsVector groupsVector camerasVector lightsVector skyboxVector))))
 	))
 
 ;; Load Tools
@@ -428,11 +433,11 @@
 
 ;; Load Tools for Items
 (defn loadMesh [mesh]
-	"Loads a Mesh. Does not support all subclasses of Mesh yet."
-	(println "loading mesh" (get mesh 0))
+	"Loads a Mesh."
 	(case (get mesh 0)
 		gameEngine.meshGenerator.BlockGenerator (gameEngine.meshGenerator.BlockGenerator/generate (get mesh 1) (get mesh 2) (get mesh 3) (get mesh 4) (get mesh 5) (get mesh 6) (get mesh 7))
 		gameEngine.meshGenerator.HalfBlockGenerator (gameEngine.meshGenerator.HalfBlockGenerator/generate (get mesh 1) (get mesh 2) (get mesh 3) (get mesh 4) (get mesh 5) (get mesh 6) (get mesh 7))
+		gameEngine.meshGenerator.GroundGenerator (gameEngine.meshGenerator.GroundGenerator/generate (get mesh 1) (get mesh 2) (get mesh 3) (get mesh 4) (get mesh 5) (get mesh 6) (get mesh 7))
 		gameEngine.meshGenerator.PyramidGenerator (gameEngine.meshGenerator.PyramidGenerator/generate (get mesh 1) (get mesh 2) (get mesh 3) (get mesh 4) (get mesh 5) (get mesh 6) (get mesh 7))
 		gameEngine.meshGenerator.RegTetrahedronGenerator (gameEngine.meshGenerator.RegTetrahedronGenerator/generate (get mesh 1) (get mesh 2) (get mesh 3) (get mesh 4))
 		gameEngine.meshGenerator.RegOctahedronGenerator (gameEngine.meshGenerator.RegOctahedronGenerator/generate (get mesh 1) (get mesh 2) (get mesh 3) (get mesh 4))
@@ -446,8 +451,6 @@
 		(if (= (.size items) 1)
 			 (let [javaItem (gameEngine.items.GenericItem. mesh (get item 0) (get item 1) (get item 2) (get item 3) (get item 4) (get item 5) (get item 6))]
 			 	(.add sceneVertex javaItem)
-			 	(assoc itemRefsMap (.size itemRefsMap) javaItem)
-			 	(println "liste " (assoc itemRefsMap (.size itemRefsMap) javaItem)) ;; TODO
 			 	(assoc itemRefsMap (.size itemRefsMap) javaItem))
 			(let [javaItem (gameEngine.items.GenericItem. mesh (get item 0) (get item 1) (get item 2) (get item 3) (get item 4) (get item 5) (get item 6))]
 				(.add sceneVertex javaItem)
@@ -470,7 +473,6 @@
 ;; Load Tools for Groups
 (defn createNGroups [n world]
 	"Creates n groups in the world."
-	(println "createNGroups called with " n world)
 	(if (= n 0)
 		nil
 		(do
@@ -481,7 +483,6 @@
 
 (defn addItemsToGroup [groupItemsList groupId itemRefsMap world]
 	"Adds items from the groupItemsList vector to the group corresponding to the given groupId."
-	(println "addItemsToGroup called with " groupItemsList groupId itemRefsMap world)
 	(cond (> (.size groupItemsList) 0)
 		(let [groupsList (.getListGroup world)]
 			(addItem (.get groupsList groupId) (.get itemRefsMap (first groupItemsList)))
@@ -491,7 +492,6 @@
 
 (defn addItemsToGroups [groupsList curId itemRefsMap world]
 	"Adds items from the groupsList vector to corresponding groups."
-	(println "addItemsToGroups called with " groupsList curId world)
 	(cond (> (.length groupsList) 0)
 		(do
 			(addItemsToGroup (lazy-seq (last groupsList)) curId itemRefsMap world)
@@ -535,8 +535,6 @@
 	
 (defn loadGroups [loadedGroups itemRefsMap world]
 	"Loads all groups from an EDN vector created with saveGroups."
-	(println "loading group")
-	(println "loadGroups called with " loadedGroups world)
 	(cond (> (.size loadedGroups) 0)
 		(do
 			(createNGroups (.size loadedGroups) world)
@@ -560,13 +558,25 @@
 		(addSpotLights (lazy-seq (get loadedLights 4)) sceneLight 0)
 	))
 
-(defn loadFile [filename world]
-	"Reinitializes the world and loads items, cameras and lights contained in the given file."
-	(.init world)	
-	(let [loadedVector (read-string (slurp filename))
+(defn loadSkybox [skyboxVec world]
+	"Loads the Skybox, if there is one."
+	(if (= (.length skyboxVec) 0)
+		nil
+		(let [skybox (gameEngine.skyBox.SkyBox. (get skyboxVec 0) (get skyboxVec 1) (get skyboxVec 2) (get skyboxVec 3) (get skyboxVec 4) (get skyboxVec 5))]
+			(.setSkyBox world skybox))
+	))
+
+(defn loadFile [filename oldworld]
+	"Reinitializes the world and loads items, cameras, lights and skybox contained in the given file."
+	(.close oldworld)
+	(Thread/sleep 200)
+	(let [universe (start-yaw)
+				world (:world @universe)
+				loadedVector (read-string (slurp filename))
 				itemRefsMap (loadItems (get loadedVector 0) '{} world)]
-		(println "liste " itemRefsMap)
 		(loadGroups (get loadedVector 1) itemRefsMap world)
 		(loadCameras (get loadedVector 2) world)
 		(loadLights (get loadedVector 3) world)
+		(loadSkybox (get loadedVector 4) world)
+		universe
 	))
