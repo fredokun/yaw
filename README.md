@@ -82,7 +82,7 @@ Set the sun light to blue and rotate the cube to see the differences
 #####Creating an Octahedron: (world r g b scale)
 >boot.user=> (def item (createOctahedron (:world @universe) 1.0 0.0 0.0 1.0))
 
-#####Clone: (item)
+#####Clone: (world item)
 >boot.user=> (clone world item)
 
 #####Remove an item: (world item)

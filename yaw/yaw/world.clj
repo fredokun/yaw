@@ -173,7 +173,7 @@
       (.setColor item vector))
       
 (defn setRotation [item x y z]
-      (.setRotation x y z))
+      (.setRotation item x y z))
       
 (defn setRotationVector [item vector]
       (.setRotation item vector))
