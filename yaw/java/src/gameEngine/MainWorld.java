@@ -23,12 +23,15 @@ public class MainWorld {
 		world.sl.setSpotLight(new SpotLight(1, 1, 1, 0, 0, 0, 1, 0, 0.5f, 0, 0, 0, -1, 10f), 0);
 		world.sl.setSun(new DirectionalLight(new Vector3f(1,1,1),1,new Vector3f(0,-1,1)));
 		world.sl.setAmbient(new AmbientLight(0.5f));
-		world.sc.add(GroundGenerator.generate(400,400,-2,new Material(new Vector3f(1,1,1))));
+		//world.sc.add(GroundGenerator.generate(400,400,-2,new Material(new Vector3f(1,1,1))));
 		world.setSkybox(new Skybox(500, 500, 500, new Vector3f(1,0,0)));
-//		while(true){
-//			Thread.sleep(500);
-//			System.out.println(world.getListCamera().size());
-//		}
+		
+		world.c.translate(0, 0, 3);
+		while(true){
+			world.c.rotate(0,5, 0);
+			//world.c.translate(0,0,-5);
+			Thread.sleep(50);
+		}
 	}
 
 }

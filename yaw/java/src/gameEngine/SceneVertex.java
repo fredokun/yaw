@@ -23,11 +23,6 @@ public class SceneVertex {
 	public void removeItem(MyItem item){
 		ArrayList<MyItem> temp=meshMap.get(item.getAppearance());
 		temp.remove(item);
-		if(temp.isEmpty()){
-			Mesh m = item.getAppearance();
-			meshMap.remove(m);
-			m.cleanUp();
-		}
 	}
 
 	public ArrayList<MyItem> getItemsList(){
@@ -54,8 +49,18 @@ public class SceneVertex {
 		notInit.clear();
 	}
 	public void draw(ShaderProgram sh, Matrix4f viewMatrix) {
+		ArrayList<Mesh> rmListe = new ArrayList<Mesh>();
 		for(Mesh m: meshMap.keySet()){
-			m.draw(meshMap.get(m),sh, viewMatrix);
+			ArrayList<MyItem> items = meshMap.get(m);
+			if(items.isEmpty()){
+				rmListe.add(m);
+			}else{
+				m.draw(items,sh, viewMatrix);
+			}
+		}
+		for(Mesh m : rmListe){
+			m.cleanUp();
+			meshMap.remove(m);
 		}
 	}
 

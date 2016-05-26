@@ -408,6 +408,7 @@
 				lightsVector (saveLights world)
 				skyboxVector (saveSkybox world)]
 		(spit filename (with-out-str (pr (vector itemsVector groupsVector camerasVector lightsVector skyboxVector))))
+		filename
 	))
 
 ;; Load Tools

@@ -104,7 +104,6 @@ public class Renderer {
 		sh.unbind();
 		if(sk!= null){
 			if(sk.init==false){
-				System.out.println("la");
 				SceneVertex.itemAdded=true;
 				try {
 					sk.init();

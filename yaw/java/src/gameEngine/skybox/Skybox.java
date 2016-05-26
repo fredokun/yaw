@@ -146,11 +146,11 @@ public class Skybox {
 		mat.m30 = 0;
 		mat.m31 = 0;
 		mat.m32 = 0;
-		
+
 		shaderProg.setUniform("viewMatrix", mat);
 		shaderProg.setUniform("color", color);
 
-		glDrawElements(GL_TRIANGLES, 12,GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, 36,GL_UNSIGNED_INT, 0);
 
 		glDisableVertexAttribArray(1);
 		glBindVertexArray(0);

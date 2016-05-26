@@ -135,9 +135,13 @@ public class Camera {
 
 	//Generate the Matrix for the camera position
 	public Matrix4f setupViewMatrix(){
-		Matrix4f viewMatrix = new Matrix4f();
+		Matrix4f viewMatrix = new Matrix4f().identity();
+		//viewMatrix.rotateX((float) Math.toRadians(-orientation.x)).rotateY((float) Math.toRadians(-orientation.y)).rotateZ((float) Math.toRadians(-orientation.z));
+		viewMatrix.rotate((float)Math.toRadians(-orientation.x), new Vector3f(1,0,0));
+		viewMatrix.rotate((float)Math.toRadians(-orientation.y), new Vector3f(0,1,0));
+		viewMatrix.rotate((float)Math.toRadians(-orientation.z), new Vector3f(0,0,1));
 		Vector3f negativeCameraPos = new Vector3f(-position.x, -position.y, -position.z);
-		viewMatrix.translate(negativeCameraPos).rotateX((float) Math.toRadians(-orientation.x)).rotateY((float) Math.toRadians(-orientation.y)).rotateZ((float) Math.toRadians(-orientation.z));
+		viewMatrix.translate(negativeCameraPos);
 		return viewMatrix;
 
 	}
@@ -145,7 +149,7 @@ public class Camera {
 	public void updateCameraMat(){
 		perspectiveMat=new Matrix4f().perspective(fieldOfView,
 				(float) Window.aspectRatio(), zNear, zFar);
-		perspectiveMat = perspectiveMat.mul(setupViewMatrix());
+	//	perspectiveMat = perspectiveMat.mul(setupViewMatrix());
 	}
 
 	public float getzNear() {
