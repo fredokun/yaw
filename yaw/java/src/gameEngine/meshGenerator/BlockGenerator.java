@@ -1,7 +1,9 @@
 package gameEngine.meshGenerator;
 
-import gameEngine.Material;
-import gameEngine.Mesh;
+import gameEngine.meshs.BlockMesh;
+import gameEngine.meshs.Material;
+import gameEngine.meshs.Mesh;
+import org.joml.Vector3f;
 
 public class BlockGenerator {
 	public static Mesh generate(float xLength, float yLength, float zLength, Material m){
@@ -43,7 +45,7 @@ public class BlockGenerator {
 		
 
 
-	float[] normales = {
+	float[] normals = {
 					//Front face
 					0,0,1f,
 					0,0,1f,
@@ -91,6 +93,10 @@ public class BlockGenerator {
 					20,22,21,22,23,21
 			};
 			
-			return new Mesh(vertices, m,normales, indices, 8);
+			return new BlockMesh(vertices, m,normals, indices, xLength, yLength, zLength);
+	}
+	
+	public static Mesh generate(float xLength, float yLength, float zLength, float cx, float cy, float cz, float r){
+		return generate(xLength, yLength, zLength, new Material(new Vector3f(cx, cy, cz), r));
 	}
 }

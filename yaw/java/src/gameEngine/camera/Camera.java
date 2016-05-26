@@ -1,8 +1,6 @@
 package gameEngine.camera;
 
 
-import static org.lwjgl.glfw.GLFW.*;
-import gameEngine.Input;
 import gameEngine.Window;
 
 import org.joml.Matrix4f;
@@ -98,6 +96,12 @@ public class Camera {
 	public void setPosition(Vector3f pos){
 		this.position = pos;
 	}
+	
+	public void setPosition(float x,float y,float z){
+		this.position.x=x;
+		this.position.y=y;
+		this.position.z=z;
+	}
 
 	public Vector3f getPosition() {
 		return position;
@@ -105,6 +109,12 @@ public class Camera {
 
 	public void setOrientation(Vector3f pos){
 		this.orientation = pos;
+	}
+	
+	public void setOrientation(float x,float y,float z){
+		this.orientation.x=x;
+		this.orientation.y=y;
+		this.orientation.z=z;
 	}
 
 	public Vector3f getOrientation() {
@@ -120,30 +130,18 @@ public class Camera {
 	}
 	
 	public void update(){
-		if(Input.isKeyDown(GLFW_KEY_W)){
-			//System.out.println("W");
-			position.y += 0.05f;
-		}
-		if(Input.isKeyDown(GLFW_KEY_S)){
-			//System.out.println("S");
-			position.y -= 0.05f;
-		}
-		if(Input.isKeyDown(GLFW_KEY_D)){
-			//System.out.println("D");
-			position.x += 0.05f;
-		}
-		if(Input.isKeyDown(GLFW_KEY_A)){
-			//System.out.println("A");
-			position.x -= 0.05f;
-		}
+		
 	}
 
 	//Generate the Matrix for the camera position
 	public Matrix4f setupViewMatrix(){
-		Matrix4f viewMatrix = new Matrix4f();
-		//TODO pitch yaw roll
+		Matrix4f viewMatrix = new Matrix4f().identity();
+		//viewMatrix.rotateX((float) Math.toRadians(-orientation.x)).rotateY((float) Math.toRadians(-orientation.y)).rotateZ((float) Math.toRadians(-orientation.z));
+		viewMatrix.rotate((float)Math.toRadians(-orientation.x), new Vector3f(1,0,0));
+		viewMatrix.rotate((float)Math.toRadians(-orientation.y), new Vector3f(0,1,0));
+		viewMatrix.rotate((float)Math.toRadians(-orientation.z), new Vector3f(0,0,1));
 		Vector3f negativeCameraPos = new Vector3f(-position.x, -position.y, -position.z);
-		viewMatrix.translate(negativeCameraPos).rotateX((float) Math.toRadians(-orientation.x)).rotateY((float) Math.toRadians(-orientation.y)).rotateZ((float) Math.toRadians(-orientation.z));
+		viewMatrix.translate(negativeCameraPos);
 		return viewMatrix;
 
 	}
@@ -151,7 +149,7 @@ public class Camera {
 	public void updateCameraMat(){
 		perspectiveMat=new Matrix4f().perspective(fieldOfView,
 				(float) Window.aspectRatio(), zNear, zFar);
-		perspectiveMat = perspectiveMat.mul(setupViewMatrix());
+	//	perspectiveMat = perspectiveMat.mul(setupViewMatrix());
 	}
 
 	public float getzNear() {

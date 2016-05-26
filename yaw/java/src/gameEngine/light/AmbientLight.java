@@ -2,31 +2,31 @@ package gameEngine.light;
 
 import org.joml.Vector3f;
 
-public class AmbiantLight {
+public class AmbientLight {
 	private Vector3f color;
 	private  float intensity;
-	//Value put in the shader
+	// Value put in the shader
 	private Vector3f shaderValue;
 	
-	public AmbiantLight(Vector3f color, float intensity){
+	public AmbientLight(Vector3f color, float intensity){
 		this.color = color;
 		this.intensity = intensity;
 		this.shaderValue= new Vector3f(color.x*intensity,color.y *intensity,color.z*intensity);
 	}
 	
-	public AmbiantLight(float cx, float cy, float cz, float intensity){
+	public AmbientLight(float cx, float cy, float cz, float intensity){
 		this.color = new Vector3f(cx, cy, cz);
 		this.intensity = intensity;
 		this.shaderValue= new Vector3f(color.x*intensity,color.y *intensity,color.z*intensity);
 	}
 	
-	public AmbiantLight(){
+	public AmbientLight(){
 		this.color = new Vector3f(1f,1f,1f);
 		this.intensity=1f;
 		this.shaderValue = new Vector3f(1f,1f,1f);
 	}
 
-	public AmbiantLight(float intensity){
+	public AmbientLight(float intensity){
 		this.color = new Vector3f(1f,1f,1f);
 		this.intensity=intensity;
 		this.shaderValue = new Vector3f(color.x *intensity,color.y *intensity,color.z *intensity);

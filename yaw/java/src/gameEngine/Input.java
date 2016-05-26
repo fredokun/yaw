@@ -13,7 +13,7 @@ public class Input extends GLFWKeyCallback{
 	public static boolean[] keys = new boolean[65535];
 
 	// Overrides GLFW's own implementation of the Invoke method
-	// This gets called everytime a key is pressed.
+	// This gets called every time a key is pressed.
 	@Override
 	public void invoke(long window, int key, int scancode, int action, int mods) {
 		if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE )

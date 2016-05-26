@@ -54,25 +54,44 @@ public class PointLight {
 	public Vector3f getColor() {
 		return color;
 	}
-
+	public void setColor(Vector3f color){
+		this.color=color;
+	}
+	public void setColor(float r,float g,float b){
+		this.color=new Vector3f(r,g,b);
+	}
 	public Vector3f getPosition() {
 		return position;
 	}
-
+	public void setPosition(Vector3f pos){
+		this.position=pos;
+	}
+	public void setPosition(float x,float y,float z){
+		this.position=new Vector3f(x,y,z);
+	}
 	public float getIntensity() {
 		return intensity;
 	}
-
+	public void setIntensity(float intens){
+		this.intensity=intens;
+	}
 	public float getConstantAtt() {
 		return constantAtt;
 	}
-
+	public void setConstantAtt(float att){
+		this.constantAtt=att;
+	}
 	public float getLinearAtt() {
 		return linearAtt;
 	}
-
+	public void setLinearAtt(float att){
+		this.linearAtt=att;
+	}
 	public float getQuadraticAtt() {
 		return quadraticAtt;
+	}
+	public void setQuadraticAtt(float att){
+		this.quadraticAtt=att;
 	}
 	
 	

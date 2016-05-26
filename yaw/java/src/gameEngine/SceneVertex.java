@@ -1,6 +1,8 @@
 package gameEngine;
 
 import gameEngine.items.MyItem;
+import gameEngine.meshs.Material;
+import gameEngine.meshs.Mesh;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,34 +12,32 @@ import org.joml.Vector3f;
 
 public class SceneVertex {
 	public static boolean itemAdded=false;
-	protected HashMap<Mesh, ArrayList<MyItem>> mapMesh;
+	protected HashMap<Mesh, ArrayList<MyItem>> meshMap;
 	protected ArrayList<Mesh> notInit;
 
 	public SceneVertex(){
-		mapMesh = new HashMap<Mesh, ArrayList<MyItem>>();
+		meshMap = new HashMap<Mesh, ArrayList<MyItem>>();
 		notInit = new ArrayList<Mesh>();
 	}
 
 	public void removeItem(MyItem item){
-		ArrayList<MyItem> temp=mapMesh.get(item.getAppearance());
+		ArrayList<MyItem> temp=meshMap.get(item.getAppearance());
 		temp.remove(item);
-		if(temp.isEmpty())
-			mapMesh.remove(item.getAppearance());
 	}
 
-	public ArrayList<MyItem> getListItems(){
+	public ArrayList<MyItem> getItemsList(){
 		ArrayList<MyItem> items=new ArrayList<MyItem>();
-		for(Mesh m:mapMesh.keySet())
-			items.addAll(mapMesh.get(m));
+		for(Mesh m:meshMap.keySet())
+			items.addAll(meshMap.get(m));
 		return items;
 	}
 	
-	public HashMap<Mesh, ArrayList<MyItem>> getMapMesh() {
-		return mapMesh;
+	public HashMap<Mesh, ArrayList<MyItem>> getMeshMap() {
+		return meshMap;
 	}
 
 	public void cleanUp() {
-		for(Mesh m : mapMesh.keySet()){
+		for(Mesh m : meshMap.keySet()){
 			m.cleanUp();
 		}
 	}
@@ -49,14 +49,24 @@ public class SceneVertex {
 		notInit.clear();
 	}
 	public void draw(ShaderProgram sh, Matrix4f viewMatrix) {
-		for(Mesh m: mapMesh.keySet()){
-			m.draw(mapMesh.get(m),sh, viewMatrix);
+		ArrayList<Mesh> rmListe = new ArrayList<Mesh>();
+		for(Mesh m: meshMap.keySet()){
+			ArrayList<MyItem> items = meshMap.get(m);
+			if(items.isEmpty()){
+				rmListe.add(m);
+			}else{
+				m.draw(items,sh, viewMatrix);
+			}
+		}
+		for(Mesh m : rmListe){
+			m.cleanUp();
+			meshMap.remove(m);
 		}
 	}
 
 	public void update() {
-		for(Mesh m: mapMesh.keySet()){
-			for(MyItem i : mapMesh.get(m))
+		for(Mesh m: meshMap.keySet()){
+			for(MyItem i : meshMap.get(m))
 				i.update();
 		}
 	}
@@ -65,12 +75,12 @@ public class SceneVertex {
 	public void add(MyItem item){
 		synchronized(this){
 			itemAdded=true;
-			if(mapMesh.keySet().contains(item.getAppearance()))
-				mapMesh.get(item.getAppearance()).add(item);
+			if(meshMap.keySet().contains(item.getAppearance()))
+				meshMap.get(item.getAppearance()).add(item);
 			else{
 				ArrayList<MyItem> l = new ArrayList<MyItem>();
 				l.add(item);
-				mapMesh.put(item.getAppearance(),l);
+				meshMap.put(item.getAppearance(),l);
 				notInit.add(item.getAppearance());
 			}
 		}
@@ -81,28 +91,28 @@ public class SceneVertex {
 		this.add(item);
 	}
 
-	public void add(float[] vertices, Material material , float[] normales, int[] indices){
-		Mesh newMesh = new Mesh(vertices,material, normales,indices);
+	public void add(float[] vertices, Material material , float[] normals, int[] indices){
+		Mesh newMesh = new Mesh(vertices,material, normals,indices);
 		MyItem item = new MyItem(newMesh);
 		this.add(item);
 	}
 
-	public void add(float[] vertices, Material material, float[] normales, int[] indices,
+	public void add(float[] vertices, Material material, float[] normals, int[] indices,
 			float scale, Vector3f rotation, Vector3f position) {
-		Mesh newMesh = new Mesh(vertices,material,normales,indices);
+		Mesh newMesh = new Mesh(vertices,material,normals,indices);
 		MyItem newItem = new MyItem(newMesh, scale, rotation, position);
 		this.add(newItem);
 	}
 
-	public void add(float[] vertices, Material material , float[] normales, int[] indices, int weight){
-		Mesh newMesh = new Mesh(vertices,material, normales,indices, weight);
+	public void add(float[] vertices, Material material , float[] normals, int[] indices, int weight){
+		Mesh newMesh = new Mesh(vertices,material, normals,indices, weight);
 		MyItem item = new MyItem(newMesh);
 		this.add(item);
 	}
 
-	public void add(float[] vertices, Material material, float[] normales, int[] indices, int weight,
+	public void add(float[] vertices, Material material, float[] normals, int[] indices, int weight,
 			float scale, Vector3f rotation, Vector3f position) {
-		Mesh newMesh = new Mesh(vertices,material,normales,indices,weight);
+		Mesh newMesh = new Mesh(vertices,material,normals,indices,weight);
 		MyItem newItem = new MyItem(newMesh, scale, rotation, position);
 		this.add(newItem);
 	}
@@ -111,5 +121,9 @@ public class SceneVertex {
 			Vector3f position) {
 		MyItem newItem = new MyItem(apparence, scale, rotation, position);
 		this.add(newItem);
+	}
+	
+	public void clone(MyItem i){
+		this.add(new MyItem(i));
 	}
 }

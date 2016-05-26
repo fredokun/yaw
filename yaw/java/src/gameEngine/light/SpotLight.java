@@ -35,8 +35,20 @@ public class SpotLight extends PointLight {
 	public Vector3f getConedir() {
 		return conedir;
 	}
+	
+	public void setConedir(float x,float y,float z){
+		this.conedir=new Vector3f(x,y,z);
+	}
+	
+	public void setConeDir(Vector3f cd){
+		this.conedir=cd;
+	}
 
 	public float getCutoffAngle() {
 		return cutoffAngle;
+	}
+	
+	public void setCutoffAngle(float coa){
+		this.cutoffAngle=coa;
 	}
 }

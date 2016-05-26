@@ -7,22 +7,22 @@ import org.joml.Vector4f;
 import gameEngine.ShaderProgram;
 
 public class SceneLight {
-	//Maximum of pointLight and spotLight which can be create.
-	//If this value is modify, it's needed to change the value in the frag.sh
+	// Maximum number of pointLight and spotLight which can be created.
+	// If this value is modified, it is needed to change the value in the frag.sh
 	public static final int maxPointlight = 5;
 	public static final int maxSpotlight = 5;
 	
-	//Different light used in the current scene
-	private AmbiantLight ambiant;
-	private DirectionnalLight sun;
+	// Different lights used in the current scene
+	private AmbientLight ambient;
+	private DirectionalLight sun;
 	private PointLight[] pointTable;
 	private SpotLight[] spotTable;
 	
 	public float specularPower = 32;
 	
 	public SceneLight(){
-		ambiant = new AmbiantLight();
-		sun = new DirectionnalLight();
+		ambient = new AmbientLight();
+		sun = new DirectionalLight();
 		pointTable = new PointLight [maxPointlight];
 		for(int i=0; i< maxPointlight;i++)
 			pointTable[i] = new PointLight();
@@ -31,11 +31,11 @@ public class SceneLight {
 			spotTable[i] = new SpotLight();
 	}
 
-	public void setAmbiant(AmbiantLight ambiant) {
-		this.ambiant = ambiant;
+	public void setAmbient(AmbientLight ambient) {
+		this.ambient = ambient;
 	}
 
-	public void setSun(DirectionnalLight sun) {
+	public void setSun(DirectionalLight sun) {
 		this.sun = sun;
 	}
 
@@ -56,7 +56,7 @@ public class SceneLight {
 	}
 	
 	public void render(ShaderProgram sh,Matrix4f viewMatrix){
-        sh.setUniform("ambientLight", ambiant);
+        sh.setUniform("ambientLight", ambient);
         sh.setUniform("specularPower", specularPower);
 
         // Process Point Lights
@@ -79,7 +79,7 @@ public class SceneLight {
             Vector4f dir = new Vector4f(currSpotLight.conedir, 0);
             dir.mul(viewMatrix);
             currSpotLight.conedir=new Vector3f(dir.x, dir.y, dir.z);
-
+            currSpotLight.cutoffAngle = (float) Math.cos(Math.toRadians(currSpotLight.cutoffAngle));
             Vector3f lightPos = new Vector3f(currSpotLight.getPosition());
             Vector4f aux = new Vector4f(lightPos, 1);
             aux.mul(viewMatrix);
@@ -91,7 +91,7 @@ public class SceneLight {
         }
 
         // Get a copy of the directional light object and transform its position to view coordinates
-        DirectionnalLight currDirLight = new DirectionnalLight(sun);
+        DirectionalLight currDirLight = new DirectionalLight(sun);
         Vector4f dir = new Vector4f(currDirLight.direction, 0);
         dir.mul(viewMatrix);
         currDirLight.direction=new Vector3f(dir.x, dir.y, dir.z);
@@ -106,11 +106,11 @@ public class SceneLight {
 		spotTable[pos]=sl;
 	}
 
-	public AmbiantLight getAmbiantLight() {
-		return ambiant;
+	public AmbientLight getAmbientLight() {
+		return ambient;
 	}
 	
-	public DirectionnalLight getSun() {
+	public DirectionalLight getSun() {
 		return sun;
 	}
 
@@ -120,5 +120,13 @@ public class SceneLight {
 
 	public SpotLight[] getSpotTable() {
 		return spotTable;
+	}
+	
+	public float getSpecularPower(){
+		return specularPower;
+	}
+	
+	public void setSpecularPower(float x){
+		specularPower=x;
 	}
 }

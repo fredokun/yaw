@@ -14,15 +14,14 @@ public class Window {
 	protected static int width;
 	protected static int height;
 	protected static boolean resized;
-	
-	//protege des erreurs du au garbage collector
+	// Protect from Garbage Collector errors
 	private static GLFWKeyCallback keyCallback;
 	private static GLFWWindowSizeCallback windowSizeCallback;
 	
-	//Capabilities
+	// Capabilities
 	public static GLCapabilities caps;
 	
-	//Initialise et ouvre une fenetre.
+	// Initializes and opens a window.
 	public static void init(){
 		if(glfwInit()== 0){
 			throw new IllegalStateException("Unable to initialize GLFW");
@@ -58,12 +57,12 @@ public class Window {
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	}
 	
-	//Desalloue le materielle utilise pour la fenetre
+	// Deallocates the resources used for the window
 	public static void cleanUp(){
 		glfwTerminate();
 	}
 	
-	//A appeller avant de mettre a jour le contenue de la fenetre
+	// To be called before updating the windows's content
 	public static boolean clear(){
 		 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		 if(resized){
@@ -73,7 +72,8 @@ public class Window {
 		 }
 		 return false;
 	}
-	//Dessine le contenue de la fenetre
+	
+	// Draws the window's contents
 	public static void update(){
 			 glfwSwapBuffers(window);
 			 glfwPollEvents();		
