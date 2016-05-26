@@ -187,6 +187,8 @@ Set the sun light to blue and rotate the cube to see the differences
 ##### Set the orientation of the Camera (camera x y z)
 >boot.user=> (setOrientation camera 1.0 0.0 0.0)
 
+##### Get the orientation of the Camera (camera)
+>boot.user=> (getOrientation camera)
 ----
 ## Light
 
