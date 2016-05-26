@@ -18,7 +18,7 @@ public class SceneLight {
 	private PointLight[] pointTable;
 	private SpotLight[] spotTable;
 	
-	public float specularPower = 32;
+	public float specularPower = 8;
 	
 	public SceneLight(){
 		ambient = new AmbientLight();
