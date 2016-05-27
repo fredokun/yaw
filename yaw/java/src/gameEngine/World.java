@@ -113,11 +113,14 @@ public class World implements Runnable{
 				callback.update();
 				//Clean the window
 				boolean isResized = Window.clear();
+				
+				for(Skybox s : skyboxToBeRemoved){
+					s.cleanUp();
+					//TODO clean the liste
+				}
+				
 				synchronized(sc){
-			
 				//Update the world
-					for(Skybox s : skyboxToBeRemoved)
-						s.cleanUp();
 				renderer.render(sc, sl, isResized,c, sk);
 				}
 				//Thread.sleep(1000);
