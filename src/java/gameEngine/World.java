@@ -120,7 +120,7 @@ public class World implements Runnable{
 					for(Skybox s : skyboxToBeRemoved){
 						s.cleanUp();
 					}
-					System.out.println("ici");
+					// System.out.println("ici");
 					skyboxToBeRemoved.clear();
 				}
 				

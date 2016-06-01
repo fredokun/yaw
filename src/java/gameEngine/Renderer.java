@@ -13,21 +13,20 @@ import org.joml.Matrix4f;
 public class Renderer {
 	protected ShaderProgram sh;
 
-
 	public Renderer() throws Exception{
 
 		//Initialization of the shader program
 		sh = new ShaderProgram();
 		try{
-			sh.createVertexShader(new String(Files.readAllBytes(Paths.get("./java/src/gameEngine/vertShader.vs"))));
-			sh.createFragmentShader(new String(Files.readAllBytes(Paths.get("./java/src/gameEngine/fragShader.fs"))));
+			sh.createVertexShader(new String(Files.readAllBytes(Paths.get("./java/gameEngine/vertShader.vs"))));
+			sh.createFragmentShader(new String(Files.readAllBytes(Paths.get("./java/gameEngine/fragShader.fs"))));
 		}catch(Exception e){
 			try{
-				sh.createVertexShader(new String(Files.readAllBytes(Paths.get("./src/gameEngine/vertShader.vs"))));
-				sh.createFragmentShader(new String(Files.readAllBytes(Paths.get("./src/gameEngine/fragShader.fs"))));
+				sh.createVertexShader(new String(Files.readAllBytes(Paths.get("./gameEngine/vertShader.vs"))));
+				sh.createFragmentShader(new String(Files.readAllBytes(Paths.get("./gameEngine/fragShader.fs"))));
 			}catch(Exception x){
-				sh.createVertexShader(new String(Files.readAllBytes(Paths.get("./yaw/java/src/gameEngine/vertShader.vs"))));
-				sh.createFragmentShader(new String(Files.readAllBytes(Paths.get("./yaw/java/src/gameEngine/fragShader.fs"))));
+				sh.createVertexShader(new String(Files.readAllBytes(Paths.get("./src/java/gameEngine/vertShader.vs"))));
+				sh.createFragmentShader(new String(Files.readAllBytes(Paths.get("./src/java/gameEngine/fragShader.fs"))));
 			}
 
 		}
