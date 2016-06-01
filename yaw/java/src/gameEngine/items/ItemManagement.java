@@ -15,7 +15,7 @@ import org.joml.Vector3f;
 
 public class ItemManagement {
 	public static GenericItem createBlock(World world,float red, float green, float blue,float xLength,float yLength,float zLength,float scale){
-		Material material = new Material( new Vector3f(red,green,blue),0.f);
+		Material material = new Material( new Vector3f(red,green,blue),1000.f);
 		Mesh appearance=BlockGenerator.generate(xLength, yLength, zLength, material);
 		GenericItem item=new GenericItem(appearance,scale,new Vector3f(),new Vector3f(0f,0f,-2f));
 		world.getSceneVertex().add(item);
@@ -23,7 +23,7 @@ public class ItemManagement {
 	}
 	
 	public static GenericItem createHalfBlock(World world,float red, float green, float blue,float xLength,float yLength,float zLength,float scale){
-		Material material = new Material( new Vector3f(red,green,blue),0.f);
+		Material material = new Material( new Vector3f(red,green,blue),1000.f);
 		Mesh appearance=HalfBlockGenerator.generate(xLength, yLength, zLength, material);
 		GenericItem item=new GenericItem(appearance,scale,new Vector3f(),new Vector3f(0f,0f,-2f));
 		world.getSceneVertex().add(item);
@@ -31,7 +31,7 @@ public class ItemManagement {
 	}
 	
 	public static GenericItem createPyramid(World world,float red, float green, float blue,float xLength,float yLength,float zLength,float scale){
-		Material material = new Material( new Vector3f(red,green,blue),0.f);
+		Material material = new Material( new Vector3f(red,green,blue),1000.f);
 		Mesh appearance=PyramidGenerator.generate(xLength, yLength, zLength, material);
 		GenericItem item=new GenericItem(appearance,scale,new Vector3f(),new Vector3f(0f,0f,-2f));
 		world.getSceneVertex().add(item);
@@ -39,7 +39,7 @@ public class ItemManagement {
 	}
 	
 	public static GenericItem createRegTetrahedron(World world,float red, float green, float blue,float scale){
-		Material material = new Material( new Vector3f(red,green,blue),0.f);
+		Material material = new Material( new Vector3f(red,green,blue),1000.f);
 		Mesh appearance=RegTetrahedronGenerator.generate(material);
 		GenericItem item=new GenericItem(appearance,scale,new Vector3f(),new Vector3f(0f,0f,-2f));
 		world.getSceneVertex().add(item);
@@ -47,7 +47,7 @@ public class ItemManagement {
 	}
 	
 	public static GenericItem createRegOctahedron(World world,float red, float green, float blue,float scale){
-		Material material = new Material( new Vector3f(red,green,blue),0.f);
+		Material material = new Material( new Vector3f(red,green,blue),1000.f);
 		Mesh appearance=RegOctahedronGenerator.generate(material);
 		GenericItem item=new GenericItem(appearance,scale,new Vector3f(),new Vector3f(0f,0f,-2f));
 		world.getSceneVertex().add(item);
@@ -55,7 +55,7 @@ public class ItemManagement {
 	}
 	
 	public static GenericItem createGround(World world,float red, float green,float blue,float width,float length){
-		Material material = new Material( new Vector3f(red,green,blue),0.f);
+		Material material = new Material( new Vector3f(red,green,blue),1000.f);
 		Mesh appearance=GroundGenerator.generate(width,length,0,material);
 		GenericItem item=new GenericItem(appearance,1.0f,new Vector3f(),new Vector3f(0f,-2f,0f));
 		world.getSceneVertex().add(item);

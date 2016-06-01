@@ -121,6 +121,11 @@
 (defn setOrientationVector [camera vector]
       (.setOrientation camera vector))
       
+(defn getOrientation [camera]
+	(let [orientation (.getOrientation camera)]
+		(vector (.x orientation) (.y orientation) (.z orientation))
+	))
+      
 ;; Objects Management------------------------------------------------
 
 (defn createGround [world r g b width length ]
@@ -314,8 +319,9 @@
 ;; Save Tools for Cameras
 (defn cameraToVector [cam]
 	"Converts a Camera into a savable vector."
-  (let [position (.getPosition cam)]
-    (vector (.getClass cam) (.getFieldOfView cam) (.getzNear cam) (.getzFar cam) (.x position) (.y position) (.z position))
+  (let [position (.getPosition cam)
+  			orientation (.getOrientation cam)]
+    (vector (.getClass cam) (.getFieldOfView cam) (.getzNear cam) (.getzFar cam) (.x position) (.y position) (.z position) (.x orientation) (.y orientation) (.z orientation))
   ))
   
 (defn createCameraVector [cameraListVec]

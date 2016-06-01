@@ -40,20 +40,22 @@ public class World implements Runnable{
 	
 	public void setSkybox(float width, float length, float height, float r,float g,float b){
 		Skybox sky=new Skybox(width,length,height,new Vector3f(r,g,b));
-		if(this.sk != null){
-			skyboxToBeRemoved.add(sk);
-		}
-		this.sk = sky;
+		setSkybox(sky);
 	}
 	
 	public void setSkybox(Skybox sk){
-		if(this.sk != null)
-			skyboxToBeRemoved.add(sk);
+		if(this.sk != null){
+			synchronized (skyboxToBeRemoved) {
+				skyboxToBeRemoved.add(sk);	
+			}
+		}
 		this.sk = sk;
 	}
 	
 	public void removeSkybox(){
-		skyboxToBeRemoved.add(sk);
+		synchronized (skyboxToBeRemoved) {
+			skyboxToBeRemoved.add(sk);	
+		}
 		this.sk = null;
 	}
 	
@@ -113,11 +115,17 @@ public class World implements Runnable{
 				callback.update();
 				//Clean the window
 				boolean isResized = Window.clear();
-				synchronized(sc){
-			
-				//Update the world
-					for(Skybox s : skyboxToBeRemoved)
+				
+				synchronized (skyboxToBeRemoved) {
+					for(Skybox s : skyboxToBeRemoved){
 						s.cleanUp();
+					}
+					System.out.println("icié");
+					skyboxToBeRemoved.clear();
+				}
+				
+				synchronized(sc){
+				//Update the world
 				renderer.render(sc, sl, isResized,c, sk);
 				}
 				//Thread.sleep(1000);

@@ -14,7 +14,7 @@ public class Material {
     
     public Material(Vector3f color){
     	this.color = color;
-    	this.reflectance= 0f;
+    	this.reflectance= 1000f;
     }
     
     public Material(float reflectance){
@@ -24,7 +24,7 @@ public class Material {
     
     public Material(){
     	this.color = new Vector3f(1.f,1.f,1.f);
-    	this.reflectance= 0;
+    	this.reflectance= 1000;
     }
     
     public Vector3f getColor() {
