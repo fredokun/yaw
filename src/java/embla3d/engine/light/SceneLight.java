@@ -21,8 +21,8 @@ public class SceneLight {
     public float specularPower = 8;
 	
     public SceneLight(){
-	ambient = new AmbientLight();
-	sun = new DirectionalLight();
+	removeAmbient();
+        removeSun();
 	pointTable = new PointLight [maxPointlight];
 	for(int i=0; i< maxPointlight;i++)
 	    pointTable[i] = new PointLight();
@@ -35,8 +35,20 @@ public class SceneLight {
 	this.ambient = ambient;
     }
 
+    public void removeAmbient() {
+	this.ambient = new AmbientLight();
+    }
+
     public void setSun(DirectionalLight sun) {
 	this.sun = sun;
+    }
+
+    public DirectionalLight getSun() {
+	return this.sun;
+    }
+
+    public void removeSun() {
+	this.sun = new DirectionalLight();
     }
 
     public void setPointTable(PointLight[] pointTable) {

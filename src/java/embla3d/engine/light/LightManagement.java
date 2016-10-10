@@ -12,7 +12,12 @@ public class LightManagement {
 	world.getSceneLight().setSun(sun);
 	return sun;
     }
-	
+
+    public static DirectionalLight removeSunLight(World world) {
+	world.getSceneLight().removeSun();
+	return world.getSceneLight().getSun();
+    }
+
     public static void setSunDirection(DirectionalLight sun, float x,float y,float z){
 	sun.setDirection(new Vector3f(x,y,z));
     }

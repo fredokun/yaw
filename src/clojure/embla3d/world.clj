@@ -1,30 +1,45 @@
-(ns yaw.world
-  (:import [gameEngine World][gameEngine.items MyItem][gameEngine.camera CameraManagement]
-  [gameEngine.light LightManagement][gameEngine.camera Camera][gameEngine.items ItemManagement])
+(ns embla3d.world
+  (:import [embla3d.engine World]
+           [embla3d.engine.items MyItem]
+           [embla3d.engine.camera CameraManagement]
+           [embla3d.engine.light LightManagement]
+           [embla3d.engine.camera Camera]
+           [embla3d.engine.items ItemManagement])
   (:gen-class))
 
-
-(defn start-yaw
+(defn start-world!
+  "Start an empty embla3d world."
   []
   (let [world (.newInstance World)
         thread (future (.init world))]
-	(.start (Thread. world))
-    (atom {:world world :thread thread})
-    ))
-
+    (.start (Thread. world))
+    (atom {:world world :thread thread})))
 
 ;; Skybox
 
-(defn setSkybox [world width length height r g b]
-      (.setSkybox world width length height r g b))
+(defn set-skybox!
+  "Set the skybox of `world` of the specified dimensions
+ and color."
+  [world width length height r g b]
+  (.setSkybox world width length height r g b))
 
-(defn removeSkybox [world]
-     (.removeSkybox world))
+(defn remove-skybox!
+  "Remove the skybox from `world`."
+  [world]
+  (.removeSkybox world))
 
 ;; Light Management----------------------------------------------------------------------------------
 
-(defn setSunLight [world r g b intensity x y z]
-      (LightManagement/setSunLight world r g b intensity x y z))
+(defn set-sun-light!
+  "Set the sun light with the specified color, `intensity`
+ and origin coordinates."
+  [world r g b intensity x y z]
+  (LightManagement/setSunLight world r g b intensity x y z))
+
+(defn remove-sun-light!
+  "Remove the sun light of the `world`."
+  [world]
+  (LightManagement/removeSunLight world))
 
 (defn setAmbientLight [world r g b intensity]
       (LightManagement/setAmbientLight world r g b intensity))
@@ -264,13 +279,13 @@
 	(let [material (.getMaterial mesh)
 				color (.getColor material)]
 		(condp  = (.getClass mesh)		
-			gameEngine.meshs.BlockMesh (vector gameEngine.meshGenerator.BlockGenerator (.xLength mesh) (.yLength mesh) (.zLength mesh) (.x color) (.y color) (.z color) (.getReflectance material))
-			gameEngine.meshs.HalfBlockMesh (vector gameEngine.meshGenerator.HalfBlockGenerator (.xLength mesh) (.yLength mesh) (.zLength mesh) (.x color) (.y color) (.z color) (.getReflectance material))
-			gameEngine.meshs.GroundMesh (vector gameEngine.meshGenerator.GroundGenerator (.width mesh) (.length mesh) (.height mesh) (.x color) (.y color) (.z color) (.getReflectance material))
-			gameEngine.meshs.PyramidMesh (vector gameEngine.meshGenerator.PyramidGenerator (.xLength mesh) (.yLength mesh) (.zLength mesh) (.x color) (.y color) (.z color) (.getReflectance material))
-			gameEngine.meshs.TetrahedronMesh (vector gameEngine.meshGenerator.RegTetrahedronGenerator (.x color) (.y color) (.z color) (.getReflectance material))
-			gameEngine.meshs.OctahedronMesh (vector gameEngine.meshGenerator.RegOctahedronGenerator (.x color) (.y color) (.z color) (.getReflectance material))
-			gameEngine.meshs.Mesh	(vector gameEngine.meshs.Mesh (vec (.getVertices mesh)) (.x color) (.y color) (.z color) (.getReflectance material) (vec (.getNormals mesh)) (vec (.getIndices mesh)) (.getWeight mesh))
+			embla3d.engine.meshs.BlockMesh (vector embla3d.engine.meshGenerator.BlockGenerator (.xLength mesh) (.yLength mesh) (.zLength mesh) (.x color) (.y color) (.z color) (.getReflectance material))
+			embla3d.engine.meshs.HalfBlockMesh (vector embla3d.engine.meshGenerator.HalfBlockGenerator (.xLength mesh) (.yLength mesh) (.zLength mesh) (.x color) (.y color) (.z color) (.getReflectance material))
+			embla3d.engine.meshs.GroundMesh (vector embla3d.engine.meshGenerator.GroundGenerator (.width mesh) (.length mesh) (.height mesh) (.x color) (.y color) (.z color) (.getReflectance material))
+			embla3d.engine.meshs.PyramidMesh (vector embla3d.engine.meshGenerator.PyramidGenerator (.xLength mesh) (.yLength mesh) (.zLength mesh) (.x color) (.y color) (.z color) (.getReflectance material))
+			embla3d.engine.meshs.TetrahedronMesh (vector embla3d.engine.meshGenerator.RegTetrahedronGenerator (.x color) (.y color) (.z color) (.getReflectance material))
+			embla3d.engine.meshs.OctahedronMesh (vector embla3d.engine.meshGenerator.RegOctahedronGenerator (.x color) (.y color) (.z color) (.getReflectance material))
+			embla3d.engine.meshs.Mesh	(vector embla3d.engine.meshs.Mesh (vec (.getVertices mesh)) (.x color) (.y color) (.z color) (.getReflectance material) (vec (.getNormals mesh)) (vec (.getIndices mesh)) (.getWeight mesh))
     )
   ))
 
@@ -437,13 +452,13 @@
 (defn loadMesh [mesh]
 	"Loads a Mesh."
 	(case (get mesh 0)
-		gameEngine.meshGenerator.BlockGenerator (gameEngine.meshGenerator.BlockGenerator/generate (get mesh 1) (get mesh 2) (get mesh 3) (get mesh 4) (get mesh 5) (get mesh 6) (get mesh 7))
-		gameEngine.meshGenerator.HalfBlockGenerator (gameEngine.meshGenerator.HalfBlockGenerator/generate (get mesh 1) (get mesh 2) (get mesh 3) (get mesh 4) (get mesh 5) (get mesh 6) (get mesh 7))
-		gameEngine.meshGenerator.GroundGenerator (gameEngine.meshGenerator.GroundGenerator/generate (get mesh 1) (get mesh 2) (get mesh 3) (get mesh 4) (get mesh 5) (get mesh 6) (get mesh 7))
-		gameEngine.meshGenerator.PyramidGenerator (gameEngine.meshGenerator.PyramidGenerator/generate (get mesh 1) (get mesh 2) (get mesh 3) (get mesh 4) (get mesh 5) (get mesh 6) (get mesh 7))
-		gameEngine.meshGenerator.RegTetrahedronGenerator (gameEngine.meshGenerator.RegTetrahedronGenerator/generate (get mesh 1) (get mesh 2) (get mesh 3) (get mesh 4))
-		gameEngine.meshGenerator.RegOctahedronGenerator (gameEngine.meshGenerator.RegOctahedronGenerator/generate (get mesh 1) (get mesh 2) (get mesh 3) (get mesh 4))
-		gameEngine.meshs.Mesh (gameEngine.meshs.Mesh. (float-array (get mesh 1)) (get mesh 2) (get mesh 3) (get mesh 4) (get mesh 5) (float-array (get mesh 6)) (int-array (get mesh 7)) (get mesh 8))
+		embla3d.engine.meshGenerator.BlockGenerator (embla3d.engine.meshGenerator.BlockGenerator/generate (get mesh 1) (get mesh 2) (get mesh 3) (get mesh 4) (get mesh 5) (get mesh 6) (get mesh 7))
+		embla3d.engine.meshGenerator.HalfBlockGenerator (embla3d.engine.meshGenerator.HalfBlockGenerator/generate (get mesh 1) (get mesh 2) (get mesh 3) (get mesh 4) (get mesh 5) (get mesh 6) (get mesh 7))
+		embla3d.engine.meshGenerator.GroundGenerator (embla3d.engine.meshGenerator.GroundGenerator/generate (get mesh 1) (get mesh 2) (get mesh 3) (get mesh 4) (get mesh 5) (get mesh 6) (get mesh 7))
+		embla3d.engine.meshGenerator.PyramidGenerator (embla3d.engine.meshGenerator.PyramidGenerator/generate (get mesh 1) (get mesh 2) (get mesh 3) (get mesh 4) (get mesh 5) (get mesh 6) (get mesh 7))
+		embla3d.engine.meshGenerator.RegTetrahedronGenerator (embla3d.engine.meshGenerator.RegTetrahedronGenerator/generate (get mesh 1) (get mesh 2) (get mesh 3) (get mesh 4))
+		embla3d.engine.meshGenerator.RegOctahedronGenerator (embla3d.engine.meshGenerator.RegOctahedronGenerator/generate (get mesh 1) (get mesh 2) (get mesh 3) (get mesh 4))
+		embla3d.engine.meshs.Mesh (embla3d.engine.meshs.Mesh. (float-array (get mesh 1)) (get mesh 2) (get mesh 3) (get mesh 4) (get mesh 5) (float-array (get mesh 6)) (int-array (get mesh 7)) (get mesh 8))
 	))
 	
 (defn loadGenericItems [mesh itemsList itemRefsMap world]
@@ -451,10 +466,10 @@
 	(let [itemVec (first itemsList)
 				sceneVertex (.getSceneVertex world)]
 		(if (= (.size itemsList) 1)
-			 (let [javaItem (gameEngine.items.GenericItem. mesh (get itemVec 0) (get itemVec 1) (get itemVec 2) (get itemVec 3) (get itemVec 4) (get itemVec 5) (get itemVec 6))]
+			 (let [javaItem (embla3d.engine.items.GenericItem. mesh (get itemVec 0) (get itemVec 1) (get itemVec 2) (get itemVec 3) (get itemVec 4) (get itemVec 5) (get itemVec 6))]
 			 	(.add sceneVertex javaItem)
 			 	(assoc itemRefsMap (.size itemRefsMap) javaItem))
-			(let [javaItem (gameEngine.items.GenericItem. mesh (get itemVec 0) (get itemVec 1) (get itemVec 2) (get itemVec 3) (get itemVec 4) (get itemVec 5) (get itemVec 6))]
+			(let [javaItem (embla3d.engine.items.GenericItem. mesh (get itemVec 0) (get itemVec 1) (get itemVec 2) (get itemVec 3) (get itemVec 4) (get itemVec 5) (get itemVec 6))]
 				(.add sceneVertex javaItem)
 				(loadGenericItems mesh (rest itemsList) (assoc itemRefsMap (.size itemRefsMap) javaItem) world)))
 	))
@@ -564,7 +579,7 @@
 	"Loads the Skybox, if there is one."
 	(if (= (.length skyboxVec) 0)
 		nil
-		(let [skybox (gameEngine.skybox.Skybox. (get skyboxVec 0) (get skyboxVec 1) (get skyboxVec 2) (get skyboxVec 3) (get skyboxVec 4) (get skyboxVec 5))]
+		(let [skybox (embla3d.engine.skybox.Skybox. (get skyboxVec 0) (get skyboxVec 1) (get skyboxVec 2) (get skyboxVec 3) (get skyboxVec 4) (get skyboxVec 5))]
 			(.setSkybox world skybox))
 	))
 
