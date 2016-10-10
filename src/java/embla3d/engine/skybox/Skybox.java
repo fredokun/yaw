@@ -26,6 +26,9 @@ import java.nio.file.Paths;
 import embla3d.engine.ShaderProgram;
 import embla3d.engine.camera.Camera;
 
+import static embla3d.engine.skybox.skyboxVertexShader;
+import static embla3d.engine.skybox.skyboxFragmentShader;
+
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
@@ -53,21 +56,12 @@ public class Skybox {
     }
 	
     public void init() throws Exception{
-		
-	shaderProg = new ShaderProgram();
-	try{
-	    shaderProg.createVertexShader(new String(Files.readAllBytes(Paths.get("./java/src/embla3d.engine/skybox/skyboxVertexShader.vs"))));
-	    shaderProg.createFragmentShader(new String(Files.readAllBytes(Paths.get("./java/src/embla3d.engine/skybox/skyboxFragmentShader.fs"))));
-	}catch(Exception e){
-	    try{
-		shaderProg.createVertexShader(new String(Files.readAllBytes(Paths.get("./src/embla3d.engine/skybox/skyboxVertexShader.vs"))));
-		shaderProg.createFragmentShader(new String(Files.readAllBytes(Paths.get("./src/embla3d.engine/skybox/skyboxFragmentShader.fs"))));
-	    }catch(Exception x){
-		shaderProg.createVertexShader(new String(Files.readAllBytes(Paths.get("./yaw/java/src/embla3d.engine/skybox/skyboxVertexShader.vs"))));
-		shaderProg.createFragmentShader(new String(Files.readAllBytes(Paths.get("./yaw/java/src/embla3d.engine/skybox/skyboxFragmentShader.fs"))));
-	    }
 
-	}
+	shaderProg = new ShaderProgram();
+
+	shaderProg.createVertexShader(skyboxVertexShader.SHADER_STRING);
+	shaderProg.createFragmentShader(skyboxFragmentShader.SHADER_STRING);
+        
 	shaderProg.link();
 	//Initialization of the uniforms
 	shaderProg.createUniform("projectionMatrix");

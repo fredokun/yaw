@@ -8,6 +8,9 @@ import embla3d.engine.camera.Camera;
 import embla3d.engine.light.SceneLight;
 import embla3d.engine.skybox.Skybox;
 
+import static embla3d.engine.vertShader;
+import static embla3d.engine.fragShader;
+
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -20,19 +23,9 @@ public class Renderer {
 
 	//Initialization of the shader program
 	sh = new ShaderProgram();
-	try{
-	    sh.createVertexShader(new String(Files.readAllBytes(Paths.get("./java/embla3d.engine/vertShader.vs"))));
-	    sh.createFragmentShader(new String(Files.readAllBytes(Paths.get("./java/embla3d.engine/fragShader.fs"))));
-	}catch(Exception e){
-	    try{
-		sh.createVertexShader(new String(Files.readAllBytes(Paths.get("./embla3d.engine/vertShader.vs"))));
-		sh.createFragmentShader(new String(Files.readAllBytes(Paths.get("./embla3d.engine/fragShader.fs"))));
-	    }catch(Exception x){
-		sh.createVertexShader(new String(Files.readAllBytes(Paths.get("./src/java/embla3d.engine/vertShader.vs"))));
-		sh.createFragmentShader(new String(Files.readAllBytes(Paths.get("./src/java/embla3d.engine/fragShader.fs"))));
-	    }
+	sh.createVertexShader(vertShader.SHADER_STRING);
+	sh.createFragmentShader(fragShader.SHADER_STRING);
 
-	}
 	sh.link();
 	//Initialization of the camera's uniform
 	sh.createUniform("projectionMatrix");
