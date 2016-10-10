@@ -1,61 +1,61 @@
-package gameEngine.light;
+package embla3d.engine.light;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-import gameEngine.ShaderProgram;
+import embla3d.engine.ShaderProgram;
 
 public class SceneLight {
-	// Maximum number of pointLight and spotLight which can be created.
-	// If this value is modified, it is needed to change the value in the frag.sh
-	public static final int maxPointlight = 5;
-	public static final int maxSpotlight = 5;
+    // Maximum number of pointLight and spotLight which can be created.
+    // If this value is modified, it is needed to change the value in the frag.sh
+    public static final int maxPointlight = 5;
+    public static final int maxSpotlight = 5;
 	
-	// Different lights used in the current scene
-	private AmbientLight ambient;
-	private DirectionalLight sun;
-	private PointLight[] pointTable;
-	private SpotLight[] spotTable;
+    // Different lights used in the current scene
+    private AmbientLight ambient;
+    private DirectionalLight sun;
+    private PointLight[] pointTable;
+    private SpotLight[] spotTable;
 	
-	public float specularPower = 8;
+    public float specularPower = 8;
 	
-	public SceneLight(){
-		ambient = new AmbientLight();
-		sun = new DirectionalLight();
-		pointTable = new PointLight [maxPointlight];
-		for(int i=0; i< maxPointlight;i++)
-			pointTable[i] = new PointLight();
-		spotTable = new SpotLight [maxSpotlight];
-		for(int i=0; i< maxSpotlight;i++)
-			spotTable[i] = new SpotLight();
-	}
+    public SceneLight(){
+	ambient = new AmbientLight();
+	sun = new DirectionalLight();
+	pointTable = new PointLight [maxPointlight];
+	for(int i=0; i< maxPointlight;i++)
+	    pointTable[i] = new PointLight();
+	spotTable = new SpotLight [maxSpotlight];
+	for(int i=0; i< maxSpotlight;i++)
+	    spotTable[i] = new SpotLight();
+    }
 
-	public void setAmbient(AmbientLight ambient) {
-		this.ambient = ambient;
-	}
+    public void setAmbient(AmbientLight ambient) {
+	this.ambient = ambient;
+    }
 
-	public void setSun(DirectionalLight sun) {
-		this.sun = sun;
-	}
+    public void setSun(DirectionalLight sun) {
+	this.sun = sun;
+    }
 
-	public void setPointTable(PointLight[] pointTable) {
-		this.pointTable = pointTable;
-	}
+    public void setPointTable(PointLight[] pointTable) {
+	this.pointTable = pointTable;
+    }
 
-	public void setSpotTable(SpotLight[] spotTable) {
-		this.spotTable = spotTable;
-	}
+    public void setSpotTable(SpotLight[] spotTable) {
+	this.spotTable = spotTable;
+    }
 	
-	public void setPointTable(PointLight point, int pos) {
-		this.pointTable[pos] = point;
-	}
+    public void setPointTable(PointLight point, int pos) {
+	this.pointTable[pos] = point;
+    }
 
-	public void setSpotTable(SpotLight spot, int pos) {
-		this.spotTable[pos] = spot;
-	}
+    public void setSpotTable(SpotLight spot, int pos) {
+	this.spotTable[pos] = spot;
+    }
 	
-	public void render(ShaderProgram sh,Matrix4f viewMatrix){
+    public void render(ShaderProgram sh,Matrix4f viewMatrix){
         sh.setUniform("ambientLight", ambient);
         sh.setUniform("specularPower", specularPower);
 
@@ -98,35 +98,35 @@ public class SceneLight {
         sh.setUniform("directionalLight", currDirLight);
     }
 	
-	public void setPointLight(PointLight pl, int pos){
-		pointTable[pos]=pl;
-	}
+    public void setPointLight(PointLight pl, int pos){
+	pointTable[pos]=pl;
+    }
 	
-	public void setSpotLight(SpotLight sl, int pos){
-		spotTable[pos]=sl;
-	}
+    public void setSpotLight(SpotLight sl, int pos){
+	spotTable[pos]=sl;
+    }
 
-	public AmbientLight getAmbientLight() {
-		return ambient;
-	}
+    public AmbientLight getAmbientLight() {
+	return ambient;
+    }
 	
-	public DirectionalLight getSun() {
-		return sun;
-	}
+    public DirectionalLight getSun() {
+	return sun;
+    }
 
-	public PointLight[] getPointTable() {
-		return pointTable;
-	}
+    public PointLight[] getPointTable() {
+	return pointTable;
+    }
 
-	public SpotLight[] getSpotTable() {
-		return spotTable;
-	}
+    public SpotLight[] getSpotTable() {
+	return spotTable;
+    }
 	
-	public float getSpecularPower(){
-		return specularPower;
-	}
+    public float getSpecularPower(){
+	return specularPower;
+    }
 	
-	public void setSpecularPower(float x){
-		specularPower=x;
-	}
+    public void setSpecularPower(float x){
+	specularPower=x;
+    }
 }

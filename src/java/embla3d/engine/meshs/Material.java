@@ -1,4 +1,4 @@
-package gameEngine.meshs;
+package embla3d.engine.meshs;
 
 import org.joml.Vector3f;
 

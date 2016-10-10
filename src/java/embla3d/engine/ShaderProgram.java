@@ -1,4 +1,4 @@
-package gameEngine;
+package embla3d.engine;
 
 import static org.lwjgl.opengl.GL20.*;
 
@@ -10,8 +10,8 @@ import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GLUtil;
 
-import gameEngine.light.*;
-import gameEngine.meshs.Material;
+import embla3d.engine.light.*;
+import embla3d.engine.meshs.Material;
 
 public class ShaderProgram {
 
@@ -94,8 +94,8 @@ public class ShaderProgram {
     public int createUniform(String uniformName) throws Exception{
     	int res=glGetUniformLocation(programId, uniformName);
     	if(res<0){
-    		GLUtil.checkGLError();
-    		throw new Exception("Uniform creation error: "+uniformName);
+	    GLUtil.checkGLError();
+	    throw new Exception("Uniform creation error: "+uniformName);
     	}
     	uniformsList.put(uniformName, res);
     	return res;
@@ -203,8 +203,8 @@ public class ShaderProgram {
         setUniform(uniformName + ".intensity", dirLight.getIntensity());
     }
 
-	public void setUniform(String uniformName, AmbientLight ambient) {
-		setUniform(uniformName, ambient.getShaderValue());
-	}
+    public void setUniform(String uniformName, AmbientLight ambient) {
+	setUniform(uniformName, ambient.getShaderValue());
+    }
 
 }

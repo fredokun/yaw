@@ -1,16 +1,15 @@
-package gameEngine;
+package embla3d.engine;
 
-import gameEngine.items.GenericItem;
-import gameEngine.items.ItemManagement;
-import gameEngine.light.AmbientLight;
-import gameEngine.light.DirectionalLight;
-import gameEngine.light.SpotLight;
-import gameEngine.meshGenerator.GroundGenerator;
-import gameEngine.meshs.Material;
-import gameEngine.skybox.Skybox;
+import embla3d.engine.items.GenericItem;
+import embla3d.engine.items.ItemManagement;
+import embla3d.engine.light.AmbientLight;
+import embla3d.engine.light.DirectionalLight;
+import embla3d.engine.light.SpotLight;
+import embla3d.engine.meshGenerator.GroundGenerator;
+import embla3d.engine.meshs.Material;
+import embla3d.engine.skybox.Skybox;
 
 import org.joml.Vector3f;
-
 
 public class MainWorld {
 
