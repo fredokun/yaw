@@ -17,7 +17,7 @@ public class Input extends GLFWKeyCallback{
     @Override
     public void invoke(long window, int key, int scancode, int action, int mods) {
 	if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE )
-            glfwSetWindowShouldClose(window, GLFW_TRUE);
+            glfwSetWindowShouldClose(window, true);
 	keys[key] = action != GLFW_RELEASE;
     }
 

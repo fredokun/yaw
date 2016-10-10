@@ -121,11 +121,11 @@ public class SceneLight {
     public AmbientLight getAmbientLight() {
 	return ambient;
     }
-	
-    public DirectionalLight getSun() {
-	return sun;
+    
+    public int getMaxSpotLight() {
+	return maxPointlight;
     }
-
+    
     public PointLight[] getPointTable() {
 	return pointTable;
     }

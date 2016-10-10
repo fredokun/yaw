@@ -8,7 +8,6 @@ import embla3d.engine.camera.Camera;
 import embla3d.engine.items.ItemGroup;
 import embla3d.engine.light.SceneLight;
 import embla3d.engine.skybox.Skybox;
-import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 import static org.lwjgl.opengl.GL11.*;
 
@@ -108,7 +107,7 @@ public class World implements Runnable{
 	try{
 	    //Initialization of the window we currently use
 	    glViewport(0, 0, 500,500);
-	    while ( glfwWindowShouldClose(Window.window) == GLFW_FALSE && loop) {
+	    while ( glfwWindowShouldClose(Window.window) == false && loop) {
 		Thread.sleep(20);
 		c.update();
 		callback.update();

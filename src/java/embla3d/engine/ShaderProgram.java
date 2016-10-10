@@ -8,7 +8,7 @@ import java.util.HashMap;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GLUtil;
+import org.lwjgl.opengl.Util;
 
 import embla3d.engine.light.*;
 import embla3d.engine.meshs.Material;

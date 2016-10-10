@@ -2,14 +2,14 @@ package embla3d.engine;
 
 import static org.lwjgl.opengl.GL11.*;
 
-import static embla3d.engine.fragShader;
+import embla3d.engine.fragShader;
 
 import embla3d.engine.camera.Camera;
 import embla3d.engine.light.SceneLight;
 import embla3d.engine.skybox.Skybox;
 
-import static embla3d.engine.vertShader;
-import static embla3d.engine.fragShader;
+import embla3d.engine.vertShader;
+import embla3d.engine.fragShader;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;

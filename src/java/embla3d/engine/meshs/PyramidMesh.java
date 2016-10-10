@@ -1,4 +1,4 @@
-package gameEngine.meshs;
+package embla3d.engine.meshs;
 
 public class PyramidMesh extends Mesh {
     public final float xLength;

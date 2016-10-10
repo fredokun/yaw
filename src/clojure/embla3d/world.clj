@@ -8,7 +8,7 @@
   (:gen-class))
 
 (defn start-world!
-  "Start an empty embla3d world."
+  "Start an empty embla3d `world`."
   []
   (let [world (.newInstance World)
         thread (future (.init world))]
@@ -30,9 +30,9 @@
 
 ;; Light Management----------------------------------------------------------------------------------
 
-(defn set-sun-light!
-  "Set the sun light with the specified color, `intensity`
- and origin coordinates."
+(defn sun-light!
+  "Set the sun light of the `world` with 
+  the specified color, `intensity` and origin coordinates."
   [world r g b intensity x y z]
   (LightManagement/setSunLight world r g b intensity x y z))
 
@@ -41,12 +41,30 @@
   [world]
   (LightManagement/removeSunLight world))
 
-(defn setAmbientLight [world r g b intensity]
-      (LightManagement/setAmbientLight world r g b intensity))
+(defn ambient-light!
+  "Set the ambient light of the `world` to the 
+  specified color and intensity."
+  [world r g b intensity]
+  (LightManagement/setAmbientLight world r g b intensity))
 
-(defn addSpotLight [world r g b x y z intensity constantA linearAtt quadraticAtt xcone ycone zcone cutoffAngle number]
-      (LightManagement/addSpotLight world r g b x y z  intensity constantA linearAtt quadraticAtt xcone ycone zcone cutoffAngle number))
-      
+(defn spot-light!
+  "Set the spot light `number` of the `world` with the specified color,
+  at the specified position with the spot light parameters.
+  Note that there is a limit to the number of available spot lights,
+  one can use the [[max-spot-light]] function to query this value."
+  [world number r g b x y z intensity
+   const-attenuate linear-attenuate quadratic-attenuate
+   xcone ycone zcone
+   cutoff-angle]
+  (LightManagement/addSpotLight world r g b x y z  intensity
+                                const-attenuate linear-attenuate quadratic-attenuate
+                                xcone ycone zcone cutoff-angle number))
+
+(defn max-spot-light
+  "return the maximum spot lights in the current `world`."
+  [world]
+  (.getMaxSpotLight (.getSceneLight world)))
+
 (defn addPointLight [world r g b x y z intensity constantAtt linearAtt quadraticAtt number]
       (LightManagement/addPointLight world r g b x y z intensity constantAtt linearAtt quadraticAtt number))
       

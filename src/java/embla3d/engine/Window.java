@@ -23,7 +23,7 @@ public class Window {
 	
     // Initializes and opens a window.
     public static void init(){
-	if(glfwInit()== 0){
+	if(!glfwInit()){
 	    throw new IllegalStateException("Unable to initialize GLFW");
 	}
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);

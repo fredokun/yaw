@@ -26,8 +26,8 @@ import java.nio.file.Paths;
 import embla3d.engine.ShaderProgram;
 import embla3d.engine.camera.Camera;
 
-import static embla3d.engine.skybox.skyboxVertexShader;
-import static embla3d.engine.skybox.skyboxFragmentShader;
+import embla3d.engine.skybox.skyboxVertexShader;
+import embla3d.engine.skybox.skyboxFragmentShader;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -137,9 +137,9 @@ public class Skybox {
 	shaderProg.setUniform("projectionMatrix", cam.getCameraMat());
 		
 	Matrix4f mat = new Matrix4f(cam.setupViewMatrix());
-	mat.m30 = 0;
-	mat.m31 = 0;
-	mat.m32 = 0;
+	mat.m30(0);
+	mat.m31(0);
+	mat.m32(0);
 
 	shaderProg.setUniform("viewMatrix", mat);
 	shaderProg.setUniform("color", color);

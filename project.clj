@@ -20,7 +20,8 @@
             :url "http://opensource.org/licenses/MIT"}
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [hello_lwjgl/lwjgl   "3.0.0"]
-                 [cider/cider-nrepl "0.11.0"]]
+                 [cider/cider-nrepl "0.11.0"]
+                 [org.joml/joml "1.8.4"]]
   :min-lein-version "2.1.0"
   :jvm-opts ^:replace ~(jvm-opts)
   :source-paths ["src" "src/clojure"]
