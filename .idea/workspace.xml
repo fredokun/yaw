@@ -3,11 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="03969a8d-a1da-47af-b9c3-3e11948ac185" name="Default" comment="cursive project">
       <change type="MODIFICATION" beforePath="/opt/pesch/Projets/embla3D/.idea/workspace.xml" afterPath="/opt/pesch/Projets/embla3D/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="/opt/pesch/Projets/embla3D/src/java/embla3d/engine/Window.java" afterPath="/opt/pesch/Projets/embla3D/src/java/embla3d/engine/Window.java" />
-      <change type="MODIFICATION" beforePath="/opt/pesch/Projets/embla3D/src/java/embla3d/engine/World.java" afterPath="/opt/pesch/Projets/embla3D/src/java/embla3d/engine/World.java" />
-      <change type="MODIFICATION" beforePath="/opt/pesch/Projets/embla3D/src/java/embla3d/engine/items/ItemManagement.java" afterPath="/opt/pesch/Projets/embla3D/src/java/embla3d/engine/items/ItemManagement.java" />
-      <change type="MODIFICATION" beforePath="/opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshs/BlockMesh.java" afterPath="/opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshs/BlockMesh.java" />
-      <change type="MODIFICATION" beforePath="/opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshs/Mesh.java" afterPath="/opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshs/Mesh.java" />
+      <change type="MODIFICATION" beforePath="/opt/pesch/Projets/embla3D/src/java/embla3d/engine/SceneVertex.java" afterPath="/opt/pesch/Projets/embla3D/src/java/embla3d/engine/SceneVertex.java" />
     </list>
     <ignored path="embla3D.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -102,7 +98,7 @@
         <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/SceneVertex.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="60">
-              <caret line="12" column="13" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
+              <caret line="12" column="20" selection-start-line="12" selection-start-column="20" selection-end-line="12" selection-end-column="20" />
               <folding />
             </state>
           </provider>
@@ -149,6 +145,7 @@
         <option value="/opt/pesch/Projets/embla3D/src/java/embla3d/engine/World.java" />
         <option value="/opt/pesch/Projets/embla3D/src/java/embla3d/engine/Window.java" />
         <option value="/opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshs/Mesh.java" />
+        <option value="/opt/pesch/Projets/embla3D/src/java/embla3d/engine/SceneVertex.java" />
       </list>
     </option>
   </component>
@@ -422,7 +419,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.General" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="project.structure.last.edited" value="Problems" />
     <property name="project.structure.proportion" value="0.0" />
@@ -1043,7 +1040,7 @@
     <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/SceneVertex.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
-          <caret line="12" column="13" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
+          <caret line="12" column="20" selection-start-line="12" selection-start-column="20" selection-end-line="12" selection-end-column="20" />
           <folding />
         </state>
       </provider>

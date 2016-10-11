@@ -16,20 +16,20 @@ public class SceneVertex {
     protected ArrayList<Mesh> notInit;
 
     public SceneVertex(){
-	meshMap = new HashMap<Mesh, ArrayList<MyItem>>();
-	notInit = new ArrayList<Mesh>();
+        meshMap = new HashMap<Mesh, ArrayList<MyItem>>();
+        notInit = new ArrayList<Mesh>();
     }
 
     public void removeItem(MyItem item){
-	ArrayList<MyItem> temp=meshMap.get(item.getAppearance());
-	temp.remove(item);
+        ArrayList<MyItem> temp=meshMap.get(item.getAppearance());
+        temp.remove(item);
     }
 
     public ArrayList<MyItem> getItemsList(){
-	ArrayList<MyItem> items=new ArrayList<MyItem>();
-	for(Mesh m:meshMap.keySet())
-	    items.addAll(meshMap.get(m));
-	return items;
+        ArrayList<MyItem> items=new ArrayList<MyItem>();
+        for(Mesh m:meshMap.keySet())
+            items.addAll(meshMap.get(m));
+		return items;
     }
 	
     public HashMap<Mesh, ArrayList<MyItem>> getMeshMap() {
@@ -37,10 +37,10 @@ public class SceneVertex {
     }
 
     public void cleanUp() {
-	for(Mesh m : meshMap.keySet()){
-	    m.cleanUp();
+		for(Mesh m : meshMap.keySet()){
+			m.cleanUp();
+		}
 	}
-    }
 
     public void initMesh(){
 	for(Mesh m:notInit){
