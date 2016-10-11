@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="03969a8d-a1da-47af-b9c3-3e11948ac185" name="Default" comment="cursive project">
       <change type="MODIFICATION" beforePath="/opt/pesch/Projets/embla3D/.idea/workspace.xml" afterPath="/opt/pesch/Projets/embla3D/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="/opt/pesch/Projets/embla3D/src/java/embla3d/engine/SceneVertex.java" afterPath="/opt/pesch/Projets/embla3D/src/java/embla3d/engine/SceneVertex.java" />
     </list>
     <ignored path="embla3D.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -24,18 +23,8 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Mesh.java" pinned="false" current-in-tab="false">
-        <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshs/Mesh.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="465">
-              <caret line="58" column="6" selection-start-line="58" selection-start-column="6" selection-end-line="58" selection-end-column="6" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="OctahedronMesh.java" pinned="false" current-in-tab="false">
-        <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshs/OctahedronMesh.java">
+      <file leaf-file-name="PyramidMesh.java" pinned="false" current-in-tab="false">
+        <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshs/PyramidMesh.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="30">
               <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
@@ -44,8 +33,8 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GroundMesh.java" pinned="false" current-in-tab="false">
-        <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshs/GroundMesh.java">
+      <file leaf-file-name="TetrahedronMesh.java" pinned="false" current-in-tab="false">
+        <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshs/TetrahedronMesh.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="30">
               <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
@@ -54,58 +43,18 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="HalfBlockMesh.java" pinned="false" current-in-tab="false">
-        <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshs/HalfBlockMesh.java">
+      <file leaf-file-name="BlockGenerator.java" pinned="false" current-in-tab="false">
+        <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshGenerator/BlockGenerator.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+            <state relative-caret-position="-695">
+              <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Material.java" pinned="false" current-in-tab="false">
-        <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshs/Material.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="4" column="13" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AmbientLight.java" pinned="false" current-in-tab="false">
-        <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/light/AmbientLight.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="4" column="13" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ItemManagement.java" pinned="false" current-in-tab="false">
-        <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/items/ItemManagement.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-195">
-              <caret line="15" column="13" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="13" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SceneVertex.java" pinned="false" current-in-tab="true">
-        <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/SceneVertex.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="12" column="20" selection-start-line="12" selection-start-column="20" selection-end-line="12" selection-end-column="20" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ItemGroup.java" pinned="false" current-in-tab="false">
-        <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/items/ItemGroup.java">
+      <file leaf-file-name="GroundGenerator.java" pinned="false" current-in-tab="false">
+        <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshGenerator/GroundGenerator.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="60">
               <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
@@ -114,11 +63,61 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GenericItem.java" pinned="false" current-in-tab="false">
-        <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/items/GenericItem.java">
+      <file leaf-file-name="HalfBlockGenerator.java" pinned="false" current-in-tab="false">
+        <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshGenerator/HalfBlockGenerator.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="60">
-              <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
+              <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="PyramidGenerator.java" pinned="false" current-in-tab="false">
+        <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshGenerator/PyramidGenerator.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="60">
+              <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Renderer.java" pinned="false" current-in-tab="false">
+        <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/Renderer.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="60">
+              <caret line="18" column="13" selection-start-line="18" selection-start-column="13" selection-end-line="18" selection-end-column="13" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SceneVertex.java" pinned="false" current-in-tab="true">
+        <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/SceneVertex.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-425">
+              <caret line="12" column="20" selection-start-line="12" selection-start-column="20" selection-end-line="12" selection-end-column="20" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="RegOctahedronGenerator.java" pinned="false" current-in-tab="false">
+        <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshGenerator/RegOctahedronGenerator.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="60">
+              <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="RegTetrahedronGenerator.java" pinned="false" current-in-tab="false">
+        <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshGenerator/RegTetrahedronGenerator.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="60">
+              <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
               <folding />
             </state>
           </provider>
@@ -933,62 +932,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshGenerator/BlockGenerator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshGenerator/GroundGenerator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshGenerator/HalfBlockGenerator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshs/BlockMesh.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshs/GroundMesh.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshs/HalfBlockMesh.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshs/Mesh.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="465">
-          <caret line="58" column="6" selection-start-line="58" selection-start-column="6" selection-end-line="58" selection-end-column="6" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshs/OctahedronMesh.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="30">
@@ -1037,9 +980,113 @@
         </state>
       </provider>
     </entry>
-    <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/SceneVertex.java">
+    <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshs/Mesh.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="465">
+          <caret line="58" column="6" selection-start-line="58" selection-start-column="6" selection-end-line="58" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshs/HalfBlockMesh.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshs/GroundMesh.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshs/BlockMesh.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshs/PyramidMesh.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshs/TetrahedronMesh.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshGenerator/BlockGenerator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-695">
+          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshGenerator/GroundGenerator.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
+          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshGenerator/HalfBlockGenerator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshGenerator/RegTetrahedronGenerator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshGenerator/RegOctahedronGenerator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/meshGenerator/PyramidGenerator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/Renderer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="18" column="13" selection-start-line="18" selection-start-column="13" selection-end-line="18" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/SceneVertex.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-425">
           <caret line="12" column="20" selection-start-line="12" selection-start-column="20" selection-end-line="12" selection-end-column="20" />
           <folding />
         </state>
