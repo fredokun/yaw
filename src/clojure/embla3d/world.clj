@@ -46,7 +46,6 @@
         [x y z] origin]
     (LightManagement/setSunLight world r g b intensity x y z)))
 
-
 (defn remove-sun-light!
   "Remove the sun light of the `world`."
   [world]
@@ -175,8 +174,20 @@
 (defn createGround [world r g b width length]
       (ItemManagement/createGround world r g b width length))
 
-(defn createBlock [world r g b xL yL zL scale]
-      (ItemManagement/createBlock world r g b xL yL zL scale))
+(defn create-block!
+  "Create a rectangular block in the `world` with the
+  specified id, color, dimensions, scale and position"
+  [world & {:keys [id color dimensions scale position]
+            :or {color [0 0 1]
+                 dimensions [1 1 1]
+                 scale 1
+                 position [0 0 -2]
+                 id ""}}]
+  (let [[r g b] color
+        [xl yl zl] dimensions
+        [xp yp zp] position]
+    (let [item (ItemManagement/createBlock world r g b xl yl zl scale)]
+      (.translate item xp yp zp))))
 
 (defn createHalfBlock [world r g b xL yL zL scale]
       (ItemManagement/createHalfBlock world r g b xL yL zL scale))
