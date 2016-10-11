@@ -24,8 +24,7 @@
                  [org.joml/joml "1.8.4"]]
   :min-lein-version "2.1.0"
   :jvm-opts ^:replace ~(jvm-opts)
-  :source-paths ["src" "src/clojure"]
+  :source-paths ["src/clojure"]
   :java-source-paths ["src/java"]
-  :test-paths ["test" "src/test"]
-  :main embla3d.core)
+  :test-paths ["test" "src/test"])
 
