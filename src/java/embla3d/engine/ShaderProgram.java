@@ -8,7 +8,6 @@ import java.util.HashMap;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.Util;
 
 import embla3d.engine.light.*;
 import embla3d.engine.meshs.Material;
@@ -94,8 +93,8 @@ public class ShaderProgram {
     public int createUniform(String uniformName) throws Exception{
     	int res=glGetUniformLocation(programId, uniformName);
     	if(res<0){
-	    GLUtil.checkGLError();
-	    throw new Exception("Uniform creation error: "+uniformName);
+	        // ??? GLUtil.checkGLError();
+	        throw new Exception("Uniform creation error: "+uniformName);
     	}
     	uniformsList.put(uniformName, res);
     	return res;

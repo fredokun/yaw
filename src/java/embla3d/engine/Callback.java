@@ -14,9 +14,9 @@ public class Callback {
     }
 
     public void registerCallback(String s,Object o){
-	if(map.get(StringToKeyCode(s))==null)
-	    map.put(StringToKeyCode(s),new ArrayList<Object>());
-	map.get(StringToKeyCode(s)).add(o);
+		if(map.get(StringToKeyCode(s))==null)
+		    map.put(StringToKeyCode(s),new ArrayList<Object>());
+		map.get(StringToKeyCode(s)).add(o);
     }
     public void clearCallback(String s){
 	if(map.containsKey(StringToKeyCode(s)))
