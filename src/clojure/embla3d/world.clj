@@ -20,8 +20,13 @@
 (defn set-skybox!
   "Set the skybox of `world` of the specified dimensions
  and color."
-  [world width length height r g b]
-  (.setSkybox world width length height r g b))
+  [world & {:keys [width height length color]
+            :or {width 500
+                 height 500
+                 length 500
+                 color [0 0 1.0]}}]
+  (let [[r g b] color]
+    (.setSkybox world width length height r g b)))
 
 (defn remove-skybox!
   "Remove the skybox from `world`."
@@ -32,9 +37,15 @@
 
 (defn sun-light!
   "Set the sun light of the `world` with 
-  the specified color, `intensity` and origin coordinates."
-  [world r g b intensity x y z]
-  (LightManagement/setSunLight world r g b intensity x y z))
+  the specified color, intensity and origin coordinates."
+  [world & {:keys [color intensity origin]
+            :or {color [0 0 0]
+                 intensity 0.0
+                 origin [0 -1 0]}}]
+  (let [[r g b] color
+        [x y z] origin]
+    (LightManagement/setSunLight world r g b intensity x y z)))
+
 
 (defn remove-sun-light!
   "Remove the sun light of the `world`."

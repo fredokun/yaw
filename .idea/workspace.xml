@@ -2,44 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="03969a8d-a1da-47af-b9c3-3e11948ac185" name="Default" comment="cursive project">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/codeStyleSettings.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/compiler.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/copyright/profiles_settings.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Leiningen__cider_cider_nrepl_0_11_0.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Leiningen__clojure_complete_0_2_4.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Leiningen__hello_lwjgl_lwjgl_3_0_0.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Leiningen__org_clojure_clojure_1_8_0.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Leiningen__org_clojure_tools_nrepl_0_2_12.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Leiningen__org_joml_joml_1_8_4.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Leiningen__org_tcrawley_dynapath_0_2_3.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/embla3d.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/embla3D.iml" />
-      <change type="NEW" beforePath="" afterPath="/opt/pesch/Projets/embla3D/.idea/codeStyleSettings.xml" />
-      <change type="NEW" beforePath="" afterPath="/opt/pesch/Projets/embla3D/.idea/compiler.xml" />
-      <change type="NEW" beforePath="" afterPath="/opt/pesch/Projets/embla3D/.idea/copyright/profiles_settings.xml" />
-      <change type="NEW" beforePath="" afterPath="/opt/pesch/Projets/embla3D/.idea/libraries/Leiningen__cider_cider_nrepl_0_11_0.xml" />
-      <change type="NEW" beforePath="" afterPath="/opt/pesch/Projets/embla3D/.idea/libraries/Leiningen__clojure_complete_0_2_4.xml" />
-      <change type="NEW" beforePath="" afterPath="/opt/pesch/Projets/embla3D/.idea/libraries/Leiningen__hello_lwjgl_lwjgl_3_0_0.xml" />
-      <change type="NEW" beforePath="" afterPath="/opt/pesch/Projets/embla3D/.idea/libraries/Leiningen__org_clojure_clojure_1_8_0.xml" />
-      <change type="NEW" beforePath="" afterPath="/opt/pesch/Projets/embla3D/.idea/libraries/Leiningen__org_clojure_tools_nrepl_0_2_12.xml" />
-      <change type="NEW" beforePath="" afterPath="/opt/pesch/Projets/embla3D/.idea/libraries/Leiningen__org_joml_joml_1_8_4.xml" />
-      <change type="NEW" beforePath="" afterPath="/opt/pesch/Projets/embla3D/.idea/libraries/Leiningen__org_tcrawley_dynapath_0_2_3.xml" />
-      <change type="NEW" beforePath="" afterPath="/opt/pesch/Projets/embla3D/.idea/misc.xml" />
-      <change type="NEW" beforePath="" afterPath="/opt/pesch/Projets/embla3D/.idea/modules.xml" />
-      <change type="NEW" beforePath="" afterPath="/opt/pesch/Projets/embla3D/.idea/vcs.xml" />
-      <change type="NEW" beforePath="" afterPath="/opt/pesch/Projets/embla3D/.idea/workspace.xml" />
-      <change type="NEW" beforePath="" afterPath="/opt/pesch/Projets/embla3D/embla3d.iml" />
-      <change type="NEW" beforePath="" afterPath="/opt/pesch/Projets/embla3D/src/embla3D.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/clojure/embla3d/world.clj" afterPath="$PROJECT_DIR$/src/clojure/embla3d/world.clj" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/embla3d/engine/Callback.java" afterPath="$PROJECT_DIR$/src/java/embla3d/engine/Callback.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/embla3d/engine/ShaderProgram.java" afterPath="$PROJECT_DIR$/src/java/embla3d/engine/ShaderProgram.java" />
+      <change type="MODIFICATION" beforePath="/opt/pesch/Projets/embla3D/.idea/workspace.xml" afterPath="/opt/pesch/Projets/embla3D/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="/opt/pesch/Projets/embla3D/src/clojure/embla3d/world.clj" afterPath="/opt/pesch/Projets/embla3D/src/clojure/embla3d/world.clj" />
-      <change type="MODIFICATION" beforePath="/opt/pesch/Projets/embla3D/src/java/embla3d/engine/Callback.java" afterPath="/opt/pesch/Projets/embla3D/src/java/embla3d/engine/Callback.java" />
-      <change type="MODIFICATION" beforePath="/opt/pesch/Projets/embla3D/src/java/embla3d/engine/ShaderProgram.java" afterPath="/opt/pesch/Projets/embla3D/src/java/embla3d/engine/ShaderProgram.java" />
     </list>
     <ignored path="embla3D.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -60,30 +24,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Callback.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/java/embla3d/engine/Callback.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="342">
-              <caret line="25" column="15" selection-start-line="25" selection-start-column="15" selection-end-line="25" selection-end-column="15" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="embla3D.iml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/embla3D.iml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="10" column="9" selection-start-line="10" selection-start-column="9" selection-end-line="10" selection-end-column="9" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="MainWorld.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/java/embla3d/engine/MainWorld.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="612">
+            <state relative-caret-position="-9">
               <caret line="34" column="0" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -92,40 +36,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Callback.java" pinned="false" current-in-tab="false">
-        <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/Callback.java">
+      <file leaf-file-name="README.md" pinned="false" current-in-tab="false">
+        <entry file="file:///opt/pesch/Projets/embla3D/README.md">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="72">
-              <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="embla3D.iml" pinned="false" current-in-tab="false">
-        <entry file="file:///opt/pesch/Projets/embla3D/src/embla3D.iml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="allfeatures.edn" pinned="false" current-in-tab="false">
-        <entry file="file:///opt/pesch/Projets/embla3D/src/save/allfeatures.edn">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="project.clj" pinned="false" current-in-tab="false">
-        <entry file="file:///opt/pesch/Projets/embla3D/project.clj">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
+            <state relative-caret-position="-10">
               <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
@@ -135,8 +49,38 @@
       <file leaf-file-name="world.clj" pinned="false" current-in-tab="true">
         <entry file="file:///opt/pesch/Projets/embla3D/src/clojure/embla3d/world.clj">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="258">
-              <caret line="371" column="162" selection-start-line="371" selection-start-column="162" selection-end-line="371" selection-end-column="162" />
+            <state relative-caret-position="315">
+              <caret line="33" column="7" selection-start-line="33" selection-start-column="7" selection-end-line="33" selection-end-column="7" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="LightManagement.java" pinned="false" current-in-tab="false">
+        <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/light/LightManagement.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="365">
+              <caret line="22" column="5" selection-start-line="22" selection-start-column="5" selection-end-line="22" selection-end-column="5" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SceneLight.java" pinned="false" current-in-tab="false">
+        <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/light/SceneLight.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="84">
+              <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DirectionalLight.java" pinned="false" current-in-tab="false">
+        <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/light/DirectionalLight.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-34">
+              <caret line="4" column="13" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
               <folding />
             </state>
           </provider>
@@ -145,7 +89,7 @@
       <file leaf-file-name="ShaderProgram.java" pinned="false" current-in-tab="false">
         <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/ShaderProgram.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="267">
+            <state relative-caret-position="-9">
               <caret line="96" column="12" selection-start-line="96" selection-start-column="12" selection-end-line="96" selection-end-column="12" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -168,16 +112,15 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/src/java/embla3d/engine/Callback.java" />
-        <option value="/opt/pesch/Projets/embla3D/src/clojure/embla3d/world.clj" />
         <option value="/opt/pesch/Projets/embla3D/src/java/embla3d/engine/ShaderProgram.java" />
+        <option value="/opt/pesch/Projets/embla3D/src/clojure/embla3d/world.clj" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="408" />
-    <option name="y" value="33" />
-    <option name="width" value="2057" />
-    <option name="height" value="1313" />
+    <option name="x" value="-1" />
+    <option name="width" value="2562" />
+    <option name="height" value="1416" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -299,6 +242,32 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="engine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="light" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="embla3D" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="embla3D" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="clojure" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -314,7 +283,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.General" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="project.structure.last.edited" value="Problems" />
     <property name="project.structure.proportion" value="0.0" />
@@ -586,15 +555,23 @@
       <option name="presentableId" value="Default" />
       <updated>1476174083599</updated>
     </task>
+    <task id="LOCAL-00001" summary="cursive project">
+      <created>1476175630126</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1476175630126</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="408" y="33" width="2057" height="1313" extended-state="0" />
-    <editor active="false" />
+    <frame x="-1" y="0" width="2562" height="1416" extended-state="7" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3294509" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3034483" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -606,7 +583,7 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2029197" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16289063" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -668,16 +645,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/embla3d/engine/MainWorld.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="612">
-          <caret line="34" column="0" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/Callback.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="72">
@@ -712,7 +679,7 @@
     </entry>
     <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/ShaderProgram.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="267">
+        <state relative-caret-position="-9">
           <caret line="96" column="12" selection-start-line="96" selection-start-column="12" selection-end-line="96" selection-end-column="12" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -720,10 +687,52 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/embla3d/engine/MainWorld.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-9">
+          <caret line="34" column="0" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///opt/pesch/Projets/embla3D/README.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-10">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/light/LightManagement.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="365">
+          <caret line="22" column="5" selection-start-line="22" selection-start-column="5" selection-end-line="22" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/light/SceneLight.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="84">
+          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///opt/pesch/Projets/embla3D/src/java/embla3d/engine/light/DirectionalLight.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-34">
+          <caret line="4" column="13" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file:///opt/pesch/Projets/embla3D/src/clojure/embla3d/world.clj">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="258">
-          <caret line="371" column="162" selection-start-line="371" selection-start-column="162" selection-end-line="371" selection-end-column="162" />
+        <state relative-caret-position="315">
+          <caret line="33" column="7" selection-start-line="33" selection-start-column="7" selection-end-line="33" selection-end-column="7" />
           <folding />
         </state>
       </provider>
