@@ -2,6 +2,9 @@ package embla3d.engine.meshs;
 
 import org.joml.Vector3f;
 
+// More complex material classes:
+// ColorMapping, TextMapping, ProceduralMapping (material generator with reuse of images)
+
 public class Material {
     public Vector3f color;
     // Reflectance should be between 0 and 1

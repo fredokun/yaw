@@ -187,7 +187,8 @@
         [xl yl zl] dimensions
         [xp yp zp] position]
     (let [item (ItemManagement/createBlock world r g b xl yl zl scale)]
-      (.translate item xp yp zp))))
+      (.translate item xp yp zp)
+      item)))
 
 (defn createHalfBlock [world r g b xL yL zL scale]
       (ItemManagement/createHalfBlock world r g b xL yL zL scale))

@@ -64,6 +64,7 @@ public class SceneVertex {
 	}
     }
 
+    // XXX: remove?
     public void update() {
 	for(Mesh m: meshMap.keySet()){
 	    for(MyItem i : meshMap.get(m))

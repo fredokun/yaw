@@ -40,7 +40,7 @@ public class Mesh {
     private float[] normals;
     private int[] indices;
 
-    private int weight;
+    private int weight;  // the weight of an object in a group (e.g. a mass in a group planets)
 
     private Material material;
 
