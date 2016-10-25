@@ -22,7 +22,7 @@ public class Window {
     public static GLCapabilities caps;
 
     // Initializes and opens a window.
-    public static void init() {
+    public static void init(int initWidth, int initHeight) {
         if (!glfwInit()) {
             throw new IllegalStateException("Unable to initialize GLFW");
         }
@@ -31,11 +31,11 @@ public class Window {
         glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
-        width = 500;
-        height = 500;
+        width = initWidth;
+        height = initHeight;
         resized = false;
 
-        window = glfwCreateWindow(500, 500, "Yet Another World", NULL, NULL);
+        window = glfwCreateWindow(width, width, "Yet Another World", NULL, NULL);
 
         glfwSetKeyCallback(window, keyCallback = new Input());
 

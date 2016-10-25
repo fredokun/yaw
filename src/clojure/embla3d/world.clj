@@ -7,10 +7,14 @@
            [embla3d.engine.items ItemManagement])
   (:gen-class))
 
-(defn start-world!
-  "Start an empty embla3d `world`."
-  []
-  (let [world (.newInstance World)
+(defn start-universe!
+  "Start an empty embla3d universe."
+  [ & {:keys [width height x y]
+       :or {x 0
+            y 0
+            width 800
+            height 600}}]
+  (let [world (World. x y width height)
         thread (future (.init world))]
     (.start (Thread. world))
     (atom {:world world :thread thread})))
@@ -62,11 +66,24 @@
   at the specified position with the spot light parameters.
   Note that there is a limit to the number of available spot lights,
   one can use the [[max-spot-light]] function to query this value."
-  [world number r g b x y z intensity
-   const-attenuate linear-attenuate quadratic-attenuate
-   xcone ycone zcone
-   cutoff-angle]
-  (LightManagement/addSpotLight world r g b x y z  intensity
+  [world number & {:keys [red green blue x y z intensity
+                          const-attenuate linear-attenuate quadratic-attenuate
+                          xcone ycone zcone cutoff-angle]
+                   :or {red 0.8
+                        green 0.8
+                        blue 0.8
+                        x 0
+                        y 0
+                        z 0
+                        intensity 1
+                        const-attenuate 0
+                        linear-attenuate 0.5
+                        quadratic-attenuate 0
+                        xcone 0
+                        ycone 0
+                        zcone -1
+                        cutoff-angle 10}}]
+  (LightManagement/addSpotLight world red green blue x y z  intensity
                                 const-attenuate linear-attenuate quadratic-attenuate
                                 xcone ycone zcone cutoff-angle number))
 
@@ -281,7 +298,10 @@
       (.getItems group))
 
 ;; Multiple usage [Camera, Item, Group]-----------------------------
-(defn rotate [item x y z]
+(defn rotate! [item & {:keys [x y z]
+                       :or {x 0
+                            y 0
+                            z 0}}]
       (.rotate item x y z))
 
 ;; Multiple usage [Camera, Item, Light, Group]----------------------
@@ -628,7 +648,7 @@
   "Removes the world and loads the items, cameras, lights and skybox contained in the given file in a new world."
   (.close world)
   (Thread/sleep 200)
-  (let [universe (start-yaw)
+  (let [universe (start-universe!)
         world (:world @universe)
         loadedVector (read-string (slurp filename))
         itemRefsMap (loadItems (get loadedVector 0) '{} world)]

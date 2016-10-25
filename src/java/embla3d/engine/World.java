@@ -25,6 +25,15 @@ public class World implements Runnable {
     private Skybox sk = null;
     private boolean loop;
 
+    private int initX, initY, initWidth, initHeight;
+
+    public World(int initX, int initY, int initWidth, int initHeight) {
+	this.initX = initX;
+	this.initY = initY;
+	this.initWidth = initWidth;
+	this.initHeight = initHeight;	
+    }
+    
     public Camera getCamera() {
         return c;
     }
@@ -100,7 +109,7 @@ public class World implements Runnable {
     }
 
     public void run() {
-        Window.init();
+        Window.init(initWidth, initHeight);
         try {
             this.renderer = new Renderer();
         } catch (Exception e1) {
@@ -110,9 +119,9 @@ public class World implements Runnable {
 
         try {
             //Initialization of the window we currently use
-            glViewport(0, 0, 500, 500);
+            glViewport(initX, initY, initWidth, initHeight);
             while (glfwWindowShouldClose(Window.window) == false && loop) {
-                Thread.sleep(20);
+                Thread.sleep(20); // XXX ? Why sleep ?
                 c.update();
                 callback.update();
                 //Clean the window
