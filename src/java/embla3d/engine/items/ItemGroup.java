@@ -6,6 +6,15 @@ import java.util.ArrayList;
 
 import org.joml.Vector3f;
 
+
+/**
+ * Class which will contain items with coordinates specific to the center of the group
+ *
+ * param items           new ArrayList<MyItem>
+ * param center          Vector3f
+ * param weight          int
+ */
+
 public class ItemGroup {
     private ArrayList<MyItem> items;
     public Vector3f center;

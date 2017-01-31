@@ -13,6 +13,11 @@ import embla3d.engine.meshs.Mesh;
 import org.joml.Vector3f;
 
 
+/**
+ * Class to create some shapes (Block, HalfBlock, Pyramide, Octahedron, Tetreahedron)
+ *
+ */
+
 public class ItemManagement {
     public static GenericItem createBlock(World world, float red, float green, float blue, float xLength, float yLength, float zLength, float scale) {
         Material material = new Material(new Vector3f(red, green, blue), 1000.f);
