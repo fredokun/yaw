@@ -1,5 +1,10 @@
 package embla3d.engine.meshs;
 
+/**
+ * Mesh representing the Ground : default weight 8
+ * the additional attributes are not used
+ * Useless for the moment will be removed during the upcoming refactoring
+ */
 public class BlockMesh extends Mesh {
     public final float xLength;
     public final float yLength;
