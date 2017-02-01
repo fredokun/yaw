@@ -15,7 +15,7 @@ import org.joml.Vector3f;
 
 /**
  * Class to create some shapes (Block, HalfBlock, Pyramide, Octahedron, Tetreahedron)
- *
+ * and basic fonctions for these items
  */
 
 public class ItemManagement {

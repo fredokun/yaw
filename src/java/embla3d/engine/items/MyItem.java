@@ -9,21 +9,19 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-
-/**
- * Construct a item with the specified mesh, scale, rotation, translation and a groups of ItemGroup
- * Material is dynamically created from cx cy cz and reflectance
- *
- * param appearance     Vertex array
- * param scale          float
- * param rotation       Vector3f
- * param translation    Vector3f
- * param groups         ArrayList<ItemGroup>
- */
-
 public class MyItem {
-    private Mesh appearance;
 
+    /**
+     * Construct a item with the specified mesh, scale, rotation, translation and a groups of ItemGroup
+     *
+     * @param appearance     Vertex array
+     * @param scale          float
+     * @param rotation       Vector3f
+     * @param translation    Vector3f
+     * @param groups         ArrayList<ItemGroup>
+     */
+
+    private Mesh appearance;
     private float scale;
     private Vector3f rotation;
     private Vector3f translation;

@@ -14,7 +14,7 @@ import org.joml.Vector3f;
 public class MainWorld {
 
 	public static void main(String[] args) throws Exception {
-		World world=new World();
+		World world=new World(0,0,500,500);
 		world.init();
 		(new Thread(world)).start();
 		GenericItem c1 =ItemManagement.createBlock(world, 1, 1, 1, 1, 1, 1, 1);

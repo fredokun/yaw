@@ -1,9 +1,5 @@
 package embla3d.engine.items;
 
-/**
- *  Maybe remove this class
- */
-
 import org.joml.Vector3f;
 
 import embla3d.engine.meshs.Mesh;
