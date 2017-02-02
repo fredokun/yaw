@@ -19,7 +19,11 @@ public class SceneLight {
     private SpotLight[] spotTable;
 	
     public float specularPower = 8;
-	
+
+    /**
+     * Constructor without parameters, it used to create the maximum of point light and spot light.
+     *
+     */
     public SceneLight(){
 	removeAmbient();
         removeSun();
@@ -30,6 +34,10 @@ public class SceneLight {
 	for(int i=0; i< maxSpotlight;i++)
 	    spotTable[i] = new SpotLight();
     }
+
+    /**
+     * setters and  method remove for the ambient and directional light
+     */
 
     public void setAmbient(AmbientLight ambient) {
 	this.ambient = ambient;
@@ -51,6 +59,10 @@ public class SceneLight {
 	this.sun = new DirectionalLight();
     }
 
+    /**
+     * setters
+     */
+
     public void setPointTable(PointLight[] pointTable) {
 	this.pointTable = pointTable;
     }
@@ -66,7 +78,15 @@ public class SceneLight {
     public void setSpotTable(SpotLight spot, int pos) {
 	this.spotTable[pos] = spot;
     }
-	
+
+
+    /**
+     * Set to the render the different light
+     *
+     * @param sh         shaderProgram
+     * @param viewMatrix viewMatrix
+     */
+
     public void render(ShaderProgram sh,Matrix4f viewMatrix){
         sh.setUniform("ambientLight", ambient);
         sh.setUniform("specularPower", specularPower);
@@ -109,7 +129,11 @@ public class SceneLight {
         currDirLight.direction=new Vector3f(dir.x, dir.y, dir.z);
         sh.setUniform("directionalLight", currDirLight);
     }
-	
+
+    /**
+     * getters and setters
+     */
+
     public void setPointLight(PointLight pl, int pos){
 	pointTable[pos]=pl;
     }
