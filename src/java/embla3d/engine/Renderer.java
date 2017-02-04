@@ -16,9 +16,19 @@ import java.nio.file.Paths;
 
 import org.joml.Matrix4f;
 
+/**
+ * This class allows to manage the rendering logic of our game.
+ * The shader is used to configure a part of the rendering process performed by a graphics card.
+ * The shader allows to describe the absorption, the diffusion of the light, the texture to be used, the reflections of the objects, the shading, etc ...
+ */
 public class Renderer {
     protected ShaderProgram sh;
 
+    /**
+     * Basic rendering.
+     *
+     * @throws Exception
+     */
     public Renderer() throws Exception {
 
         //Initialization of the shader program
@@ -45,12 +55,24 @@ public class Renderer {
 
     }
 
-
+    /**
+     * The Shader Program is deallocated
+     */
     public void cleanUp() {
-        // The Shader Program is deallocated
         sh.cleanup();
     }
 
+    /**
+     * Specific rendering.
+     * Configuring rendering with the absorption, the diffusion of the light, the texture to be used, the reflections of the objects, the shading,
+     * Which are passed by arguments
+     *
+     * @param sc        sceneVertex
+     * @param sl        sceneLight
+     * @param isResized isResized
+     * @param cam       camera
+     * @param sk        skybox
+     */
     public void render(SceneVertex sc, SceneLight sl, boolean isResized, Camera cam, Skybox sk) {
         sh.bind();
         //Preparation of the camera
