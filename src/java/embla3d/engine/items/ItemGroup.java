@@ -43,60 +43,79 @@ public class ItemGroup {
     }
 	
     public void updateCenter(){
-	double x=0,y=0,z=0;
-	for(MyItem i : items){
-	    int w = i.getAppearance().getWeight();
-	    x+= i.getPosition().x*w;
-	    y+= i.getPosition().y*w;
-	    z+= i.getPosition().z*w;
-	}
-	x/= weight;
-	y/= weight;
-	z/= weight;
-	center = new Vector3f((float)x,(float)y,(float)z);
+        double x=0,y=0,z=0;
+        for(MyItem i : items){
+            int w = i.getAppearance().getWeight();
+            x+= i.getPosition().x*w;
+            y+= i.getPosition().y*w;
+            z+= i.getPosition().z*w;
+        }
+        x/= weight;
+        y/= weight;
+        z/= weight;
+        center = new Vector3f((float)x,(float)y,(float)z);
     }
-	
+
+	/**
+	 *	Add an item in group and update center
+	 */
     public void add(MyItem i){
-	int nWeight = weight + i.getAppearance().getWeight();
-	double ratioGr = weight / (double)nWeight, ratioI = i.getAppearance().getWeight()/(double)nWeight;
-	weight = nWeight;
-	Vector3f newCenter = new Vector3f((float)((center.x*ratioGr) + (i.getPosition().x*ratioI)), (float)((center.y*ratioGr) + (i.getPosition().y*ratioI)),(float)((center.z*ratioGr) + (i.getPosition().z*ratioI)));
-	center = newCenter;
-	items.add(i);
-	i.addToGroup(this);
+	    int nWeight = weight + i.getAppearance().getWeight();
+	    double ratioGr = weight / (double)nWeight, ratioI = i.getAppearance().getWeight()/(double)nWeight;
+	    weight = nWeight;
+	    Vector3f newCenter = new Vector3f((float)((center.x*ratioGr) + (i.getPosition().x*ratioI)), (float)((center.y*ratioGr) + (i.getPosition().y*ratioI)),(float)((center.z*ratioGr) + (i.getPosition().z*ratioI)));
+	    center = newCenter;
+	    items.add(i);
+	    i.addToGroup(this);
     }
-	
+
+	/**
+	 *	remove an item of the group and update center
+	 */
     public void remove(MyItem i){
-	items.remove(i);
-	i.removeFromGroup(this);
-	this.weight-= i.getAppearance().getWeight();
-	updateCenter();
+	    items.remove(i);
+	    i.removeFromGroup(this);
+	    this.weight-= i.getAppearance().getWeight();
+	    updateCenter();
     }
-	
+
+    /**
+     *	Apply translation for all items in the group
+     */
     public void translate(Vector3f translation){
 	for(MyItem i : items)
 	    i.getPosition().add(translation);
     }
-	
+
+    /**
+     *	Apply translation for all items in the group
+     */
     public void translate(float x,float y,float z){
 	Vector3f translation=new Vector3f(x,y,z);
 	for(MyItem i : items)
 	    i.getPosition().add(translation);
     }
-	
+
+
+    /**
+     *	Rotate all items in the group
+     */
     public void rotate(Vector3f rotation){
-	for(MyItem i : items){
-	    i.getRotation().add(rotation);
-	    i.revolveAround(center, rotation.x, rotation.y, rotation.z);
-	}
+	    for(MyItem i : items){
+	        i.getRotation().add(rotation);
+	        i.revolveAround(center, rotation.x, rotation.y, rotation.z);
+	    }
     }
-	
+
+    /**
+     *	Rotate all items in the group
+     */
     public void rotate(float x,float y,float z){
 	Vector3f rotation=new Vector3f(x,y,z);
-	for(MyItem i : items){
-	    i.getRotation().add(rotation);
-	    i.revolveAround(center, rotation.x, rotation.y, rotation.z);
-	}
+	    for(MyItem i : items){
+	        i.getRotation().add(rotation);
+	        i.revolveAround(center, rotation.x, rotation.y, rotation.z);
+	    }
     }
 	
     public void setPosition(float x, float y, float z){
@@ -104,28 +123,30 @@ public class ItemGroup {
     }
 	
     public void setPosition(Vector3f pos){
-	float x =  pos.x -center.x, y = pos.y-center.y, z = pos.z - center.z;
-	for(MyItem i : items){
-	    i.translate(x, y, z, this);
-	}
-	center = pos;
+	    float x =  pos.x -center.x, y = pos.y-center.y, z = pos.z - center.z;
+	    for(MyItem i : items){
+	        i.translate(x, y, z, this);
+	    }
+	    center = pos;
     }
 	
     public void separate(float dist){
-	for(MyItem i : items)
-	    i.repelBy(center, dist);
+	    for(MyItem i : items)
+	        i.repelBy(center, dist);
     }
+
     public void setColor(float r,float g,float b){
-	for(MyItem i : items)
-	    i.getAppearance().setMaterial(new Material( new Vector3f(r,g,b),0.f));
+	    for(MyItem i : items)
+	        i.getAppearance().setMaterial(new Material( new Vector3f(r,g,b),0.f));
     }
+
     public void setColor(Vector3f color){
-	for(MyItem i : items)
-	    i.getAppearance().setMaterial(new Material(color,0.f));
+	    for(MyItem i : items)
+	        i.getAppearance().setMaterial(new Material(color,0.f));
     }
     public void multScale(float val){
-	for(MyItem i : items)
-	    i.setScale(i.getScale()*val);
+	    for(MyItem i : items)
+	        i.setScale(i.getScale()*val);
     }
     public ArrayList<MyItem> getItems(){
 	return items;
