@@ -12,7 +12,8 @@ import org.joml.Vector4f;
 public class MyItem {
 
     /**
-     * Construct a item with the specified mesh, scale, rotation, translation and a groups of ItemGroup
+     * Construct a item with the specified mesh, scale, rotation, translation and
+     * an item can be in several groups of items
      *
      * @param appearance     Vertex array
      * @param scale          float
@@ -29,30 +30,29 @@ public class MyItem {
     private ArrayList<ItemGroup> groups;
 	
     //Constructor
-    public MyItem(Mesh appearance, float scale, Vector3f rotation,
-		  Vector3f position) {
-	super();
-	this.appearance=appearance;
-	this.scale = scale;
-	this.rotation = rotation;
-	this.translation = position;
-	this.groups = new ArrayList<ItemGroup>();
+    public MyItem(Mesh appearance, float scale, Vector3f rotation, Vector3f position) {
+        super();
+        this.appearance=appearance;
+        this.scale = scale;
+        this.rotation = rotation;
+        this.translation = position;
+        this.groups = new ArrayList<ItemGroup>();
     }
 
     public MyItem(MyItem source){
-	this.appearance = source.appearance;
-	this.scale= source.scale;
-	this.rotation = new Vector3f(source.rotation);
-	this.translation = new Vector3f(source.translation);
-	this.groups = new ArrayList<ItemGroup>();
+        this.appearance = source.appearance;
+        this.scale= source.scale;
+        this.rotation = new Vector3f(source.rotation);
+        this.translation = new Vector3f(source.translation);
+        this.groups = new ArrayList<ItemGroup>();
     }
 
     public MyItem(Mesh m) {
-	this.appearance=m;
-	scale = 1f;
-	rotation = new Vector3f();
-	translation = new Vector3f();
-	this.groups = new ArrayList<ItemGroup>();
+        this.appearance=m;
+        scale = 1f;
+        rotation = new Vector3f();
+        translation = new Vector3f();
+        this.groups = new ArrayList<ItemGroup>();
     }
 
     public MyItem clone(){
@@ -65,12 +65,12 @@ public class MyItem {
 
     // OpenGl function
     public Matrix4f getWorldMatrix() {
-	Matrix4f worldMatrix=new Matrix4f().identity().translate(translation).
+	    Matrix4f worldMatrix=new Matrix4f().identity().translate(translation).
 	    rotateX((float)Math.toRadians(rotation.x)).
 	    rotateY((float)Math.toRadians(rotation.y)).
 	    rotateZ((float)Math.toRadians(rotation.z)).
 	    scale(scale);
-	return worldMatrix;
+	    return worldMatrix;
     }
 
     //Scale
@@ -114,35 +114,35 @@ public class MyItem {
 	this.setPosition(vect,g); 
     }
     public void setPosition(Vector3f pos, ItemGroup g){
-	this.translation=pos;
-	for(ItemGroup gr : groups){
-	    if(gr != g )
-		gr.updateCenter();
-	}
+        this.translation=pos;
+        for(ItemGroup gr : groups){
+            if(gr != g )
+            gr.updateCenter();
+        }
     }
 	
     //Group Moves
     public void revolveAround(Vector3f center, float degX, float degY, float degZ){
-	Vector4f pos = new Vector4f(translation,1f);
-	pos.add(-center.x, -center.y,-center.z,0);
-	Matrix4f trans = new Matrix4f();
-	trans.rotateX((float) Math.toRadians(degX));
-	trans.rotateY((float) Math.toRadians(degY));
-	trans.rotateZ((float) Math.toRadians(degZ));
-	trans.transform(pos);
-	pos.add(center.x, center.y,center.z,0);
-	translation = new Vector3f(pos.x,pos.y,pos.z);
+        Vector4f pos = new Vector4f(translation,1f);
+        pos.add(-center.x, -center.y,-center.z,0);
+        Matrix4f trans = new Matrix4f();
+        trans.rotateX((float) Math.toRadians(degX));
+        trans.rotateY((float) Math.toRadians(degY));
+        trans.rotateZ((float) Math.toRadians(degZ));
+        trans.transform(pos);
+        pos.add(center.x, center.y,center.z,0);
+        translation = new Vector3f(pos.x,pos.y,pos.z);
     }
 
     public void repelBy(Vector3f center, float dist){
-	Vector3f dif = new Vector3f(translation.x - center.x, translation.y - center.y, translation.z - center.z);
-	float norm = dif.length();
-	if(norm != 0){
-	    float move =(dist / norm) + 1;
-	    dif.mul(move);
-	    dif.add(center);
-	    translation = dif;
-	}
+        Vector3f dif = new Vector3f(translation.x - center.x, translation.y - center.y, translation.z - center.z);
+        float norm = dif.length();
+        if(norm != 0){
+            float move =(dist / norm) + 1;
+            dif.mul(move);
+            dif.add(center);
+            translation = dif;
+        }
     }
 	
     // Groups Management
@@ -165,7 +165,7 @@ public class MyItem {
 	
     // Material getter
     public void setColor(float r,float g,float b){
-	this.getAppearance().setMaterial(new Material( new Vector3f(r,g,b),0.f));
+	    this.getAppearance().setMaterial(new Material( new Vector3f(r,g,b),0.f));
     }
     public void setColor(Vector3f color){
 	this.getAppearance().setMaterial(new Material(color,0.f));
