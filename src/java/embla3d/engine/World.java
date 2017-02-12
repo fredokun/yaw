@@ -1,16 +1,15 @@
 package embla3d.engine;
 
-import java.util.ArrayList;
-
-import org.joml.Vector3f;
-
 import embla3d.engine.camera.Camera;
 import embla3d.engine.items.ItemGroup;
 import embla3d.engine.light.SceneLight;
 import embla3d.engine.skybox.Skybox;
+import org.joml.Vector3f;
+
+import java.util.ArrayList;
 
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.glViewport;
 
 /**
  * Allows the creation of the world and manages through a thread the events, the updates and the rendering to the screen at constant rate.
@@ -65,31 +64,16 @@ public class World implements Runnable {
     /**
      * Create a skybox with all its parameters and replace the current skybox
      *
-     * @param width
-     * @param length
-     * @param height
-     * @param r
-     * @param g
-     * @param b
+     * @param width  width
+     * @param length length
+     * @param height height
+     * @param r      r
+     * @param g      g
+     * @param b      b
      */
     public void setSkybox(float width, float length, float height, float r, float g, float b) {
         Skybox sky = new Skybox(width, length, height, new Vector3f(r, g, b));
         setSkybox(sky);
-    }
-
-    /**
-     * Allows to change the skybox by the new Skybox passed in arguments.
-     * If a skybox already exists, it's added to the list of skyboxToBeRemoved
-     *
-     * @param sk
-     */
-    public void setSkybox(Skybox sk) {
-        if (this.sk != null) {
-            synchronized (skyboxToBeRemoved) {
-                skyboxToBeRemoved.add(sk);
-            }
-        }
-        this.sk = sk;
     }
 
     public void removeSkybox() {
@@ -101,6 +85,21 @@ public class World implements Runnable {
 
     public Skybox getSkybox() {
         return sk;
+    }
+
+    /**
+     * Allows to change the skybox by the new Skybox passed in arguments.
+     * If a skybox already exists, it's added to the list of skyboxToBeRemoved
+     *
+     * @param sk skybox
+     */
+    public void setSkybox(Skybox sk) {
+        if (this.sk != null) {
+            synchronized (skyboxToBeRemoved) {
+                skyboxToBeRemoved.add(sk);
+            }
+        }
+        this.sk = sk;
     }
 
     public SceneVertex getSceneVertex() {
@@ -120,10 +119,11 @@ public class World implements Runnable {
         return callback;
     }
 
+
     /**
      * Allows to initialize the parameters of the class World.
      *
-     * @throws Exception
+     * @throws Exception Exception
      */
     public void init() throws Exception {
         this.camerasList = new ArrayList<Camera>();
@@ -146,8 +146,8 @@ public class World implements Runnable {
     /**
      * Adds a camera and its index in the list of cameras (not in live)
      *
-     * @param index
-     * @param camera
+     * @param index  index
+     * @param camera camera
      */
     public void setCamera(int index, Camera camera) {
         if (index == 0)
@@ -170,48 +170,45 @@ public class World implements Runnable {
         try {
 
 
-            //Initialization of the window we currently use
+            /* Initialization of the window we currently use. */
             glViewport(initX, initY, initWidth, initHeight);
-            while (glfwWindowShouldClose(Window.window) == false && loop) { // Check if the window has not been closed.
+            while (glfwWindowShouldClose(Window.window) == false && loop) { /* Check if the window has not been closed. */
                 Thread.sleep(20); // XXX ? Why sleep ?
                 c.update();
                 callback.update();
 
-                //Clean the window
+                /*Clean the window*/
                 boolean isResized = Window.clear();
 
-                // Input of critical section, allows to protect the resource skyboxToBeRemoved .
-                // Deallocation of VAO and VBO, Moreover Delete the buffers VBO and VAO
+               /* Input of critical section, allows to protect the resource skyboxToBeRemoved .
+                  Deallocation of VAO and VBO, Moreover Delete the buffers VBO and VAO. */
                 synchronized (skyboxToBeRemoved) {
                     for (Skybox s : skyboxToBeRemoved) {
                         s.cleanUp();
                     }
-                    // System.out.println("ici");
                     skyboxToBeRemoved.clear();
                 }
 
-                // Input of critical section, allows to protect the creation of our logic of Game
-                // 1 Maximum thread in Synchronize -> mutual exclusion.
+               /*  Input of critical section, allows to protect the creation of our logic of Game .
+                   1 Maximum thread in Synchronize -> mutual exclusion.*/
                 synchronized (sc) {
                     //Update the world
                     renderer.render(sc, sl, isResized, c, sk);
                 }
 
-                // Rendered with vSync (vertical Synchronization)
-
-                //Thread.sleep(1000);
-                // Update the window's picture
+               /*  Rendered with vSync (vertical Synchronization)
+                   Update the window's picture */
                 Window.update();
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         } finally {
-            // Deallocations renderer, SceneVertex and Skybox
+           /* Deallocations renderer, SceneVertex and Skybox. */
             renderer.cleanUp();
             sc.cleanUp();
             if (sk != null)
                 sk.cleanUp();
-            // Deallocation of the window's resources
+            /* Deallocation of the window's resources. */
             Window.cleanUp();
             this.notifyFinished();
         }
@@ -228,8 +225,6 @@ public class World implements Runnable {
     /**
      * Input of critical section, allows to protect the resource share loop.
      * Stop the game loop and stop the thread that manage the world.
-     *
-     * @throws InterruptedException
      */
     public synchronized void close() throws InterruptedException {
         loop = false;

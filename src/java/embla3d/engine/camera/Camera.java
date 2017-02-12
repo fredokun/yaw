@@ -2,7 +2,6 @@ package embla3d.engine.camera;
 
 
 import embla3d.engine.Window;
-
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -13,20 +12,17 @@ import org.joml.Vector3f;
  */
 public class Camera {
 
+    public Vector3f position; /* Position of the camera (the camera is represented by a point in space). */
+    public Vector3f orientation;/* Sets the position of the point fixed by the camera. */
     private Matrix4f perspectiveMat;
-    public Vector3f position; // Position of the camera (the camera is represented by a point in space).
-
-    // Angle of the field of view
-    // A small angle gives a zoom effect.
-    // Like a zoom on a pair of binoculars..
+    /* Angle of the field of view
+       A small angle gives a zoom effect.
+       Like a zoom on a pair of binoculars.. */
     private float fieldOfView;
-
-    // Scope of vision min and max.
-    // Outside this range objects will not be displayed.
+    /* Scope of vision min and max.
+       Outside this range objects will not be displayed.*/
     private float zNear = 0.01f;
     private float zFar = 1000.f;
-
-    public Vector3f orientation;// Sets the position of the point fixed by the camera
 
     /**
      * The constructors of the class Camera Creates the camera of the 3D scene with the position of the camera, the perspective.
@@ -122,10 +118,6 @@ public class Camera {
         return perspectiveMat;
     }
 
-    public void setPosition(Vector3f pos) {
-        this.position = pos;
-    }
-
     /**
      * Changes the position of the camera.
      *
@@ -139,13 +131,12 @@ public class Camera {
         this.position.z = z;
     }
 
-
     public Vector3f getPosition() {
         return position;
     }
 
-    public void setOrientation(Vector3f pos) {
-        this.orientation = pos;
+    public void setPosition(Vector3f pos) {
+        this.position = pos;
     }
 
     /**
@@ -165,12 +156,16 @@ public class Camera {
         return orientation;
     }
 
+    public void setOrientation(Vector3f pos) {
+        this.orientation = pos;
+    }
+
     /**
      * Allows to change the place of our object and therefore to make it navigate in our 3D scene.
      *
-     * @param x
-     * @param y
-     * @param z
+     * @param x x
+     * @param y y
+     * @param z z
      */
     public void rotate(float x, float y, float z) {
         orientation.add(x, y, z);
@@ -179,9 +174,9 @@ public class Camera {
     /**
      * Changes the size of the object to adjust the 3D scene.
      *
-     * @param x
-     * @param y
-     * @param z
+     * @param x x
+     * @param y y
+     * @param z z
      */
     public void translate(float x, float y, float z) {
         position.add(x, y, z);
@@ -195,7 +190,7 @@ public class Camera {
     /**
      * Generate the Matrix for the camera position
      *
-     * @return
+     * @return viewMatrix
      */
     public Matrix4f setupViewMatrix() {
         Matrix4f viewMatrix = new Matrix4f().identity();
@@ -215,7 +210,7 @@ public class Camera {
     public void updateCameraMat() {
         perspectiveMat = new Matrix4f().perspective(fieldOfView,
                 (float) Window.aspectRatio(), zNear, zFar);
-        //	perspectiveMat = perspectiveMat.mul(setupViewMatrix());
+       /* perspectiveMat = perspectiveMat.mul(setupViewMatrix()); */
     }
 
 
