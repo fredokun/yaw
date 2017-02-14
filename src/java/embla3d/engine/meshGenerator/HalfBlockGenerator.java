@@ -1,11 +1,31 @@
 package embla3d.engine.meshGenerator;
 
-import embla3d.engine.meshs.HalfBlockMesh;
 import embla3d.engine.meshs.Material;
 import embla3d.engine.meshs.Mesh;
 import org.joml.Vector3f;
 
+import java.util.Map;
+
 public class HalfBlockGenerator {
+    /**
+     * Generate a half block Mesh with the specified material , width, length and angle.
+     * calculate ylenght based on the angle and width
+     *
+     * @param xLength width
+     * @param angle   angle
+     * @param zLength height
+     * @param m       material
+     * @return Mesh
+     */
+    public static Mesh generate(float xLength, float zLength, int angle, Material m) {
+        angle = angle % 90;
+        if (angle == 0)
+            angle = 1;
+        angle = Math.abs(angle);
+        float yLength = (float) (Math.tan(angle) * zLength);
+        return generate(xLength, yLength, zLength, m);
+    }
+
     /**
      * Generate a haslf block Mesh with the specified material , width, length and height.
      * Create vertices and normals based on the specified width, length and height.
@@ -45,13 +65,11 @@ public class HalfBlockGenerator {
                 x, -y, z,
                 x, -y, -z
         };
-
         float frontNormal = (float) Math.sqrt(yLength * yLength + zLength * zLength);
         if (frontNormal == 0)
             frontNormal = 0.00000000000001f;
         float yNormal = z / frontNormal;
         float zNormal = y / frontNormal;
-
         float[] normals = {
                 //Front face
                 0, yNormal, zNormal,
@@ -77,7 +95,6 @@ public class HalfBlockGenerator {
                 1, 0, 0,
                 1, 0, 0
         };
-
         int[] indices = new int[]{
                 //Front face
                 0, 1, 2, 0, 2, 3,
@@ -90,27 +107,10 @@ public class HalfBlockGenerator {
                 //Right face
                 15, 16, 17
         };
-
-        return new HalfBlockMesh(vertices, m, normals, indices, xLength, yLength, zLength);
-    }
-
-    /**
-     * Generate a half block Mesh with the specified material , width, length and angle.
-     * calculate ylenght based on the angle and width
-     *
-     * @param xLength width
-     * @param angle   angle
-     * @param zLength height
-     * @param m       material
-     * @return Mesh
-     */
-    public static Mesh generate(float xLength, float zLength, int angle, Material m) {
-        angle = angle % 90;
-        if (angle == 0)
-            angle = 1;
-        angle = Math.abs(angle);
-        float yLength = (float) (Math.tan(angle) * zLength);
-        return generate(xLength, yLength, zLength, m);
+        Mesh lMesh = new Mesh(vertices, m, normals, indices);
+        Map<String, String> lOptionalAttributes = MeshBuilder.getPostitionAttributesMap(xLength, yLength, zLength);
+        lMesh.putOptionalAttributes(lOptionalAttributes);
+        return lMesh;
     }
 
     /**

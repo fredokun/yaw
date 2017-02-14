@@ -1,11 +1,28 @@
 package embla3d.engine.meshGenerator;
 
-import embla3d.engine.meshs.BlockMesh;
 import embla3d.engine.meshs.Material;
 import embla3d.engine.meshs.Mesh;
 import org.joml.Vector3f;
 
+import java.util.Map;
+
 public class BlockGenerator {
+    /**
+     * Generate a BlockMesh with the specified material (cx, cy, cz, reflectance), width, length and height
+     *
+     * @param xLength xLength
+     * @param yLength yLength
+     * @param zLength zLength
+     * @param cx      Red value of the material
+     * @param cy      Green  value of the material
+     * @param cz      Blue  value of the material
+     * @param r       reflectance
+     * @return BlockMesh
+     */
+    public static Mesh generate(float xLength, float yLength, float zLength, float cx, float cy, float cz, float r) {
+        return generate(xLength, yLength, zLength, new Material(new Vector3f(cx, cy, cz), r));
+    }
+
     /**
      * Generate a BlockMesh with the specified material , width, length and height.
      * Create vertices based on the specified width, length and height.
@@ -53,7 +70,6 @@ public class BlockGenerator {
                 x, -y, z,
                 x, -y, -z
         };
-
         //for light
         float[] normals = {
                 //Front face
@@ -102,23 +118,10 @@ public class BlockGenerator {
                 //Right face
                 20, 22, 21, 22, 23, 21
         };
+        Mesh lMesh = new Mesh(vertices, m, normals, indices);
+        Map<String, String> lOptionalAttributes = MeshBuilder.getPostitionAttributesMap(xLength, yLength, zLength);
+        lMesh.putOptionalAttributes(lOptionalAttributes);
+        return lMesh;
 
-        return new BlockMesh(vertices, m, normals, indices, xLength, yLength, zLength);
-    }
-
-    /**
-     * Generate a BlockMesh with the specified material (cx, cy, cz, reflectance), width, length and height
-     *
-     * @param xLength xLength
-     * @param yLength yLength
-     * @param zLength zLength
-     * @param cx      Red value of the material
-     * @param cy      Green  value of the material
-     * @param cz      Blue  value of the material
-     * @param r       reflectance
-     * @return BlockMesh
-     */
-    public static Mesh generate(float xLength, float yLength, float zLength, float cx, float cy, float cz, float r) {
-        return generate(xLength, yLength, zLength, new Material(new Vector3f(cx, cy, cz), r));
     }
 }

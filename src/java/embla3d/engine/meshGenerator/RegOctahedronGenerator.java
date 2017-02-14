@@ -2,10 +2,22 @@ package embla3d.engine.meshGenerator;
 
 import embla3d.engine.meshs.Material;
 import embla3d.engine.meshs.Mesh;
-import embla3d.engine.meshs.OctahedronMesh;
 import org.joml.Vector3f;
 
 public class RegOctahedronGenerator {
+    /**
+     * Generate a regular octohedron mesh with the specified material (cx, cy, cz, reflectance)
+     *
+     * @param cx Red value of the material
+     * @param cy Green  value of the material
+     * @param cz Blue  value of the material
+     * @param r  reflectance
+     * @return Mesh
+     */
+    public static Mesh generate(float cx, float cy, float cz, float r) {
+        return generate(new Material(new Vector3f(cx, cy, cz), r));
+    }
+
     /**
      * Generate a regular octohedron mesh  with the specified material
      * default size 1*1*1 for each triangle
@@ -49,12 +61,10 @@ public class RegOctahedronGenerator {
                 0f, -0.5f, 0f,
                 0f, 0f, -0.5f
         };
-
         float pos = (float) (1 / Math.sqrt(3));
         float neg = (float) (-1 / Math.sqrt(3));
         //for(int i=0; i< vertices.length; i++)
         //System.out.println(vertices[i]+ " ");
-
         float[] normals = new float[]{
                 //LTF
                 neg, pos, pos,
@@ -89,7 +99,6 @@ public class RegOctahedronGenerator {
                 pos, neg, neg,
                 pos, neg, neg
         };
-
         int[] indices = new int[]{
                 //LTF
                 0, 2, 1,
@@ -108,20 +117,6 @@ public class RegOctahedronGenerator {
                 //RBB
                 21, 22, 23
         };
-
-        return new OctahedronMesh(vertices, m, normals, indices);
-    }
-
-    /**
-     * Generate a regular octohedron mesh with the specified material (cx, cy, cz, reflectance)
-     *
-     * @param cx Red value of the material
-     * @param cy Green  value of the material
-     * @param cz Blue  value of the material
-     * @param r  reflectance
-     * @return Mesh
-     */
-    public static Mesh generate(float cx, float cy, float cz, float r) {
-        return generate(new Material(new Vector3f(cx, cy, cz), r));
+        return new Mesh(vertices, m, normals, indices);
     }
 }

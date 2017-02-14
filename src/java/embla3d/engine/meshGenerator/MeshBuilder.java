@@ -19,6 +19,7 @@ public class MeshBuilder {
     //TODO
     /*generic call*/
     /*dispatch*/
+    /*Add weight to the generate function*/
 
     /**
      * Generate a pyramide mesh with the specified material (cx, cy, cz, reflectance), width, length and height
@@ -70,7 +71,7 @@ public class MeshBuilder {
      * @param zLength height
      * @return the map
      */
-    private static Map<String, String> getPostitionAttributesMap(float xLength, float yLength, float zLength) {
+    public static Map<String, String> getPostitionAttributesMap(float xLength, float yLength, float zLength) {
         Map<String, String> lOptionalAttributes = new HashMap<>();
         lOptionalAttributes.put("xLength", String.valueOf(xLength));
         lOptionalAttributes.put("yLength", String.valueOf(yLength));
