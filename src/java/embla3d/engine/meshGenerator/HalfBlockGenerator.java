@@ -107,8 +107,8 @@ public class HalfBlockGenerator {
                 //Right face
                 15, 16, 17
         };
-        Mesh lMesh = new Mesh(vertices, m, normals, indices);
-        Map<String, String> lOptionalAttributes = MeshBuilder.getPostitionAttributesMap(xLength, yLength, zLength);
+        Mesh lMesh = new Mesh(vertices, m, normals, indices, 6);
+        Map<String, String> lOptionalAttributes = MeshBuilder.getPositionAttributesMap(xLength, yLength, zLength);
         lMesh.putOptionalAttributes(lOptionalAttributes);
         return lMesh;
     }

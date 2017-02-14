@@ -54,7 +54,7 @@ public class GroundGenerator {
                 1, 3, 2
         };
         Mesh lMesh = new Mesh(vertices, m, normals, indices);
-        Map<String, String> lOptionalAttributes = MeshBuilder.getPostitionAttributesMap(width, length, height);
+        Map<String, String> lOptionalAttributes = MeshBuilder.getPositionAttributesMap(width, length, height);
         lMesh.putOptionalAttributes(lOptionalAttributes);
         return lMesh;
 

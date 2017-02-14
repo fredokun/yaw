@@ -117,6 +117,6 @@ public class RegOctahedronGenerator {
                 //RBB
                 21, 22, 23
         };
-        return new Mesh(vertices, m, normals, indices);
+        return new Mesh(vertices, m, normals, indices, 6);
     }
 }

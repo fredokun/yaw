@@ -76,7 +76,7 @@ public class RegTetrahedronGenerator {
                 9, 10, 11
         };
 
-        return new Mesh(vertices, m, normals, indices);
+        return new Mesh(vertices, m, normals, indices, 8);
 
     }
 }

@@ -105,8 +105,8 @@ public class PyramidGenerator {
                 //Bottom Face
                 12, 13, 15, 12, 15, 14
         };
-        Mesh mesh = new Mesh(vertices, m, normals, indices);
-        Map<String, String> lOptionalAttributes = MeshBuilder.getPostitionAttributesMap(xLength, yLength, zLength);
+        Mesh mesh = new Mesh(vertices, m, normals, indices, 5);
+        Map<String, String> lOptionalAttributes = MeshBuilder.getPositionAttributesMap(xLength, yLength, zLength);
         mesh.putOptionalAttributes(lOptionalAttributes);
         return mesh;
     }

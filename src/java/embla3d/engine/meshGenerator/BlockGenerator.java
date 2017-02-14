@@ -118,8 +118,8 @@ public class BlockGenerator {
                 //Right face
                 20, 22, 21, 22, 23, 21
         };
-        Mesh lMesh = new Mesh(vertices, m, normals, indices);
-        Map<String, String> lOptionalAttributes = MeshBuilder.getPostitionAttributesMap(xLength, yLength, zLength);
+        Mesh lMesh = new Mesh(vertices, m, normals, indices, 8);
+        Map<String, String> lOptionalAttributes = MeshBuilder.getPositionAttributesMap(xLength, yLength, zLength);
         lMesh.putOptionalAttributes(lOptionalAttributes);
         return lMesh;
 
