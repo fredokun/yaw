@@ -43,8 +43,8 @@ public class Renderer {
         sh.createUniform("camera_pos");
         sh.createUniform("specularPower");
         sh.createUniform("ambientLight");
-        sh.createPointLightListUniform("pointLights", SceneLight.maxPointlight);
-        sh.createSpotLightUniformList("spotLights", SceneLight.maxSpotlight);
+        sh.createPointLightListUniform("pointLights", SceneLight.MAX_POINTLIGHT);
+        sh.createSpotLightUniformList("spotLights", SceneLight.MAX_SPOTLIGHT);
         sh.createDirectionalLightUniform("directionalLight");
 
     }
