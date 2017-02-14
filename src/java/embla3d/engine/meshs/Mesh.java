@@ -9,6 +9,8 @@ import org.lwjgl.BufferUtils;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
@@ -28,16 +30,18 @@ public class Mesh {
     private int vboIndicesId;
 
     //VBO
-    private float[] vertices;//vertices
-    private float[] normals;
-    private int[] indices; //order into which  vertices should be drawn by referring to their  position
-    private int weight;  // the weight of an object in a group (e.g. a mass in a group planets)
+    private float[] mVertices;//mVertices
+    private float[] mNormals;
+    private int[] mIndices; //order into which  mVertices should be drawn by referring to their  position
+    private int mWeight;  // the mWeight of an object in a group (e.g. a mass in a group planets)
 
-    private Material material;
+    private Material mMaterial;
+
+    private Map<String, String> mOptionalAttributes;
 
 
     /**
-     * Construct a Mesh with the specified material (cx, cy, cz, reflectance), vertices, normals, indices and weight
+     * Construct a Mesh with the specified mMaterial (cx, cy, cz, reflectance), mVertices, mNormals, mIndices and mWeight
      * Material is dynamically created from cx cy cz and reflectance
      * Reflectance should be between 0 and 1
      *
@@ -46,21 +50,22 @@ public class Mesh {
      * @param cy          colour G
      * @param cz          colour B
      * @param reflectance reflectance
-     * @param normals     normals
-     * @param indices     order into which  vertices should be drawn by referring to their  position
-     * @param weight      weight ??
+     * @param normals     mNormals
+     * @param indices     order into which  mVertices should be drawn by referring to their  position
+     * @param weight      mWeight ??
      */
     public Mesh(float[] vertices, float cx, float cy, float cz, float reflectance, float[] normals, int[] indices, int weight) {
         super();
-        this.vertices = vertices;
-        this.normals = normals;
-        this.indices = indices;
-        this.material = new Material(new Vector3f(cx, cy, cz), reflectance);
-        this.weight = weight;
+        this.mVertices = vertices;
+        this.mNormals = normals;
+        this.mIndices = indices;
+        this.mMaterial = new Material(new Vector3f(cx, cy, cz), reflectance);
+        this.mWeight = weight;
+        this.mOptionalAttributes = new HashMap<>();
     }
 
     /**
-     * Construct a Mesh with the specified material (cx, cy, cz, reflectance), vertices, normals, indices
+     * Construct a Mesh with the specified mMaterial (cx, cy, cz, reflectance), mVertices, mNormals, mIndices
      * Material is dynamically created from cx cy cz and reflectance
      * Reflectance should be between 0 and 1
      *
@@ -69,53 +74,56 @@ public class Mesh {
      * @param cy          colour G
      * @param cz          colour B
      * @param reflectance reflectance
-     * @param normals     normals
-     * @param indices     order into which  vertices should be drawn by referring to their  position
+     * @param normals     mNormals
+     * @param indices     order into which  mVertices should be drawn by referring to their  position
      */
     public Mesh(float[] vertices, float cx, float cy, float cz, float reflectance, float[] normals, int[] indices) {
         super();
-        this.vertices = vertices;
-        this.normals = normals;
-        this.indices = indices;
-        this.material = new Material(new Vector3f(cx, cy, cz), reflectance);
-        this.weight = vertices.length;
+        this.mVertices = vertices;
+        this.mNormals = normals;
+        this.mIndices = indices;
+        this.mMaterial = new Material(new Vector3f(cx, cy, cz), reflectance);
+        this.mWeight = vertices.length;
+        this.mOptionalAttributes = new HashMap<>();
     }
 
     /**
-     * Construct a Mesh with the specified material , vertices, normals, indices and weight
+     * Construct a Mesh with the specified mMaterial , mVertices, mNormals, mIndices and mWeight
      *
      * @param vertices Vertex array
-     * @param normals  normals
-     * @param indices  order into which  vertices should be drawn by referring to their  position
-     * @param weight   weight ??
+     * @param normals  mNormals
+     * @param indices  order into which  mVertices should be drawn by referring to their  position
+     * @param weight   mWeight ??
      */
     public Mesh(float[] vertices, Material material, float[] normals, int[] indices, int weight) {
         super();
-        this.vertices = vertices;
-        this.normals = normals;
-        this.indices = indices;
-        this.material = material;
-        this.weight = weight;
+        this.mVertices = vertices;
+        this.mNormals = normals;
+        this.mIndices = indices;
+        this.mMaterial = material;
+        this.mWeight = weight;
+        this.mOptionalAttributes = new HashMap<>();
     }
 
     /**
-     * Construct a Mesh with the specified material , vertices, normals and indices.
+     * Construct a Mesh with the specified mMaterial , mVertices, mNormals and mIndices.
      *
      * @param vertices Vertex array
-     * @param normals  normals
-     * @param indices  order into which  vertices should be drawn by referring to their  position
+     * @param normals  mNormals
+     * @param indices  order into which  mVertices should be drawn by referring to their  position
      */
     public Mesh(float[] vertices, Material material, float[] normals, int[] indices) {
         super();
-        this.vertices = vertices;
-        this.normals = normals;
-        this.indices = indices;
-        this.material = material;
-        this.weight = vertices.length;
+        this.mVertices = vertices;
+        this.mNormals = normals;
+        this.mIndices = indices;
+        this.mMaterial = material;
+        this.mWeight = vertices.length;
+        this.mOptionalAttributes = new HashMap<>();
     }
 
     /**
-     * Initialize  vertex, normals and indices buffer
+     * Initialize  vertex, mNormals and mIndices buffer
      */
     public void init() {
         vaoId = glGenVertexArrays();
@@ -123,8 +131,8 @@ public class Mesh {
 
         //Initialization of VBO
         //VBO of vertex
-        FloatBuffer verticeBuffer = BufferUtils.createFloatBuffer(vertices.length);
-        verticeBuffer.put(vertices).flip();
+        FloatBuffer verticeBuffer = BufferUtils.createFloatBuffer(mVertices.length);
+        verticeBuffer.put(mVertices).flip();
         vboVertexId = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, vboVertexId);
         glBufferData(GL_ARRAY_BUFFER, verticeBuffer, GL_STATIC_DRAW);
@@ -132,9 +140,9 @@ public class Mesh {
         //We explain to OpenGL how to read our Buffers.
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
 
-        //VBO of normals
-        FloatBuffer normBuffer = BufferUtils.createFloatBuffer(normals.length);
-        normBuffer.put(normals).flip();
+        //VBO of mNormals
+        FloatBuffer normBuffer = BufferUtils.createFloatBuffer(mNormals.length);
+        normBuffer.put(mNormals).flip();
         vboNormId = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, vboNormId);
         glBufferData(GL_ARRAY_BUFFER, normBuffer, GL_STATIC_DRAW);
@@ -142,9 +150,9 @@ public class Mesh {
         //We explain to OpenGL how to read our Buffers.
         glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, 0);
 
-        //VBO of indices
-        IntBuffer indicesBuffer = BufferUtils.createIntBuffer(indices.length);
-        indicesBuffer.put(indices).flip();
+        //VBO of mIndices
+        IntBuffer indicesBuffer = BufferUtils.createIntBuffer(mIndices.length);
+        indicesBuffer.put(mIndices).flip();
         vboIndicesId = glGenBuffers();
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIndicesId);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
@@ -165,10 +173,10 @@ public class Mesh {
         glBindVertexArray(vaoId);
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
-        sh.setUniform("material", material);
+        sh.setUniform("material", mMaterial);
         sh.setUniform("modelViewMatrix", item.getWorldMatrix());
-        // Draw the vertices
-        glDrawElements(GL_TRIANGLES, indices.length, GL_UNSIGNED_INT, 0);
+        // Draw the mVertices
+        glDrawElements(GL_TRIANGLES, mIndices.length, GL_UNSIGNED_INT, 0);
 
         // Restore state
         glDisableVertexAttribArray(0);
@@ -181,12 +189,12 @@ public class Mesh {
         glBindVertexArray(vaoId);
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
-        sh.setUniform("material", material);
+        sh.setUniform("material", mMaterial);
         for (MyItem i : items) {
             Matrix4f modelViewMat = new Matrix4f(viewMatrix).mul(i.getWorldMatrix());
             sh.setUniform("modelViewMatrix", modelViewMat);
-            // Draw the vertices
-            glDrawElements(GL_TRIANGLES, indices.length, GL_UNSIGNED_INT, 0);
+            // Draw the mVertices
+            glDrawElements(GL_TRIANGLES, mIndices.length, GL_UNSIGNED_INT, 0);
         }
         // Restore state
         glDisableVertexAttribArray(0);
@@ -210,26 +218,51 @@ public class Mesh {
     }
 
     public float[] getVertices() {
-        return vertices;
+        return mVertices;
     }
 
     public Material getMaterial() {
-        return material;
+        return mMaterial;
     }
 
     public void setMaterial(Material material) {
-        this.material = material;
+        this.mMaterial = material;
     }
 
     public float[] getNormals() {
-        return normals;
+        return mNormals;
     }
 
     public int[] getIndices() {
-        return indices;
+        return mIndices;
     }
 
     public int getWeight() {
-        return weight;
+        return mWeight;
     }
+
+    /**
+     * Returns the value to which the specified @attributeName is mapped,
+     * or null if this map contains no mapping for the key.
+     *
+     * @param attributeName name of the attribute (most of the time it will be clojure keywords)
+     * @return the corresponding value if exist null otherwise
+     */
+    public Object getAttribute(String attributeName) {
+        return this.mOptionalAttributes.get(attributeName);
+    }
+
+    /**
+     * Copies all of the mappings from the specified map to this map (optional operation).
+     * The effect of this call is equivalent to that of calling put(k, v) on this map once for each mapping
+     * from key k to value v in the specified map.
+     * The behavior of this operation is undefined if the specified map is modified while the operation is in progress.
+     *
+     * @param pOptionalAttributes mappings to be stored in this map
+     */
+    public void putOptionalAttributes(Map<String, String> pOptionalAttributes) {
+        this.mOptionalAttributes.putAll(pOptionalAttributes);
+    }
+
+
 }
