@@ -8,7 +8,7 @@ import org.joml.Vector3f;
  */
 
 public class DirectionalLight extends AmbientLight {
-    public Vector3f direction;
+    public Vector3f mDirection;
 
     /**
      * Constructor with the parameters direction and the intensity = 0.
@@ -17,7 +17,7 @@ public class DirectionalLight extends AmbientLight {
      */
     public DirectionalLight(Vector3f direction){
 	super(0);
-	this.direction = direction;
+	this.mDirection = direction;
     }
 
     /**
@@ -27,7 +27,7 @@ public class DirectionalLight extends AmbientLight {
      */
     public DirectionalLight(DirectionalLight source){
 	super(source.getColor(),source.getIntensity());
-	direction=source.direction;
+        mDirection=source.mDirection;
     }
 
     /**
@@ -39,44 +39,44 @@ public class DirectionalLight extends AmbientLight {
      */
     public DirectionalLight(Vector3f color, float intensity,Vector3f direction){
 	super(color, intensity);
-	this.direction = direction;
+	this.mDirection = direction;
     }
 
     /**
      * Constructor with the specified color (cx,cy,cz), intensity and direction (dx,dy,dz),
      *
-     * @param cx            Red value
-     * @param cy            Green value
-     * @param cz            Blue value
+     * @param red           Red value
+     * @param green         Green value
+     * @param blue          Blue value
      * @param intensity     intensity
      * @param dx            Direction x
      * @param dy            Direction y
      * @param dz            Direction z
      */
-    public DirectionalLight(float cx, float cy, float cz, float intensity, float dx, float dy, float dz){
-	super(cx, cy, cz, intensity);
-	this.direction = new Vector3f(dx, dy, dz);
+    public DirectionalLight(float red, float green, float blue, float intensity, float dx, float dy, float dz){
+	super(red, green, blue, intensity);
+	this.mDirection = new Vector3f(dx, dy, dz);
     }
 	
     //Default: vertical white light
     public DirectionalLight(){
 	super(0);
-	direction = new Vector3f(0f,-1f,0f);
+        mDirection = new Vector3f(0f,-1f,0f);
     }
 
     /**
      * getter and setters
      */
     public Vector3f getDirection() {
-	return direction;
+	return mDirection;
     }
 
     public void setDirection(Vector3f direction) {
-	this.direction = direction;
+	this.mDirection = direction;
     }
 	
     public void setDirection(float x,float y,float z){
-	this.direction=new Vector3f(x,y,z);
+	this.mDirection=new Vector3f(x,y,z);
     }
 
 }

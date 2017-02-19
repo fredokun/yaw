@@ -8,10 +8,10 @@ import org.joml.Vector3f;
 */
 
 public class AmbientLight {
-    private Vector3f color;
-    private  float intensity;
+    private Vector3f mColor;
+    private  float mIntensity;
     // Value put in the shader
-    private Vector3f shaderValue;
+    private Vector3f mShaderValue;
 
     /**
      * Constructor with the specified color and intensity
@@ -21,24 +21,24 @@ public class AmbientLight {
      * @param intensity intensity
      */
     public AmbientLight(Vector3f color, float intensity){
-	this.color = color;
-	this.intensity = intensity;
-	this.shaderValue= new Vector3f(color.x*intensity,color.y *intensity,color.z*intensity);
+	this.mColor = color;
+	this.mIntensity = intensity;
+	this.mShaderValue= new Vector3f(color.x*intensity,color.y *intensity,color.z*intensity);
     }
 
     /**
      * Constructor with the specified color (cx,cy,cz) and intensity
      * Create the shaderValue with the color and intensity.
      *
-     * @param cx        Red value
-     * @param cy        Green value
-     * @param cz        Blue value
-     * @param intensity intensity
+     * @param red        Red value
+     * @param green      Green value
+     * @param blue       Blue value
+     * @param intensity  intensity
      */
-    public AmbientLight(float cx, float cy, float cz, float intensity){
-	this.color = new Vector3f(cx, cy, cz);
-	this.intensity = intensity;
-	this.shaderValue= new Vector3f(color.x*intensity,color.y *intensity,color.z*intensity);
+    public AmbientLight(float red, float green, float blue, float intensity){
+	this.mColor = new Vector3f(red, green, blue);
+	this.mIntensity = intensity;
+	this.mShaderValue= new Vector3f(mColor.x*intensity,mColor.y *intensity,mColor.z*intensity);
     }
 
     /**
@@ -46,9 +46,9 @@ public class AmbientLight {
      * Create the shaderValue with 1.
      */
     public AmbientLight(){
-	this.color = new Vector3f(1f,1f,1f);
-	this.intensity=1f;
-	this.shaderValue = new Vector3f(1f,1f,1f);
+	this.mColor = new Vector3f(1f,1f,1f);
+	this.mIntensity=1f;
+	this.mShaderValue = new Vector3f(1f,1f,1f);
     }
 
     /**
@@ -58,9 +58,9 @@ public class AmbientLight {
      * @param intensity intensity
      */
     public AmbientLight(float intensity){
-	this.color = new Vector3f(1f,1f,1f);
-	this.intensity=intensity;
-	this.shaderValue = new Vector3f(color.x *intensity,color.y *intensity,color.z *intensity);
+	this.mColor = new Vector3f(1f,1f,1f);
+	this.mIntensity=intensity;
+	this.mShaderValue = new Vector3f(mColor.x *intensity,mColor.y *intensity,mColor.z *intensity);
     }
 
     /**
@@ -71,8 +71,8 @@ public class AmbientLight {
      * @param color color
      */
     public void setColor(Vector3f color) {
-	this.color = color;
-	this.shaderValue= new Vector3f(color.x *intensity,color.y *intensity,color.z *intensity);
+	this.mColor = color;
+	this.mShaderValue= new Vector3f(color.x *mIntensity,color.y *mIntensity,color.z *mIntensity);
     }
 
     /**
@@ -82,22 +82,22 @@ public class AmbientLight {
      * @param intensity intensity
      */
     public void setIntensity(float intensity) {
-	this.intensity = intensity;
-	this.shaderValue= new Vector3f(color.x *intensity,color.y *intensity,color.z*intensity);
+	this.mIntensity = intensity;
+	this.mShaderValue= new Vector3f(mColor.x *intensity,mColor.y *intensity,mColor.z*intensity);
     }
 
     /**
      * getters
      */
     public Vector3f getColor() {
-	return color;
+	return mColor;
     }
 
     public float getIntensity() {
-	return intensity;
+	return mIntensity;
     }
 
     public Vector3f getShaderValue() {
-	return shaderValue;
+	return mShaderValue;
     }	
 }

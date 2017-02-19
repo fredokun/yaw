@@ -9,8 +9,8 @@ import org.joml.Vector3f;
  **/
 
 public class SpotLight extends PointLight {
-    Vector3f conedir;
-    float cutoffAngle;
+    Vector3f mConedir;
+    float mCutoffAngle;
 
     /**
      * Constructor with the specified color, position, intensity, constantAtt, linearAtt, quadraticAtt, conedir, cutoffAngle
@@ -27,16 +27,16 @@ public class SpotLight extends PointLight {
     public SpotLight(Vector3f color, Vector3f position, float intensity,
                      float constantAtt, float linearAtt, float quadraticAtt, Vector3f conedir, float cutoffAngle) {
         super(color, position, intensity, constantAtt, linearAtt, quadraticAtt);
-        this.conedir = conedir;
-        this.cutoffAngle = cutoffAngle;
+        this.mConedir = conedir;
+        this.mCutoffAngle = cutoffAngle;
     }
 
     /**
      * Constructor with the specified color (cx,cy,cz), position (px,py,pz), intensity, constantAtt, linearAtt, quadraticAtt, cone direction (cdx,cdy,cdz) and angle
      *
-     * @param cx           Red value
-     * @param cy           Green value
-     * @param cz           Blue value
+     * @param red           Red value
+     * @param green           Green value
+     * @param blue           Blue value
      * @param px           Position x
      * @param py           Position y
      * @param pz           Position z
@@ -49,11 +49,11 @@ public class SpotLight extends PointLight {
      * @param cdz          Direction cone z
      * @param cutoffAngle  angle
      */
-    public SpotLight(float cx, float cy, float cz, float px, float py, float pz, float intensity,
+    public SpotLight(float red, float green, float blue, float px, float py, float pz, float intensity,
                      float constantAtt, float linearAtt, float quadraticAtt, float cdx, float cdy, float cdz, float cutoffAngle) {
-        super(cx, cy, cz, px, py, pz, intensity, constantAtt, linearAtt, quadraticAtt);
-        this.conedir = new Vector3f(cdx, cdy, cdz);
-        this.cutoffAngle = cutoffAngle;
+        super(red, green, blue, px, py, pz, intensity, constantAtt, linearAtt, quadraticAtt);
+        this.mConedir = new Vector3f(cdx, cdy, cdz);
+        this.mCutoffAngle = cutoffAngle;
     }
 
     /**
@@ -61,8 +61,8 @@ public class SpotLight extends PointLight {
      */
     public SpotLight() {
         super();
-        conedir = new Vector3f(0, 0, -1);
-        cutoffAngle = 0;
+        this.mConedir = new Vector3f(0, 0, -1);
+        this.mCutoffAngle = 0;
     }
 
     /**
@@ -72,30 +72,30 @@ public class SpotLight extends PointLight {
      */
     public SpotLight(SpotLight source) {
         super(source);
-        conedir = source.conedir;
-        cutoffAngle = source.cutoffAngle;
+        this.mConedir = source.mConedir;
+        this.mCutoffAngle = source.mCutoffAngle;
     }
 
     /**
      * getters and setters
      */
     public Vector3f getConedir() {
-        return conedir;
+        return mConedir;
     }
 
     public void setConeDir(float x, float y, float z) {
-        this.conedir = new Vector3f(x, y, z);
+        this.mConedir = new Vector3f(x, y, z);
     }
 
     public void setConeDir(Vector3f cd) {
-        this.conedir = cd;
+        this.mConedir = cd;
     }
 
     public float getCutoffAngle() {
-        return cutoffAngle;
+        return mCutoffAngle;
     }
 
     public void setCutoffAngle(float coa) {
-        this.cutoffAngle = coa;
+        this.mCutoffAngle = coa;
     }
 }

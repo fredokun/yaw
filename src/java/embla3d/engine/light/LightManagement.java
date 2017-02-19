@@ -14,19 +14,19 @@ public class LightManagement {
      * The directional light created is like a sun.
 	 *
 	 * @param world     world
-	 * @param r         Red color
-	 * @param g         Green color
-	 * @param b         Blue color
+	 * @param red       Red color
+	 * @param green     Green color
+	 * @param blue      Blue color
 	 * @param intensity intensity
-	 * @param x         Direction x
-	 * @param y         Direction y
-	 * @param z         Direction z
+	 * @param dx        Direction x
+	 * @param dy        Direction y
+	 * @param dz        Direction z
      *
 	 * @return DirectionalLight
 	 */
-    public static DirectionalLight setSunLight(World world,float r,float g,float b,
-					       float intensity,float x,float y,float z){
-	DirectionalLight sun=new DirectionalLight(new Vector3f(r,g,b), intensity, new Vector3f(x,y,z));
+    public static DirectionalLight setSunLight(World world,float red,float green,float blue,
+					       float intensity,float dx,float dy,float dz){
+	DirectionalLight sun=new DirectionalLight(new Vector3f(red,green,blue), intensity, new Vector3f(dx,dy,dz));
 	world.getSceneLight().setSun(sun);
 	return sun;
     }
@@ -45,26 +45,26 @@ public class LightManagement {
 	/**
      * Set the direction
 	 *
-	 * @param sun sun
-	 * @param x   Direction x
-	 * @param y   Direction y
-	 * @param z   Direction z
+	 * @param sun  sun
+	 * @param dx   Direction x
+	 * @param dy   Direction y
+	 * @param dz   Direction z
 	 */
-    public static void setSunDirection(DirectionalLight sun, float x,float y,float z){
-	sun.setDirection(new Vector3f(x,y,z));
+    public static void setSunDirection(DirectionalLight sun, float dx,float dy,float dz){
+	sun.setDirection(new Vector3f(dx,dy,dz));
     }
 
 	/**
      * Create the ambient light in the world.
 	 *
 	 * @param world     world
-	 * @param r         Red color
-	 * @param g         Green color
-	 * @param b         Blue color
+	 * @param red       Red color
+	 * @param green     Green color
+	 * @param blue      Blue color
 	 * @param intensity intensity
 	 */
-    public static void setAmbientLight(World world,float r,float  g ,float b,float intensity){
-	AmbientLight ambiant=new AmbientLight(new Vector3f(r,g,b),intensity);
+    public static void setAmbientLight(World world,float red,float  green ,float blue,float intensity){
+	AmbientLight ambiant=new AmbientLight(new Vector3f(red,green,blue),intensity);
 	world.getSceneLight().setAmbient(ambiant);
 	//return ambiant;
     }
@@ -73,9 +73,9 @@ public class LightManagement {
      * Create the spot light in the world.
 	 *
 	 * @param world         world
-	 * @param r             Red color
-	 * @param g             Green Color
-	 * @param b             Blue color
+	 * @param red           Red color
+	 * @param green         Green Color
+	 * @param blue          Blue color
 	 * @param x             Position x
 	 * @param y             Position y
 	 * @param z             Position y
@@ -91,9 +91,9 @@ public class LightManagement {
      *
 	 * @return              SpotLight
 	 */
-    public static SpotLight addSpotLight(World world,float r,float g,float b,float x,float y,float z,float intensity
+    public static SpotLight addSpotLight(World world,float red,float green,float blue,float x,float y,float z,float intensity
 					 ,float constantA,float linearAtt,float quadraticAtt,float xcone,float ycone,float zcone,float cutoffAngle,int pos){
-	SpotLight sl=new SpotLight(new Vector3f(r,g,b),new Vector3f(x,y,z)
+	SpotLight sl=new SpotLight(new Vector3f(red,green,blue),new Vector3f(x,y,z)
 				   ,intensity,constantA,linearAtt,quadraticAtt,new Vector3f(xcone,ycone,zcone),cutoffAngle);
 	world.getSceneLight().setSpotLight(sl, pos);
 	return sl;
@@ -103,9 +103,9 @@ public class LightManagement {
      * Create a point light in the world.
 	 *
 	 * @param world         world
-     * @param r             Red color
-     * @param g             Green Color
-     * @param b             Blue color
+     * @param red           Red color
+     * @param green         Green Color
+     * @param blue          Blue color
      * @param x             Position x
      * @param y             Position y
      * @param z             Position y
@@ -117,9 +117,9 @@ public class LightManagement {
      *
 	 * @return PointLight
 	 */
-    public static PointLight addPointLight(World world,float r,float g,float b,float x,float y,float z,float intensity
+    public static PointLight addPointLight(World world,float red,float green,float blue,float x,float y,float z,float intensity
 					   ,float constantA,float linearAtt,float quadraticAtt,int pos){
-	PointLight pl=new PointLight(new Vector3f(r,g,b),new Vector3f(x,y,z),intensity,constantA,linearAtt,quadraticAtt);
+	PointLight pl=new PointLight(new Vector3f(red,green,blue),new Vector3f(x,y,z),intensity,constantA,linearAtt,quadraticAtt);
 	world.getSceneLight().setPointLight(pl, pos);
 	return pl;
     }
