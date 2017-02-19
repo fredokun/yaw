@@ -1,7 +1,7 @@
 package embla3d.engine;
 
-import embla3d.engine.items.GenericItem;
 import embla3d.engine.items.ItemManagement;
+import embla3d.engine.items.Item;
 import embla3d.engine.light.AmbientLight;
 import embla3d.engine.light.DirectionalLight;
 import embla3d.engine.light.SpotLight;
@@ -16,8 +16,8 @@ public class MainWorld {
         World world = new World(0, 0, 500, 500);/* Create the world with its dimensions. */
         world.init();  /* Initializes the world */
         (new Thread(world)).start();/* Launches the thread responsible for the display and our game loop. */
-        GenericItem c1 = ItemManagement.createBlock(world, 1, 1, 1, 1, 1, 1, 1); /* Create our block */
-        GenericItem c2 = ItemManagement.createPyramid(world, 0, 0, 0, 5, 5, 5, 1); /* Create our Pyramid */
+        Item c1 = ItemManagement.createBlock(world, 1, 1, 1, 1, 1, 1, 1); /* Create our block */
+        Item c2 = ItemManagement.createPyramid(world, 0, 0, 0, 5, 5, 5, 1); /* Create our Pyramid */
         c1.translate(0, 0, 0); /* Allows to resize our block.*/
         c2.translate(0, 0, -3); /* Allows to resize our Pyramid. */
         c2.translate(0, 0, 0); /* Allows to resize our Pyramid.*/

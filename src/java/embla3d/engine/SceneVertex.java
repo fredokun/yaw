@@ -1,6 +1,6 @@
 package embla3d.engine;
 
-import embla3d.engine.items.MyItem;
+import embla3d.engine.items.Item;
 import embla3d.engine.meshs.Material;
 import embla3d.engine.meshs.Mesh;
 import org.joml.Matrix4f;
@@ -18,7 +18,7 @@ import java.util.HashMap;
 public class SceneVertex {
     //why static ...
     public static boolean itemAdded = false;
-    private HashMap<Mesh, ArrayList<MyItem>> meshMap;
+    private HashMap<Mesh, ArrayList<Item>> meshMap;
     private ArrayList<Mesh> notInit;
 
     public SceneVertex() {
@@ -31,8 +31,8 @@ public class SceneVertex {
      *
      * @param pItem item to be removed
      */
-    public void removeItem(MyItem pItem) {
-        ArrayList<MyItem> lItems = meshMap.get(pItem.getAppearance());
+    public void removeItem(Item pItem) {
+        ArrayList<Item> lItems = meshMap.get(pItem.getAppearance());
         lItems.remove(pItem);
     }
 
@@ -41,8 +41,8 @@ public class SceneVertex {
      *
      * @return the list of item
      */
-    public ArrayList<MyItem> getItemsList() {
-        ArrayList<MyItem> lItems = new ArrayList<>();
+    public ArrayList<Item> getItemsList() {
+        ArrayList<Item> lItems = new ArrayList<>();
         meshMap.values().forEach(lItems::addAll);
         return lItems;
     }
@@ -50,7 +50,7 @@ public class SceneVertex {
     /**
      * Accessor
      */
-    public HashMap<Mesh, ArrayList<MyItem>> getMeshMap() {
+    public HashMap<Mesh, ArrayList<Item>> getMeshMap() {
         return meshMap;
     }
 
@@ -84,7 +84,7 @@ public class SceneVertex {
     public void draw(ShaderProgram pSh, Matrix4f pViewMatrix) {
         ArrayList<Mesh> lRmListe = new ArrayList<>();
         for (Mesh m : meshMap.keySet()) {
-            ArrayList<MyItem> lItems = meshMap.get(m);
+            ArrayList<Item> lItems = meshMap.get(m);
             if (lItems.isEmpty()) {
                 lRmListe.add(m);
             } else {
@@ -102,7 +102,7 @@ public class SceneVertex {
     /*Maybe
     public void update() {
         for (Mesh m : meshMap.keySet()) {
-            for (MyItem i : meshMap.get(m))
+            for (Item i : meshMap.get(m))
                 i.update();
         }
     }*/
@@ -113,7 +113,7 @@ public class SceneVertex {
      *
      * @param pItem the item
      */
-    public synchronized void add(MyItem pItem) {
+    public synchronized void add(Item pItem) {
         itemAdded = true;
             /*retrieve the stored mesh in the item*/
         Mesh lMesh = pItem.getAppearance();
@@ -121,7 +121,7 @@ public class SceneVertex {
         if (meshMap.keySet().contains(lMesh)) {
             meshMap.get(lMesh).add(pItem);
         } else {
-            ArrayList<MyItem> l = new ArrayList<>();
+            ArrayList<Item> l = new ArrayList<>();
             l.add(pItem);
             meshMap.put(lMesh, l);
             notInit.add(lMesh);
@@ -134,7 +134,7 @@ public class SceneVertex {
      * @param pMesh the mesh
      */
     public void add(Mesh pMesh) {
-        MyItem lItem = new MyItem(pMesh);
+        Item lItem = new Item(pMesh);
         this.add(lItem);
     }
 
@@ -197,7 +197,7 @@ public class SceneVertex {
      */
     public void add(float[] pVertices, Material pMaterial, float[] pNormals, int[] pIndices, int pWeight, float pScale, Vector3f pRotation, Vector3f pPosition) {
         Mesh lMesh = new Mesh(pVertices, pMaterial, pNormals, pIndices, pWeight);
-        MyItem lItem = new MyItem(lMesh, pScale, pRotation, pPosition);
+        Item lItem = new Item(lMesh, pScale, pRotation, pPosition);
         this.add(lItem);
     }
 
@@ -210,7 +210,7 @@ public class SceneVertex {
      * @param pPosition the position
      */
     public void add(Mesh pMesh, float pScale, Vector3f pRotation, Vector3f pPosition) {
-        MyItem lItem = new MyItem(pMesh, pScale, pRotation, pPosition);
+        Item lItem = new Item(pMesh, pScale, pRotation, pPosition);
         this.add(lItem);
     }
 
@@ -219,7 +219,7 @@ public class SceneVertex {
      *
      * @param pItem the item
      */
-    public void clone(MyItem pItem) {
-        this.add(new MyItem(pItem));
+    public void clone(Item pItem) {
+        this.add(new Item(pItem));
     }
 }

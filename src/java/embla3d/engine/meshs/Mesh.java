@@ -1,7 +1,7 @@
 package embla3d.engine.meshs;
 
 import embla3d.engine.ShaderProgram;
-import embla3d.engine.items.MyItem;
+import embla3d.engine.items.Item;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
@@ -168,7 +168,7 @@ public class Mesh {
      * @param sh         shaderProgram
      * @param viewMatrix viewMatrix
      */
-    public void draw(MyItem item, ShaderProgram sh, Matrix4f viewMatrix) {
+    public void draw(Item item, ShaderProgram sh, Matrix4f viewMatrix) {
         // Bind to the VAO
         glBindVertexArray(vaoId);
         glEnableVertexAttribArray(0);
@@ -184,13 +184,13 @@ public class Mesh {
         glBindVertexArray(0);
     }
 
-    public void draw(ArrayList<MyItem> items, ShaderProgram sh, Matrix4f viewMatrix) {
+    public void draw(ArrayList<Item> items, ShaderProgram sh, Matrix4f viewMatrix) {
         // Bind to the VAO
         glBindVertexArray(vaoId);
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         sh.setUniform("material", mMaterial);
-        for (MyItem i : items) {
+        for (Item i : items) {
             Matrix4f modelViewMat = new Matrix4f(viewMatrix).mul(i.getWorldMatrix());
             sh.setUniform("modelViewMatrix", modelViewMat);
             // Draw the mVertices

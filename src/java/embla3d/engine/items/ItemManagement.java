@@ -15,55 +15,55 @@ import static embla3d.engine.meshs.Material.REFLECTANCE_DEFAULT_VALUE;
  *
  */
 public class ItemManagement {
-    public static GenericItem createBlock(World world, float red, float green, float blue, float xLength, float yLength, float zLength, float scale) {
+    public static Item createBlock(World world, float red, float green, float blue, float xLength, float yLength, float zLength, float scale) {
         Mesh appearance = MeshBuilder.generate(BLOCK_MESH, xLength, yLength, zLength, red, green, blue, REFLECTANCE_DEFAULT_VALUE);
-        GenericItem item = new GenericItem(appearance, scale, new Vector3f(), new Vector3f(0f, 0f, -2f));
+        Item item = new Item(appearance, scale, new Vector3f(), new Vector3f(0f, 0f, -2f));
         world.getSceneVertex().add(item);
         return item;
     }
 
-    public static GenericItem createHalfBlock(World world, float red, float green, float blue, float xLength, float yLength, float zLength, float scale) {
+    public static Item createHalfBlock(World world, float red, float green, float blue, float xLength, float yLength, float zLength, float scale) {
         Mesh appearance = MeshBuilder.generate(HALF_BLOCK_MESH, xLength, yLength, zLength, red, green, blue, REFLECTANCE_DEFAULT_VALUE);
-        GenericItem item = new GenericItem(appearance, scale, new Vector3f(), new Vector3f(0f, 0f, -2f));
+        Item item = new Item(appearance, scale, new Vector3f(), new Vector3f(0f, 0f, -2f));
         world.getSceneVertex().add(item);
         return item;
     }
 
-    public static GenericItem createPyramid(World world, float red, float green, float blue, float xLength, float yLength, float zLength, float scale) {
+    public static Item createPyramid(World world, float red, float green, float blue, float xLength, float yLength, float zLength, float scale) {
         Mesh appearance = MeshBuilder.generate(PYRAMID_MESH, xLength, yLength, zLength, red, green, blue, REFLECTANCE_DEFAULT_VALUE);
-        GenericItem item = new GenericItem(appearance, scale, new Vector3f(), new Vector3f(0f, 0f, -2f));
+        Item item = new Item(appearance, scale, new Vector3f(), new Vector3f(0f, 0f, -2f));
         world.getSceneVertex().add(item);
         return item;
     }
 
-    public static GenericItem createRegTetrahedron(World world, float red, float green, float blue, float scale) {
+    public static Item createRegTetrahedron(World world, float red, float green, float blue, float scale) {
         Mesh appearance = MeshBuilder.generate(TETRAHEDRON_MESH, 0, 0, 0, red, green, blue, REFLECTANCE_DEFAULT_VALUE);
-        GenericItem item = new GenericItem(appearance, scale, new Vector3f(), new Vector3f(0f, 0f, -2f));
+        Item item = new Item(appearance, scale, new Vector3f(), new Vector3f(0f, 0f, -2f));
         world.getSceneVertex().add(item);
         return item;
     }
 
-    public static GenericItem createRegOctahedron(World world, float red, float green, float blue, float scale) {
+    public static Item createRegOctahedron(World world, float red, float green, float blue, float scale) {
         Mesh appearance = MeshBuilder.generate(OCTAHEDRON_MESH, 0, 0, 0, red, green, blue, REFLECTANCE_DEFAULT_VALUE);
-        GenericItem item = new GenericItem(appearance, scale, new Vector3f(), new Vector3f(0f, 0f, -2f));
+        Item item = new Item(appearance, scale, new Vector3f(), new Vector3f(0f, 0f, -2f));
         world.getSceneVertex().add(item);
         return item;
     }
 
-    public static GenericItem createGround(World world, float red, float green, float blue, float width, float length) {
+    public static Item createGround(World world, float red, float green, float blue, float width, float length) {
         Mesh appearance = MeshBuilder.generate(GROUND_MESH, width, length, 0, red, green, blue, REFLECTANCE_DEFAULT_VALUE);
-        GenericItem item = new GenericItem(appearance, 1.0f, new Vector3f(), new Vector3f(0f, -2f, 0f));
+        Item item = new Item(appearance, 1.0f, new Vector3f(), new Vector3f(0f, -2f, 0f));
         world.getSceneVertex().add(item);
         return item;
     }
 
-    public static GenericItem clone(World world, GenericItem i) {
-        GenericItem item = new GenericItem(i);
+    public static Item clone(World world, Item i) {
+        Item item = new Item(i);
         world.getSceneVertex().add(item);
         return item;
     }
 
-    public static void removeItem(World world, GenericItem item) {
+    public static void removeItem(World world, Item item) {
         world.getSceneVertex().removeItem(item);
         for (ItemGroup g : item.getGroups()) {
             g.remove(item);
@@ -78,6 +78,6 @@ public class ItemManagement {
 
     public static void removeGroup(World world, ItemGroup g) {
         world.getGroupsList().remove(g);
-        for (MyItem i : g.getItems()) i.removeFromGroup(g);
+        for (Item i : g.getItems()) i.removeFromGroup(g);
     }
 }
