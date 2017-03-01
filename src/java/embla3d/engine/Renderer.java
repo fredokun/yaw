@@ -13,7 +13,7 @@ import static org.lwjgl.opengl.GL11.*;
  * The shader allows to describe the absorption, the diffusion of the light, the texture to be used, the reflections of the objects, the shading, etc ...
  */
 public class Renderer {
-    protected ShaderProgram sh;
+    protected ShaderProgram mShaderProgram;
 
 
     /**
@@ -24,28 +24,28 @@ public class Renderer {
     public Renderer() throws Exception {
 
         /* Initialization of the shader program. */
-        sh = new ShaderProgram();
-        sh.createVertexShader(vertShader.SHADER_STRING);
-        sh.createFragmentShader(fragShader.SHADER_STRING);
+        mShaderProgram = new ShaderProgram();
+        mShaderProgram.createVertexShader(vertShader.SHADER_STRING);
+        mShaderProgram.createFragmentShader(fragShader.SHADER_STRING);
 
 
        /* Binds the code and checks that everything has been done correctly. */
-        sh.link();
+        mShaderProgram.link();
         /* Initialization of the camera's uniform. */
-        sh.createUniform("projectionMatrix");
+        mShaderProgram.createUniform("projectionMatrix");
         /* Initialization of the mesh's uniform. */
-        sh.createUniform("modelViewMatrix");
+        mShaderProgram.createUniform("modelViewMatrix");
 
         /* Create uniform for material. */
-        sh.createMaterialUniform("material");
+        mShaderProgram.createMaterialUniform("material");
 
         /* Initialization of the light's uniform. */
-        sh.createUniform("camera_pos");
-        sh.createUniform("specularPower");
-        sh.createUniform("ambientLight");
-        sh.createPointLightListUniform("pointLights", SceneLight.MAX_POINTLIGHT);
-        sh.createSpotLightUniformList("spotLights", SceneLight.MAX_SPOTLIGHT);
-        sh.createDirectionalLightUniform("directionalLight");
+        mShaderProgram.createUniform("camera_pos");
+        mShaderProgram.createUniform("specularPower");
+        mShaderProgram.createUniform("ambientLight");
+        mShaderProgram.createPointLightListUniform("pointLights", SceneLight.MAX_POINTLIGHT);
+        mShaderProgram.createSpotLightUniformList("spotLights", SceneLight.MAX_SPOTLIGHT);
+        mShaderProgram.createDirectionalLightUniform("directionalLight");
 
     }
 
@@ -53,7 +53,7 @@ public class Renderer {
      * The Shader Program is deallocated
      */
     public void cleanUp() {
-        sh.cleanup();
+        mShaderProgram.cleanup();
     }
 
     /**
@@ -68,7 +68,7 @@ public class Renderer {
      * @param pSkybox      skybox
      */
     public void render(SceneVertex pSceneVertex, SceneLight pSceneLight, boolean isResized, Camera pCamera, Skybox pSkybox) {
-        sh.bind();
+        mShaderProgram.bind();
         //Preparation of the camera
         if (isResized || SceneVertex.itemAdded) {
             pCamera.updateCameraMat();
@@ -83,8 +83,8 @@ public class Renderer {
         //		}
 
         /* Set the camera to render. */
-        sh.setUniform("projectionMatrix", pCamera.getCameraMat());
-        sh.setUniform("camera_pos", pCamera.position);
+        mShaderProgram.setUniform("projectionMatrix", pCamera.getCameraMat());
+        mShaderProgram.setUniform("camera_pos", pCamera.position);
         Matrix4f viewMat = pCamera.setupViewMatrix();
 
         /* Enable the option needed to render.*/
@@ -101,7 +101,7 @@ public class Renderer {
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
         /* Rendering of the light. */
-        pSceneLight.render(sh, viewMat);
+        pSceneLight.render(mShaderProgram, viewMat);
 
        /* Init Objects. */
         pSceneVertex.initMesh();
@@ -111,9 +111,9 @@ public class Renderer {
 
 
         /* Rendering of the object. */
-        pSceneVertex.draw(sh, viewMat);
+        pSceneVertex.draw(mShaderProgram, viewMat);
         /* Cleans all services. */
-        sh.unbind();
+        mShaderProgram.unbind();
         if (pSkybox != null) {
             if (pSkybox.init == false) {
                 SceneVertex.itemAdded = true;
