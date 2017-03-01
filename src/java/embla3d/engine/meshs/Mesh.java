@@ -22,12 +22,12 @@ import static org.lwjgl.opengl.GL30.*;
  */
 public class Mesh {
     //reference to the VAO(wrapper)
-    private int vaoId;
+    private int mVaoId;
 
     //VBO's ID
-    private int vboVertexId;
-    private int vboNormId;
-    private int vboIndicesId;
+    private int mVboVertexId;
+    private int mVboNormId;
+    private int mVboIndicesId;
 
     //VBO
     private float[] mVertices;//mVertices
@@ -126,15 +126,15 @@ public class Mesh {
      * Initialize  vertex, mNormals and mIndices buffer
      */
     public void init() {
-        vaoId = glGenVertexArrays();
-        glBindVertexArray(vaoId);
+        mVaoId = glGenVertexArrays();
+        glBindVertexArray(mVaoId);
 
         //Initialization of VBO
         //VBO of vertex
         FloatBuffer verticeBuffer = BufferUtils.createFloatBuffer(mVertices.length);
         verticeBuffer.put(mVertices).flip();
-        vboVertexId = glGenBuffers();
-        glBindBuffer(GL_ARRAY_BUFFER, vboVertexId);
+        mVboVertexId = glGenBuffers();
+        glBindBuffer(GL_ARRAY_BUFFER, mVboVertexId);
         glBufferData(GL_ARRAY_BUFFER, verticeBuffer, GL_STATIC_DRAW);
 
         //We explain to OpenGL how to read our Buffers.
@@ -143,8 +143,8 @@ public class Mesh {
         //VBO of mNormals
         FloatBuffer normBuffer = BufferUtils.createFloatBuffer(mNormals.length);
         normBuffer.put(mNormals).flip();
-        vboNormId = glGenBuffers();
-        glBindBuffer(GL_ARRAY_BUFFER, vboNormId);
+        mVboNormId = glGenBuffers();
+        glBindBuffer(GL_ARRAY_BUFFER, mVboNormId);
         glBufferData(GL_ARRAY_BUFFER, normBuffer, GL_STATIC_DRAW);
 
         //We explain to OpenGL how to read our Buffers.
@@ -153,8 +153,8 @@ public class Mesh {
         //VBO of mIndices
         IntBuffer indicesBuffer = BufferUtils.createIntBuffer(mIndices.length);
         indicesBuffer.put(mIndices).flip();
-        vboIndicesId = glGenBuffers();
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIndicesId);
+        mVboIndicesId = glGenBuffers();
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mVboIndicesId);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -170,7 +170,7 @@ public class Mesh {
      */
     public void draw(Item item, ShaderProgram sh, Matrix4f viewMatrix) {
         // Bind to the VAO
-        glBindVertexArray(vaoId);
+        glBindVertexArray(mVaoId);
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         sh.setUniform("material", mMaterial);
@@ -186,7 +186,7 @@ public class Mesh {
 
     public void draw(ArrayList<Item> items, ShaderProgram sh, Matrix4f viewMatrix) {
         // Bind to the VAO
-        glBindVertexArray(vaoId);
+        glBindVertexArray(mVaoId);
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         sh.setUniform("material", mMaterial);
@@ -208,13 +208,13 @@ public class Mesh {
 
         // Delete the VBO
         glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glDeleteBuffers(vboVertexId);
-        glDeleteBuffers(vboIndicesId);
-        glDeleteBuffers(vboNormId);
+        glDeleteBuffers(mVboVertexId);
+        glDeleteBuffers(mVboIndicesId);
+        glDeleteBuffers(mVboNormId);
 
         // Delete the VAO
         glBindVertexArray(0);
-        glDeleteVertexArrays(vaoId);
+        glDeleteVertexArrays(mVaoId);
     }
 
     public float[] getVertices() {

@@ -1,12 +1,12 @@
 package embla3d.engine.items;
 
 import embla3d.engine.World;
-import embla3d.engine.meshGenerator.MeshBuilder;
 import embla3d.engine.meshs.Mesh;
+import embla3d.engine.meshs.MeshBuilder;
 import org.joml.Vector3f;
 
-import static embla3d.engine.meshGenerator.MeshBuilder.*;
 import static embla3d.engine.meshs.Material.REFLECTANCE_DEFAULT_VALUE;
+import static embla3d.engine.meshs.MeshBuilder.*;
 
 /**
  * Class to create some shapes (Block, HalfBlock, Pyramide, Octahedron, Tetreahedron) * and basic fonctions for these items

@@ -73,17 +73,17 @@ public class Skybox {
         shaderProg.createUniform("color");
 
 
-        float Hwidth = width / 2, Hheight = height / 2, Hlength = length / 2;
+        float lWidth = width / 2, lHeight = height / 2, lLength = length / 2;
 
         float[] vertices = new float[]{
-                Hwidth, Hheight, Hlength,
-                -Hwidth, Hheight, Hlength,
-                Hwidth, -Hheight, Hlength,
-                -Hwidth, -Hheight, Hlength,
-                Hwidth, Hheight, -Hlength,
-                -Hwidth, Hheight, -Hlength,
-                Hwidth, -Hheight, -Hlength,
-                -Hwidth, -Hheight, -Hlength
+                lWidth, lHeight, lLength,
+                -lWidth, lHeight, lLength,
+                lWidth, -lHeight, lLength,
+                -lWidth, -lHeight, lLength,
+                lWidth, lHeight, -lLength,
+                -lWidth, lHeight, -lLength,
+                lWidth, -lHeight, -lLength,
+                -lWidth, -lHeight, -lLength
         };
         //Box mapping
         int[] indices = new int[]{
