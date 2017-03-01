@@ -15,33 +15,33 @@ import static org.lwjgl.opengl.GL11.glViewport;
  * Allows the creation of the world and manages through a thread the events, the updates and the rendering to the screen at constant rate.
  */
 public class World implements Runnable {
-    Camera c;
-    ArrayList<Camera> camerasList;
-    Renderer renderer;
-    SceneVertex sc;
-    SceneLight sl;
-    Callback callback;
-    ArrayList<ItemGroup> groupsList;
-    ArrayList<Skybox> skyboxToBeRemoved;
+    Camera mCamera;
+    ArrayList<Camera> mCamerasList;
+    Renderer mRenderer;
+    SceneVertex mSceneVertex;
+    SceneLight mSceneLight;
+    Callback mCallback;
+    ArrayList<ItemGroup> mItemGroupArrayList;
+    ArrayList<Skybox> mSkyboxToBeRemoved;
 
-    private Skybox sk = null;
-    private boolean loop;
+    private Skybox mSkybox = null;
+    private boolean mLoop;
 
     private int initX, initY, initWidth, initHeight;
 
     /**
      * Initializes the elements to create the window
      *
-     * @param initX      initX
-     * @param initY      initY
-     * @param initWidth  initWidth
-     * @param initHeight initHeight
+     * @param pInitX      initX
+     * @param pInitY      initY
+     * @param pInitWidth  initWidth
+     * @param pInitHeight initHeight
      */
-    public World(int initX, int initY, int initWidth, int initHeight) {
-        this.initX = initX;
-        this.initY = initY;
-        this.initWidth = initWidth;
-        this.initHeight = initHeight;
+    public World(int pInitX, int pInitY, int pInitWidth, int pInitHeight) {
+        this.initX = pInitX;
+        this.initY = pInitY;
+        this.initWidth = pInitWidth;
+        this.initHeight = pInitHeight;
     }
 
     public World() {
@@ -50,73 +50,73 @@ public class World implements Runnable {
 
 
     public Camera getCamera() {
-        return c;
+        return mCamera;
     }
 
-    public void setCamera(Camera c) {
-        this.c = c;
+    public void setCamera(Camera pCamera) {
+        this.mCamera = pCamera;
     }
 
-    public ArrayList<Camera> getCamerasList() {
-        return camerasList;
+    public ArrayList<Camera> getmCamerasList() {
+        return mCamerasList;
     }
 
     /**
      * Create a skybox with all its parameters and replace the current skybox
      *
-     * @param width  width
-     * @param length length
-     * @param height height
-     * @param r      r
-     * @param g      g
-     * @param b      b
+     * @param pWidth  width
+     * @param pLength length
+     * @param pHeight height
+     * @param pR      r
+     * @param pG      g
+     * @param pB      b
      */
-    public void setSkybox(float width, float length, float height, float r, float g, float b) {
-        Skybox sky = new Skybox(width, length, height, new Vector3f(r, g, b));
-        setSkybox(sky);
+    public void setSkybox(float pWidth, float pLength, float pHeight, float pR, float pG, float pB) {
+        Skybox lSkybox = new Skybox(pWidth, pLength, pHeight, new Vector3f(pR, pG, pB));
+        setSkybox(lSkybox);
     }
 
     public void removeSkybox() {
-        synchronized (skyboxToBeRemoved) {
-            skyboxToBeRemoved.add(sk);
+        synchronized (mSkyboxToBeRemoved) {
+            mSkyboxToBeRemoved.add(mSkybox);
         }
-        this.sk = null;
+        this.mSkybox = null;
     }
 
     public Skybox getSkybox() {
-        return sk;
+        return mSkybox;
     }
 
     /**
      * Allows to change the skybox by the new Skybox passed in arguments.
-     * If a skybox already exists, it's added to the list of skyboxToBeRemoved
+     * If a skybox already exists, it's added to the list of mSkyboxToBeRemoved
      *
-     * @param sk skybox
+     * @param pSkybox skybox
      */
-    public void setSkybox(Skybox sk) {
-        if (this.sk != null) {
-            synchronized (skyboxToBeRemoved) {
-                skyboxToBeRemoved.add(sk);
+    public void setSkybox(Skybox pSkybox) {
+        if (this.mSkybox != null) {
+            synchronized (mSkyboxToBeRemoved) {
+                mSkyboxToBeRemoved.add(pSkybox);
             }
         }
-        this.sk = sk;
+        this.mSkybox = pSkybox;
     }
 
     public SceneVertex getSceneVertex() {
-        return sc;
+        return mSceneVertex;
     }
 
-    public ArrayList<ItemGroup> getGroupsList() {
-        return groupsList;
+    public ArrayList<ItemGroup> getItemGroupArrayList() {
+        return mItemGroupArrayList;
     }
 
 
     public SceneLight getSceneLight() {
-        return sl;
+        return mSceneLight;
     }
 
     public Callback getCallback() {
-        return callback;
+        return mCallback;
     }
 
 
@@ -126,33 +126,32 @@ public class World implements Runnable {
      * @throws Exception Exception
      */
     public void init() throws Exception {
-        this.camerasList = new ArrayList<Camera>();
-        this.c = new Camera();
-        this.sc = new SceneVertex();
-        this.sl = new SceneLight();
-        this.callback = new Callback();
-        this.groupsList = new ArrayList<ItemGroup>();
-        this.skyboxToBeRemoved = new ArrayList<Skybox>();
-        loop = true;
+        this.mCamerasList = new ArrayList<>();
+        this.mCamera = new Camera();
+        this.mSceneVertex = new SceneVertex();
+        this.mSceneLight = new SceneLight();
+        this.mCallback = new Callback();
+        this.mItemGroupArrayList = new ArrayList<>();
+        this.mSkyboxToBeRemoved = new ArrayList<>();
+        mLoop = true;
     }
 
     /**
      * Gets an empty camera list
      */
     public void emptyListCamera() {
-        camerasList = new ArrayList<Camera>();
+        mCamerasList = new ArrayList<Camera>();
     }
 
     /**
      * Adds a camera and its index in the list of cameras (not in live)
      *
-     * @param index  index
-     * @param camera camera
+     * @param pIndex  index
+     * @param pCamera camera
      */
-    public void setCamera(int index, Camera camera) {
-        if (index == 0)
-            c = camera;
-        camerasList.add(index, camera);
+    public void setCamera(int pIndex, Camera pCamera) {
+        if (pIndex == 0) mCamera = pCamera;
+        mCamerasList.add(pIndex, pCamera);
     }
 
     /**
@@ -161,7 +160,7 @@ public class World implements Runnable {
     public void run() {
         Window.init(initWidth, initHeight);
         try {
-            this.renderer = new Renderer(); // Create the rendering logic of our game.
+            this.mRenderer = new Renderer(); // Create the rendering logic of our game.
         } catch (Exception e1) {
             e1.printStackTrace();
             return;
@@ -172,28 +171,28 @@ public class World implements Runnable {
 
             /* Initialization of the window we currently use. */
             glViewport(initX, initY, initWidth, initHeight);
-            while (glfwWindowShouldClose(Window.window) == false && loop) { /* Check if the window has not been closed. */
+            while (glfwWindowShouldClose(Window.window) == false && mLoop) { /* Check if the window has not been closed. */
                 Thread.sleep(20); // XXX ? Why sleep ?
-                c.update();
-                callback.update();
+                mCamera.update();
+                mCallback.update();
 
                 /*Clean the window*/
                 boolean isResized = Window.clear();
 
-               /* Input of critical section, allows to protect the resource skyboxToBeRemoved .
+               /* Input of critical section, allows to protect the resource mSkyboxToBeRemoved .
                   Deallocation of VAO and VBO, Moreover Delete the buffers VBO and VAO. */
-                synchronized (skyboxToBeRemoved) {
-                    for (Skybox s : skyboxToBeRemoved) {
+                synchronized (mSkyboxToBeRemoved) {
+                    for (Skybox s : mSkyboxToBeRemoved) {
                         s.cleanUp();
                     }
-                    skyboxToBeRemoved.clear();
+                    mSkyboxToBeRemoved.clear();
                 }
 
                /*  Input of critical section, allows to protect the creation of our logic of Game .
                    1 Maximum thread in Synchronize -> mutual exclusion.*/
-                synchronized (sc) {
+                synchronized (mSceneVertex) {
                     //Update the world
-                    renderer.render(sc, sl, isResized, c, sk);
+                    mRenderer.render(mSceneVertex, mSceneLight, isResized, mCamera, mSkybox);
                 }
 
                /*  Rendered with vSync (vertical Synchronization)
@@ -204,10 +203,9 @@ public class World implements Runnable {
             System.out.println(e.getMessage());
         } finally {
            /* Deallocations renderer, SceneVertex and Skybox. */
-            renderer.cleanUp();
-            sc.cleanUp();
-            if (sk != null)
-                sk.cleanUp();
+            mRenderer.cleanUp();
+            mSceneVertex.cleanUp();
+            if (mSkybox != null) mSkybox.cleanUp();
             /* Deallocation of the window's resources. */
             Window.cleanUp();
             this.notifyFinished();
@@ -227,7 +225,7 @@ public class World implements Runnable {
      * Stop the game loop and stop the thread that manage the world.
      */
     public synchronized void close() throws InterruptedException {
-        loop = false;
+        mLoop = false;
         this.wait();
     }
 }

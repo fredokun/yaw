@@ -9,7 +9,7 @@ import static embla3d.engine.meshs.Material.REFLECTANCE_DEFAULT_VALUE;
 import static embla3d.engine.meshs.MeshBuilder.*;
 
 /**
- * Class to create some shapes (Block, HalfBlock, Pyramide, Octahedron, Tetreahedron) * and basic fonctions for these items
+ * Class to create some shapes (Block, HalfBlock, Pyramid, Octahedron, Tetrahedron) * and basic functions for these items
  * TODO Refactor change these create method into a more generic method
  * mesh_name must be a parameter of the function
  *
@@ -72,12 +72,12 @@ public class ItemManagement {
 
     public static ItemGroup createGroup(World world) {
         ItemGroup group = new ItemGroup();
-        world.getGroupsList().add(group);
+        world.getItemGroupArrayList().add(group);
         return group;
     }
 
     public static void removeGroup(World world, ItemGroup g) {
-        world.getGroupsList().remove(g);
+        world.getItemGroupArrayList().remove(g);
         for (Item i : g.getItems()) i.removeFromGroup(g);
     }
 }

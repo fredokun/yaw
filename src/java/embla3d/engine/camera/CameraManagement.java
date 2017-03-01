@@ -1,10 +1,9 @@
 package embla3d.engine.camera;
 
-import java.util.Collections;
-
+import embla3d.engine.World;
 import org.joml.Vector3f;
 
-import embla3d.engine.World;
+import java.util.Collections;
 
 /**
  * This class allows to manage the cameras of our world.
@@ -19,7 +18,7 @@ public class CameraManagement {
      */
     public static Camera addCamera(World world) {
         Camera c = new Camera();
-        world.getCamerasList().add(c);
+        world.getmCamerasList().add(c);
         return c;
     }
 
@@ -33,8 +32,7 @@ public class CameraManagement {
      * @return the camera.
      */
     public static Camera addCamera(World world, Camera c) {
-        if (!world.getCamerasList().contains(c))
-            world.getCamerasList().add(c);
+        if (!world.getmCamerasList().contains(c)) world.getmCamerasList().add(c);
         return c;
     }
 
@@ -59,9 +57,9 @@ public class CameraManagement {
      */
     public static void setLiveCamera(World world, Camera c) {
         Camera x = world.getCamera();
-        world.getCamerasList().add(x);
+        world.getmCamerasList().add(x);
         world.setCamera(c);
-        world.getCamerasList().removeAll(Collections.singleton(c));
+        world.getmCamerasList().removeAll(Collections.singleton(c));
 
     }
 
@@ -71,9 +69,9 @@ public class CameraManagement {
      * @return the camera store in position i, if i> 0 or i <= to the numbers of cameras (not in live) in the worlds.
      */
     public static Camera getCamera(World world, int i) {
-        if (i < 0 || i >= world.getCamerasList().size())
+        if (i < 0 || i >= world.getmCamerasList().size())
             return null;
-        return world.getCamerasList().get(i);
+        return world.getmCamerasList().get(i);
     }
 
     /**
@@ -83,7 +81,7 @@ public class CameraManagement {
      * @param c     camera
      */
     public static void removeCamera(World world, Camera c) {
-        world.getCamerasList().remove(c);
+        world.getmCamerasList().remove(c);
     }
 
     /**
@@ -93,9 +91,9 @@ public class CameraManagement {
      * @param i     Index of the camera
      */
     public static void removeCameraNumber(World world, int i) {
-        if (i < 0 || i >= world.getCamerasList().size())
+        if (i < 0 || i >= world.getmCamerasList().size())
             return;
-        world.getCamerasList().remove(i);
+        world.getmCamerasList().remove(i);
     }
 
     /**

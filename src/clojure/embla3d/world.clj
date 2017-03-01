@@ -9,11 +9,11 @@
 
 (defn start-universe!
   "Start an empty embla3d universe."
-  [ & {:keys [width height x y]
-       :or {x 0
-            y 0
-            width 800
-            height 600}}]
+  [& {:keys [width height x y]
+      :or   {x      0
+             y      0
+             width  800
+             height 600}}]
   (let [world (World. x y width height)
         thread (future (.init world))]
     (.start (Thread. world))
@@ -25,10 +25,10 @@
   "Set the skybox of `world` of the specified dimensions
  and color."
   [world & {:keys [width height length color]
-            :or {width 500
-                 height 500
-                 length 500
-                 color [0 0 1.0]}}]
+            :or   {width  500
+                   height 500
+                   length 500
+                   color  [0 0 1.0]}}]
   (let [[r g b] color]
     (.setSkybox world width length height r g b)))
 
@@ -43,9 +43,9 @@
   "Set the sun light of the `world` with 
   the specified color, intensity and origin coordinates."
   [world & {:keys [color intensity origin]
-            :or {color [0 0 0]
-                 intensity 0.0
-                 origin [0 -1 0]}}]
+            :or   {color     [0 0 0]
+                   intensity 0.0
+                   origin    [0 -1 0]}}]
   (let [[r g b] color
         [x y z] origin]
     (LightManagement/setSunLight world r g b intensity x y z)))
@@ -69,21 +69,21 @@
   [world number & {:keys [red green blue x y z intensity
                           const-attenuate linear-attenuate quadratic-attenuate
                           xcone ycone zcone cutoff-angle]
-                   :or {red 0.8
-                        green 0.8
-                        blue 0.8
-                        x 0
-                        y 0
-                        z 0
-                        intensity 1
-                        const-attenuate 0
-                        linear-attenuate 0.5
-                        quadratic-attenuate 0
-                        xcone 0
-                        ycone 0
-                        zcone -1
-                        cutoff-angle 10}}]
-  (LightManagement/addSpotLight world red green blue x y z  intensity
+                   :or   {red                 0.8
+                          green               0.8
+                          blue                0.8
+                          x                   0
+                          y                   0
+                          z                   0
+                          intensity           1
+                          const-attenuate     0
+                          linear-attenuate    0.5
+                          quadratic-attenuate 0
+                          xcone               0
+                          ycone               0
+                          zcone               -1
+                          cutoff-angle        10}}]
+  (LightManagement/addSpotLight world red green blue x y z intensity
                                 const-attenuate linear-attenuate quadratic-attenuate
                                 xcone ycone zcone cutoff-angle number))
 
@@ -93,113 +93,113 @@
   (.getMaxSpotLight (.getSceneLight world)))
 
 (defn addPointLight [world r g b x y z intensity constantAtt linearAtt quadraticAtt number]
-      (LightManagement/addPointLight world r g b x y z intensity constantAtt linearAtt quadraticAtt number))
-      
+  (LightManagement/addPointLight world r g b x y z intensity constantAtt linearAtt quadraticAtt number))
+
 (defn getSpotLightList [world]
-      (.getSpotTable (.getSceneLight world)))
-      
+  (.getSpotTable (.getSceneLight world)))
+
 (defn getPointLightList [world]
-      (.getPointTable (.getSceneLight world)))
+  (.getPointTable (.getSceneLight world)))
 
 (defn getIntensity [pointlight]
-      (.getIntensity pointlight))
-      
+  (.getIntensity pointlight))
+
 (defn setIntensity [pointlight intensity]
-      (.setIntensity pointlight intensity))
+  (.setIntensity pointlight intensity))
 
 (defn getConstantAtt [pointlight]
-      (.getConstantAtt pointlight))
+  (.getConstantAtt pointlight))
 
 (defn setConstantAtt [pointlight att]
-      (.setConstantAtt pointlight att))
+  (.setConstantAtt pointlight att))
 
 (defn getLinearAtt [pointlight]
-      (.getLinearAtt pointlight))
+  (.getLinearAtt pointlight))
 
 (defn setLinearAtt [pointlight att]
-      (.setLinearAtt pointlight att))
+  (.setLinearAtt pointlight att))
 
 (defn getQuadraticAtt [pointlight]
-      (.getQuadraticAtt pointlight))
+  (.getQuadraticAtt pointlight))
 
 (defn setQuadraticAtt [pointlight att]
-      (.setQuadraticAtt pointlight att))
-      
+  (.setQuadraticAtt pointlight att))
+
 (defn getConedir [spotlight]
-       (let [pos (.getConedir spotlight)]
-        (vec ((.x pos) (.y pos) (.z pos)))))
+  (let [pos (.getConedir spotlight)]
+    (vec ((.x pos) (.y pos) (.z pos)))))
 
 (defn setConedir [spotlight x y z]
-      (.setConedir spotlight x y z))
+  (.setConedir spotlight x y z))
 
 (defn setConedirVector [spotlight vector]
-      (.setConedir spotlight vector))
+  (.setConedir spotlight vector))
 
 (defn getCutoffAngle [spotlight]
-      (.getCutoffAngle spotlight))
+  (.getCutoffAngle spotlight))
 
 (defn setCutoffAngle [spotlight float]
-      (.setCutoffAngle spotlight float))
+  (.setCutoffAngle spotlight float))
 
 (defn setSpecularPower [world power]
-      (.setSpecularPower (.getSceneLight world) power))
+  (.setSpecularPower (.getSceneLight world) power))
 
 (defn getSpecularPower [world]
-      (.getSpecularPower (.getSceneLight world)))
+  (.getSpecularPower (.getSceneLight world)))
 
 ;; Camera Management--------------------------------------------------------------
 (defn createCamera [world]
-      (CameraManagement/addCamera world))
+  (CameraManagement/addCamera world))
 
 (defn addCamera [world camera]
-      (CameraManagement/addCamera world camera))
-      
+  (CameraManagement/addCamera world camera))
+
 (defn setLiveCamera [world camera]
-      (CameraManagement/setLiveCamera world camera))
+  (CameraManagement/setLiveCamera world camera))
 
 (defn getCamera [world numero]
-      (CameraManagement/getCamera world numero))
+  (CameraManagement/getCamera world numero))
 
 (defn getCamerasList [world]
-      (vec (.getCamerasList world)))
+  (vec (.getmCamerasList world)))
 
 (defn getLiveCamera [world]
-      (CameraManagement/getLiveCamera world))
+  (CameraManagement/getLiveCamera world))
 
 (defn removeCameraNumber [world numero]
-      (CameraManagement/removeCamera world numero))
+  (CameraManagement/removeCamera world numero))
 
 (defn removeCamera [world camera]
-      (CameraManagement/removeCamera world camera))
+  (CameraManagement/removeCamera world camera))
 
 (defn setPositionCamera [camera x y z]
-      (.setPosition camera (new org.joml.Vector3f x y z)))
+  (.setPosition camera (new org.joml.Vector3f x y z)))
 
 (defn setOrientation [camera x y z]
-      (.setOrientation camera x y z))
+  (.setOrientation camera x y z))
 
 (defn setOrientationVector [camera vector]
-      (.setOrientation camera vector))
-      
+  (.setOrientation camera vector))
+
 (defn getOrientation [camera]
   (let [orientation (.getOrientation camera)]
     (vector (.x orientation) (.y orientation) (.z orientation))))
 
-      
+
 ;; Objects Management------------------------------------------------
 
 (defn createGround [world r g b width length]
-      (ItemManagement/createGround world r g b width length))
+  (ItemManagement/createGround world r g b width length))
 
 (defn create-block!
   "Create a rectangular block in the `world` with the
   specified id, color, dimensions, scale and position"
   [world & {:keys [id color dimensions scale position]
-            :or {color [0 0 1]
-                 dimensions [1 1 1]
-                 scale 1
-                 position [0 0 -2]
-                 id ""}}]
+            :or   {color      [0 0 1]
+                   dimensions [1 1 1]
+                   scale      1
+                   position   [0 0 -2]
+                   id         ""}}]
   (let [[r g b] color
         [xl yl zl] dimensions
         [xp yp zp] position]
@@ -208,126 +208,126 @@
       item)))
 
 (defn createHalfBlock [world r g b xL yL zL scale]
-      (ItemManagement/createHalfBlock world r g b xL yL zL scale))
+  (ItemManagement/createHalfBlock world r g b xL yL zL scale))
 
 (defn createPyramid [world r g b xL yL zL scale]
-      (ItemManagement/createPyramid world r g b xL yL zL scale))
-      
+  (ItemManagement/createPyramid world r g b xL yL zL scale))
+
 (defn createTetrahedron [world r g b scale]
-      (ItemManagement/createRegTetrahedron world r g b scale))
+  (ItemManagement/createRegTetrahedron world r g b scale))
 
 (defn createOctahedron [world r g b scale]
-      (ItemManagement/createRegOctahedron world r g b scale))
+  (ItemManagement/createRegOctahedron world r g b scale))
 
 (defn clone [world item]
-      (ItemManagement/clone world item))
-      
+  (ItemManagement/clone world item))
+
 (defn removeItem [world item]
-      (ItemManagement/removeItem world item))
-      
+  (ItemManagement/removeItem world item))
+
 (defn getItemsList [world]
-      (vec (.getItemsList(.getSceneVertex world))))
-      
+  (vec (.getItemsList (.getSceneVertex world))))
+
 (defn setScale [item scale]
-      (.setScale item scale))
+  (.setScale item scale))
 
 (defn getScale [item]
-      (.getScale item))
+  (.getScale item))
 
 (defn getReflectance [item]
-      (.getReflectance item))
-      
+  (.getReflectance item))
+
 (defn setReflectance [item refl]
-      (.setReflectance item refl))
+  (.setReflectance item refl))
 
 (defn getColor [item]
- (let [pos (.getColor item)]
-      (vector (.x pos) (.y pos) (.z pos))))
-      
+  (let [pos (.getColor item)]
+    (vector (.x pos) (.y pos) (.z pos))))
+
 (defn setColor [item r g b]
-      (.setColor item r g b))
-      
+  (.setColor item r g b))
+
 (defn setColorVector [item vector]
-      (.setColor item vector))
-      
+  (.setColor item vector))
+
 (defn setRotation [item x y z]
-      (.setRotation item x y z))
-      
+  (.setRotation item x y z))
+
 (defn setRotationVector [item vector]
-      (.setRotation item vector))
-      
+  (.setRotation item vector))
+
 (defn getRotation [item]
-       (let [pos (.getRotation item)]
-        (vector (.x pos) (.y pos) (.z pos))))
+  (let [pos (.getRotation item)]
+    (vector (.x pos) (.y pos) (.z pos))))
 
 (defn revolveAroundVector [item center degX degY degZ]
-      (.revolveAround item center degX degY degZ))
+  (.revolveAround item center degX degY degZ))
 
 (defn revolveAround [item centerX centerY centerZ degX degY degZ]
-      (.revolveAround item (new org.joml.Vector3f centerX centerY centerZ) degX degY degZ))
+  (.revolveAround item (new org.joml.Vector3f centerX centerY centerZ) degX degY degZ))
 
 (defn repelByVector [item center dist]
-      (.repelBy item center dist))
+  (.repelBy item center dist))
 
 (defn repelBy [item centerX centerY centerZ dist]
-      (.repelBy item (new org.joml.Vector3f centerX centerY centerZ) dist))
-      
+  (.repelBy item (new org.joml.Vector3f centerX centerY centerZ) dist))
+
 ;; Item Group -----------------------------------------------
 (defn getGroupsList [world]
-      (vec (.getGroupsList world)))
-      
+  (vec (.getItemGroupArrayList world)))
+
 (defn removeGroup [world group]
-      (ItemManagement/removeGroup world group))
-      
+  (ItemManagement/removeGroup world group))
+
 (defn createGroup [world]
-      (ItemManagement/createGroup world))
-      
+  (ItemManagement/createGroup world))
+
 (defn addItem [group item]
-     (.add group item))
+  (.add group item))
 
 (defn removeFromGroup [group item]
-     (.remove group item))
+  (.remove group item))
 
 (defn separate [group distance]
-      (.separate group distance))
-      
+  (.separate group distance))
+
 (defn multScale [group scale]
-      (.multScale group scale))
+  (.multScale group scale))
 
 (defn groupItems [group]
-      (.getItems group))
+  (.getItems group))
 
 ;; Multiple usage [Camera, Item, Group]-----------------------------
 (defn rotate! [item & {:keys [x y z]
-                       :or {x 0
-                            y 0
-                            z 0}}]
-      (.rotate item x y z))
+                       :or   {x 0
+                              y 0
+                              z 0}}]
+  (.rotate item x y z))
 
 ;; Multiple usage [Camera, Item, Light, Group]----------------------
 (defn translate [item x y z]
-      (.translate item x y z))
-      
+  (.translate item x y z))
+
 (defn setPosition [item x y z]
-      (.setPosition item x y z))
-      
+  (.setPosition item x y z))
+
 (defn setPositionVector [item vector]
-      (.setPosition item vector))
-      
+  (.setPosition item vector))
+
 (defn getPosition [item]
-      (let [pos (.getPosition item)]
-       (vector (.x pos) (.y pos) (.z pos))))
+  (let [pos (.getPosition item)]
+    (vector (.x pos) (.y pos) (.z pos))))
 
 
 ;; Callback Management
 (defn registerCallback [world keyString function]
-      (.registerCallback (.getCallback world) keyString function))
+  (.registerCallback (.getCallback world) keyString function))
 
 (defn clearCallback [world keyString]
-      (.clearCallback (.getCallback world) keyString))
+  (.clearCallback (.getCallback world) keyString))
 
 (defn clearFunctionOfKey [world keyString function]
-      (.clearFunctionOfKey (.getCallback world) keyString function))
+  (.clearFunctionOfKey (.getCallback world) keyString function))
 
 ;; Save Tools
 ;; Each object is converted to a Clojure vector to be saved. The vector
@@ -339,14 +339,14 @@
   "Converts Meshes into a savable vector."
   (let [material (.getMaterial mesh)
         color (.getColor material)]
-    (condp  = (.getClass mesh)
+    (condp = (.getClass mesh)
       embla3d.engine.meshs.BlockMesh (vector embla3d.engine.meshGenerator.BlockGenerator (.xLength mesh) (.yLength mesh) (.zLength mesh) (.x color) (.y color) (.z color) (.getReflectance material))
       embla3d.engine.meshs.HalfBlockMesh (vector embla3d.engine.meshGenerator.HalfBlockGenerator (.xLength mesh) (.yLength mesh) (.zLength mesh) (.x color) (.y color) (.z color) (.getReflectance material))
       embla3d.engine.meshs.GroundMesh (vector embla3d.engine.meshGenerator.GroundGenerator (.width mesh) (.length mesh) (.height mesh) (.x color) (.y color) (.z color) (.getReflectance material))
       embla3d.engine.meshs.PyramidMesh (vector embla3d.engine.meshGenerator.PyramidGenerator (.xLength mesh) (.yLength mesh) (.zLength mesh) (.x color) (.y color) (.z color) (.getReflectance material))
       embla3d.engine.meshs.TetrahedronMesh (vector embla3d.engine.meshGenerator.RegTetrahedronGenerator (.x color) (.y color) (.z color) (.getReflectance material))
       embla3d.engine.meshs.OctahedronMesh (vector embla3d.engine.meshGenerator.RegOctahedronGenerator (.x color) (.y color) (.z color) (.getReflectance material))
-      embla3d.engine.meshs.Mesh  (vector embla3d.engine.meshs.Mesh (vec (.getVertices mesh)) (.x color) (.y color) (.z color) (.getReflectance material) (vec (.getNormals mesh)) (vec (.getIndices mesh)) (.getWeight mesh)))))
+      embla3d.engine.meshs.Mesh (vector embla3d.engine.meshs.Mesh (vec (.getVertices mesh)) (.x color) (.y color) (.z color) (.getReflectance material) (vec (.getNormals mesh)) (vec (.getIndices mesh)) (.getWeight mesh)))))
 
 
 
@@ -354,7 +354,7 @@
   "Converts a MyItem into a savable vector."
   (let [rotation (.getRotation myItem)
         translation (.getPosition myItem)]
-   (vector (.getScale myItem) (.x rotation) (.y rotation) (.z rotation) (.x translation) (.y translation) (.z translation))))
+    (vector (.getScale myItem) (.x rotation) (.y rotation) (.z rotation) (.x translation) (.y translation) (.z translation))))
 
 
 (defn createMyItemVector [mesh itemListVec]
@@ -399,7 +399,7 @@
         orientation (.getOrientation cam)]
     (vector (.getClass cam) (.getFieldOfView cam) (.getzNear cam) (.getzFar cam) (.x position) (.y position) (.z position) (.x orientation) (.y orientation) (.z orientation))))
 
-  
+
 (defn createCameraVector [cameraListVec]
   "Creates a vector containing all Cameras, converted into savable vectors."
   (if (= (.length cameraListVec) 0)
@@ -441,17 +441,17 @@
 (defn saveItems [world]
   "Returns a vector containing all items of the given world in EDN format."
   (let [meshMapVec (vec (.getMeshMap (.getSceneVertex world)))]
-       (saveMeshMap meshMapVec)))
+    (saveMeshMap meshMapVec)))
 
 
 (defn saveGroups [world]
   "Returns a vector containing all groups of the given world in EDN format."
-  (saveGroupsList (vec (.getGroupsList world)) (.getItemsList (.getSceneVertex world))))
+  (saveGroupsList (vec (.getItemGroupArrayList world)) (.getItemsList (.getSceneVertex world))))
 
 
 (defn saveCameras [world]
   "Returns a vector containing all cameras of the given world in EDN format."
-  (vector (cameraToVector (.getCamera world)) (createCameraVector (vec (.getCamerasList world)))))
+  (vector (cameraToVector (.getCamera world)) (createCameraVector (vec (.getmCamerasList world)))))
 
 
 (defn saveLights [world]
@@ -463,13 +463,13 @@
         sColor (.getColor sun)
         sDirection (.getDirection sun)
         ;; Representation of the ambientLight as a Clojure vector
-         ambientVector [(.getClass ambientLight) (.x aColor) (.y aColor) (.z aColor) (.getIntensity ambientLight)]
-         ;; Representation of the Sun as a Clojure vector
-         sunVector [(.getClass sun) (.x sColor) (.y sColor) (.z sColor) (.getIntensity sun) (.x sDirection) (.y sDirection) (.z sDirection)]
-         ;; Representation of PointLights as a Clojure vector
-         pointLightVector (createPointLightVector (vec (.getPointTable sceneLight)))
-         ;; Representation of spotLights as a Clojure vector
-         spotLightVector (createSpotLightVector (vec (.getSpotTable sceneLight)))]
+        ambientVector [(.getClass ambientLight) (.x aColor) (.y aColor) (.z aColor) (.getIntensity ambientLight)]
+        ;; Representation of the Sun as a Clojure vector
+        sunVector [(.getClass sun) (.x sColor) (.y sColor) (.z sColor) (.getIntensity sun) (.x sDirection) (.y sDirection) (.z sDirection)]
+        ;; Representation of PointLights as a Clojure vector
+        pointLightVector (createPointLightVector (vec (.getPointTable sceneLight)))
+        ;; Representation of spotLights as a Clojure vector
+        spotLightVector (createSpotLightVector (vec (.getSpotTable sceneLight)))]
 
     (vector (.specularPower sceneLight) ambientVector sunVector pointLightVector spotLightVector)))
 
@@ -499,12 +499,12 @@
   (if (vector? ednData)
     (let [c (resolve (first ednData))
           a (ednToObject (rest (lazy-seq ednData)))]
-        (clojure.lang.Reflector/invokeConstructor c (into-array a)))
+      (clojure.lang.Reflector/invokeConstructor c (into-array a)))
     (if (= ednData '())
-        '()
-        (if (vector? (first ednData))
-          (conj (ednToObject (rest ednData)) (into-array (first ednData)))
-          (conj (ednToObject (rest ednData)) (first ednData))))))
+      '()
+      (if (vector? (first ednData))
+        (conj (ednToObject (rest ednData)) (into-array (first ednData)))
+        (conj (ednToObject (rest ednData)) (first ednData))))))
 
 
 
@@ -527,9 +527,9 @@
   (let [itemVec (first itemsList)
         sceneVertex (.getSceneVertex world)]
     (if (= (.size itemsList) 1)
-       (let [javaItem (embla3d.engine.items.GenericItem. mesh (get itemVec 0) (get itemVec 1) (get itemVec 2) (get itemVec 3) (get itemVec 4) (get itemVec 5) (get itemVec 6))]
-         (.add sceneVertex javaItem)
-         (assoc itemRefsMap (.size itemRefsMap) javaItem))
+      (let [javaItem (embla3d.engine.items.GenericItem. mesh (get itemVec 0) (get itemVec 1) (get itemVec 2) (get itemVec 3) (get itemVec 4) (get itemVec 5) (get itemVec 6))]
+        (.add sceneVertex javaItem)
+        (assoc itemRefsMap (.size itemRefsMap) javaItem))
       (let [javaItem (embla3d.engine.items.GenericItem. mesh (get itemVec 0) (get itemVec 1) (get itemVec 2) (get itemVec 3) (get itemVec 4) (get itemVec 5) (get itemVec 6))]
         (.add sceneVertex javaItem)
         (loadGenericItems mesh (rest itemsList) (assoc itemRefsMap (.size itemRefsMap) javaItem) world)))))
@@ -539,7 +539,7 @@
   "Loads items sharing one Mesh."
   (let [mesh (loadMesh (first meshItems))]
     (loadGenericItems mesh (rest meshItems) itemRefsMap world)))
-  
+
 (defn loadMeshMap [meshMapList itemRefsMap world]
   "Loads all items of the given meshMap (as list)."
   (if (= (.size meshMapList) 0)
@@ -562,47 +562,47 @@
 (defn addItemsToGroup [groupItemsList groupId itemRefsMap world]
   "Adds items from the groupItemsList to the group corresponding to the given groupId."
   (cond (> (.size groupItemsList) 0)
-    (let [groupsList (.getGroupsList world)]
-      (addItem (.get groupsList groupId) (.get itemRefsMap (first groupItemsList)))
-      (addItemsToGroup (rest groupItemsList) groupId itemRefsMap world))))
+        (let [groupsList (.getItemGroupArrayList world)]
+          (addItem (.get groupsList groupId) (.get itemRefsMap (first groupItemsList)))
+          (addItemsToGroup (rest groupItemsList) groupId itemRefsMap world))))
 
 
 
 (defn addItemsToGroups [groupsList curId itemRefsMap world]
   "Adds items from the groupsList vector to corresponding groups."
   (cond (> (.length groupsList) 0)
-    (do
-      (addItemsToGroup (lazy-seq (last groupsList)) curId itemRefsMap world)
-      (addItemsToGroups (pop groupsList) (- curId 1) itemRefsMap world))))
+        (do
+          (addItemsToGroup (lazy-seq (last groupsList)) curId itemRefsMap world)
+          (addItemsToGroups (pop groupsList) (- curId 1) itemRefsMap world))))
 
 
 ;; Load Tools for Cameras
 (defn addCameras [cameraList world index]
   "Adds all cameras contained in the provided list to the World."
   (if (= cameraList '())
-      nil
-      (do
-        (CameraManagement/addCamera world (ednToObject (first cameraList)))
-        (addCameras (rest cameraList) world (+ index 1)))))
+    nil
+    (do
+      (CameraManagement/addCamera world (ednToObject (first cameraList)))
+      (addCameras (rest cameraList) world (+ index 1)))))
 
 
 ;; Load Tools for Lights
 (defn addPointLights [pointLights sceneLight index]
   "Adds all pointLights contained in the provided list to the SceneLight."
   (if (= pointLights '())
-      nil
-      (do
-        (.setPointTable sceneLight (ednToObject (first pointLights)) index)
-        (addPointLights (rest pointLights) sceneLight (+ index 1)))))
+    nil
+    (do
+      (.setPointTable sceneLight (ednToObject (first pointLights)) index)
+      (addPointLights (rest pointLights) sceneLight (+ index 1)))))
 
-  
+
 (defn addSpotLights [spotLights sceneLight index]
   "Adds all spotLights contained in the provided list to the SceneLight."
   (if (= spotLights '())
-      nil
-      (do
-        (.setSpotTable sceneLight (ednToObject (first spotLights)) index)
-        (addSpotLights (rest spotLights) sceneLight (+ index 1)))))
+    nil
+    (do
+      (.setSpotTable sceneLight (ednToObject (first spotLights)) index)
+      (addSpotLights (rest spotLights) sceneLight (+ index 1)))))
 
 
 ;; Load Functions
@@ -614,9 +614,9 @@
 (defn loadGroups [loadedGroups itemRefsMap world]
   "Loads all groups from an EDN vector created with saveGroups."
   (cond (> (.size loadedGroups) 0)
-    (do
-      (createNGroups (.size loadedGroups) world)
-      (addItemsToGroups loadedGroups (- (.size loadedGroups) 1) itemRefsMap world))))
+        (do
+          (createNGroups (.size loadedGroups) world)
+          (addItemsToGroups loadedGroups (- (.size loadedGroups) 1) itemRefsMap world))))
 
 
 (defn loadCameras [loadedCameras world]
