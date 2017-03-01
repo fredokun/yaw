@@ -15,14 +15,14 @@ import static org.lwjgl.opengl.GL11.glViewport;
  * Allows the creation of the world and manages through a thread the events, the updates and the rendering to the screen at constant rate.
  */
 public class World implements Runnable {
-    Camera mCamera;
-    ArrayList<Camera> mCamerasList;
-    Renderer mRenderer;
-    SceneVertex mSceneVertex;
-    SceneLight mSceneLight;
-    Callback mCallback;
-    ArrayList<ItemGroup> mItemGroupArrayList;
-    ArrayList<Skybox> mSkyboxToBeRemoved;
+    private Camera mCamera;
+    private ArrayList<Camera> mCamerasList;
+    private Renderer mRenderer;
+    private SceneVertex mSceneVertex;
+    private SceneLight mSceneLight;
+    private Callback mCallback;
+    private ArrayList<ItemGroup> mItemGroupArrayList;
+    private ArrayList<Skybox> mSkyboxToBeRemoved;
 
     private Skybox mSkybox = null;
     private boolean mLoop;
@@ -133,7 +133,7 @@ public class World implements Runnable {
         this.mCallback = new Callback();
         this.mItemGroupArrayList = new ArrayList<>();
         this.mSkyboxToBeRemoved = new ArrayList<>();
-        mLoop = true;
+        this.mLoop = true;
     }
 
     /**

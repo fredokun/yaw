@@ -23,17 +23,17 @@ public class MainWorld {
         c2.translate(0, 0, 0); /* Allows to resize our Pyramid.*/
         c2.rotate(0, 2, 0);
         /* Creating Light for Our World */
-        world.mSceneLight.setSpotLight(new SpotLight(1, 1, 1, 0, 0, 0, 1, 0, 0.5f, 0, 0, 0, -1, 10f), 0);
-        world.mSceneLight.setSun(new DirectionalLight(new Vector3f(1, 1, 1), 1, new Vector3f(0, -1, 1)));
-        world.mSceneLight.setAmbient(new AmbientLight(0.5f));
+        world.getSceneLight().setSpotLight(new SpotLight(1, 1, 1, 0, 0, 0, 1, 0, 0.5f, 0, 0, 0, -1, 10f), 0);
+        world.getSceneLight().setSun(new DirectionalLight(new Vector3f(1, 1, 1), 1, new Vector3f(0, -1, 1)));
+        world.getSceneLight().setAmbient(new AmbientLight(0.5f));
        /* world.sc.add(GroundGenerator.generate(400,400,-2,new Material(new Vector3f(1,1,1)))); */
 
        /* A skybox will allow us to set a background to give the illusion that our 3D world is bigger. */
         world.setSkybox(new Skybox(500, 500, 500, new Vector3f(10, 0, 0)));
 
-        world.mCamera.translate(0, 0, 3);
+        world.getCamera().translate(0, 0, 3);
         while (true) {
-            world.mCamera.rotate(0, 5, 0); /* Allows to advance the edge in the scene 3D. */
+            world.getCamera().rotate(0, 5, 0); /* Allows to advance the edge in the scene 3D. */
            /* world.c.translate(0,0,-5); */
             Thread.sleep(50); /* Allows to see the block (cube) move at constant rate. */
         }
