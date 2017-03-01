@@ -61,17 +61,17 @@ public class Renderer {
      * Configuring rendering with the absorption, the diffusion of the light, the texture to be used, the reflections of the objects, the shading,
      * Which are passed by arguments
      *
-     * @param sc        sceneVertex
-     * @param sl        sceneLight
-     * @param isResized isResized
-     * @param cam       camera
-     * @param sk        skybox
+     * @param pSceneVertex sceneVertex
+     * @param pSceneLight  sceneLight
+     * @param isResized    isResized
+     * @param pCamera      camera
+     * @param pSkybox      skybox
      */
-    public void render(SceneVertex sc, SceneLight sl, boolean isResized, Camera cam, Skybox sk) {
+    public void render(SceneVertex pSceneVertex, SceneLight pSceneLight, boolean isResized, Camera pCamera, Skybox pSkybox) {
         sh.bind();
         //Preparation of the camera
         if (isResized || SceneVertex.itemAdded) {
-            cam.updateCameraMat();
+            pCamera.updateCameraMat();
         }
 
         //Debug
@@ -83,9 +83,9 @@ public class Renderer {
         //		}
 
         /* Set the camera to render. */
-        sh.setUniform("projectionMatrix", cam.getCameraMat());
-        sh.setUniform("camera_pos", cam.position);
-        Matrix4f viewMat = cam.setupViewMatrix();
+        sh.setUniform("projectionMatrix", pCamera.getCameraMat());
+        sh.setUniform("camera_pos", pCamera.position);
+        Matrix4f viewMat = pCamera.setupViewMatrix();
 
         /* Enable the option needed to render.*/
         glEnable(GL_CULL_FACE);
@@ -94,36 +94,36 @@ public class Renderer {
         glDepthMask(true);        /* Enable or disable writing to the depth buffer. */
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_GREATER);       /* Specify the value used for depth buffer comparisons. */
-        glClearDepth(cam.getzFar() * -1); /* GlClearDepth specifies the depth value used by glClear to clear the depth buffer.
+        glClearDepth(pCamera.getzFar() * -1); /* GlClearDepth specifies the depth value used by glClear to clear the depth buffer.
                                                    The values ​​specified by glClearDepth are set to range [0.1].*/
         glDisable(GL_BLEND);
 
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
         /* Rendering of the light. */
-        sl.render(sh, viewMat);
+        pSceneLight.render(sh, viewMat);
 
        /* Init Objects. */
-        sc.initMesh();
+        pSceneVertex.initMesh();
 
         /* Update objects
         XXX useless?  sc.update(); */
 
 
         /* Rendering of the object. */
-        sc.draw(sh, viewMat);
+        pSceneVertex.draw(sh, viewMat);
         /* Cleans all services. */
         sh.unbind();
-        if (sk != null) {
-            if (sk.init == false) {
+        if (pSkybox != null) {
+            if (pSkybox.init == false) {
                 SceneVertex.itemAdded = true;
                 try {
-                    sk.init();
+                    pSkybox.init();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-            sk.draw(cam);
+            pSkybox.draw(pCamera);
         }
     }
 }
