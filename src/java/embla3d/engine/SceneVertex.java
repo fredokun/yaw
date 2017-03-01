@@ -16,7 +16,7 @@ import java.util.HashMap;
  * and the second is a map where each mesh has a list of items
  */
 public class SceneVertex {
-    //why static ...
+    //old code from a previous attempt to manage a group of scene vertex
     public static boolean itemAdded = false;
     private HashMap<Mesh, ArrayList<Item>> meshMap;
     private ArrayList<Mesh> notInit;
