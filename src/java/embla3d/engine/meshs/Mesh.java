@@ -45,22 +45,22 @@ public class Mesh {
      * Material is dynamically created from cx cy cz and reflectance
      * Reflectance should be between 0 and 1
      *
-     * @param vertices    Vertex array
+     * @param pVertices   Vertex array
      * @param cx          colour R
      * @param cy          colour G
      * @param cz          colour B
      * @param reflectance reflectance
-     * @param normals     mNormals
-     * @param indices     order into which  mVertices should be drawn by referring to their  position
-     * @param weight      mWeight ??
+     * @param pNormals    mNormals
+     * @param pIndices    order into which  mVertices should be drawn by referring to their  position
+     * @param pWeight     mWeight ??
      */
-    public Mesh(float[] vertices, float cx, float cy, float cz, float reflectance, float[] normals, int[] indices, int weight) {
+    public Mesh(float[] pVertices, float cx, float cy, float cz, float reflectance, float[] pNormals, int[] pIndices, int pWeight) {
         super();
-        this.mVertices = vertices;
-        this.mNormals = normals;
-        this.mIndices = indices;
+        this.mVertices = pVertices;
+        this.mNormals = pNormals;
+        this.mIndices = pIndices;
         this.mMaterial = new Material(new Vector3f(cx, cy, cz), reflectance);
-        this.mWeight = weight;
+        this.mWeight = pWeight;
         this.mOptionalAttributes = new HashMap<>();
     }
 
@@ -69,56 +69,56 @@ public class Mesh {
      * Material is dynamically created from cx cy cz and reflectance
      * Reflectance should be between 0 and 1
      *
-     * @param vertices    Vertex array
+     * @param pVertices   Vertex array
      * @param cx          colour R
      * @param cy          colour G
      * @param cz          colour B
      * @param reflectance reflectance
-     * @param normals     mNormals
-     * @param indices     order into which  mVertices should be drawn by referring to their  position
+     * @param pNormals    mNormals
+     * @param pIndices    order into which  mVertices should be drawn by referring to their  position
      */
-    public Mesh(float[] vertices, float cx, float cy, float cz, float reflectance, float[] normals, int[] indices) {
+    public Mesh(float[] pVertices, float cx, float cy, float cz, float reflectance, float[] pNormals, int[] pIndices) {
         super();
-        this.mVertices = vertices;
-        this.mNormals = normals;
-        this.mIndices = indices;
+        this.mVertices = pVertices;
+        this.mNormals = pNormals;
+        this.mIndices = pIndices;
         this.mMaterial = new Material(new Vector3f(cx, cy, cz), reflectance);
-        this.mWeight = vertices.length;
+        this.mWeight = pVertices.length;
         this.mOptionalAttributes = new HashMap<>();
     }
 
     /**
      * Construct a Mesh with the specified mMaterial , mVertices, mNormals, mIndices and mWeight
      *
-     * @param vertices Vertex array
-     * @param normals  mNormals
-     * @param indices  order into which  mVertices should be drawn by referring to their  position
-     * @param weight   mWeight ??
+     * @param pVertices Vertex array
+     * @param pNormals  mNormals
+     * @param pIndices  order into which  mVertices should be drawn by referring to their  position
+     * @param pWeight   mWeight ??
      */
-    public Mesh(float[] vertices, Material material, float[] normals, int[] indices, int weight) {
+    public Mesh(float[] pVertices, Material pMaterial, float[] pNormals, int[] pIndices, int pWeight) {
         super();
-        this.mVertices = vertices;
-        this.mNormals = normals;
-        this.mIndices = indices;
-        this.mMaterial = material;
-        this.mWeight = weight;
+        this.mVertices = pVertices;
+        this.mNormals = pNormals;
+        this.mIndices = pIndices;
+        this.mMaterial = pMaterial;
+        this.mWeight = pWeight;
         this.mOptionalAttributes = new HashMap<>();
     }
 
     /**
      * Construct a Mesh with the specified mMaterial , mVertices, mNormals and mIndices.
      *
-     * @param vertices Vertex array
-     * @param normals  mNormals
-     * @param indices  order into which  mVertices should be drawn by referring to their  position
+     * @param pVertices Vertex array
+     * @param pNormals  mNormals
+     * @param pIndices  order into which  mVertices should be drawn by referring to their  position
      */
-    public Mesh(float[] vertices, Material material, float[] normals, int[] indices) {
+    public Mesh(float[] pVertices, Material pMaterial, float[] pNormals, int[] pIndices) {
         super();
-        this.mVertices = vertices;
-        this.mNormals = normals;
-        this.mIndices = indices;
-        this.mMaterial = material;
-        this.mWeight = vertices.length;
+        this.mVertices = pVertices;
+        this.mNormals = pNormals;
+        this.mIndices = pIndices;
+        this.mMaterial = pMaterial;
+        this.mWeight = pVertices.length;
         this.mOptionalAttributes = new HashMap<>();
     }
 
@@ -164,17 +164,17 @@ public class Mesh {
     /**
      * Draw the specified item
      *
-     * @param item       item
-     * @param sh         shaderProgram
-     * @param viewMatrix viewMatrix
+     * @param pItem          item
+     * @param pShaderProgram shaderProgram
+     * @param pViewMatrix    viewMatrix
      */
-    public void draw(Item item, ShaderProgram sh, Matrix4f viewMatrix) {
+    public void draw(Item pItem, ShaderProgram pShaderProgram, Matrix4f pViewMatrix) {
         // Bind to the VAO
         glBindVertexArray(mVaoId);
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
-        sh.setUniform("material", mMaterial);
-        sh.setUniform("modelViewMatrix", item.getWorldMatrix());
+        pShaderProgram.setUniform("material", mMaterial);
+        pShaderProgram.setUniform("modelViewMatrix", pItem.getWorldMatrix());
         // Draw the mVertices
         glDrawElements(GL_TRIANGLES, mIndices.length, GL_UNSIGNED_INT, 0);
 
@@ -184,15 +184,15 @@ public class Mesh {
         glBindVertexArray(0);
     }
 
-    public void draw(ArrayList<Item> items, ShaderProgram sh, Matrix4f viewMatrix) {
+    public void draw(ArrayList<Item> pItems, ShaderProgram pShaderProgram, Matrix4f pViewMatrix) {
         // Bind to the VAO
         glBindVertexArray(mVaoId);
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
-        sh.setUniform("material", mMaterial);
-        for (Item i : items) {
-            Matrix4f modelViewMat = new Matrix4f(viewMatrix).mul(i.getWorldMatrix());
-            sh.setUniform("modelViewMatrix", modelViewMat);
+        pShaderProgram.setUniform("material", mMaterial);
+        for (Item i : pItems) {
+            Matrix4f modelViewMat = new Matrix4f(pViewMatrix).mul(i.getWorldMatrix());
+            pShaderProgram.setUniform("modelViewMatrix", modelViewMat);
             // Draw the mVertices
             glDrawElements(GL_TRIANGLES, mIndices.length, GL_UNSIGNED_INT, 0);
         }
@@ -203,7 +203,7 @@ public class Mesh {
     }
 
     public void cleanUp() {
-        //deallocation of VAO and VBO
+        //de-allocation of VAO and VBO
         glDisableVertexAttribArray(0);
 
         // Delete the VBO
@@ -225,8 +225,8 @@ public class Mesh {
         return mMaterial;
     }
 
-    public void setMaterial(Material material) {
-        this.mMaterial = material;
+    public void setMaterial(Material pMaterial) {
+        this.mMaterial = pMaterial;
     }
 
     public float[] getNormals() {
@@ -245,11 +245,11 @@ public class Mesh {
      * Returns the value to which the specified @attributeName is mapped,
      * or null if this map contains no mapping for the key.
      *
-     * @param attributeName name of the attribute (most of the time it will be clojure keywords)
+     * @param pAttributeName name of the attribute (most of the time it will be clojure keywords)
      * @return the corresponding value if exist null otherwise
      */
-    public Object getAttribute(String attributeName) {
-        return this.mOptionalAttributes.get(attributeName);
+    public Object getAttribute(String pAttributeName) {
+        return this.mOptionalAttributes.get(pAttributeName);
     }
 
     /**
