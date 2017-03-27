@@ -3,6 +3,7 @@
 const int MAX_POINT_LIGHTS = 5;
 const int MAX_SPOT_LIGHTS = 5;
 
+in vec2 outTexCoord;
 in vec3 vNorm;
 in vec3 vPos;
 
@@ -38,9 +39,11 @@ struct DirectionalLight
 struct Material
 {
     vec3 color;
+    int hasTexture;
     float reflectance;
 };
 
+uniform sampler2D texture_sampler;
 uniform vec3 ambientLight;
 uniform float specularPower;
 uniform Material material;
@@ -106,11 +109,24 @@ vec4 calcDirectionalLight(DirectionalLight light, vec3 position, vec3 normal)
 {
     return calcLightColour(light.colour, light.intensity, position, normalize(-light.direction), normal);
 }
+vec4 calcBaseColour(Material material, vec2 text_coord)
+{
+    vec4 baseColour;
+    if ( material.hasTexture == 1 )
+    {
+        baseColour = texture(texture_sampler, text_coord);
+    }
+    else
+    {
+        baseColour = vec4(material.colour, 1);
+    }
+    return baseColour;
+}
 
 void main()
 {
-    vec4 baseColour = vec4(material.color, 1);
-    
+    vec4 baseColour = calcBaseColour(material, outTexCoord);
+
     vec4 totalLight = vec4(ambientLight, 1.0);
     totalLight += calcDirectionalLight(directionalLight, vPos, vNorm);
 
