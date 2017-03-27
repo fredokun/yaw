@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/embla3d.iml" filepath="$PROJECT_DIR$/.idea/embla3d.iml" />
       <module fileurl="file:///opt/pesch/Projets/embla3D/embla3d.iml" filepath="/opt/pesch/Projets/embla3D/embla3d.iml" />
     </modules>
   </component>

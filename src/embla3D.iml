@@ -7,5 +7,13 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Leiningen: hello_lwjgl/lwjgl:3.0.0" level="project" />
+    <orderEntry type="library" name="Leiningen: cider/cider-nrepl:0.11.0" level="project" />
+    <orderEntry type="library" name="Leiningen: org.clojure/tools.nrepl:0.2.12" level="project" />
+    <orderEntry type="library" name="Leiningen: clojure-complete:0.2.4" level="project" />
+    <orderEntry type="library" name="Leiningen: org.tcrawley/dynapath:0.2.3" level="project" />
+    <orderEntry type="library" name="Leiningen: org.joml/joml:1.8.4" level="project" />
+    <orderEntry type="library" name="Leiningen: org.clojure/clojure:1.8.0" level="project" />
+    <orderEntry type="library" name="lwjgl-release-3.1" level="project" />
   </component>
 </module>
