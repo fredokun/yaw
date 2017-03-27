@@ -236,6 +236,7 @@ public class ShaderProgram {
      */
     public void createMaterialUniform(String uniformName) throws Exception {
         createUniform(uniformName + ".color");
+        createUniform(uniformName + ".hasTexture");
         createUniform(uniformName + ".reflectance");
     }
 
@@ -270,8 +271,9 @@ public class ShaderProgram {
      * @param material    the material
      */
     public void setUniform(String uniformName, Material material) {
-        setUniform(uniformName + ".color", material.color);
-        setUniform(uniformName + ".reflectance", material.reflectance);
+        setUniform(uniformName + ".color", material.getColor());
+        setUniform(uniformName + ".hasTexture", material.isTextured() ? 1 : 0);
+        setUniform(uniformName + ".reflectance", material.getReflectance());
     }
 
     /**
@@ -282,6 +284,16 @@ public class ShaderProgram {
      */
     public void setUniform(String uniformName, Vector3f value) {
         glUniform3f(mUniformsList.get(uniformName), value.x, value.y, value.z);
+    }
+
+    /**
+     * Modifies the value of a uniform int with the specified float
+     *
+     * @param uniformName the uniform name
+     * @param value       the float
+     */
+    public void setUniform(String uniformName, int value) {
+        glUniform1i(mUniformsList.get(uniformName), value);
     }
 
     /**
