@@ -75,6 +75,9 @@ public class Window {
         glfwSwapInterval(1); /* Allows synchronization at a constant rate. */
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);/* Specifies the red, green, blue, and alpha values used by glClear to clear the color buffers. */
 
+        /*activate depth comparisons and update the depth buffe*/
+        glEnable(GL_DEPTH_TEST);
+
     }
 
     /**
