@@ -38,7 +38,7 @@ public class Renderer {
 
         /* Create uniform for material. */
         mShaderProgram.createMaterialUniform("material");
-
+        mShaderProgram.createUniform("texture_sampler");
         /* Initialization of the light's uniform. */
         mShaderProgram.createUniform("camera_pos");
         mShaderProgram.createUniform("specularPower");
@@ -84,6 +84,7 @@ public class Renderer {
 
         /* Set the camera to render. */
         mShaderProgram.setUniform("projectionMatrix", pCamera.getCameraMat());
+        mShaderProgram.setUniform("texture_sampler", 0);
         mShaderProgram.setUniform("camera_pos", pCamera.position);
         Matrix4f viewMat = pCamera.setupViewMatrix();
 
