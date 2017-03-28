@@ -7,7 +7,10 @@ import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
@@ -65,15 +68,9 @@ public class Mesh {
         this.mNormals = pNormals;
         this.mIndices = pIndices;
         this.mWeight = pWeight;
-        this.mTextCoords = pTextCoords;
+        this.mTextCoords = pTextCoords == null ? new float[0] : pTextCoords;
         this.mOptionalAttributes = new HashMap<>();
         this.vboIdList = new ArrayList<>();
-    }
-
-    protected static int[] createEmptyIntArray(int length, int defaultValue) {
-        int[] result = new int[length];
-        Arrays.fill(result, defaultValue);
-        return result;
     }
 
     /**
@@ -157,11 +154,12 @@ public class Mesh {
 
     protected void initRender() {
         Texture texture = mMaterial != null ? mMaterial.getTexture() : null;
-
-        // Activate first texture bank
-        glActiveTexture(GL_TEXTURE0);
-        // Bind the texture
-        glBindTexture(GL_TEXTURE_2D, texture.getId());
+        if (texture != null) {
+            // Activate first texture bank
+            glActiveTexture(GL_TEXTURE0);
+            // Bind the texture
+            glBindTexture(GL_TEXTURE_2D, texture.getId());
+        }
 
 
         // Draw the mesh
