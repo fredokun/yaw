@@ -12,51 +12,53 @@ import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 
 public class Texture {
 
-    private final int id;
+    private final int mId;
 
-    private final int width;
+    private final int mWidth;
 
-    private final int height;
+    private final int mHeight;
 
-    private int numRows = 1;
+    private int mNumRows = 1;
 
-    private int numCols = 1;
+    private int mNumCols = 1;
 
     /**
      * Creates an empty texture.
      *
-     * @param width       Width of the texture
-     * @param height      Height of the texture
-     * @param pixelFormat Specifies the format of the pixel data (GL_RGBA, etc.)
+     * @param pWidth       Width of the texture
+     * @param pHeight      Height of the texture
+     * @param pPixelFormat Specifies the format of the pixel data (GL_RGBA, etc.)
      * @throws Exception
      */
-    public Texture(int width, int height, int pixelFormat) throws Exception {
-        this.id = glGenTextures();
-        this.width = width;
-        this.height = height;
-        glBindTexture(GL_TEXTURE_2D, this.id);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, this.width, this.height, 0, pixelFormat, GL_FLOAT, (ByteBuffer) null);
+    public Texture(int pWidth, int pHeight, int pPixelFormat) throws Exception {
+        this.mId = glGenTextures();
+        this.mWidth = pWidth;
+        this.mHeight = pHeight;
+        glBindTexture(GL_TEXTURE_2D, this.mId);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, this.mWidth, this.mHeight, 0, pPixelFormat, GL_FLOAT, (ByteBuffer) null);
+        //This parameter basically says that when a pixel is drawn with no direct one to one association to a texture coordinate it will pick the nearest texture coordinate point.
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        //We set the texture wrapping mode to GL_CLAMP_TO_EDGE since we do not want the texture to repeat in case we exceed the [0,1]range.
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     }
 
-    public Texture(String fileName, int numCols, int numRows) throws Exception {
-        this(fileName);
-        this.numCols = numCols;
-        this.numRows = numRows;
+    public Texture(String pFileName, int pNumCols, int pNumRows) throws Exception {
+        this(pFileName);
+        this.mNumCols = pNumCols;
+        this.mNumRows = pNumRows;
     }
 
     /**
      * Creates a texture from a specified file
      * Only support png format
      *
-     * @param fileName file name
+     * @param pFileName file name
      * @throws Exception
      */
-    public Texture(String fileName) throws Exception {
-        this(Texture.class.getResourceAsStream(fileName));
+    public Texture(String pFileName) throws Exception {
+        this(Texture.class.getResourceAsStream(pFileName));
     }
 
     /**
@@ -68,21 +70,21 @@ public class Texture {
     public Texture(InputStream pInputStream) throws Exception {
         try {
             // Load Texture file
-            PNGDecoder decoder = new PNGDecoder(pInputStream);
+            PNGDecoder lDecoder = new PNGDecoder(pInputStream);
 
-            this.width = decoder.getWidth();
-            this.height = decoder.getHeight();
+            this.mWidth = lDecoder.getWidth();
+            this.mHeight = lDecoder.getHeight();
 
             // Load texture contents into a byte buffer
-            ByteBuffer buf = ByteBuffer.allocateDirect(
-                    4 * decoder.getWidth() * decoder.getHeight());
-            decoder.decode(buf, decoder.getWidth() * 4, PNGDecoder.Format.RGBA);
-            buf.flip();
+            ByteBuffer lByteBuffer = ByteBuffer.allocateDirect(
+                    4 * lDecoder.getWidth() * lDecoder.getHeight());
+            lDecoder.decode(lByteBuffer, lDecoder.getWidth() * 4, PNGDecoder.Format.RGBA);
+            lByteBuffer.flip();
 
             // Create a new OpenGL texture
-            this.id = glGenTextures();
+            this.mId = glGenTextures();
             // Bind the texture
-            glBindTexture(GL_TEXTURE_2D, this.id);
+            glBindTexture(GL_TEXTURE_2D, this.mId);
 
             // Tell OpenGL how to unpack the RGBA bytes. Each component is 1 byte size
             glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -90,8 +92,8 @@ public class Texture {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             // Upload the texture data
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, this.width, this.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buf);
-            // Generate Mip Map
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, this.mWidth, this.mHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, lByteBuffer);
+            // Generate Mip Map: A mipmap is a decreasing resolution set of images generated from a high detailed texture.
             glGenerateMipmap(GL_TEXTURE_2D);
 
             pInputStream.close();
@@ -103,30 +105,30 @@ public class Texture {
     }
 
     public int getNumCols() {
-        return numCols;
+        return mNumCols;
     }
 
     public int getNumRows() {
-        return numRows;
+        return mNumRows;
     }
 
     public int getWidth() {
-        return this.width;
+        return this.mWidth;
     }
 
     public int getHeight() {
-        return this.height;
+        return this.mHeight;
     }
 
     public void bind() {
-        glBindTexture(GL_TEXTURE_2D, id);
+        glBindTexture(GL_TEXTURE_2D, mId);
     }
 
     public int getId() {
-        return id;
+        return mId;
     }
 
     public void cleanup() {
-        glDeleteTextures(id);
+        glDeleteTextures(mId);
     }
 }
