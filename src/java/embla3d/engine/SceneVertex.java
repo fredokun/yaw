@@ -75,18 +75,18 @@ public class SceneVertex {
      * Invoke the method render on all mesh with associated items
      * otherwise clean then remove mesh which has an empty list of items
      *
-     * @param pSh         Shader program that will render
+     * @param pShaderProgram         Shader program that will render
      * @param pViewMatrix the View Matrix
      */
 
-    public void draw(ShaderProgram pSh, Matrix4f pViewMatrix) {
+    public void draw(ShaderProgram pShaderProgram, Matrix4f pViewMatrix) {
         ArrayList<Mesh> lRmListe = new ArrayList<>();
         for (Mesh m : mMeshMap.keySet()) {
             ArrayList<Item> lItems = mMeshMap.get(m);
             if (lItems.isEmpty()) {
                 lRmListe.add(m);
             } else {
-                m.render(lItems, pSh, pViewMatrix);
+                m.render(lItems, pShaderProgram, pViewMatrix);
             }
         }
         /*Clean then remove*/
