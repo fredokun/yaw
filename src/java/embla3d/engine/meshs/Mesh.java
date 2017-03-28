@@ -3,16 +3,15 @@ package embla3d.engine.meshs;
 import embla3d.engine.ShaderProgram;
 import embla3d.engine.items.Item;
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
@@ -21,130 +20,98 @@ import static org.lwjgl.opengl.GL30.*;
  *
  */
 public class Mesh {
+    protected final List<Integer> vboIdList;
     //reference to the VAO(wrapper)
     private int mVaoId;
-
     //VBO's ID
-    private int mVboVertexId;
-    private int mVboNormId;
-    private int mVboIndicesId;
 
     //VBO
     private float[] mVertices;//mVertices
     private float[] mNormals;
     private int[] mIndices; //order into which  mVertices should be drawn by referring to their  position
+    private float[] mTextCoords;
     private int mWeight;  // the mWeight of an object in a group (e.g. a mass in a group planets)
-
     private Material mMaterial;
+
 
     private Map<String, String> mOptionalAttributes;
 
 
     /**
-     * Construct a Mesh with the specified mMaterial (cx, cy, cz, reflectance), mVertices, mNormals, mIndices and mWeight
-     * Material is dynamically created from cx cy cz and reflectance
-     * Reflectance should be between 0 and 1
+     * Construct a Mesh with the specified mMaterial , mVertices, mNormals , mTextureCoordinate and mIndices.
      *
      * @param pVertices   Vertex array
-     * @param cx          colour R
-     * @param cy          colour G
-     * @param cz          colour B
-     * @param reflectance reflectance
-     * @param pNormals    mNormals
-     * @param pIndices    order into which  mVertices should be drawn by referring to their  position
-     * @param pWeight     mWeight ??
-     */
-    public Mesh(float[] pVertices, float cx, float cy, float cz, float reflectance, float[] pNormals, int[] pIndices, int pWeight) {
-        super();
-        this.mVertices = pVertices;
-        this.mNormals = pNormals;
-        this.mIndices = pIndices;
-        this.mMaterial = new Material(new Vector3f(cx, cy, cz), reflectance);
-        this.mWeight = pWeight;
-        this.mOptionalAttributes = new HashMap<>();
-    }
-
-    /**
-     * Construct a Mesh with the specified mMaterial (cx, cy, cz, reflectance), mVertices, mNormals, mIndices
-     * Material is dynamically created from cx cy cz and reflectance
-     * Reflectance should be between 0 and 1
-     *
-     * @param pVertices   Vertex array
-     * @param cx          colour R
-     * @param cy          colour G
-     * @param cz          colour B
-     * @param reflectance reflectance
+     * @param pTextCoords texture coodinate
      * @param pNormals    mNormals
      * @param pIndices    order into which  mVertices should be drawn by referring to their  position
      */
-    public Mesh(float[] pVertices, float cx, float cy, float cz, float reflectance, float[] pNormals, int[] pIndices) {
-        super();
-        this.mVertices = pVertices;
-        this.mNormals = pNormals;
-        this.mIndices = pIndices;
-        this.mMaterial = new Material(new Vector3f(cx, cy, cz), reflectance);
-        this.mWeight = pVertices.length;
-        this.mOptionalAttributes = new HashMap<>();
+    public Mesh(float[] pVertices, float[] pTextCoords, float[] pNormals, int[] pIndices) {
+        this(pVertices, pTextCoords, pNormals, pIndices, pVertices.length);
     }
 
+
     /**
-     * Construct a Mesh with the specified mMaterial , mVertices, mNormals, mIndices and mWeight
+     * Construct a Mesh with the specified  mVertices, mNormals, mIndices , mTextureCoordinate and mWeight
      *
-     * @param pVertices Vertex array
-     * @param pNormals  mNormals
-     * @param pIndices  order into which  mVertices should be drawn by referring to their  position
-     * @param pWeight   mWeight ??
+     * @param pVertices   Vertex array
+     * @param pTextCoords texture coodinate
+     * @param pNormals    mNormals
+     * @param pIndices    order into which  mVertices should be drawn by referring to their  position
+     * @param pWeight     mWeight numbre of vertices
      */
-    public Mesh(float[] pVertices, Material pMaterial, float[] pNormals, int[] pIndices, int pWeight) {
-        super();
+    public Mesh(float[] pVertices, float[] pTextCoords, float[] pNormals, int[] pIndices, int pWeight) {
+
         this.mVertices = pVertices;
         this.mNormals = pNormals;
         this.mIndices = pIndices;
-        this.mMaterial = pMaterial;
         this.mWeight = pWeight;
+        this.mTextCoords = pTextCoords;
         this.mOptionalAttributes = new HashMap<>();
+        this.vboIdList = new ArrayList<>();
+    }
+
+    protected static int[] createEmptyIntArray(int length, int defaultValue) {
+        int[] result = new int[length];
+        Arrays.fill(result, defaultValue);
+        return result;
     }
 
     /**
-     * Construct a Mesh with the specified mMaterial , mVertices, mNormals and mIndices.
-     *
-     * @param pVertices Vertex array
-     * @param pNormals  mNormals
-     * @param pIndices  order into which  mVertices should be drawn by referring to their  position
-     */
-    public Mesh(float[] pVertices, Material pMaterial, float[] pNormals, int[] pIndices) {
-        super();
-        this.mVertices = pVertices;
-        this.mNormals = pNormals;
-        this.mIndices = pIndices;
-        this.mMaterial = pMaterial;
-        this.mWeight = pVertices.length;
-        this.mOptionalAttributes = new HashMap<>();
-    }
-
-    /**
-     * Initialize  vertex, mNormals and mIndices buffer
+     * Initialize  vertex, mNormals, mIndices and mTextureCoordinate buffer
      */
     public void init() {
+        //initialization order is important do not change unless you know what to do
         mVaoId = glGenVertexArrays();
         glBindVertexArray(mVaoId);
 
         //Initialization of VBO
-        //VBO of vertex
+
+        //VBO of vertex layout 0 in vertShader.vs
         FloatBuffer verticeBuffer = BufferUtils.createFloatBuffer(mVertices.length);
         verticeBuffer.put(mVertices).flip();
-        mVboVertexId = glGenBuffers();
-        glBindBuffer(GL_ARRAY_BUFFER, mVboVertexId);
+        int lVboVertexId = glGenBuffers();
+        vboIdList.add(lVboVertexId);
+        glBindBuffer(GL_ARRAY_BUFFER, lVboVertexId);
         glBufferData(GL_ARRAY_BUFFER, verticeBuffer, GL_STATIC_DRAW);
 
         //We explain to OpenGL how to read our Buffers.
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
 
-        //VBO of mNormals
+        // Texture coordinates VBO
+        int lVboCoordTextureId = glGenBuffers();
+        vboIdList.add(lVboCoordTextureId);
+        FloatBuffer textCoordsBuffer = BufferUtils.createFloatBuffer(mTextCoords.length);
+        textCoordsBuffer.put(mTextCoords).flip();
+        glBindBuffer(GL_ARRAY_BUFFER, lVboCoordTextureId);
+        glBufferData(GL_ARRAY_BUFFER, textCoordsBuffer, GL_STATIC_DRAW);
+        glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
+
+        //VBO of mNormals layout 2 in vertShader.vs
         FloatBuffer normBuffer = BufferUtils.createFloatBuffer(mNormals.length);
         normBuffer.put(mNormals).flip();
-        mVboNormId = glGenBuffers();
-        glBindBuffer(GL_ARRAY_BUFFER, mVboNormId);
+        int lVboNormId = glGenBuffers();
+        vboIdList.add(lVboNormId);
+        glBindBuffer(GL_ARRAY_BUFFER, lVboNormId);
         glBufferData(GL_ARRAY_BUFFER, normBuffer, GL_STATIC_DRAW);
 
         //We explain to OpenGL how to read our Buffers.
@@ -153,8 +120,9 @@ public class Mesh {
         //VBO of mIndices
         IntBuffer indicesBuffer = BufferUtils.createIntBuffer(mIndices.length);
         indicesBuffer.put(mIndices).flip();
-        mVboIndicesId = glGenBuffers();
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mVboIndicesId);
+        int lVboIndicesId = glGenBuffers();
+        vboIdList.add(lVboIndicesId);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lVboIndicesId);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -162,44 +130,56 @@ public class Mesh {
     }
 
     /**
-     * Draw the specified item
+     * Render the specified items
      *
-     * @param pItem          item
+     * @param pItems         item
      * @param pShaderProgram shaderProgram
      * @param pViewMatrix    viewMatrix
      */
-    public void draw(Item pItem, ShaderProgram pShaderProgram, Matrix4f pViewMatrix) {
+    public void render(ArrayList<Item> pItems, ShaderProgram pShaderProgram, Matrix4f pViewMatrix) {
+        //initRender
+        initRender();
         // Bind to the VAO
         glBindVertexArray(mVaoId);
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         pShaderProgram.setUniform("material", mMaterial);
-        pShaderProgram.setUniform("modelViewMatrix", pItem.getWorldMatrix());
-        // Draw the mVertices
-        glDrawElements(GL_TRIANGLES, mIndices.length, GL_UNSIGNED_INT, 0);
-
-        // Restore state
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
-        glBindVertexArray(0);
-    }
-
-    public void draw(ArrayList<Item> pItems, ShaderProgram pShaderProgram, Matrix4f pViewMatrix) {
-        // Bind to the VAO
-        glBindVertexArray(mVaoId);
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-        pShaderProgram.setUniform("material", mMaterial);
-        for (Item i : pItems) {
-            Matrix4f modelViewMat = new Matrix4f(pViewMatrix).mul(i.getWorldMatrix());
+        for (Item lItem : pItems) {
+            //can be moved to Item class
+            Matrix4f modelViewMat = new Matrix4f(pViewMatrix).mul(lItem.getWorldMatrix());
             pShaderProgram.setUniform("modelViewMatrix", modelViewMat);
             // Draw the mVertices
             glDrawElements(GL_TRIANGLES, mIndices.length, GL_UNSIGNED_INT, 0);
         }
+        //end render
+        endRender();
+    }
+
+    protected void initRender() {
+        Texture texture = mMaterial != null ? mMaterial.getTexture() : null;
+
+        // Activate first texture bank
+        glActiveTexture(GL_TEXTURE0);
+        // Bind the texture
+        glBindTexture(GL_TEXTURE_2D, texture.getId());
+
+
+        // Draw the mesh
+        glBindVertexArray(mVaoId);
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(2);
+
+    }
+
+    protected void endRender() {
         // Restore state
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
+        glDisableVertexAttribArray(2);
         glBindVertexArray(0);
+
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 
     public void cleanUp() {
@@ -208,13 +188,18 @@ public class Mesh {
 
         // Delete the VBO
         glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glDeleteBuffers(mVboVertexId);
-        glDeleteBuffers(mVboIndicesId);
-        glDeleteBuffers(mVboNormId);
-
+        for (int vboId : vboIdList) {
+            glDeleteBuffers(vboId);
+        }
+        Texture texture = mMaterial.getTexture();
+        if (texture != null) {
+            texture.cleanup();
+        }
         // Delete the VAO
         glBindVertexArray(0);
         glDeleteVertexArrays(mVaoId);
+
+
     }
 
     public float[] getVertices() {
@@ -263,6 +248,5 @@ public class Mesh {
     public void putOptionalAttributes(Map<String, String> pOptionalAttributes) {
         this.mOptionalAttributes.putAll(pOptionalAttributes);
     }
-
 
 }
