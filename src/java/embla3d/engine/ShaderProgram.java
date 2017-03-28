@@ -166,7 +166,7 @@ public class ShaderProgram {
      * @throws Exception the exception
      */
     private void createPointLightUniform(String uniformName) throws Exception {
-        createUniform(uniformName + ".colour");
+        createUniform(uniformName + ".color");
         createUniform(uniformName + ".position");
         createUniform(uniformName + ".intensity");
         createUniform(uniformName + ".att_constant");
@@ -182,7 +182,10 @@ public class ShaderProgram {
      * @throws Exception the exception
      */
     public int createUniform(String uniformName) throws Exception {
+        System.out.println("uniformName = [" + uniformName + "]");
         int res = glGetUniformLocation(mProgramId, uniformName);
+        System.out.println("uniformName = [" + uniformName + "] " + res);
+
         if (res < 0) {
 
             throw new Exception("Uniform creation error: " + uniformName);
@@ -223,7 +226,7 @@ public class ShaderProgram {
      * @throws Exception the exception
      */
     public void createDirectionalLightUniform(String uniformName) throws Exception {
-        createUniform(uniformName + ".colour");
+        createUniform(uniformName + ".color");
         createUniform(uniformName + ".direction");
         createUniform(uniformName + ".intensity");
     }
@@ -238,6 +241,7 @@ public class ShaderProgram {
         createUniform(uniformName + ".color");
         createUniform(uniformName + ".hasTexture");
         createUniform(uniformName + ".reflectance");
+
     }
 
     /**
@@ -271,8 +275,11 @@ public class ShaderProgram {
      * @param material    the material
      */
     public void setUniform(String uniformName, Material material) {
+        GLUtil.setupDebugMessageCallback();
         setUniform(uniformName + ".color", material.getColor());
-        setUniform(uniformName + ".hasTexture", material.isTextured() ? 1 : 0);
+        GLUtil.setupDebugMessageCallback();
+        setUniform(uniformName + ".hasTexture", (int) (material.isTextured() ? 1 : 0));
+        GLUtil.setupDebugMessageCallback();
         setUniform(uniformName + ".reflectance", material.getReflectance());
     }
 
@@ -337,7 +344,7 @@ public class ShaderProgram {
      * @param pointLight  the point light
      */
     private void setUniform(String uniformName, PointLight pointLight) {
-        setUniform(uniformName + ".colour", pointLight.getColor());
+        setUniform(uniformName + ".color", pointLight.getColor());
         setUniform(uniformName + ".position", pointLight.getPosition());
         setUniform(uniformName + ".intensity", pointLight.getIntensity());
         setUniform(uniformName + ".att_constant", pointLight.getConstantAtt());
@@ -388,7 +395,7 @@ public class ShaderProgram {
      * @param dirLight    the directional Light
      */
     public void setUniform(String uniformName, DirectionalLight dirLight) {
-        setUniform(uniformName + ".colour", dirLight.getColor());
+        setUniform(uniformName + ".color", dirLight.getColor());
         setUniform(uniformName + ".direction", dirLight.mDirection);
         setUniform(uniformName + ".intensity", dirLight.getIntensity());
     }
