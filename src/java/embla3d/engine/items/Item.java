@@ -25,16 +25,6 @@ public class Item {
     private Vector3f mTranslation;
     private ArrayList<ItemGroup> mGroups;
 
-    //Constructor
-    public Item(Mesh appearance, float scale, Vector3f rotation, Vector3f position) {
-        super();
-        this.mAppearance = appearance;
-        this.mScale = scale;
-        this.mRotation = rotation;
-        this.mTranslation = position;
-        this.mGroups = new ArrayList<>();
-    }
-
     public Item(Item source) {
         this.mAppearance = source.mAppearance;
         this.mScale = source.mScale;
@@ -48,6 +38,27 @@ public class Item {
         mScale = 1f;
         mRotation = new Vector3f();
         mTranslation = new Vector3f();
+        this.mGroups = new ArrayList<>();
+    }
+
+    /**
+     * Create an item
+     *
+     * @param pAppearance Mesh
+     * @param pScale      scale
+     * @param pPosition   position
+     */
+    public Item(Mesh pAppearance, float pScale, Vector3f pPosition) {
+        this(pAppearance, pScale, new Vector3f(), pPosition);
+    }
+
+    //Constructor
+    public Item(Mesh appearance, float scale, Vector3f rotation, Vector3f position) {
+        super();
+        this.mAppearance = appearance;
+        this.mScale = scale;
+        this.mRotation = rotation;
+        this.mTranslation = position;
         this.mGroups = new ArrayList<>();
     }
 
@@ -169,15 +180,15 @@ public class Item {
     }
 
     public float getReflectance() {
-        return this.getAppearance().getMaterial().reflectance;
+        return this.getAppearance().getMaterial().getReflectance();
     }
 
     public void setReflectance(float refl) {
-        this.getAppearance().getMaterial().reflectance = refl;
+        this.getAppearance().getMaterial().setReflectance(refl);
     }
 
     public Vector3f getColor() {
-        return this.getAppearance().getMaterial().color;
+        return this.getAppearance().getMaterial().getColor();
     }
 
     public void setColor(Vector3f color) {
