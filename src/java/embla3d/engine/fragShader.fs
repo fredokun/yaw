@@ -109,16 +109,16 @@ vec4 calcDirectionalLight(DirectionalLight light, vec3 position, vec3 normal)
 {
     return calcLightColour(light.colour, light.intensity, position, normalize(-light.direction), normal);
 }
-vec4 calcBaseColour(Material material, vec2 text_coord)
+vec4 calcBaseColour(Material pMaterial, vec2 text_coord)
 {
     vec4 baseColour;
-    if ( material.hasTexture == 1 )
+    if ( pMaterial.hasTexture == 1 )
     {
         baseColour = texture(texture_sampler, text_coord);
     }
     else
     {
-        baseColour = vec4(material.colour, 1);
+        baseColour = vec4(pMaterial.colour, 1);
     }
     return baseColour;
 }
