@@ -1,10 +1,8 @@
 package embla3d.engine;
 
 import embla3d.engine.items.Item;
-import embla3d.engine.meshs.Material;
 import embla3d.engine.meshs.Mesh;
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,21 +16,21 @@ import java.util.HashMap;
 public class SceneVertex {
     //old code from a previous attempt to manage a group of scene vertex
     public static boolean itemAdded = false;
-    private HashMap<Mesh, ArrayList<Item>> meshMap;
+    private HashMap<Mesh, ArrayList<Item>> mMeshMap;
     private ArrayList<Mesh> notInit;
 
     public SceneVertex() {
-        meshMap = new HashMap<>();
+        mMeshMap = new HashMap<>();
         notInit = new ArrayList<>();
     }
 
     /**
-     * Remove the specified item from the meshMap
+     * Remove the specified item from the mMeshMap
      *
      * @param pItem item to be removed
      */
     public void removeItem(Item pItem) {
-        ArrayList<Item> lItems = meshMap.get(pItem.getAppearance());
+        ArrayList<Item> lItems = mMeshMap.get(pItem.getAppearance());
         lItems.remove(pItem);
     }
 
@@ -43,7 +41,7 @@ public class SceneVertex {
      */
     public ArrayList<Item> getItemsList() {
         ArrayList<Item> lItems = new ArrayList<>();
-        meshMap.values().forEach(lItems::addAll);
+        mMeshMap.values().forEach(lItems::addAll);
         return lItems;
     }
 
@@ -51,14 +49,14 @@ public class SceneVertex {
      * Accessor
      */
     public HashMap<Mesh, ArrayList<Item>> getMeshMap() {
-        return meshMap;
+        return mMeshMap;
     }
 
     /**
      * Invoke the method cleanup on all the active mesh
      */
     public void cleanUp() {
-        for (Mesh m : meshMap.keySet()) {
+        for (Mesh m : mMeshMap.keySet()) {
             m.cleanUp();
         }
     }
@@ -74,38 +72,47 @@ public class SceneVertex {
     }
 
     /**
-     * Invoke the method draw on all mesh with associated items
+     * Invoke the method render on all mesh with associated items
      * otherwise clean then remove mesh which has an empty list of items
      *
-     * @param pSh         Shader program that will draw
+     * @param pSh         Shader program that will render
      * @param pViewMatrix the View Matrix
      */
 
     public void draw(ShaderProgram pSh, Matrix4f pViewMatrix) {
         ArrayList<Mesh> lRmListe = new ArrayList<>();
-        for (Mesh m : meshMap.keySet()) {
-            ArrayList<Item> lItems = meshMap.get(m);
+        for (Mesh m : mMeshMap.keySet()) {
+            ArrayList<Item> lItems = mMeshMap.get(m);
             if (lItems.isEmpty()) {
                 lRmListe.add(m);
             } else {
-                m.draw(lItems, pSh, pViewMatrix);
+                m.render(lItems, pSh, pViewMatrix);
             }
         }
         /*Clean then remove*/
         for (Mesh m : lRmListe) {
             m.cleanUp();
-            meshMap.remove(m);
+            mMeshMap.remove(m);
         }
     }
 
     // XXX: remove?
     /*Maybe
     public void update() {
-        for (Mesh m : meshMap.keySet()) {
-            for (Item i : meshMap.get(m))
+        for (Mesh m : mMeshMap.keySet()) {
+            for (Item i : mMeshMap.get(m))
                 i.update();
         }
     }*/
+
+    /**
+     * Clone then add the item in the scene
+     *
+     * @param pItem the item
+     */
+    public void clone(Item pItem) {
+        this.add(new Item(pItem));
+    }
 
     /**
      * Add the item in the map if the associated mesh is already a key
@@ -118,108 +125,13 @@ public class SceneVertex {
             /*retrieve the stored mesh in the item*/
         Mesh lMesh = pItem.getAppearance();
 
-        if (meshMap.keySet().contains(lMesh)) {
-            meshMap.get(lMesh).add(pItem);
+        if (mMeshMap.keySet().contains(lMesh)) {
+            mMeshMap.get(lMesh).add(pItem);
         } else {
             ArrayList<Item> l = new ArrayList<>();
             l.add(pItem);
-            meshMap.put(lMesh, l);
+            mMeshMap.put(lMesh, l);
             notInit.add(lMesh);
         }
-    }
-
-    /**
-     * Create a new item with the specified mesh then invoke the method add(Item)
-     *
-     * @param pMesh the mesh
-     */
-    public void add(Mesh pMesh) {
-        Item lItem = new Item(pMesh);
-        this.add(lItem);
-    }
-
-    /**
-     * Create a new mesh with the specified arguments then invoke the method add(Mesh)
-     *
-     * @param pVertices the vertices
-     * @param pMaterial the material
-     * @param pNormals  the normals
-     * @param pIndices  the indices
-     */
-    public void add(float[] pVertices, Material pMaterial, float[] pNormals, int[] pIndices) {
-        Mesh lMesh = new Mesh(pVertices, pMaterial, pNormals, pIndices);
-        add(lMesh);
-    }
-
-    /**
-     * * Create a new mesh with the specified arguments then invoke the method add(Mesh scale rotation position)
-     *
-     * @param pVertices the vertices
-     * @param pMaterial the material
-     * @param pNormals  the normals
-     * @param pIndices  the indices
-     * @param pScale    the scale
-     * @param pRotation the rotation
-     * @param pPosition the position
-     */
-    public void add(float[] pVertices, Material pMaterial, float[] pNormals, int[] pIndices, float pScale, Vector3f pRotation, Vector3f pPosition) {
-        Mesh lMesh = new Mesh(pVertices, pMaterial, pNormals, pIndices);
-        this.add(lMesh, pScale, pRotation, pPosition);
-
-    }
-
-    /**
-     * * Create a new mesh with the specified arguments then invoke the method add(Mesh)
-     *
-     * @param pVertices the vertices
-     * @param pMaterial the material
-     * @param pNormals  the normals
-     * @param pIndices  the indices
-     * @param pWeight   the weight
-     */
-    public void add(float[] pVertices, Material pMaterial, float[] pNormals, int[] pIndices, int pWeight) {
-        Mesh lMesh = new Mesh(pVertices, pMaterial, pNormals, pIndices, pWeight);
-        this.add(lMesh);
-
-    }
-
-    /**
-     * * Create a new mesh with the specified arguments then invoke the method add(Mesh)
-     *
-     * @param pVertices the vertices
-     * @param pMaterial the material
-     * @param pNormals  the normals
-     * @param pIndices  the indices
-     * @param pWeight   the weight
-     * @param pScale    the scale
-     * @param pRotation the rotation
-     * @param pPosition the position
-     */
-    public void add(float[] pVertices, Material pMaterial, float[] pNormals, int[] pIndices, int pWeight, float pScale, Vector3f pRotation, Vector3f pPosition) {
-        Mesh lMesh = new Mesh(pVertices, pMaterial, pNormals, pIndices, pWeight);
-        Item lItem = new Item(lMesh, pScale, pRotation, pPosition);
-        this.add(lItem);
-    }
-
-    /**
-     * * Create a new item with the specified arguments then invoke the method add(Item)
-     *
-     * @param pMesh     the mesh
-     * @param pScale    the scale
-     * @param pRotation the rotation
-     * @param pPosition the position
-     */
-    public void add(Mesh pMesh, float pScale, Vector3f pRotation, Vector3f pPosition) {
-        Item lItem = new Item(pMesh, pScale, pRotation, pPosition);
-        this.add(lItem);
-    }
-
-    /**
-     * Clone then add the item in the scene
-     *
-     * @param pItem the item
-     */
-    public void clone(Item pItem) {
-        this.add(new Item(pItem));
     }
 }
