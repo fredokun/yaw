@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Ismael on 12/02/2017.
  * Generic Mesh generator, can create specific mesh just with a map (goal)
  */
 public class MeshBuilder {
@@ -32,36 +31,36 @@ public class MeshBuilder {
      * @param cx       Red value of the material
      * @param cy       Green  value of the material
      * @param cz       Blue  value of the material
-     * @param r        reflectance
      * @return Mesh
      */
-    public static Mesh generate(String meshType, float xLength, float yLength, float zLength, float cx, float cy, float cz, float r) {
+    public static Mesh generate(String meshType, float xLength, float yLength, float zLength, float cx, float cy, float cz) {
         Mesh mesh = null;
         /*Warning default reflectance*/
         Material lMaterial = new Material(new Vector3f(cx, cy, cz));
-        System.out.println(meshType);
+        //System.out.println(meshType);
         switch (meshType) {
             case BLOCK_MESH:
-                mesh = generateBlock(xLength, yLength, zLength, lMaterial);
+                mesh = generateBlock(xLength, yLength, zLength);
                 break;
             case GROUND_MESH:
-                mesh = generateGround(xLength, yLength, zLength, lMaterial);
+                mesh = generateGround(xLength, yLength, zLength);
                 break;
             case HALF_BLOCK_MESH:
-                mesh = generateHalfBlock(xLength, yLength, zLength, lMaterial);
+                mesh = generateHalfBlock(xLength, yLength, zLength);
                 break;
             case PYRAMID_MESH:
-                mesh = generatePyramid(xLength, yLength, zLength, lMaterial);
+                mesh = generatePyramid(xLength, yLength, zLength);
                 break;
             case OCTAHEDRON_MESH:
-                mesh = generateOctahedron(lMaterial);
+                mesh = generateOctahedron();
                 break;
             case TETRAHEDRON_MESH:
-                mesh = generateTetrahedron(lMaterial);
+                mesh = generateTetrahedron();
                 break;
             default:
                 System.out.println("error");
         }
+        if (mesh != null) mesh.setMaterial(lMaterial);
         return mesh;
         //return generate(xLength, yLength, zLength, new Material(new Vector3f(cx, cy, cz), r));
     }
@@ -74,10 +73,9 @@ public class MeshBuilder {
      * @param xLength xLength
      * @param yLength yLength
      * @param zLength zLength
-     * @param m       material
      * @return BlockMesh
      */
-    public static Mesh generateBlock(float xLength, float yLength, float zLength, Material m) {
+    public static Mesh generateBlock(float xLength, float yLength, float zLength) {
         float x = xLength / 2f;
         float y = yLength / 2f;
         float z = zLength / 2f;
@@ -122,7 +120,7 @@ public class MeshBuilder {
                 16, 19, 18, 16, 17, 19,
                 //Right face
                 20, 22, 21, 22, 23, 21};
-        Mesh lMesh = new Mesh(vertices, m, normals, indices, 8);
+        Mesh lMesh = new Mesh(vertices, null, normals, indices, 8);
         Map<String, String> lOptionalAttributes = MeshBuilder.getPositionAttributesMap(xLength, yLength, zLength);
         lMesh.putOptionalAttributes(lOptionalAttributes);
         return lMesh;
@@ -137,16 +135,15 @@ public class MeshBuilder {
      * @param width  width
      * @param length length
      * @param height height
-     * @param m      material
      * @return Mesh
      */
-    public static Mesh generateGround(float width, float length, float height, Material m) {
+    public static Mesh generateGround(float width, float length, float height) {
         float halfW = width / 2;
         float halfL = length / 2;
         float[] vertices = new float[]{-halfW, height, -halfL, -halfW, height, halfL, halfW, height, -halfL, halfW, height, halfL};
         float[] normals = new float[]{0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0};
         int[] indices = new int[]{0, 1, 2, 1, 3, 2};
-        Mesh lMesh = new Mesh(vertices, m, normals, indices);
+        Mesh lMesh = new Mesh(vertices, null, normals, indices);
         Map<String, String> lOptionalAttributes = MeshBuilder.getPositionAttributesMap(width, length, height);
         lMesh.putOptionalAttributes(lOptionalAttributes);
         return lMesh;
@@ -154,16 +151,15 @@ public class MeshBuilder {
     }
 
     /**
-     * Generate a half block Mesh with the specified material , width, length and height.
+     * Generate a half block Mesh with the specified  width, length and height.
      * Create vertices and normals based on the specified width, length and height.
      *
      * @param xLength width
      * @param yLength length
      * @param zLength height
-     * @param m       material
      * @return Mesh
      */
-    public static Mesh generateHalfBlock(float xLength, float yLength, float zLength, Material m) {
+    public static Mesh generateHalfBlock(float xLength, float yLength, float zLength) {
         float x = xLength / 2f;
         float y = yLength / 2f;
         float z = zLength / 2f;
@@ -204,23 +200,22 @@ public class MeshBuilder {
                 12, 14, 13,
                 //Right face
                 15, 16, 17};
-        Mesh lMesh = new Mesh(vertices, m, normals, indices, 6);
+        Mesh lMesh = new Mesh(vertices, null, normals, indices, 6);
         Map<String, String> lOptionalAttributes = MeshBuilder.getPositionAttributesMap(xLength, yLength, zLength);
         lMesh.putOptionalAttributes(lOptionalAttributes);
         return lMesh;
     }
 
     /**
-     * Generate a ground Mesh with the specified material , width, length and height.
+     * Generate a ground Mesh with the specified width, length and height.
      * Create vertices and normals based on the specified width, length and height.
      *
      * @param xLength width
      * @param yLength length
      * @param zLength height
-     * @param m       material
      * @return Mesh
      */
-    public static Mesh generatePyramid(float xLength, float yLength, float zLength, Material m) {
+    public static Mesh generatePyramid(float xLength, float yLength, float zLength) {
         float x = xLength / 2f;
         float y = yLength / 2f;
         float z = zLength / 2f;
@@ -265,21 +260,20 @@ public class MeshBuilder {
                 9, 11, 10,
                 //Bottom Face
                 12, 13, 15, 12, 15, 14};
-        Mesh mesh = new Mesh(vertices, m, normals, indices, 5);
+        Mesh mesh = new Mesh(vertices, null, normals, indices, 5);
         Map<String, String> lOptionalAttributes = MeshBuilder.getPositionAttributesMap(xLength, yLength, zLength);
         mesh.putOptionalAttributes(lOptionalAttributes);
         return mesh;
     }
 
     /**
-     * Generate a regular octohedron mesh  with the specified material
+     * Generate a regular octohedron mesh
      * default size 1*1*1 for each triangle
      * Warning: vertices are hard coded
      *
-     * @param m material
      * @return Mesh
      */
-    public static Mesh generateOctahedron(Material m) {
+    public static Mesh generateOctahedron() {
         float[] vertices = new float[]{
                 //LTF
                 -0.5f, 0f, 0f, 0f, 0.5f, 0f, 0f, 0f, 0.5f,
@@ -335,18 +329,17 @@ public class MeshBuilder {
                 18, 20, 19,
                 //RBB
                 21, 22, 23};
-        return new Mesh(vertices, m, normals, indices, 6);
+        return new Mesh(vertices, null, normals, indices, 6);
     }
 
     /**
-     * Generate a regular Tetrahedron mesh  with the specified material
+     * Generate a regular Tetrahedron mesh
      * default size 1*1*1 for each triangle
      * Warning: vertices are hard coded
      *
-     * @param m material
      * @return Mesh
      */
-    public static Mesh generateTetrahedron(Material m) {
+    public static Mesh generateTetrahedron() {
         float[] vertices = new float[]{
                 //First Face
                 -0.5f, 0.5f, 0.5f, 0.5f, 0.5f, -0.5f, 0.5f, -0.5f, 0.5f,
@@ -377,7 +370,7 @@ public class MeshBuilder {
                 //Last Face
                 9, 10, 11};
 
-        return new Mesh(vertices, m, normals, indices, 8);
+        return new Mesh(vertices, null, normals, indices, 8);
 
     }
 
