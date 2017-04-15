@@ -135,7 +135,7 @@ public class Mesh {
      */
     public void render(ArrayList<Item> pItems, ShaderProgram pShaderProgram, Matrix4f pViewMatrix) {
         //initRender
-        initRender();
+        //initRender();
         // Bind to the VAO
         glBindVertexArray(mVaoId);
         glEnableVertexAttribArray(0);
@@ -146,10 +146,13 @@ public class Mesh {
             Matrix4f modelViewMat = new Matrix4f(pViewMatrix).mul(lItem.getWorldMatrix());
             pShaderProgram.setUniform("modelViewMatrix", modelViewMat);
             // Draw the mVertices
-            glDrawElements(GL_TRIANGLES, mIndices.length, GL_UNSIGNED_INT, 0);
+            if(lItem.getIsBoundingBox())
+                glDrawElements(GL_LINES, mIndices.length, GL_UNSIGNED_INT, 0);
+            else
+                glDrawElements(GL_TRIANGLES, mIndices.length, GL_UNSIGNED_INT, 0);
         }
         //end render
-        endRender();
+        //endRender();
     }
 
     protected void initRender() {

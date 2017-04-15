@@ -16,12 +16,9 @@ public class MainWorld {
         World world = new World(0, 0, 500, 500);/* Create the world with its dimensions. */
         world.init();  /* Initializes the world */
         (new Thread(world)).start();/* Launches the thread responsible for the display and our game loop. */
-        Item c1 = ItemManagement.createBlock(world, 1, 1, 1, 1, 1, 1, 1); /* Create our block */
-        Item c2 = ItemManagement.createPyramid(world, 0, 0, 0, 5, 5, 5, 1); /* Create our Pyramid */
-        c1.translate(0, 0, 0); /* Allows to resize our block.*/
-        c2.translate(0, 0, -3); /* Allows to resize our Pyramid. */
-        c2.translate(0, 0, 0); /* Allows to resize our Pyramid.*/
-        c2.rotate(0, 2, 0);
+        Item c1 = ItemManagement.createBlock(world, 0, 0, 1, 1, 1, 1, 1);
+        c1.setBoundingBox(ItemManagement.createBoundingBox(world, 0, 1, 0, 1, 1, 1, 2, true));
+
         /* Creating Light for Our World */
         world.getSceneLight().setSpotLight(new SpotLight(1, 1, 1, 0, 0, 0, 1, 0, 0.5f, 0, 0, 0, -1, 10f), 0);
         world.getSceneLight().setSun(new DirectionalLight(new Vector3f(1, 1, 1), 1, new Vector3f(0, -1, 1)));
@@ -33,8 +30,10 @@ public class MainWorld {
 
         world.getCamera().translate(0, 0, 3);
         while (true) {
-            world.getCamera().rotate(0, 5, 0); /* Allows to advance the edge in the scene 3D. */
-           /* world.c.translate(0,0,-5); */
+
+            c1.rotate(5,0,5);
+            c1.getBoundingBox().rotate(5,0,5);
+
             Thread.sleep(50); /* Allows to see the block (cube) move at constant rate. */
         }
     }

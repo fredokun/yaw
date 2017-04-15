@@ -24,6 +24,8 @@ public class Item {
     private Vector3f mRotation;
     private Vector3f mTranslation;
     private ArrayList<ItemGroup> mGroups;
+    private Item mBoundingBox;
+    private boolean isBoundingBox;
 
     public Item(Item source) {
         this.mAppearance = source.mAppearance;
@@ -31,6 +33,8 @@ public class Item {
         this.mRotation = new Vector3f(source.mRotation);
         this.mTranslation = new Vector3f(source.mTranslation);
         this.mGroups = new ArrayList<>();
+        this.mBoundingBox = null;
+        this.isBoundingBox = source.isBoundingBox;
     }
 
     public Item(Mesh m) {
@@ -39,6 +43,8 @@ public class Item {
         mRotation = new Vector3f();
         mTranslation = new Vector3f();
         this.mGroups = new ArrayList<>();
+        this.mBoundingBox = null;
+        this.isBoundingBox = false;
     }
 
     /**
@@ -48,18 +54,20 @@ public class Item {
      * @param pScale      scale
      * @param pPosition   position
      */
-    public Item(Mesh pAppearance, float pScale, Vector3f pPosition) {
-        this(pAppearance, pScale, new Vector3f(), pPosition);
+    public Item(Mesh pAppearance, float pScale, Vector3f pPosition, boolean isBoundingBox) {
+        this(pAppearance, pScale, new Vector3f(), pPosition, isBoundingBox);
     }
 
     //Constructor
-    public Item(Mesh appearance, float scale, Vector3f rotation, Vector3f position) {
+    public Item(Mesh appearance, float scale, Vector3f rotation, Vector3f position, boolean isBoundingBox) {
         super();
         this.mAppearance = appearance;
         this.mScale = scale;
         this.mRotation = rotation;
         this.mTranslation = position;
         this.mGroups = new ArrayList<>();
+        this.mBoundingBox = null;
+        this.isBoundingBox = isBoundingBox;
     }
 
     public Item clone() {
@@ -194,4 +202,10 @@ public class Item {
     public void setColor(Vector3f color) {
         this.getAppearance().setMaterial(new Material(color, 0.f));
     }
+
+    public Item getBoundingBox(){ return this.mBoundingBox;}
+
+    public void setBoundingBox(Item item){this.mBoundingBox = item;}
+
+    public boolean getIsBoundingBox(){return this.isBoundingBox;}
 }

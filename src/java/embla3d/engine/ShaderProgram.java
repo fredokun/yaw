@@ -112,7 +112,7 @@ public class ShaderProgram {
      * Installs the program object as part of current rendering state.
      */
     public void bind() {
-        GLUtil.setupDebugMessageCallback();
+        //GLUtil.setupDebugMessageCallback();
         /*Specifies the handle of the program object whose executables are to be used as part of current rendering state.*/
         glUseProgram(mProgramId);
 
@@ -275,11 +275,11 @@ public class ShaderProgram {
      * @param material    the material
      */
     public void setUniform(String uniformName, Material material) {
-        GLUtil.setupDebugMessageCallback();
+        //GLUtil.setupDebugMessageCallback();
         setUniform(uniformName + ".color", material.getColor());
-        GLUtil.setupDebugMessageCallback();
+        //GLUtil.setupDebugMessageCallback();
         setUniform(uniformName + ".hasTexture", (int) (material.isTextured() ? 1 : 0));
-        GLUtil.setupDebugMessageCallback();
+        //GLUtil.setupDebugMessageCallback();
         setUniform(uniformName + ".reflectance", material.getReflectance());
     }
 
