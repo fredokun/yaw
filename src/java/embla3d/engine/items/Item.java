@@ -95,6 +95,8 @@ public class Item {
 
     public void rotate(float x, float y, float z) {
         this.setRotation(getRotation().add(x, y, z));
+        if(mBoundingBox != null)
+            this.mBoundingBox.setRotation(getRotation().add(x, y, z));
     }
 
     //Rotation
@@ -120,6 +122,8 @@ public class Item {
 
     public void translate(float x, float y, float z) {
         translate(x, y, z, null);
+        if(mBoundingBox!=null)
+            this.mBoundingBox.translate(x, y, z, null);
     }
 
     public void translate(float x, float y, float z, ItemGroup g) {

@@ -7,6 +7,9 @@ import embla3d.engine.light.DirectionalLight;
 import embla3d.engine.light.SpotLight;
 import embla3d.engine.skybox.Skybox;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
+
+import java.util.ArrayList;
 
 /**
  * The Main Class that launches our game engine.
@@ -18,6 +21,19 @@ public class MainWorld {
         (new Thread(world)).start();/* Launches the thread responsible for the display and our game loop. */
         Item c1 = ItemManagement.createBlock(world, 0, 0, 1, 1, 1, 1, 1);
         c1.setBoundingBox(ItemManagement.createBoundingBox(world, 0, 1, 0, 1, 1, 1, 2, true));
+
+        ArrayList<Vector4f> list = Collision.tabToListVertex(c1);
+        for(int i=0; i<list.size();i++)
+            System.out.println(list.get(i).x+" , "+list.get(i).y+" , "+list.get(i).z+" , "+list.get(i).w);
+
+        System.out.println("**************");
+        System.out.println("mRotation:"+c1.getRotation());
+        System.out.println("mTranslation:"+c1.getPosition());
+        System.out.println("**************");
+        for(int i=0; i<list.size();i++)
+            list.set(i, list.get(i).mul(c1.getWorldMatrix()));
+        for(int i=0; i<list.size();i++)
+            System.out.println(list.get(i).x+" , "+list.get(i).y+" , "+list.get(i).z+" , "+list.get(i).w);
 
         /* Creating Light for Our World */
         world.getSceneLight().setSpotLight(new SpotLight(1, 1, 1, 0, 0, 0, 1, 0, 0.5f, 0, 0, 0, -1, 10f), 0);
@@ -32,7 +48,6 @@ public class MainWorld {
         while (true) {
 
             c1.rotate(5,0,5);
-            c1.getBoundingBox().rotate(5,0,5);
 
             Thread.sleep(50); /* Allows to see the block (cube) move at constant rate. */
         }
