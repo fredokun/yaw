@@ -18,7 +18,7 @@ public class CameraManagement {
      */
     public static Camera addCamera(World world) {
         Camera c = new Camera();
-        world.getmCamerasList().add(c);
+        world.getCamerasList().add(c);
         return c;
     }
 
@@ -32,7 +32,7 @@ public class CameraManagement {
      * @return the camera.
      */
     public static Camera addCamera(World world, Camera c) {
-        if (!world.getmCamerasList().contains(c)) world.getmCamerasList().add(c);
+        if (!world.getCamerasList().contains(c)) world.getCamerasList().add(c);
         return c;
     }
 
@@ -57,9 +57,9 @@ public class CameraManagement {
      */
     public static void setLiveCamera(World world, Camera c) {
         Camera x = world.getCamera();
-        world.getmCamerasList().add(x);
+        world.getCamerasList().add(x);
         world.setCamera(c);
-        world.getmCamerasList().removeAll(Collections.singleton(c));
+        world.getCamerasList().removeAll(Collections.singleton(c));
 
     }
 
@@ -69,9 +69,9 @@ public class CameraManagement {
      * @return the camera store in position i, if i> 0 or i <= to the numbers of cameras (not in live) in the worlds.
      */
     public static Camera getCamera(World world, int i) {
-        if (i < 0 || i >= world.getmCamerasList().size())
+        if (i < 0 || i >= world.getCamerasList().size())
             return null;
-        return world.getmCamerasList().get(i);
+        return world.getCamerasList().get(i);
     }
 
     /**
@@ -81,7 +81,7 @@ public class CameraManagement {
      * @param c     camera
      */
     public static void removeCamera(World world, Camera c) {
-        world.getmCamerasList().remove(c);
+        world.getCamerasList().remove(c);
     }
 
     /**
@@ -91,9 +91,9 @@ public class CameraManagement {
      * @param i     Index of the camera
      */
     public static void removeCameraNumber(World world, int i) {
-        if (i < 0 || i >= world.getmCamerasList().size())
+        if (i < 0 || i >= world.getCamerasList().size())
             return;
-        world.getmCamerasList().remove(i);
+        world.getCamerasList().remove(i);
     }
 
     /**

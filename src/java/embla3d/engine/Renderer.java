@@ -15,14 +15,10 @@ import static org.lwjgl.opengl.GL11.*;
 public class Renderer {
     protected ShaderProgram mShaderProgram;
 
-
     /**
      * Basic rendering.
-     *
-     * @throws Exception Exception
      */
-    public Renderer() throws Exception {
-
+    public void init() throws Exception {
         /* Initialization of the shader program. */
         mShaderProgram = new ShaderProgram();
         mShaderProgram.createVertexShader(vertShader.SHADER_STRING);
@@ -46,7 +42,6 @@ public class Renderer {
         mShaderProgram.createPointLightListUniform("pointLights", SceneLight.MAX_POINTLIGHT);
         mShaderProgram.createSpotLightUniformList("spotLights", SceneLight.MAX_SPOTLIGHT);
         mShaderProgram.createDirectionalLightUniform("directionalLight");
-
     }
 
     /**
@@ -70,17 +65,16 @@ public class Renderer {
     public void render(SceneVertex pSceneVertex, SceneLight pSceneLight, boolean isResized, Camera pCamera, Skybox pSkybox) {
         mShaderProgram.bind();
         //Preparation of the camera
-        if (isResized || SceneVertex.itemAdded) {
+        if (isResized || pSceneVertex.isItemAdded()) {
             pCamera.updateCameraMat();
         }
 
         //Debug
-        //		 int err = GL11.GL_NO_ERROR;
-        //		if((err = GL11.glGetError()) != GL11.GL_NO_ERROR)
-        //		{
-        //
-        //		  System.out.println(err);
-        //		}
+      /*  int err = GL11.GL_NO_ERROR;
+        if ((err = GL11.glGetError()) != GL11.GL_NO_ERROR) {
+
+            System.out.println(err);
+        }*/
 
         /* Set the camera to render. */
         mShaderProgram.setUniform("projectionMatrix", pCamera.getCameraMat());
@@ -117,7 +111,6 @@ public class Renderer {
         mShaderProgram.unbind();
         if (pSkybox != null) {
             if (pSkybox.init == false) {
-                SceneVertex.itemAdded = true;
                 try {
                     pSkybox.init();
                 } catch (Exception e) {

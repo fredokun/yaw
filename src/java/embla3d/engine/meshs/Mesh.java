@@ -63,12 +63,12 @@ public class Mesh {
      * @param pWeight     mWeight numbre of vertices
      */
     public Mesh(float[] pVertices, float[] pTextCoords, float[] pNormals, int[] pIndices, int pWeight) {
-
+        this.mMaterial = new Material();
         this.mVertices = pVertices;
         this.mNormals = pNormals;
         this.mIndices = pIndices;
         this.mWeight = pWeight;
-        this.mTextCoords = pTextCoords == null ? new float[0] : pTextCoords;
+        this.mTextCoords = pTextCoords == null ? new float[1] : pTextCoords;
         this.mOptionalAttributes = new HashMap<>();
         this.vboIdList = new ArrayList<>();
     }
@@ -112,7 +112,7 @@ public class Mesh {
         glBufferData(GL_ARRAY_BUFFER, normBuffer, GL_STATIC_DRAW);
 
         //We explain to OpenGL how to read our Buffers.
-        glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, 0);
+        glVertexAttribPointer(2, 3, GL_FLOAT, false, 0, 0);
 
         //VBO of mIndices
         IntBuffer indicesBuffer = BufferUtils.createIntBuffer(mIndices.length);
@@ -133,54 +133,30 @@ public class Mesh {
      * @param pShaderProgram shaderProgram
      * @param pViewMatrix    viewMatrix
      */
-    public void render(ArrayList<Item> pItems, ShaderProgram pShaderProgram, Matrix4f pViewMatrix) {
+    public void render(List<Item> pItems, ShaderProgram pShaderProgram, Matrix4f pViewMatrix) {
+
         //initRender
-        //initRender();
+        initRender();
+
         // Bind to the VAO
-        glBindVertexArray(mVaoId);
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
+
+
         pShaderProgram.setUniform("material", mMaterial);
         for (Item lItem : pItems) {
             //can be moved to Item class
             Matrix4f modelViewMat = new Matrix4f(pViewMatrix).mul(lItem.getWorldMatrix());
             pShaderProgram.setUniform("modelViewMatrix", modelViewMat);
+
+
             // Draw the mVertices
-            if(lItem.getIsBoundingBox())
+            if (lItem.getIsBoundingBox())
                 glDrawElements(GL_LINES, mIndices.length, GL_UNSIGNED_INT, 0);
             else
                 glDrawElements(GL_TRIANGLES, mIndices.length, GL_UNSIGNED_INT, 0);
         }
         //end render
-        //endRender();
-    }
 
-    protected void initRender() {
-        Texture texture = mMaterial != null ? mMaterial.getTexture() : null;
-        if (texture != null) {
-            // Activate first texture bank
-            glActiveTexture(GL_TEXTURE0);
-            // Bind the texture
-            glBindTexture(GL_TEXTURE_2D, texture.getId());
-        }
-
-
-        // Draw the mesh
-        glBindVertexArray(mVaoId);
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-        glEnableVertexAttribArray(2);
-
-    }
-
-    protected void endRender() {
-        // Restore state
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
-        glDisableVertexAttribArray(2);
-        glBindVertexArray(0);
-
-        glBindTexture(GL_TEXTURE_2D, 0);
+        endRender();
     }
 
     public void cleanUp() {
@@ -201,30 +177,6 @@ public class Mesh {
         glDeleteVertexArrays(mVaoId);
 
 
-    }
-
-    public float[] getVertices() {
-        return mVertices;
-    }
-
-    public Material getMaterial() {
-        return mMaterial;
-    }
-
-    public void setMaterial(Material pMaterial) {
-        this.mMaterial = pMaterial;
-    }
-
-    public float[] getNormals() {
-        return mNormals;
-    }
-
-    public int[] getIndices() {
-        return mIndices;
-    }
-
-    public int getWeight() {
-        return mWeight;
     }
 
     /**
@@ -250,4 +202,66 @@ public class Mesh {
         this.mOptionalAttributes.putAll(pOptionalAttributes);
     }
 
+    protected void initRender() {
+
+        Texture texture = mMaterial != null ? mMaterial.getTexture() : null;
+        if (texture != null) {
+            //load the texture if needed
+            if (!texture.isActivated()) {
+                texture.init();
+            }
+            // Activate first texture bank
+            glActiveTexture(GL_TEXTURE0);
+
+
+            // Bind the texture
+            texture.bind();
+        }
+
+        // Draw the mesh
+        glBindVertexArray(mVaoId);
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(2);
+
+    }
+
+    protected void endRender() {
+        // Restore state
+        glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(1);
+        glDisableVertexAttribArray(2);
+        glBindVertexArray(0);
+
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+
+    public float[] getVertices() {
+        return mVertices;
+    }
+
+    public Material getMaterial() {
+        return mMaterial;
+    }
+
+    public void setMaterial(Material pMaterial) {
+        this.mMaterial = pMaterial;
+    }
+
+    public float[] getNormals() {
+        return mNormals;
+    }
+
+    public int[] getIndices() {
+        return mIndices;
+    }
+
+    public int getWeight() {
+        return mWeight;
+    }
+
+    public void setTextCoords(float[] pTextCoord) {
+        mTextCoords = pTextCoord;
+    }
 }

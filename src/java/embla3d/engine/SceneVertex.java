@@ -6,6 +6,7 @@ import org.joml.Matrix4f;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Class representing a scene
@@ -15,13 +16,34 @@ import java.util.HashMap;
  */
 public class SceneVertex {
     //old code from a previous attempt to manage a group of scene vertex
-    public static boolean itemAdded = false;
-    private HashMap<Mesh, ArrayList<Item>> mMeshMap;
+    private boolean itemAdded = false;
+    private HashMap<Mesh, List<Item>> mMeshMap;
     private ArrayList<Mesh> notInit;
+
 
     public SceneVertex() {
         mMeshMap = new HashMap<>();
         notInit = new ArrayList<>();
+    }
+
+    /**
+     * Add the item in the map if the associated mesh is already a key
+     * otherwise the association is created and the mesh is added to the nonInit List
+     *
+     * @param pItem the item
+     */
+    public synchronized void add(Item pItem) {
+        itemAdded = true;
+            /*retrieve the stored mesh in the item*/
+        Mesh lMesh = pItem.getAppearance();
+        List<Item> lItems = mMeshMap.get(lMesh);
+        if (lItems == null) {
+            lItems = new ArrayList<>();
+            mMeshMap.put(lMesh, lItems);
+            notInit.add(lMesh);
+        }
+        lItems.add(pItem);
+
     }
 
     /**
@@ -30,34 +52,16 @@ public class SceneVertex {
      * @param pItem item to be removed
      */
     public void removeItem(Item pItem) {
-        ArrayList<Item> lItems = mMeshMap.get(pItem.getAppearance());
+        List<Item> lItems = mMeshMap.get(pItem.getAppearance());
         lItems.remove(pItem);
-    }
-
-    /**
-     * Retrieve all the items of the scene
-     *
-     * @return the list of item
-     */
-    public ArrayList<Item> getItemsList() {
-        ArrayList<Item> lItems = new ArrayList<>();
-        mMeshMap.values().forEach(lItems::addAll);
-        return lItems;
-    }
-
-    /**
-     * Accessor
-     */
-    public HashMap<Mesh, ArrayList<Item>> getMeshMap() {
-        return mMeshMap;
     }
 
     /**
      * Invoke the method cleanup on all the active mesh
      */
     public void cleanUp() {
-        for (Mesh m : mMeshMap.keySet()) {
-            m.cleanUp();
+        for (Mesh lMesh : mMeshMap.keySet()) {
+            lMesh.cleanUp();
         }
     }
 
@@ -65,8 +69,8 @@ public class SceneVertex {
      * Invoke the method init on all the mesh in the non initialize mesh collection
      */
     public void initMesh() {
-        for (Mesh m : notInit) {
-            m.init();
+        for (Mesh lMesh : notInit) {
+            lMesh.init();
         }
         notInit.clear();
     }
@@ -75,24 +79,24 @@ public class SceneVertex {
      * Invoke the method render on all mesh with associated items
      * otherwise clean then remove mesh which has an empty list of items
      *
-     * @param pShaderProgram         Shader program that will render
-     * @param pViewMatrix the View Matrix
+     * @param pShaderProgram Shader program that will render
+     * @param pViewMatrix    the View Matrix
      */
 
     public void draw(ShaderProgram pShaderProgram, Matrix4f pViewMatrix) {
-        ArrayList<Mesh> lRmListe = new ArrayList<>();
-        for (Mesh m : mMeshMap.keySet()) {
-            ArrayList<Item> lItems = mMeshMap.get(m);
+        List<Mesh> lRmListe = new ArrayList<>();
+        for (Mesh lMesh : mMeshMap.keySet()) {
+            List<Item> lItems = mMeshMap.get(lMesh);
             if (lItems.isEmpty()) {
-                lRmListe.add(m);
+                lRmListe.add(lMesh);
             } else {
-                m.render(lItems, pShaderProgram, pViewMatrix);
+                lMesh.render(lItems, pShaderProgram, pViewMatrix);
             }
         }
         /*Clean then remove*/
-        for (Mesh m : lRmListe) {
-            m.cleanUp();
-            mMeshMap.remove(m);
+        for (Mesh lMesh : lRmListe) {
+            lMesh.cleanUp();
+            mMeshMap.remove(lMesh);
         }
     }
 
@@ -106,32 +110,17 @@ public class SceneVertex {
     }*/
 
     /**
-     * Clone then add the item in the scene
+     * Retrieve all the items of the scene
      *
-     * @param pItem the item
+     * @return the list of item
      */
-    public void clone(Item pItem) {
-        this.add(new Item(pItem));
+    public ArrayList<Item> getItemsList() {
+        ArrayList<Item> lItems = new ArrayList<>();
+        mMeshMap.values().forEach(lItems::addAll);
+        return lItems;
     }
 
-    /**
-     * Add the item in the map if the associated mesh is already a key
-     * otherwise the association is created and the mesh is added to the nonInit List
-     *
-     * @param pItem the item
-     */
-    public synchronized void add(Item pItem) {
-        itemAdded = true;
-            /*retrieve the stored mesh in the item*/
-        Mesh lMesh = pItem.getAppearance();
-
-        if (mMeshMap.keySet().contains(lMesh)) {
-            mMeshMap.get(lMesh).add(pItem);
-        } else {
-            ArrayList<Item> l = new ArrayList<>();
-            l.add(pItem);
-            mMeshMap.put(lMesh, l);
-            notInit.add(lMesh);
-        }
+    public boolean isItemAdded() {
+        return itemAdded;
     }
 }

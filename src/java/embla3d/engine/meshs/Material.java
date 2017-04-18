@@ -10,6 +10,7 @@ import org.joml.Vector3f;
 public class Material {
     private static final float REFLECTANCE_DEFAULT_VALUE = 1000f;
     private static final Vector3f DEFAULT_COLOUR = new Vector3f(1.0f, 1.0f, 1.0f);
+
     //RGB vector
     private Vector3f mColor;
     // Reflectance should be between 0 and 1
@@ -33,6 +34,8 @@ public class Material {
     public Material() {
         this.mColor = DEFAULT_COLOUR;
         this.mReflectance = REFLECTANCE_DEFAULT_VALUE;
+        //TODO REMOVE test only
+        this.mTexture = new Texture("/ressources/grassblock.png");
     }
 
     /**
@@ -80,6 +83,7 @@ public class Material {
         this.mReflectance = REFLECTANCE_DEFAULT_VALUE;
     }
 
+
     public Texture getTexture() {
         return mTexture;
     }
@@ -99,7 +103,6 @@ public class Material {
     public float getReflectance() {
         return mReflectance;
     }
-
 
     public void setReflectance(float pReflectance) {
         mReflectance = pReflectance;

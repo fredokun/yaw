@@ -15,7 +15,38 @@ public class MeshBuilder {
     public static final String PYRAMID_MESH = "pyramid";
     public static final String OCTAHEDRON_MESH = "octahedron";
     public static final String TETRAHEDRON_MESH = "tetrahedron";
-    //TODO
+    private static final float[] lFloats = new float[]{
+            0.0f, 0.0f,
+            0.0f, 0.5f,
+            0.5f, 0.5f,
+            0.5f, 0.0f,
+
+            0.0f, 0.0f,
+            0.5f, 0.0f,
+            0.0f, 0.5f,
+            0.5f, 0.5f,
+
+            // For text coords in top face
+            0.0f, 0.5f,
+            0.5f, 0.5f,
+            0.0f, 1.0f,
+            0.5f, 1.0f,
+
+            // For text coords in right face
+            0.0f, 0.0f,
+            0.0f, 0.5f,
+
+            // For text coords in left face
+            0.5f, 0.0f,
+            0.5f, 0.5f,
+
+            // For text coords in bottom face
+            0.5f, 0.0f,
+            1.0f, 0.0f,
+            0.5f, 0.5f,
+            1.0f, 0.5f,
+    };
+    //TODO remove the text coord array, only use it for test
     /*generic call*/
     /*dispatch*/
     /* Generic param for the fct */
@@ -36,7 +67,12 @@ public class MeshBuilder {
     public static Mesh generate(String meshType, float xLength, float yLength, float zLength, float cx, float cy, float cz) {
         Mesh mesh = null;
         /*Warning default reflectance*/
-        Material lMaterial = new Material(new Vector3f(cx, cy, cz));
+        Material lMaterial = null;
+        try {
+            lMaterial = new Material(new Vector3f(cx, cy, cz));
+        } catch (Exception pE) {
+            pE.printStackTrace();
+        }
         //System.out.println(meshType);
         switch (meshType) {
             case BLOCK_MESH:
@@ -120,11 +156,27 @@ public class MeshBuilder {
                 16, 19, 18, 16, 17, 19,
                 //Right face
                 20, 22, 21, 22, 23, 21};
-        Mesh lMesh = new Mesh(vertices, null, normals, indices, 8);
+        Mesh lMesh = new Mesh(vertices, lFloats, normals, indices, 8);
         Map<String, String> lOptionalAttributes = MeshBuilder.getPositionAttributesMap(xLength, yLength, zLength);
         lMesh.putOptionalAttributes(lOptionalAttributes);
         return lMesh;
 
+    }
+
+    /**
+     * Create a map and store each axis individually (3D position)
+     *
+     * @param xLength width
+     * @param yLength length
+     * @param zLength height
+     * @return the map
+     */
+    public static Map<String, String> getPositionAttributesMap(float xLength, float yLength, float zLength) {
+        Map<String, String> lOptionalAttributes = new HashMap<>();
+        lOptionalAttributes.put("xLength", String.valueOf(xLength));
+        lOptionalAttributes.put("yLength", String.valueOf(yLength));
+        lOptionalAttributes.put("zLength", String.valueOf(zLength));
+        return lOptionalAttributes;
     }
 
     /**
@@ -372,21 +424,5 @@ public class MeshBuilder {
 
         return new Mesh(vertices, null, normals, indices, 8);
 
-    }
-
-    /**
-     * Create a map and store each axis individually (3D position)
-     *
-     * @param xLength width
-     * @param yLength length
-     * @param zLength height
-     * @return the map
-     */
-    public static Map<String, String> getPositionAttributesMap(float xLength, float yLength, float zLength) {
-        Map<String, String> lOptionalAttributes = new HashMap<>();
-        lOptionalAttributes.put("xLength", String.valueOf(xLength));
-        lOptionalAttributes.put("yLength", String.valueOf(yLength));
-        lOptionalAttributes.put("zLength", String.valueOf(zLength));
-        return lOptionalAttributes;
     }
 }
