@@ -22,18 +22,14 @@ public class MainWorld {
         Item c1 = ItemManagement.createBlock(world, 0, 0, 1, 1, 1, 1, 1);
         c1.setBoundingBox(ItemManagement.createBoundingBox(world, 0, 1, 0, 1, 1, 1, 2, true));
 
-        ArrayList<Vector4f> list = Collision.tabToListVertex(c1);
-        for(int i=0; i<list.size();i++)
-            System.out.println(list.get(i).x+" , "+list.get(i).y+" , "+list.get(i).z+" , "+list.get(i).w);
+        Item c2 = ItemManagement.createBlock(world, 0, 0, 1, 1, 1, 1, 1);
+        c2.setBoundingBox(ItemManagement.createBoundingBox(world, 0, 1, 0, 1, 1, 1, 2, true));
 
-        System.out.println("**************");
-        System.out.println("mRotation:"+c1.getRotation());
-        System.out.println("mTranslation:"+c1.getPosition());
-        System.out.println("**************");
-        for(int i=0; i<list.size();i++)
-            list.set(i, list.get(i).mul(c1.getWorldMatrix()));
-        for(int i=0; i<list.size();i++)
-            System.out.println(list.get(i).x+" , "+list.get(i).y+" , "+list.get(i).z+" , "+list.get(i).w);
+        c2.translate(2,2,0);
+        c2.rotate(0,0,20);
+
+        System.out.println("Collision ?: "+Collision.isInCollision(c1.getBoundingBox(), c2.getBoundingBox()));
+
 
         /* Creating Light for Our World */
         world.getSceneLight().setSpotLight(new SpotLight(1, 1, 1, 0, 0, 0, 1, 0, 0.5f, 0, 0, 0, -1, 10f), 0);
@@ -46,8 +42,6 @@ public class MainWorld {
 
         world.getCamera().translate(0, 0, 3);
         while (true) {
-
-            c1.rotate(5,0,5);
 
             Thread.sleep(50); /* Allows to see the block (cube) move at constant rate. */
         }
