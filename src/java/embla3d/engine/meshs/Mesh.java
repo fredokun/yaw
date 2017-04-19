@@ -149,7 +149,7 @@ public class Mesh {
 
 
             // Draw the mVertices
-            if (lItem.getIsBoundingBox())
+            if (lItem.isBoundingBox())
                 glDrawElements(GL_LINES, mIndices.length, GL_UNSIGNED_INT, 0);
             else
                 glDrawElements(GL_TRIANGLES, mIndices.length, GL_UNSIGNED_INT, 0);
