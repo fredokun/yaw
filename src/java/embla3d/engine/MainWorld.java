@@ -7,7 +7,6 @@ import embla3d.engine.light.SpotLight;
 import embla3d.engine.meshs.MeshBuilder;
 import embla3d.engine.skybox.Skybox;
 import org.joml.Vector3f;
-import org.lwjgl.system.Configuration;
 
 /**
  * The Main Class that launches our game engine.
@@ -15,11 +14,11 @@ import org.lwjgl.system.Configuration;
 public class MainWorld {
     public static void main(String[] args) throws Exception {
         //This part can be activated if you want some information about the debug
-        Configuration.DEBUG.set(true);
+        /*Configuration.DEBUG.set(true);
         Configuration.DEBUG_FUNCTIONS.set(true);
         Configuration.DEBUG_MEMORY_ALLOCATOR.set(true);
         Configuration.DEBUG_STACK.set(true);
-        Configuration.DEBUG_STREAM.set(true);
+        Configuration.DEBUG_STREAM.set(true);*/
         World world = new World(0, 0, 700, 700);/* Create the world with its dimensions. */
         //THE WORLD IS NOW INIT IN THE THREAD
         //testing texture here
@@ -38,10 +37,10 @@ public class MainWorld {
         Item c1 = world.createItem("1", f, 1, MeshBuilder.generateBlock(1, 1, 1));
         c1.setBoundingBox(world.createBoundingBox("c1 bounding box", f, 2));
 
-        Item c2 = world.createItem("1", f, 1, MeshBuilder.generateBlock(1, 1, 1));
+        Item c2 = world.createItem("1", f, 3, MeshBuilder.generateBlock(1, 1, 1));
         c2.setBoundingBox(world.createBoundingBox("c2 bounding box", f, 2));
 
-        //   c2.translate(2, 2, 0);
+        c2.translate(2, 2, 0);
         c2.rotate(0, 0, 20);
 
         System.out.println("Collision ?: " + Collision.isInCollision(c1.getBoundingBox(), c2.getBoundingBox()));
@@ -59,8 +58,9 @@ public class MainWorld {
 
         world.getCamera().translate(4, 0, 10);
         while (true) {
-            // world.getCamera().rotate(0, 5, 0); /* Allows to advance the edge in the scene 3D. */
-            c1.rotate(1, 1, 1);
+            //  world.getCamera().rotate(0, 5, 0); /* Allows to advance the edge in the scene 3D. */
+            c1.rotate(5, 1, 1);
+
             c2.rotate(-1, -1, -1);
             /* world.c.translate(0,0,-5); */
             Thread.sleep(50); /* Allows to see the block (cube) move at constant rate. */
