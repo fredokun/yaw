@@ -8,7 +8,7 @@ import org.joml.Vector3f;
  */
 
 public class Material {
-    private static final float REFLECTANCE_DEFAULT_VALUE = 1000f;
+    private static final float REFLECTANCE_DEFAULT_VALUE = 0f;
     private static final Vector3f DEFAULT_COLOUR = new Vector3f(1.0f, 1.0f, 1.0f);
 
     //RGB vector

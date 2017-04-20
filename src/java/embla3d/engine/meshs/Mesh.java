@@ -147,12 +147,13 @@ public class Mesh {
             Matrix4f modelViewMat = new Matrix4f(pViewMatrix).mul(lItem.getWorldMatrix());
             pShaderProgram.setUniform("modelViewMatrix", modelViewMat);
 
-
             // Draw the mVertices
             if (lItem.isBoundingBox())
                 glDrawElements(GL_LINES, mIndices.length, GL_UNSIGNED_INT, 0);
             else
                 glDrawElements(GL_TRIANGLES, mIndices.length, GL_UNSIGNED_INT, 0);
+
+
         }
         //end render
 

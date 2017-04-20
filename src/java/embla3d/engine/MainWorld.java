@@ -37,13 +37,14 @@ public class MainWorld {
         Item c1 = world.createItem("1", f, 1, MeshBuilder.generateBlock(1, 1, 1));
         c1.setBoundingBox(world.createBoundingBox("c1 bounding box", f, 2));
 
-        Item c2 = world.createItem("1", f, 3, MeshBuilder.generateBlock(1, 1, 1));
+        Item c2 = world.createItem("1", f, 1, MeshBuilder.generateBlock(1, 1, 1));
         c2.setBoundingBox(world.createBoundingBox("c2 bounding box", f, 2));
 
+        c1.translate(-1,-1,0);
         c2.translate(2, 2, 0);
-        c2.rotate(0, 0, 20);
+        //c1.rotate(0, 0, 10);
 
-        System.out.println("Collision ?: " + Collision.isInCollision(c1.getBoundingBox(), c2.getBoundingBox()));
+        //System.out.println("Collision ?: " + Collision.isInCollision(c1, c2));
 
 
         /* Creating Light for Our World */
@@ -56,12 +57,12 @@ public class MainWorld {
        /* A skybox will allow us to set a background to give the illusion that our 3D world is bigger. */
         world.setSkybox(new Skybox(500, 500, 500, new Vector3f(10, 0, 0)));
 
-        world.getCamera().translate(4, 0, 10);
+        world.getCamera().translate(2, 2, 7);
         while (true) {
-            //  world.getCamera().rotate(0, 5, 0); /* Allows to advance the edge in the scene 3D. */
-            c1.rotate(5, 1, 1);
+            //world.getCamera().rotate(0, 5, 0); /* Allows to advance the edge in the scene 3D. */
+            //c1.rotate(-1, -1, -1);
 
-            c2.rotate(-1, -1, -1);
+            //c2.rotate(-1, -1, -1);
             /* world.c.translate(0,0,-5); */
             Thread.sleep(50); /* Allows to see the block (cube) move at constant rate. */
         }

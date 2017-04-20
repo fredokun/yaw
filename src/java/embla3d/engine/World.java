@@ -145,8 +145,23 @@ public class World implements Runnable {
         return lMesh;
     }
 
+    /**
+     * Create a bounding box with the specified parameters and add it to the  world
+     *
+     * @param id        id
+     * @param pPosition position
+     * @param pScale    scale
+     * @return BoundingBox
+     */
     public Item createBoundingBox(String id, Float[] pPosition, float pScale) {
-        return mNucleus.createBoundingBox(id, pPosition, pScale);
+        Item lItem = mNucleus.createBoundingBox(id, pPosition, pScale);
+        mSceneVertex.add(lItem);
+        return lItem;
+    }
+
+    public boolean isInCollision(Item item1, Item item2)
+    {
+        return Collision.isInCollision(item1, item2);
     }
 
     /**
