@@ -425,4 +425,61 @@ public class MeshBuilder {
         return new Mesh(vertices, null, normals, indices, 8);
 
     }
+
+    /**
+     * Generate a BoundingBoxMesh with the specified material , width, length and height.
+     * Create vertices based on the specified width, length and height.
+     * Normals and indices are hard coded
+     *
+     * @param xLength xLength
+     * @param yLength yLength
+     * @param zLength zLength
+     * @return BoundingBoxMesh
+     */
+    public static Mesh generateBoundingBox(float xLength, float yLength, float zLength) {
+        float x = xLength / 2f;
+        float y = yLength / 2f;
+        float z = zLength / 2f;
+        float[] vertices = new float[]{
+                //Front face
+                x, y, z, -x, y, z, -x, -y, z, x, -y, z,
+                //Top face
+                x, y, z, -x, y, z, x, y, -z, -x, y, -z,
+                //Back face
+                x, y, -z, -x, y, -z, -x, -y, -z, x, -y, -z,
+                //Bottom face
+                x, -y, z, -x, -y, z, x, -y, -z, -x, -y, -z,
+                //Left face
+                -x, y, z, -x, y, -z, -x, -y, z, -x, -y, -z,
+                //Right face
+                x, y, z, x, y, -z, x, -y, z, x, -y, -z};
+
+        float[] normals = {
+                //Front face
+                0, 0, 1f, 0, 0, 1f, 0, 0, 1f, 0, 0, 1f,
+                //Top face
+                0, 1f, 0, 0, 1f, 0, 0, 1f, 0, 0, 1f, 0,
+                //Back face
+                0, 0, -1f, 0, 0, -1f, 0, 0, -1f, 0, 0, -1f,
+                //Bottom face
+                0, -1f, 0, 0, -1f, 0, 0, -1f, 0, 0, -1f, 0,
+                //Left face
+                -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0,
+                //Right face
+                1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0};
+
+        int[] indices = new int[]{
+                //Front face
+                0, 1, 1, 2, 2, 3, 3, 0,
+                //Top face
+                0, 8, 9, 1, 2, 10, 3, 11,
+                //Back face
+                8, 9, 9, 10, 10, 11, 11, 8};
+
+        Mesh lMesh = new Mesh(vertices, lFloats, normals, indices);
+        Map<String, String> lOptionalAttributes = MeshBuilder.getPositionAttributesMap(xLength, yLength, zLength);
+        lMesh.putOptionalAttributes(lOptionalAttributes);
+        return lMesh;
+
+    }
 }

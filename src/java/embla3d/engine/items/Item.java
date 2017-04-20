@@ -27,11 +27,10 @@ public class Item {
      * @param pRotation      rotation vector3f
      * @param pPosition      position vector3f
      * @param pScale         scale
-     * @param pIsBoundingBox is the item a bounding box
      * @param pAppearance    mesh
      * @param pGroups        itemGoup
      */
-    public Item(String pId, Vector3f pRotation, Vector3f pPosition, float pScale, boolean pIsBoundingBox, Mesh pAppearance, ArrayList<ItemGroup> pGroups) {
+    public Item(String pId, Vector3f pRotation, Vector3f pPosition, float pScale, boolean isBoundingBox, Mesh pAppearance, ArrayList<ItemGroup> pGroups) {
         mAppearance = pAppearance;
         mScale = pScale;
         mRotation = pRotation;
@@ -39,7 +38,7 @@ public class Item {
         mGroups = pGroups == null ? new ArrayList<>() : pGroups;
         mId = pId;
         mBoundingBox = null;
-        mIsBoundingBox = pIsBoundingBox;
+        mIsBoundingBox = isBoundingBox;
     }
 
     /**
@@ -58,16 +57,6 @@ public class Item {
     }
 
     /**
-     * Create an item with only a mesh
-     * TODO ADD name
-     *
-     * @param pMesh mesh
-     */
-    public Item(Mesh pMesh) {
-        this("mesh only", new Vector3f(), new Vector3f(), 1, false, pMesh, null);
-    }
-
-    /**
      * Create an item with the specified id position mesh and scale
      * pPosition size must be 3
      *
@@ -76,8 +65,8 @@ public class Item {
      * @param pMesh     mesh
      * @param pScale    scale
      */
-    public Item(String pId, Float[] pPosition, float pScale, Mesh pMesh) {
-        this(pId, new Vector3f(), new Vector3f(pPosition[0], pPosition[1], pPosition[2]), pScale, false, pMesh, null);
+    public Item(String pId, Float[] pPosition, float pScale, boolean pIsBoundingBox,  Mesh pMesh) {
+        this(pId, new Vector3f(), new Vector3f(pPosition[0], pPosition[1], pPosition[2]), pScale, pIsBoundingBox, pMesh, null);
     }
 
     public Item clone() {
@@ -88,7 +77,7 @@ public class Item {
     public void rotate(float x, float y, float z) {
         this.setRotation(getRotation().add(x, y, z));
         if (mBoundingBox != null)
-            this.mBoundingBox.setRotation(getRotation().add(x, y, z));
+            this.mBoundingBox.rotate(x, y, z);
     }
 
     public void setPosition(float x, float y, float z) {
@@ -225,11 +214,11 @@ public class Item {
         return this.mBoundingBox;
     }
 
-    public boolean isBoundingBox() {
-        return this.mIsBoundingBox;
-    }
-
     public void setBoundingBox(Item item) {
         this.mBoundingBox = item;
+    }
+
+    public boolean isBoundingBox() {
+        return mIsBoundingBox;
     }
 }

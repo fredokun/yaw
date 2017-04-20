@@ -20,7 +20,7 @@ public class ItemManagement {
      * @return the item
      */
     public static Item createItem(String id, Float[] pPosition, float pScale, Mesh pMesh) {
-        Item item = new Item(id, pPosition, pScale, pMesh);
+        Item item = new Item(id, pPosition, pScale, false, pMesh);
 
         return item;
     }
@@ -71,7 +71,7 @@ public class ItemManagement {
         }
     */
     public static Item createBoundingBox(String id, Float[] pPosition, float pScale) {
-        Mesh appearance = MeshBuilder.generateBlock(1, 1, 1);
+        Mesh appearance = MeshBuilder.generateBoundingBox(1, 1, 1);
         Item item = new Item(id, new Vector3f(pPosition[0], pPosition[0], pPosition[0]), new Vector3f(), pScale, true, appearance, null);
         return item;
     }
