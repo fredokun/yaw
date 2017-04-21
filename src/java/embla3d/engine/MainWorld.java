@@ -40,11 +40,11 @@ public class MainWorld {
         Item c2 = world.createItem("1", f, 1, MeshBuilder.generateBlock(1, 1, 1));
         c2.setBoundingBox(world.createBoundingBox("c2 bounding box", f, 2));
 
-        c1.translate(-1,-1,0);
+        c1.translate(1,0,0);
         c2.translate(2, 2, 0);
         //c1.rotate(0, 0, 10);
 
-        //System.out.println("Collision ?: " + Collision.isInCollision(c1, c2));
+        System.out.println("Collision ?: " + Collision.isInCollision(c1, c2));
 
 
         /* Creating Light for Our World */
