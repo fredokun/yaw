@@ -30,6 +30,30 @@
   (let [item (.createItem world id position scale mesh)]
     item))
 
+
+;;Collision Functions--------------------------------------------
+;;TODO check if 2 items are in collision
+(defn check-collision!
+  "Check if 2 items are in collision in the `world` with the
+  specified items"
+  [world & {:keys [item1 item2]}]
+
+  (let [boolean (.isInCollision world item1 item2)]
+    boolean))
+
+;;TODO create a boundingbox to an item
+(defn create-boudingbox!
+  "Create a boundingbox in the `world` with the
+  specified id, position, scale"
+  [world & {:keys [id position scale]
+           :or   {id       "can't read the doc..."
+                  position [0 0 -2]
+                  scale    1}}]
+
+  (let [item (.createBoundingBox world id position scale)]
+    item))
+
+
 ;; Mesh Functions------------------------------------------------
 ;;TODO create basic meshes
 (defn create-mesh! "" []
