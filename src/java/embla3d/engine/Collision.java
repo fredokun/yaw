@@ -21,34 +21,36 @@ public class Collision {
      * @return isInCollision
      */
     public static boolean isInCollision(Item item1, Item item2) {
-        if (item1.getBoundingBox() != null && item2.getBoundingBox() != null) {
-
-            ArrayList<Vector4f> listVertexboundingBox1 = tabToListVertex(item1.getBoundingBox());
-            ArrayList<Vector4f> listVertexboundingBox2 = tabToListVertex(item2.getBoundingBox());
-
-            // index of faces
-            int[] tabIndexFaces = {0, 1, 2, 3, 1, 2, 6, 5, 0, 3, 7, 4, 1, 5, 4, 0, 2, 3, 7, 6, 4, 5, 6, 7};
-
-            // index of edges
-            int[] tabIndexEdges = {0, 1, 1, 2, 2, 3, 3, 0, 1, 5, 5, 4, 4, 0, 5, 6, 4, 7, 6, 7, 6, 2, 3, 7};
-
-            // test if edges of boundingBox1 intersect faces of boundingBox2
-            for (int i = 0; i < tabIndexEdges.length; i += 2)
-                for (int j = 0; j < tabIndexFaces.length; j += 4)
-                    if (isIntersectSegmentAndFace(listVertexboundingBox1.get(tabIndexEdges[i]), listVertexboundingBox1.get(tabIndexEdges[i + 1]),
-                            listVertexboundingBox2.get(tabIndexFaces[j]), listVertexboundingBox2.get(tabIndexFaces[j + 1]),
-                            listVertexboundingBox2.get(tabIndexFaces[j + 2]), listVertexboundingBox2.get(tabIndexFaces[j + 3])))
-                        return true;
-
-            // test if edges of boundingBox2 intersect faces of boundingBox1
-            for (int i = 0; i < tabIndexEdges.length; i += 2)
-                for (int j = 0; j < tabIndexFaces.length; j += 4)
-                    if (isIntersectSegmentAndFace(listVertexboundingBox2.get(tabIndexEdges[i]), listVertexboundingBox2.get(tabIndexEdges[i + 1]),
-                            listVertexboundingBox1.get(tabIndexFaces[j]), listVertexboundingBox1.get(tabIndexFaces[j + 1]),
-                            listVertexboundingBox1.get(tabIndexFaces[j + 2]), listVertexboundingBox1.get(tabIndexFaces[j + 3])))
-                        return true;
-        } else
+        if (item1.getBoundingBox() == null && item2.getBoundingBox() == null){
             System.out.println("One or both item have not boundingBox defined -> can't check collision");
+            return false;
+        }
+
+        ArrayList<Vector4f> listVertexboundingBox1 = tabToListVertex(item1.getBoundingBox());
+        ArrayList<Vector4f> listVertexboundingBox2 = tabToListVertex(item2.getBoundingBox());
+
+        // index of faces
+        int[] tabIndexFaces = {0, 1, 2, 3, 1, 2, 6, 5, 0, 3, 7, 4, 1, 5, 4, 0, 2, 3, 7, 6, 4, 5, 6, 7};
+
+        // index of edges
+        int[] tabIndexEdges = {0, 1, 1, 2, 2, 3, 3, 0, 1, 5, 5, 4, 4, 0, 5, 6, 4, 7, 6, 7, 6, 2, 3, 7};
+
+        // test if edges of boundingBox1 intersect faces of boundingBox2
+        for (int i = 0; i < tabIndexEdges.length; i += 2)
+            for (int j = 0; j < tabIndexFaces.length; j += 4)
+                if (isIntersectSegmentAndFace(listVertexboundingBox1.get(tabIndexEdges[i]), listVertexboundingBox1.get(tabIndexEdges[i + 1]),
+                        listVertexboundingBox2.get(tabIndexFaces[j]), listVertexboundingBox2.get(tabIndexFaces[j + 1]),
+                        listVertexboundingBox2.get(tabIndexFaces[j + 2]), listVertexboundingBox2.get(tabIndexFaces[j + 3])))
+                    return true;
+
+        // test if edges of boundingBox2 intersect faces of boundingBox1
+        for (int i = 0; i < tabIndexEdges.length; i += 2)
+            for (int j = 0; j < tabIndexFaces.length; j += 4)
+                if (isIntersectSegmentAndFace(listVertexboundingBox2.get(tabIndexEdges[i]), listVertexboundingBox2.get(tabIndexEdges[i + 1]),
+                        listVertexboundingBox1.get(tabIndexFaces[j]), listVertexboundingBox1.get(tabIndexFaces[j + 1]),
+                        listVertexboundingBox1.get(tabIndexFaces[j + 2]), listVertexboundingBox1.get(tabIndexFaces[j + 3])))
+                    return true;
+
 
         return false;
     }
