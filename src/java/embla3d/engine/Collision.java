@@ -3,11 +3,10 @@ package embla3d.engine;
 import embla3d.engine.items.Item;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
-
 import java.util.ArrayList;
 
 /**
- * Class for collision
+ * Class used to detect collision between two boundingBox
  */
 public class Collision {
 
@@ -30,9 +29,13 @@ public class Collision {
         ArrayList<Vector4f> listVertexboundingBox2 = tabToListVertex(item2.getBoundingBox());
 
         // index of faces
+        // implication of vertex in faces
+        // example: face(0,1,2,3) / face(1,2,6,5) / ...
         int[] tabIndexFaces = {0, 1, 2, 3, 1, 2, 6, 5, 0, 3, 7, 4, 1, 5, 4, 0, 2, 3, 7, 6, 4, 5, 6, 7};
 
         // index of edges
+        // implication of vertex in edges
+        // example: edge(0,1) / edge(1,2) / edge(2,3) / ...
         int[] tabIndexEdges = {0, 1, 1, 2, 2, 3, 3, 0, 1, 5, 5, 4, 4, 0, 5, 6, 4, 7, 6, 7, 6, 2, 3, 7};
 
         // test if edges of boundingBox1 intersect faces of boundingBox2
@@ -111,14 +114,6 @@ public class Collision {
         return false;
     }
 
-    public static boolean isAlreadyAdd(ArrayList<Vector4f> listVertex, Vector4f vec) {
-        for (Vector4f vector : listVertex) {
-            if (vector.x == vec.x && vector.y == vec.y && vector.z == vec.z)
-                return true;
-        }
-        return false;
-    }
-
     /**
      *
      * Construct a list of vertex with the vertices of specified item
@@ -127,11 +122,11 @@ public class Collision {
      * @return listVertex
      */
     public static ArrayList<Vector4f> tabToListVertex(Item item) {
-        ArrayList<Vector4f> listVertex = new ArrayList<Vector4f>();
+        ArrayList<Vector4f> listVertex = new ArrayList<>();
         for (int i = 0; i < item.getAppearance().getVertices().length; i += 3) {
             Vector4f vec = new Vector4f(item.getAppearance().getVertices()[i], item.getAppearance().getVertices()[i + 1]
                     , item.getAppearance().getVertices()[i + 2], 1.0f);
-            if (!isAlreadyAdd(listVertex, vec))
+            if (!isVecAlreadyAdd(listVertex, vec))
                 listVertex.add(vec);
         }
 
@@ -141,5 +136,13 @@ public class Collision {
 
 
         return listVertex;
+    }
+
+    public static boolean isVecAlreadyAdd(ArrayList<Vector4f> listVertex, Vector4f vec) {
+        for (Vector4f vector : listVertex) {
+            if (vector.x == vec.x && vector.y == vec.y && vector.z == vec.z)
+                return true;
+        }
+        return false;
     }
 }
