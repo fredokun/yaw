@@ -35,14 +35,17 @@ public class MainWorld {
         (new Thread(world)).start();/* Launches the thread responsible for the display and our game loop. */
 
         Item c1 = world.createItem("1", f, 1, MeshBuilder.generateBlock(1, 1, 1));
-        c1.setBoundingBox(world.createBoundingBox("c1 bounding box", f, 2));
+        float []tab = {1.0f,1.0f,1.0f}; // a cube
+        c1.setBoundingBox(world.createBoundingBox("c1 bounding box", f, 2, tab));
 
+        float []tab2 = {2.0f,1.0f,1.0f}; // a rectangle
         Item c2 = world.createItem("1", f, 1, MeshBuilder.generateBlock(1, 1, 1));
-        c2.setBoundingBox(world.createBoundingBox("c2 bounding box", f, 2));
+        c2.setBoundingBox(world.createBoundingBox("c1 bounding box", f, 2, tab2));
 
         c1.translate(1,0,0);
         c2.translate(2, 2, 0);
-        //c1.rotate(0, 0, 10);
+        c1.rotate(0, 0, 10);
+        c2.rotate(0,10,0);
 
         System.out.println("Collision ?: " + Collision.isInCollision(c1, c2));
 
@@ -55,7 +58,7 @@ public class MainWorld {
         //world.sc.add(GroundGenerator.generate(400,400,-2,new Material(new Vector3f(1,1,1))));
 
        /* A skybox will allow us to set a background to give the illusion that our 3D world is bigger. */
-        world.setSkybox(new Skybox(500, 500, 500, new Vector3f(10, 0, 0)));
+        world.setSkybox(new Skybox(500, 500, 500, new Vector3f(0, 0, 0)));
 
         world.getCamera().translate(2, 2, 7);
         while (true) {

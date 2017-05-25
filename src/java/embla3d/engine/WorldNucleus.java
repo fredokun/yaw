@@ -75,8 +75,8 @@ public class WorldNucleus {
         return ItemManagement.createItem(pId, pPosition, pScale, pMesh);
     }
 
-    public Item createBoundingBox(String id, Float[] pPosition, float pScale) {
-        return ItemManagement.createBoundingBox(id, pPosition, pScale);
+    public Item createBoundingBox(String id, Float[] pPosition, float pScale, float []pLenght) {
+        return ItemManagement.createBoundingBox(id, pPosition, pScale, pLenght);
 
     }
 }

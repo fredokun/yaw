@@ -35,7 +35,7 @@ public class Material {
         this.mColor = DEFAULT_COLOUR;
         this.mReflectance = REFLECTANCE_DEFAULT_VALUE;
         //TODO REMOVE test only
-        this.mTexture = new Texture("/ressources/grassblock.png");
+        //this.mTexture = new Texture("/ressources/grassblock.png");
     }
 
     /**
@@ -99,6 +99,8 @@ public class Material {
     public Vector3f getColor() {
         return mColor;
     }
+
+    public void setColor(Vector3f pColor) {mColor = pColor;}
 
     public float getReflectance() {
         return mReflectance;
