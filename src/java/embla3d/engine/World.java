@@ -153,8 +153,8 @@ public class World implements Runnable {
      * @param pScale    scale
      * @return BoundingBox
      */
-    public Item createBoundingBox(String id, Float[] pPosition, float pScale) {
-        Item lItem = mNucleus.createBoundingBox(id, pPosition, pScale);
+    public Item createBoundingBox(String id, Float[] pPosition, float pScale, float []pLength) {
+        Item lItem = mNucleus.createBoundingBox(id, pPosition, pScale, pLength);
         mSceneVertex.add(lItem);
         return lItem;
     }
