@@ -2,19 +2,31 @@ package embla3d.engine;
 
 import org.lwjgl.system.APIUtil;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.*;
+
+/**
+ * Example of use :
+ * <p>
+ * I) For OpenGl and Java to put : LoggerEMBLA3D logger = LoggerEMBLA3D.getInstance(Level.INFO);
+ * <p>
+ * // 1.  -> For OpenGl :
+ * logger.activateFileMode(); // or logger.activateConsoleMode()
+ * GLUtil.setupDebugMessageCallback(logger);
+ * <p>
+ * // 2. -> For Java :
+ * <p>
+ * logger.activateFileMode(); // or logger.activateConsoleMode()
+ * logger.workJavaLogger("error", "log", Level.WARNING);
+ */
 
 
 /**
  * This class represents our logger it inherited from PrintStream to be used for debug opengl .
  */
-
 public class LoggerEMBLA3D extends PrintStream {
 
     /**
@@ -22,25 +34,41 @@ public class LoggerEMBLA3D extends PrintStream {
      */
     private static LoggerEMBLA3D instance = new LoggerEMBLA3D(APIUtil.DEBUG_STREAM);
     private static Logger logger;
+    private static int compteur = 0;
+    private static Level filtreLevel;
     private Level levelLogger;
     private boolean activateConsoleMode = false;
     private boolean activateFileMode = false;
     /**
      * nameLogger : must be formatted -> Package.subPackage.Class (Advice for clarity)
-     * Here we can add _java or _opengl to differentiate the 2.
      */
     private String nameLogger;
-    private Handler fh;
+    private ConsoleHandler consoleHandler;
+    private Handler fileHandler;
+    /**
+     * For Java debugging messages
+     **/
+    private String messageLogJava = "";
+    /**
+     * For OpenGL debugging messages
+     **/
+    private String messageLogOpenGL = "";
 
-    private String message_logJAVA = "";
-    private String message_logOPENGL = "";
 
     private LoggerEMBLA3D(OutputStream out) {
         super(out);
-        init("loggerEMBLA3D");
+        init("loggerEMBLA3D"); /** Allows to initialize the internal logger  */
     }
 
-    public static LoggerEMBLA3D getInstance() {
+    /**
+     * Create an instance of our logger with a filtering per level of criticality of the message
+     * (messages with the level passed in parameter and more will display the other not)
+     *
+     * @param filtreLev filtreLev Allows to filter the messages according to the level of the messages
+     * @return
+     */
+    public static LoggerEMBLA3D getInstance(Level filtreLev) {
+        filtreLevel = filtreLev;
         return instance;
     }
 
@@ -96,53 +124,73 @@ public class LoggerEMBLA3D extends PrintStream {
         }
     }
 
+    /**
+     * create the logger only once during the first call
+     * and then for the other times it retrieves the logger and writes on it
+     *
+     * @param name name of logger
+     */
     public void init(String name) {
-        logger = Logger.getLogger(name); /** create the logger only once during the first call
-         * and then for the other times it retrieves the logger and writes on it*/
+        logger = Logger.getLogger(name);
+        consoleHandler = new ConsoleHandler();
+        nameLogger = name;
+        /** By default, the java.util.logging framework uses
+         * the JRE_HOME/lib/logging.properties file to configure itself.
+         * We must reset the configuration of the log so that the message does not appear 2 times in the console. */
+        LogManager.getLogManager().reset();
+
     }
 
     /**
      * This class is used to process error messages at the logger level.
      *
      * @param message_error Represents the error message to be assigned to the logger.
-     * @param namelog       namelog Represents the name of the logger.
      * @param severity      severity Represents the level of the logger.
      */
-    public void work_java_Logger(String message_error, String namelog, Level severity) {
-        this.setNameLogger(namelog);
-        message_logJAVA = "\n== DEBUG JAVA ==\n";
-        this.message_logJAVA += message_error;
-        //choiceLevel(severity);
+    public void workJavaLogger(String message_error, Level severity) {
+        messageLogJava = "\n== DEBUG JAVA ==\n";
+        this.messageLogJava += message_error + "\n";
         this.levelLogger = severity;
-        this.workLogger(message_logJAVA);
+        this.workLogger(messageLogJava, "Java");
     }
 
     /**
      * Created the logger and according to the activated mode we put the error messages in the terminal or in a file.
+     * version Is the type of error handling as Java or OpenGl.
      */
-    private void workLogger(String message_log) {
-
-        // LogManager lgM= LogManager.getLogManager();
-        //lgM.addLogger(logger);
-        //lgM.toString();
+    private void workLogger(String messageLog, String version) {
         if (this.activateConsoleMode) {
-            // fh = new ConsoleHandler(); TODO TO DELETE
-            // logger.addHandler(fh); /**TODO DELETE, Associates the file pointer to the logger **/.
-            logger.log(levelLogger, message_log + "\n");
-
+            consoleHandler = new ConsoleHandler();
+            consoleHandler.setLevel(filtreLevel);
+            logger.addHandler(consoleHandler);
+            logger.setLevel(filtreLevel);
+            logger.log(levelLogger, messageLog + "\n");
+            logger.removeHandler(logger.getHandlers()[0]);
+            consoleHandler.close();
         }
         if (this.activateFileMode) {
             try {
-                fh = new FileHandler(nameLogger + ".log");
-                logger.addHandler(fh); /** Associates the file pointer to the logger **/
-                logger.log(levelLogger, message_log);
-
+                /** Avoids creating files for messages that are not loggable **/
+                if (logger.isLoggable(this.levelLogger)) {
+                    /** Allows to create the folder for the log files**/
+                    File dir = new File("./messagesLog" + version + "/");
+                    dir.mkdirs();
+                    fileHandler = new FileHandler("messagesLog" + version + "/" + nameLogger + "" + compteur + "_" + version + ".log");
+                    fileHandler.setLevel(filtreLevel);
+                    logger.addHandler(fileHandler); /** Associates the file pointer to the logger **/
+                    logger.setLevel(filtreLevel);
+                    logger.log(levelLogger, messageLog + "\n");
+                    logger.removeHandler(logger.getHandlers()[0]);
+                    fileHandler.close();
+                    compteur++;
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+
         }
     }
-
 
     /**
      * Allows to redefine the printf method of the PrintStream class to retrieve error messages
@@ -150,32 +198,27 @@ public class LoggerEMBLA3D extends PrintStream {
      *
      * @param format format
      * @param args   args
-     * @return this
+     * @return this this
      */
     public PrintStream printf(String format, Object... args) {
-        //GL.createCapabilities(); //TODO a enlever ??????????????
-
 
         if (args[0] == "ID") {
-            message_logOPENGL = "== DEBUG OPENGL ==\n";
+            messageLogOpenGL = "== DEBUG OPENGL ==\n";
         }
-        message_logOPENGL += args[0] + ": " + args[1] + "\n";
+        messageLogOpenGL += args[0] + ": " + args[1] + "\n";
 
         if (args[0] == "Severity") {
-            // System.out.println("MESS"+message_log);
             choiceLevel("" + args[1]);
         }
         if (args[0] == "Message") {
-            workLogger(message_logOPENGL);
+            workLogger(messageLogOpenGL, "OpenGL");
         }
         return this;
     }
 
-
     /**
      * Allow to activate the console mode of Logger.
      */
-
     public void activateConsoleMode() {
         activateConsoleMode = true;
     }
@@ -211,12 +254,6 @@ public class LoggerEMBLA3D extends PrintStream {
 
     public void setNameLogger(String nLogger) {
         this.nameLogger = nLogger;
-    }
-
-    public void setLevel(Level lev) {
-        //choiceLevel(lev);
-        // System.out.println(this.levelLogger);
-        logger.setLevel(lev);
     }
 
     public void println(String x) {
