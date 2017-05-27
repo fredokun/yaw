@@ -1,11 +1,11 @@
-
 # A simple (and dirty) script to generate
 # a java class from a shared program.
 # This helps is statically resolving shader programs
 # using LWJGL3.
 
-import sys
 import os.path
+import sys
+
 
 def jstringify(content):
     '''Return a java string from a "normal" string '''
@@ -19,8 +19,9 @@ def jstringify(content):
             jstr += '\\n'
         else:
             jstr += ch
-    
+
     return jstr + '\"'
+
 
 def classify(package_name, class_name, shader_str):
     return """
@@ -33,14 +34,15 @@ public class {class_name} {{
 }}
 """.format(**locals())
 
+
 def fatal_error(explain):
     print("Fatal error: {}".format(explain), file=sys.stderr)
     print("Abort.")
-    
-if __name__ == "__main__":
-    
 
-    if len(sys.argv)!=3:
+
+if __name__ == "__main__":
+
+    if len(sys.argv) != 3:
         fatal_error("needs at least two arguments")
 
     package_name = sys.argv[1]
@@ -48,7 +50,7 @@ if __name__ == "__main__":
 
     print("Classifying shader program '{}' in package '{}'"
           .format(input_fname, package_name))
-    
+
     base_fname = os.path.basename(input_fname)
     class_name = os.path.splitext(base_fname)[0]
     output_fname = class_name + ".java"
@@ -65,4 +67,3 @@ if __name__ == "__main__":
 
     print("... shader program classified in '{}'".format(output_fname))
     print("Bye bye!")
-

@@ -1,8 +1,9 @@
-package embla3d.engine;
+package embla3d.engine.collision;
 
 import embla3d.engine.items.Item;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
+
 import java.util.ArrayList;
 
 /**
@@ -11,7 +12,6 @@ import java.util.ArrayList;
 public class Collision {
 
     /**
-     *
      * Return true if Bouding Box of items in parameter are in collision else false
      * and return false if items haven't boundingBox defined
      *
@@ -20,7 +20,7 @@ public class Collision {
      * @return isInCollision
      */
     public static boolean isInCollision(Item item1, Item item2) {
-        if (item1.getBoundingBox() == null && item2.getBoundingBox() == null){
+        if (item1.getBoundingBox() == null && item2.getBoundingBox() == null) {
             System.out.println("One or both item have not boundingBox defined -> can't check collision");
             return false;
         }
@@ -60,7 +60,6 @@ public class Collision {
 
 
     /**
-     *
      * Returns true if the segment passes through the face
      * Segment define by 2 points (segmentStart, segmentEnd)
      * face define by 4 points (corner1Face, corner2Face, corner3Face, corner4Face)
@@ -115,7 +114,6 @@ public class Collision {
     }
 
     /**
-     *
      * Construct a list of vertex with the vertices of specified item
      *
      * @param item item

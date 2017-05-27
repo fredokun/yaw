@@ -1,10 +1,11 @@
-package embla3d.engine;
+package embla3d.engine.shader;
 
 import embla3d.engine.light.AmbientLight;
 import embla3d.engine.light.DirectionalLight;
 import embla3d.engine.light.PointLight;
 import embla3d.engine.light.SpotLight;
 import embla3d.engine.meshs.Material;
+import embla3d.engine.util.LoggerEMBLA3D;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
@@ -119,6 +120,7 @@ public class ShaderProgram {
      * @throws Exception the exception
      */
     public void createPointLightListUniform(String uniformName, int size) throws Exception {
+        LoggerEMBLA3D.logOpenGl();
         for (int i = 0; i < size; i++) {
             createPointLightUniform(uniformName + "[" + i + "]");
         }

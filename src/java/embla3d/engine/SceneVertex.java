@@ -2,6 +2,7 @@ package embla3d.engine;
 
 import embla3d.engine.items.Item;
 import embla3d.engine.meshs.Mesh;
+import embla3d.engine.shader.ShaderProgram;
 import org.joml.Matrix4f;
 
 import java.util.ArrayList;

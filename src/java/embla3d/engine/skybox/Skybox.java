@@ -1,7 +1,7 @@
 package embla3d.engine.skybox;
 
-import embla3d.engine.ShaderProgram;
 import embla3d.engine.camera.Camera;
+import embla3d.engine.shader.ShaderProgram;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;

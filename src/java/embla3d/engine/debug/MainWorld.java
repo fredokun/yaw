@@ -1,5 +1,7 @@
-package embla3d.engine;
+package embla3d.engine.debug;
 
+import embla3d.engine.World;
+import embla3d.engine.collision.Collision;
 import embla3d.engine.items.Item;
 import embla3d.engine.light.AmbientLight;
 import embla3d.engine.light.DirectionalLight;
@@ -19,6 +21,7 @@ public class MainWorld {
         Configuration.DEBUG_MEMORY_ALLOCATOR.set(true);
         Configuration.DEBUG_STACK.set(true);
         Configuration.DEBUG_STREAM.set(true);*/
+        //LoggerEMBLA3D.getInstance().activateConsoleMode();
         World world = new World(0, 0, 700, 700);/* Create the world with its dimensions. */
         //THE WORLD IS NOW INIT IN THE THREAD
         //testing texture here
@@ -35,17 +38,17 @@ public class MainWorld {
         (new Thread(world)).start();/* Launches the thread responsible for the display and our game loop. */
 
         Item c1 = world.createItem("1", f, 1, MeshBuilder.generateBlock(1, 1, 1));
-        float []tab = {1.0f,1.0f,1.0f}; // a cube
+        float[] tab = {1.0f, 1.0f, 1.0f}; // a cube
         c1.setBoundingBox(world.createBoundingBox("c1 bounding box", f, 2, tab));
 
-        float []tab2 = {2.0f,1.0f,1.0f}; // a rectangle
+        float[] tab2 = {2.0f, 1.0f, 1.0f}; // a rectangle
         Item c2 = world.createItem("1", f, 1, MeshBuilder.generateBlock(1, 1, 1));
         c2.setBoundingBox(world.createBoundingBox("c1 bounding box", f, 2, tab2));
 
-        c1.translate(1,0,0);
+        c1.translate(1, 0, 0);
         c2.translate(2, 2, 0);
         c1.rotate(0, 0, 10);
-        c2.rotate(0,10,0);
+        c2.rotate(0, 10, 0);
 
         System.out.println("Collision ?: " + Collision.isInCollision(c1, c2));
 

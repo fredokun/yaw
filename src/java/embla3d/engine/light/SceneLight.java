@@ -1,6 +1,6 @@
 package embla3d.engine.light;
 
-import embla3d.engine.ShaderProgram;
+import embla3d.engine.shader.ShaderProgram;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -37,22 +37,6 @@ public class SceneLight {
 
     public void removeSun() {
         this.mSun = new DirectionalLight();
-    }
-
-    /**
-     * setters and  method remove for the ambient and directional light
-     */
-
-    public void setAmbient(AmbientLight ambient) {
-        this.mAmbient = ambient;
-    }
-
-    public DirectionalLight getSun() {
-        return this.mSun;
-    }
-
-    public void setSun(DirectionalLight sun) {
-        this.mSun = sun;
     }
 
     public void setPointTable(PointLight point, int pos) {
@@ -125,6 +109,14 @@ public class SceneLight {
         mSpotTable[pos] = sl;
     }
 
+    public DirectionalLight getSun() {
+        return this.mSun;
+    }
+
+    public void setSun(DirectionalLight sun) {
+        this.mSun = sun;
+    }
+
     public AmbientLight getAmbientLight() {
         return mAmbient;
     }
@@ -159,5 +151,13 @@ public class SceneLight {
 
     public void setSpecularPower(float x) {
         mSpecularPower = x;
+    }
+
+    /**
+     * setters and  method remove for the ambient and directional light
+     */
+
+    public void setAmbient(AmbientLight ambient) {
+        this.mAmbient = ambient;
     }
 }

@@ -1,6 +1,7 @@
 package embla3d.engine;
 
 import embla3d.engine.camera.Camera;
+import embla3d.engine.collision.Collision;
 import embla3d.engine.items.Item;
 import embla3d.engine.items.ItemGroup;
 import embla3d.engine.light.SceneLight;

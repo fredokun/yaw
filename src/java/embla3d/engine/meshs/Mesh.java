@@ -1,7 +1,7 @@
 package embla3d.engine.meshs;
 
-import embla3d.engine.ShaderProgram;
 import embla3d.engine.items.Item;
+import embla3d.engine.shader.ShaderProgram;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 
