@@ -1,9 +1,9 @@
 #! /bin/sh
 
-PYTHON3=python
+PYTHON3=python3
 
 echo "* Making vertex shader *"
-$PYTHON3 ./shader_classify.py "embla3d.engine" ./vertShader.vs
+$PYTHON3 ./shader_classify.py "embla3d.engine.shader" ./vertShader.vs
 
 echo "* Making fragment shader *"
-$PYTHON3 ./shader_classify.py "embla3d.engine" ./fragShader.fs
+$PYTHON3 ./shader_classify.py "embla3d.engine.shader" ./fragShader.fs

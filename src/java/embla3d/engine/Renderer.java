@@ -3,6 +3,8 @@ package embla3d.engine;
 import embla3d.engine.camera.Camera;
 import embla3d.engine.light.SceneLight;
 import embla3d.engine.shader.ShaderProgram;
+import embla3d.engine.shader.fragShader;
+import embla3d.engine.shader.vertShader;
 import embla3d.engine.skybox.Skybox;
 import org.joml.Matrix4f;
 
@@ -22,8 +24,8 @@ public class Renderer {
     public void init() throws Exception {
         /* Initialization of the shader program. */
         mShaderProgram = new ShaderProgram();
-        mShaderProgram.createVertexShader(embla3d.engine.vertShader.SHADER_STRING);
-        mShaderProgram.createFragmentShader(embla3d.engine.fragShader.SHADER_STRING);
+        mShaderProgram.createVertexShader(vertShader.SHADER_STRING);
+        mShaderProgram.createFragmentShader(fragShader.SHADER_STRING);
 
 
        /* Binds the code and checks that everything has been done correctly. */
@@ -43,7 +45,6 @@ public class Renderer {
         mShaderProgram.createPointLightListUniform("pointLights", SceneLight.MAX_POINTLIGHT);
         mShaderProgram.createSpotLightUniformList("spotLights", SceneLight.MAX_SPOTLIGHT);
         mShaderProgram.createDirectionalLightUniform("directionalLight");
-
     }
 
     /**
