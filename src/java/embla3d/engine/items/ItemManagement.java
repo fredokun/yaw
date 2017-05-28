@@ -19,7 +19,7 @@ public class ItemManagement {
      * @param pMesh     mesh
      * @return the item
      */
-    public static Item createItem(String id, Float[] pPosition, float pScale, Mesh pMesh) {
+    public static Item createItem(String id, float[] pPosition, float pScale, Mesh pMesh) {
         Item item = new Item(id, pPosition, pScale, false, pMesh);
 
         return item;
@@ -70,7 +70,7 @@ public class ItemManagement {
             return item;
         }
     */
-    public static Item createBoundingBox(String id, Float[] pPosition, float pScale, float []pLength) {
+    public static Item createBoundingBox(String id, float[] pPosition, float pScale, float[] pLength) {
         Mesh appearance = MeshBuilder.generateBoundingBox(pLength[0], pLength[1], pLength[2]);
         appearance.getMaterial().setColor(new Vector3f(0,255,0));
         Item item = new Item(id, new Vector3f(pPosition[0], pPosition[0], pPosition[0]), new Vector3f(), pScale, true, appearance, null);

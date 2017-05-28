@@ -71,11 +71,11 @@ public class WorldNucleus {
         return new Skybox(pWidth, pLength, pHeight, pVector3f);
     }
 
-    public Item createItem(String pId, Float[] pPosition, float pScale, Mesh pMesh) {
+    public Item createItem(String pId, float[] pPosition, float pScale, Mesh pMesh) {
         return ItemManagement.createItem(pId, pPosition, pScale, pMesh);
     }
 
-    public Item createBoundingBox(String id, Float[] pPosition, float pScale, float []pLenght) {
+    public Item createBoundingBox(String id, float[] pPosition, float pScale, float[] pLenght) {
         return ItemManagement.createBoundingBox(id, pPosition, pScale, pLenght);
 
     }

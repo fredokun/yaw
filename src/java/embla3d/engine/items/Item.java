@@ -65,7 +65,7 @@ public class Item {
      * @param pMesh     mesh
      * @param pScale    scale
      */
-    public Item(String pId, Float[] pPosition, float pScale, boolean pIsBoundingBox,  Mesh pMesh) {
+    public Item(String pId, float[] pPosition, float pScale, boolean pIsBoundingBox, Mesh pMesh) {
         this(pId, new Vector3f(), new Vector3f(pPosition[0], pPosition[1], pPosition[2]), pScale, pIsBoundingBox, pMesh, null);
     }
 
@@ -214,11 +214,11 @@ public class Item {
         return this.mBoundingBox;
     }
 
-    public void setBoundingBox(Item item) {
-        this.mBoundingBox = item;
-    }
-
     public boolean isBoundingBox() {
         return mIsBoundingBox;
+    }
+
+    public void setBoundingBox(Item item) {
+        this.mBoundingBox = item;
     }
 }
