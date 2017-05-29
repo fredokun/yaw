@@ -4,7 +4,8 @@
            [embla3d.engine.camera CameraManagement]
            [embla3d.engine.light LightManagement]
            [embla3d.engine.camera Camera]
-           [embla3d.engine.items ItemManagement])
+           [embla3d.engine.items ItemManagement]
+           (embla3d.engine.meshs MeshBuilder))
   (:gen-class))
 
 (defn start-universe!
@@ -161,7 +162,7 @@
   (CameraManagement/getCamera world numero))
 
 (defn getCamerasList [world]
-  (vec (.getmCamerasList world)))
+  (vec (.getCamerasList world)))
 
 (defn getLiveCamera [world]
   (CameraManagement/getLiveCamera world))
@@ -189,12 +190,12 @@
 ;; Objects Management------------------------------------------------
 
 (defn createGround [world r g b width length]
-  (ItemManagement/createGround world r g b width length))
+  (MeshBuilder/generateGround 1 1 1))
 
 (defn create-block!
   "Create a rectangular block in the `world` with the
-  specified id, color, dimensions, scale and position"
-  [world & {:keys [id color dimensions scale position]
+  specified id, position, color"
+  [world & {:keys [id position scale color texture]
             :or   {color      [0 0 1]
                    dimensions [1 1 1]
                    scale      1
@@ -206,6 +207,23 @@
     (let [item (ItemManagement/createBlock world r g b xl yl zl scale)]
       (.translate item xp yp zp)
       item)))
+
+;;TODO create basic meshes
+(defn create-block-mesh! []
+
+  )
+
+(defn create-item!
+  "Create an item in the `world` with the
+  specified id, position, mesh"
+  [world & {:keys [id position scale mesh]
+            :or   {id       ""
+                   position [0 0 -2]
+                   scale    1
+                   mesh     (create-block-mesh!)}}]
+
+  (let [item (.createItem world id position scale mesh)]
+    item))
 
 (defn createHalfBlock [world r g b xL yL zL scale]
   (ItemManagement/createHalfBlock world r g b xL yL zL scale))
@@ -451,7 +469,7 @@
 
 (defn saveCameras [world]
   "Returns a vector containing all cameras of the given world in EDN format."
-  (vector (cameraToVector (.getCamera world)) (createCameraVector (vec (.getmCamerasList world)))))
+  (vector (cameraToVector (.getCamera world)) (createCameraVector (vec (.getCamerasList world)))))
 
 
 (defn saveLights [world]
@@ -657,4 +675,16 @@
     (loadLights (get loadedVector 3) world)
     (loadSkybox (get loadedVector 4) world)
     universe))
+(defn create-mesh! [vertices text-pos faces normals]
+
+  )
+(defn create-block! [x y z]
+  {:vertices {:v1 [x y z]
+              :v2 [x y z]
+              :v3 [x y z]
+              :v4 [x y z]
+              :v5 [x y z]}
+   :text-pos [:v1 :v1 :v1 :v1]
+   :faces    {[:v1 :v2 :v3 :v4] []}
+   :normals  []})
 

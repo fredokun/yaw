@@ -1,14 +1,14 @@
-package embla3d.engine;
+package embla3d.engine.shader;
 
 import embla3d.engine.light.AmbientLight;
 import embla3d.engine.light.DirectionalLight;
 import embla3d.engine.light.PointLight;
 import embla3d.engine.light.SpotLight;
 import embla3d.engine.meshs.Material;
+import embla3d.engine.util.LoggerEMBLA3D;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GLUtil;
 
 import java.nio.FloatBuffer;
 import java.util.HashMap;
@@ -48,39 +48,6 @@ public class ShaderProgram {
     }
 
     /**
-     * Create a shader attach the specified source to it compile it and attach the shader to the main program
-     *
-     * @param shaderCode source code for the shader
-     * @param shaderType the type of shader to be created. One of:
-     *                   VERTEX_SHADER	FRAGMENT_SHADER	GEOMETRY_SHADER	TESS_CONTROL_SHADER
-     *                   TESS_EVALUATION_SHADER
-     * @return the id of the shader
-     * @throws Exception the exception o/
-     */
-    private int createShader(String shaderCode, int shaderType) throws Exception {
-        /*the shader object whose source code is to be replaced*/
-        int shaderId = glCreateShader(shaderType);
-        System.out.println(glGetShaderInfoLog(shaderId));
-        /*can't use glIsShader here because it alwayse return false and we don't know why */
-        if (shaderId == GL_FALSE) {
-            throw new Exception("Error creating shader. Code: " + shaderId);
-        }
-        /*Sets the source code in shader to the source code in the array of strings specified by strings.*/
-        glShaderSource(shaderId, shaderCode);
-        /*Compiles a shader object.*/
-        glCompileShader(shaderId);
-
-        if (glGetShaderi(shaderId, GL_COMPILE_STATUS) == GL_FALSE) {
-            throw new Exception("Error compiling Shader code: " + glGetShaderInfoLog(shaderId, 1024));
-        }
-
-        /*void function */
-        glAttachShader(mProgramId, shaderId);
-
-        return shaderId;
-    }
-
-    /**
      * Create a fragment shader
      *
      * @param shaderCode source code for the shader
@@ -112,13 +79,10 @@ public class ShaderProgram {
      * Installs the program object as part of current rendering state.
      */
     public void bind() {
-        GLUtil.setupDebugMessageCallback();
         /*Specifies the handle of the program object whose executables are to be used as part of current rendering state.*/
         glUseProgram(mProgramId);
 
     }
-
-    // Deallocate Shader Program
 
     /**
      *
@@ -139,6 +103,8 @@ public class ShaderProgram {
         }
     }
 
+    // Deallocate Shader Program
+
     /**
      * unbind
      */
@@ -154,24 +120,10 @@ public class ShaderProgram {
      * @throws Exception the exception
      */
     public void createPointLightListUniform(String uniformName, int size) throws Exception {
+        LoggerEMBLA3D.logOpenGl();
         for (int i = 0; i < size; i++) {
             createPointLightUniform(uniformName + "[" + i + "]");
         }
-    }
-
-    /**
-     * Create uniform for each attribute of the point light
-     *
-     * @param uniformName uniform name
-     * @throws Exception the exception
-     */
-    private void createPointLightUniform(String uniformName) throws Exception {
-        createUniform(uniformName + ".colour");
-        createUniform(uniformName + ".position");
-        createUniform(uniformName + ".intensity");
-        createUniform(uniformName + ".att_constant");
-        createUniform(uniformName + ".att_linear");
-        createUniform(uniformName + ".att_exponent");
     }
 
     /**
@@ -205,25 +157,13 @@ public class ShaderProgram {
     }
 
     /**
-     * Create uniform for each attribute of the spot light
-     *
-     * @param uniformName uniform name
-     * @throws Exception the exception
-     */
-    private void createSpotLightUniform(String uniformName) throws Exception {
-        createPointLightUniform(uniformName + ".pl");
-        createUniform(uniformName + ".conedir");
-        createUniform(uniformName + ".cutoff");
-    }
-
-    /**
      * Create uniform for each attribute of the directional light
      *
      * @param uniformName uniform name
      * @throws Exception the exception
      */
     public void createDirectionalLightUniform(String uniformName) throws Exception {
-        createUniform(uniformName + ".colour");
+        createUniform(uniformName + ".color");
         createUniform(uniformName + ".direction");
         createUniform(uniformName + ".intensity");
     }
@@ -236,7 +176,9 @@ public class ShaderProgram {
      */
     public void createMaterialUniform(String uniformName) throws Exception {
         createUniform(uniformName + ".color");
+        createUniform(uniformName + ".hasTexture");
         createUniform(uniformName + ".reflectance");
+
     }
 
     /**
@@ -270,8 +212,12 @@ public class ShaderProgram {
      * @param material    the material
      */
     public void setUniform(String uniformName, Material material) {
-        setUniform(uniformName + ".color", material.color);
-        setUniform(uniformName + ".reflectance", material.reflectance);
+
+        setUniform(uniformName + ".color", material.getColor());
+
+        setUniform(uniformName + ".hasTexture", (int) (material.isTextured() ? 1 : 0));
+
+        setUniform(uniformName + ".reflectance", material.getReflectance());
     }
 
     /**
@@ -282,6 +228,16 @@ public class ShaderProgram {
      */
     public void setUniform(String uniformName, Vector3f value) {
         glUniform3f(mUniformsList.get(uniformName), value.x, value.y, value.z);
+    }
+
+    /**
+     * Modifies the value of a uniform int with the specified float
+     *
+     * @param uniformName the uniform name
+     * @param value       the float
+     */
+    public void setUniform(String uniformName, int value) {
+        glUniform1i(mUniformsList.get(uniformName), value);
     }
 
     /**
@@ -319,21 +275,6 @@ public class ShaderProgram {
     }
 
     /**
-     * Modifies the value of uniform specified by the uniformName with the specified value
-     *
-     * @param uniformName the uniform name
-     * @param pointLight  the point light
-     */
-    private void setUniform(String uniformName, PointLight pointLight) {
-        setUniform(uniformName + ".colour", pointLight.getColor());
-        setUniform(uniformName + ".position", pointLight.getPosition());
-        setUniform(uniformName + ".intensity", pointLight.getIntensity());
-        setUniform(uniformName + ".att_constant", pointLight.getConstantAtt());
-        setUniform(uniformName + ".att_linear", pointLight.getLinearAtt());
-        setUniform(uniformName + ".att_exponent", pointLight.getQuadraticAtt());
-    }
-
-    /**
      * Modifies the value of uniforms specified by the uniformName with the specified spotLights
      *
      * @param uniformName the uniform name
@@ -361,22 +302,10 @@ public class ShaderProgram {
      * Modifies the value of uniform specified by the uniformName with the specified value
      *
      * @param uniformName the uniform name
-     * @param spotLight   the spotlight
-     */
-    private void setUniform(String uniformName, SpotLight spotLight) {
-        setUniform(uniformName + ".pl", (PointLight) spotLight);
-        setUniform(uniformName + ".conedir", spotLight.getConedir());
-        setUniform(uniformName + ".cutoff", spotLight.getCutoffAngle());
-    }
-
-    /**
-     * Modifies the value of uniform specified by the uniformName with the specified value
-     *
-     * @param uniformName the uniform name
      * @param dirLight    the directional Light
      */
     public void setUniform(String uniformName, DirectionalLight dirLight) {
-        setUniform(uniformName + ".colour", dirLight.getColor());
+        setUniform(uniformName + ".color", dirLight.getColor());
         setUniform(uniformName + ".direction", dirLight.mDirection);
         setUniform(uniformName + ".intensity", dirLight.getIntensity());
     }
@@ -389,6 +318,93 @@ public class ShaderProgram {
      */
     public void setUniform(String uniformName, AmbientLight ambient) {
         setUniform(uniformName, ambient.getShaderValue());
+    }
+
+    /**
+     * Create a shader attach the specified source to it compile it and attach the shader to the main program
+     *
+     * @param shaderCode source code for the shader
+     * @param shaderType the type of shader to be created. One of:
+     *                   VERTEX_SHADER	FRAGMENT_SHADER	GEOMETRY_SHADER	TESS_CONTROL_SHADER
+     *                   TESS_EVALUATION_SHADER
+     * @return the id of the shader
+     * @throws Exception the exception o/
+     */
+    private int createShader(String shaderCode, int shaderType) throws Exception {
+        /*the shader object whose source code is to be replaced*/
+        int shaderId = glCreateShader(shaderType);
+        System.out.println(glGetShaderInfoLog(shaderId));
+        /*can't use glIsShader here because it alwayse return false and we don't know why */
+        if (shaderId == GL_FALSE) {
+            throw new Exception("Error creating shader. Code: " + shaderId);
+        }
+        /*Sets the source code in shader to the source code in the array of strings specified by strings.*/
+        glShaderSource(shaderId, shaderCode);
+        /*Compiles a shader object.*/
+        glCompileShader(shaderId);
+
+        if (glGetShaderi(shaderId, GL_COMPILE_STATUS) == GL_FALSE) {
+            throw new Exception("Error compiling Shader code: " + glGetShaderInfoLog(shaderId, 1024));
+        }
+
+        /*void function */
+        glAttachShader(mProgramId, shaderId);
+
+        return shaderId;
+    }
+
+    /**
+     * Create uniform for each attribute of the point light
+     *
+     * @param uniformName uniform name
+     * @throws Exception the exception
+     */
+    private void createPointLightUniform(String uniformName) throws Exception {
+        createUniform(uniformName + ".color");
+        createUniform(uniformName + ".position");
+        createUniform(uniformName + ".intensity");
+        createUniform(uniformName + ".att_constant");
+        createUniform(uniformName + ".att_linear");
+        createUniform(uniformName + ".att_exponent");
+    }
+
+    /**
+     * Create uniform for each attribute of the spot light
+     *
+     * @param uniformName uniform name
+     * @throws Exception the exception
+     */
+    private void createSpotLightUniform(String uniformName) throws Exception {
+        createPointLightUniform(uniformName + ".pl");
+        createUniform(uniformName + ".conedir");
+        createUniform(uniformName + ".cutoff");
+    }
+
+    /**
+     * Modifies the value of uniform specified by the uniformName with the specified value
+     *
+     * @param uniformName the uniform name
+     * @param pointLight  the point light
+     */
+    private void setUniform(String uniformName, PointLight pointLight) {
+        setUniform(uniformName + ".color", pointLight.getColor());
+        setUniform(uniformName + ".position", pointLight.getPosition());
+        setUniform(uniformName + ".intensity", pointLight.getIntensity());
+        setUniform(uniformName + ".att_constant", pointLight.getConstantAtt());
+        setUniform(uniformName + ".att_linear", pointLight.getLinearAtt());
+        setUniform(uniformName + ".att_exponent", pointLight.getQuadraticAtt());
+    }
+
+    /**
+     * Modifies the value of uniform specified by the uniformName with the specified value
+     *
+     * @param uniformName the uniform name
+     * @param spotLight   the spotlight
+     */
+    private void setUniform(String uniformName, SpotLight spotLight) {
+        setUniform(uniformName + ".pl", (PointLight) spotLight);
+        setUniform(uniformName + ".conedir", spotLight.getConedir());
+        setUniform(uniformName + ".cutoff", spotLight.getCutoffAngle());
     }
 
 }

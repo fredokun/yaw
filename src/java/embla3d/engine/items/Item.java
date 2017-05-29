@@ -9,46 +9,64 @@ import org.joml.Vector4f;
 import java.util.ArrayList;
 
 public class Item {
+
+    private Mesh mAppearance;
+    private float mScale;
+    private Vector3f mRotation;
+    private Vector3f mPosition;
+    private ArrayList<ItemGroup> mGroups;
+    private Item mBoundingBox;
+    private boolean mIsBoundingBox;
+    private String mId;
+
     /**
      * Construct a item with the specified mesh, scale, rotation, translation and
      * an item can be in several groups of items
      *
-     * @param mAppearance     Vertex array
-     * @param mScale          float
-     * @param mRotation       Vector3f
-     * @param mTranslation    Vector3f
-     * @param mGroups         ArrayList<ItemGroup>
+     * @param pId            id of th item
+     * @param pRotation      rotation vector3f
+     * @param pPosition      position vector3f
+     * @param pScale         scale
+     * @param pAppearance    mesh
+     * @param pGroups        itemGoup
      */
-    private Mesh mAppearance;
-    private float mScale;
-    private Vector3f mRotation;
-    private Vector3f mTranslation;
-    private ArrayList<ItemGroup> mGroups;
-
-    //Constructor
-    public Item(Mesh appearance, float scale, Vector3f rotation, Vector3f position) {
-        super();
-        this.mAppearance = appearance;
-        this.mScale = scale;
-        this.mRotation = rotation;
-        this.mTranslation = position;
-        this.mGroups = new ArrayList<>();
+    public Item(String pId, Vector3f pRotation, Vector3f pPosition, float pScale, boolean isBoundingBox, Mesh pAppearance, ArrayList<ItemGroup> pGroups) {
+        mAppearance = pAppearance;
+        mScale = pScale;
+        mRotation = pRotation;
+        mPosition = pPosition;
+        mGroups = pGroups == null ? new ArrayList<>() : pGroups;
+        mId = pId;
+        mBoundingBox = null;
+        mIsBoundingBox = isBoundingBox;
     }
 
+    /**
+     * Clone source
+     *
+     * @param source source
+     */
     public Item(Item source) {
-        this.mAppearance = source.mAppearance;
-        this.mScale = source.mScale;
-        this.mRotation = new Vector3f(source.mRotation);
-        this.mTranslation = new Vector3f(source.mTranslation);
-        this.mGroups = new ArrayList<>();
+        this(source.getId() + source.toString(),
+                new Vector3f(source.mRotation),
+                new Vector3f(source.mPosition),
+                source.mScale,
+                source.mIsBoundingBox,
+                source.mAppearance,
+                null);
     }
 
-    public Item(Mesh m) {
-        this.mAppearance = m;
-        mScale = 1f;
-        mRotation = new Vector3f();
-        mTranslation = new Vector3f();
-        this.mGroups = new ArrayList<>();
+    /**
+     * Create an item with the specified id position mesh and scale
+     * pPosition size must be 3
+     *
+     * @param pId       id
+     * @param pPosition position
+     * @param pMesh     mesh
+     * @param pScale    scale
+     */
+    public Item(String pId, float[] pPosition, float pScale, boolean pIsBoundingBox, Mesh pMesh) {
+        this(pId, new Vector3f(), new Vector3f(pPosition[0], pPosition[1], pPosition[2]), pScale, pIsBoundingBox, pMesh, null);
     }
 
     public Item clone() {
@@ -56,35 +74,10 @@ public class Item {
         return new Item(this);
     }
 
-    // OpenGl function
-    public Matrix4f getWorldMatrix() {
-        return new Matrix4f().identity().translate(mTranslation).
-                rotateX((float) Math.toRadians(mRotation.x)).
-                rotateY((float) Math.toRadians(mRotation.y)).
-                rotateZ((float) Math.toRadians(mRotation.z)).
-                scale(mScale);
-    }
-
-    //Scale
-    public float getScale() {
-        return mScale;
-    }
-
-    public void setScale(float val) {
-        mScale = val;
-    }
-
     public void rotate(float x, float y, float z) {
         this.setRotation(getRotation().add(x, y, z));
-    }
-
-    //Rotation
-    public Vector3f getRotation() {
-        return mRotation;
-    }
-
-    public void setRotation(Vector3f rotation) {
-        this.mRotation = rotation;
+        if (mBoundingBox != null)
+            this.mBoundingBox.rotate(x, y, z);
     }
 
     public void setPosition(float x, float y, float z) {
@@ -92,7 +85,7 @@ public class Item {
     }
 
     public void setPosition(Vector3f pos, ItemGroup g) {
-        this.mTranslation = pos;
+        this.mPosition = pos;
         for (ItemGroup gr : mGroups) {
             if (gr != g)
                 gr.updateCenter();
@@ -101,6 +94,8 @@ public class Item {
 
     public void translate(float x, float y, float z) {
         translate(x, y, z, null);
+        if (mBoundingBox != null)
+            this.mBoundingBox.translate(x, y, z, null);
     }
 
     public void translate(float x, float y, float z, ItemGroup g) {
@@ -108,18 +103,9 @@ public class Item {
         this.setPosition(vect, g);
     }
 
-    //Translation
-    public Vector3f getPosition() {
-        return mTranslation;
-    }
-
-    public void setPosition(Vector3f pos) {
-        setPosition(pos, null);
-    }
-
     //Group Moves
     public void revolveAround(Vector3f center, float degX, float degY, float degZ) {
-        Vector4f pos = new Vector4f(mTranslation, 1f);
+        Vector4f pos = new Vector4f(mPosition, 1f);
         pos.add(-center.x, -center.y, -center.z, 0);
         Matrix4f trans = new Matrix4f();
         trans.rotateX((float) Math.toRadians(degX));
@@ -127,23 +113,18 @@ public class Item {
         trans.rotateZ((float) Math.toRadians(degZ));
         trans.transform(pos);
         pos.add(center.x, center.y, center.z, 0);
-        mTranslation = new Vector3f(pos.x, pos.y, pos.z);
+        mPosition = new Vector3f(pos.x, pos.y, pos.z);
     }
 
     public void repelBy(Vector3f center, float dist) {
-        Vector3f dif = new Vector3f(mTranslation.x - center.x, mTranslation.y - center.y, mTranslation.z - center.z);
+        Vector3f dif = new Vector3f(mPosition.x - center.x, mPosition.y - center.y, mPosition.z - center.z);
         float norm = dif.length();
         if (norm != 0) {
             float move = (dist / norm) + 1;
             dif.mul(move);
             dif.add(center);
-            mTranslation = dif;
+            mPosition = dif;
         }
-    }
-
-    // Groups Management
-    public ArrayList<ItemGroup> getGroups() {
-        return mGroups;
     }
 
     // Don't use in Clojure addToGroup and removeFromGroup
@@ -164,23 +145,80 @@ public class Item {
         this.getAppearance().setMaterial(new Material(new Vector3f(r, g, b), 0.f));
     }
 
+    // OpenGl function
+    public Matrix4f getWorldMatrix() {
+        return new Matrix4f().identity().translate(mPosition).
+                rotateX((float) Math.toRadians(mRotation.x)).
+                rotateY((float) Math.toRadians(mRotation.y)).
+                rotateZ((float) Math.toRadians(mRotation.z)).
+                scale(mScale);
+    }
+
+    //Scale
+    public float getScale() {
+        return mScale;
+    }
+
+    public void setScale(float val) {
+        mScale = val;
+    }
+
+    public String getId() {
+        return mId;
+    }
+
+    //Rotation
+    public Vector3f getRotation() {
+        return mRotation;
+    }
+
+    public void setRotation(Vector3f rotation) {
+        this.mRotation = rotation;
+    }
+
+    //Translation
+    public Vector3f getPosition() {
+        return mPosition;
+    }
+
+    public void setPosition(Vector3f pos) {
+        setPosition(pos, null);
+    }
+
+    // Groups Management
+    public ArrayList<ItemGroup> getGroups() {
+        return mGroups;
+    }
+
     public Mesh getAppearance() {
         return mAppearance;
     }
 
     public float getReflectance() {
-        return this.getAppearance().getMaterial().reflectance;
+        return this.getAppearance().getMaterial().getReflectance();
     }
 
     public void setReflectance(float refl) {
-        this.getAppearance().getMaterial().reflectance = refl;
+        this.getAppearance().getMaterial().setReflectance(refl);
     }
 
     public Vector3f getColor() {
-        return this.getAppearance().getMaterial().color;
+        return this.getAppearance().getMaterial().getColor();
     }
 
     public void setColor(Vector3f color) {
         this.getAppearance().setMaterial(new Material(color, 0.f));
+    }
+
+    public Item getBoundingBox() {
+        return this.mBoundingBox;
+    }
+
+    public boolean isBoundingBox() {
+        return mIsBoundingBox;
+    }
+
+    public void setBoundingBox(Item item) {
+        this.mBoundingBox = item;
     }
 }

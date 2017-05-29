@@ -2,6 +2,9 @@ package embla3d.engine;
 
 import embla3d.engine.camera.Camera;
 import embla3d.engine.light.SceneLight;
+import embla3d.engine.shader.ShaderProgram;
+import embla3d.engine.shader.fragShader;
+import embla3d.engine.shader.vertShader;
 import embla3d.engine.skybox.Skybox;
 import org.joml.Matrix4f;
 
@@ -15,14 +18,10 @@ import static org.lwjgl.opengl.GL11.*;
 public class Renderer {
     protected ShaderProgram mShaderProgram;
 
-
     /**
      * Basic rendering.
-     *
-     * @throws Exception Exception
      */
-    public Renderer() throws Exception {
-
+    public void init() throws Exception {
         /* Initialization of the shader program. */
         mShaderProgram = new ShaderProgram();
         mShaderProgram.createVertexShader(vertShader.SHADER_STRING);
@@ -38,7 +37,7 @@ public class Renderer {
 
         /* Create uniform for material. */
         mShaderProgram.createMaterialUniform("material");
-
+        mShaderProgram.createUniform("texture_sampler");
         /* Initialization of the light's uniform. */
         mShaderProgram.createUniform("camera_pos");
         mShaderProgram.createUniform("specularPower");
@@ -46,7 +45,6 @@ public class Renderer {
         mShaderProgram.createPointLightListUniform("pointLights", SceneLight.MAX_POINTLIGHT);
         mShaderProgram.createSpotLightUniformList("spotLights", SceneLight.MAX_SPOTLIGHT);
         mShaderProgram.createDirectionalLightUniform("directionalLight");
-
     }
 
     /**
@@ -70,20 +68,20 @@ public class Renderer {
     public void render(SceneVertex pSceneVertex, SceneLight pSceneLight, boolean isResized, Camera pCamera, Skybox pSkybox) {
         mShaderProgram.bind();
         //Preparation of the camera
-        if (isResized || SceneVertex.itemAdded) {
+        if (isResized || pSceneVertex.isItemAdded()) {
             pCamera.updateCameraMat();
         }
 
         //Debug
-        //		 int err = GL11.GL_NO_ERROR;
-        //		if((err = GL11.glGetError()) != GL11.GL_NO_ERROR)
-        //		{
-        //
-        //		  System.out.println(err);
-        //		}
+      /*  int err = GL11.GL_NO_ERROR;
+        if ((err = GL11.glGetError()) != GL11.GL_NO_ERROR) {
+
+            System.out.println(err);
+        }*/
 
         /* Set the camera to render. */
         mShaderProgram.setUniform("projectionMatrix", pCamera.getCameraMat());
+        mShaderProgram.setUniform("texture_sampler", 0);
         mShaderProgram.setUniform("camera_pos", pCamera.position);
         Matrix4f viewMat = pCamera.setupViewMatrix();
 
@@ -116,7 +114,6 @@ public class Renderer {
         mShaderProgram.unbind();
         if (pSkybox != null) {
             if (pSkybox.init == false) {
-                SceneVertex.itemAdded = true;
                 try {
                     pSkybox.init();
                 } catch (Exception e) {
