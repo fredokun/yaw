@@ -8,6 +8,7 @@ import embla3d.engine.light.SceneLight;
 import embla3d.engine.meshs.Material;
 import embla3d.engine.meshs.Mesh;
 import embla3d.engine.meshs.Texture;
+import embla3d.engine.meshs.strategy.DefaultDrawingStrategy;
 import embla3d.engine.skybox.Skybox;
 import org.joml.Vector3f;
 
@@ -56,7 +57,9 @@ public class WorldNucleus {
     }
 
     public Mesh createMesh(float[] pVertices, float[] pTextCoords, float[] pNormals, int[] pIndices, int pWeight) {
-        return new Mesh(pVertices, pTextCoords, pNormals, pIndices, pWeight);
+        Mesh lMesh = new Mesh(pVertices, pTextCoords, pNormals, pIndices, pWeight);
+        lMesh.setDrawingStrategy(new DefaultDrawingStrategy());
+        return lMesh;
     }
 
     public Item createItem(Item pItem) {

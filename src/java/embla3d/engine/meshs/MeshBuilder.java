@@ -1,5 +1,7 @@
 package embla3d.engine.meshs;
 
+import embla3d.engine.meshs.strategy.BoundingBoxDrawingStrategy;
+import embla3d.engine.meshs.strategy.DefaultDrawingStrategy;
 import org.joml.Vector3f;
 
 import java.util.HashMap;
@@ -9,48 +11,15 @@ import java.util.Map;
  * Generic Mesh generator, can create specific mesh just with a map (goal)
  */
 public class MeshBuilder {
-    public static final String BLOCK_MESH = "block";
-    public static final String GROUND_MESH = "ground";
-    public static final String HALF_BLOCK_MESH = "half-block";
-    public static final String PYRAMID_MESH = "pyramid";
-    public static final String OCTAHEDRON_MESH = "octahedron";
-    public static final String TETRAHEDRON_MESH = "tetrahedron";
-    private static final float[] lFloats = new float[]{
-            0.0f, 0.0f,
-            0.0f, 0.5f,
-            0.5f, 0.5f,
-            0.5f, 0.0f,
+    private static final String BLOCK_MESH = "block";
+    private static final String GROUND_MESH = "ground";
+    private static final String HALF_BLOCK_MESH = "half-block";
+    private static final String PYRAMID_MESH = "pyramid";
+    private static final String OCTAHEDRON_MESH = "octahedron";
+    private static final String TETRAHEDRON_MESH = "tetrahedron";
+    //
 
-            0.0f, 0.0f,
-            0.5f, 0.0f,
-            0.0f, 0.5f,
-            0.5f, 0.5f,
-
-            // For text coords in top face
-            0.0f, 0.5f,
-            0.5f, 0.5f,
-            0.0f, 1.0f,
-            0.5f, 1.0f,
-
-            // For text coords in right face
-            0.0f, 0.0f,
-            0.0f, 0.5f,
-
-            // For text coords in left face
-            0.5f, 0.0f,
-            0.5f, 0.5f,
-
-            // For text coords in bottom face
-            0.5f, 0.0f,
-            1.0f, 0.0f,
-            0.5f, 0.5f,
-            1.0f, 0.5f,
-    };
     //TODO remove the text coord array, only use it for test
-    /*generic call*/
-    /*dispatch*/
-    /* Generic param for the fct */
-    /*maybe change xyz by width length height !...*/
 
     /**
      * Generate a mesh with the specified material (cx, cy, cz, reflectance), width, length and height
@@ -64,6 +33,7 @@ public class MeshBuilder {
      * @param cz       Blue  value of the material
      * @return Mesh
      */
+    @Deprecated
     public static Mesh generate(String meshType, float xLength, float yLength, float zLength, float cx, float cy, float cz) {
         Mesh mesh = null;
         /*Warning default reflectance*/
@@ -111,6 +81,7 @@ public class MeshBuilder {
      * @param zLength zLength
      * @return BlockMesh
      */
+    @Deprecated
     public static Mesh generateBlock(float xLength, float yLength, float zLength) {
         float x = xLength / 2f;
         float y = yLength / 2f;
@@ -142,6 +113,38 @@ public class MeshBuilder {
                 -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0,
                 //Right face
                 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0};
+        //mapping for the texture
+        float[] textCoord = new float[]{
+                0.0f, 0.0f,
+                0.0f, 0.5f,
+                0.5f, 0.5f,
+                0.5f, 0.0f,
+
+                0.0f, 0.0f,
+                0.5f, 0.0f,
+                0.0f, 0.5f,
+                0.5f, 0.5f,
+
+                // For text coords in top face
+                0.0f, 0.5f,
+                0.5f, 0.5f,
+                0.0f, 1.0f,
+                0.5f, 1.0f,
+
+                // For text coords in right face
+                0.0f, 0.0f,
+                0.0f, 0.5f,
+
+                // For text coords in left face
+                0.5f, 0.0f,
+                0.5f, 0.5f,
+
+                // For text coords in bottom face
+                0.5f, 0.0f,
+                1.0f, 0.0f,
+                0.5f, 0.5f,
+                1.0f, 0.5f,
+        };
         //mapping the triangle for each face
         int[] indices = new int[]{
                 //Front face
@@ -156,7 +159,8 @@ public class MeshBuilder {
                 16, 19, 18, 16, 17, 19,
                 //Right face
                 20, 22, 21, 22, 23, 21};
-        Mesh lMesh = new Mesh(vertices, lFloats, normals, indices, 8);
+        Mesh lMesh = new Mesh(vertices, textCoord, normals, indices, 8);
+        lMesh.setDrawingStrategy(new DefaultDrawingStrategy());
         Map<String, String> lOptionalAttributes = MeshBuilder.getPositionAttributesMap(xLength, yLength, zLength);
         lMesh.putOptionalAttributes(lOptionalAttributes);
         return lMesh;
@@ -189,6 +193,7 @@ public class MeshBuilder {
      * @param height height
      * @return Mesh
      */
+    @Deprecated
     public static Mesh generateGround(float width, float length, float height) {
         float halfW = width / 2;
         float halfL = length / 2;
@@ -196,6 +201,7 @@ public class MeshBuilder {
         float[] normals = new float[]{0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0};
         int[] indices = new int[]{0, 1, 2, 1, 3, 2};
         Mesh lMesh = new Mesh(vertices, null, normals, indices);
+        lMesh.setDrawingStrategy(new DefaultDrawingStrategy());
         Map<String, String> lOptionalAttributes = MeshBuilder.getPositionAttributesMap(width, length, height);
         lMesh.putOptionalAttributes(lOptionalAttributes);
         return lMesh;
@@ -211,6 +217,7 @@ public class MeshBuilder {
      * @param zLength height
      * @return Mesh
      */
+    @Deprecated
     public static Mesh generateHalfBlock(float xLength, float yLength, float zLength) {
         float x = xLength / 2f;
         float y = yLength / 2f;
@@ -253,6 +260,7 @@ public class MeshBuilder {
                 //Right face
                 15, 16, 17};
         Mesh lMesh = new Mesh(vertices, null, normals, indices, 6);
+        lMesh.setDrawingStrategy(new DefaultDrawingStrategy());
         Map<String, String> lOptionalAttributes = MeshBuilder.getPositionAttributesMap(xLength, yLength, zLength);
         lMesh.putOptionalAttributes(lOptionalAttributes);
         return lMesh;
@@ -267,6 +275,7 @@ public class MeshBuilder {
      * @param zLength height
      * @return Mesh
      */
+    @Deprecated
     public static Mesh generatePyramid(float xLength, float yLength, float zLength) {
         float x = xLength / 2f;
         float y = yLength / 2f;
@@ -312,10 +321,11 @@ public class MeshBuilder {
                 9, 11, 10,
                 //Bottom Face
                 12, 13, 15, 12, 15, 14};
-        Mesh mesh = new Mesh(vertices, null, normals, indices, 5);
+        Mesh lMesh = new Mesh(vertices, null, normals, indices, 5);
+        lMesh.setDrawingStrategy(new DefaultDrawingStrategy());
         Map<String, String> lOptionalAttributes = MeshBuilder.getPositionAttributesMap(xLength, yLength, zLength);
-        mesh.putOptionalAttributes(lOptionalAttributes);
-        return mesh;
+        lMesh.putOptionalAttributes(lOptionalAttributes);
+        return lMesh;
     }
 
     /**
@@ -325,6 +335,7 @@ public class MeshBuilder {
      *
      * @return Mesh
      */
+    @Deprecated
     public static Mesh generateOctahedron() {
         float[] vertices = new float[]{
                 //LTF
@@ -381,7 +392,9 @@ public class MeshBuilder {
                 18, 20, 19,
                 //RBB
                 21, 22, 23};
-        return new Mesh(vertices, null, normals, indices, 6);
+        Mesh lMesh = new Mesh(vertices, null, normals, indices, 6);
+        lMesh.setDrawingStrategy(new DefaultDrawingStrategy());
+        return lMesh;
     }
 
     /**
@@ -391,6 +404,7 @@ public class MeshBuilder {
      *
      * @return Mesh
      */
+    @Deprecated
     public static Mesh generateTetrahedron() {
         float[] vertices = new float[]{
                 //First Face
@@ -422,7 +436,9 @@ public class MeshBuilder {
                 //Last Face
                 9, 10, 11};
 
-        return new Mesh(vertices, null, normals, indices, 8);
+        Mesh lMesh = new Mesh(vertices, null, normals, indices, 8);
+        lMesh.setDrawingStrategy(new DefaultDrawingStrategy());
+        return lMesh;
 
     }
 
@@ -454,19 +470,8 @@ public class MeshBuilder {
                 //Right face
                 x, y, z, x, y, -z, x, -y, z, x, -y, -z};
 
-        float[] normals = {
-                //Front face
-                0, 0, 1f, 0, 0, 1f, 0, 0, 1f, 0, 0, 1f,
-                //Top face
-                0, 1f, 0, 0, 1f, 0, 0, 1f, 0, 0, 1f, 0,
-                //Back face
-                0, 0, -1f, 0, 0, -1f, 0, 0, -1f, 0, 0, -1f,
-                //Bottom face
-                0, -1f, 0, 0, -1f, 0, 0, -1f, 0, 0, -1f, 0,
-                //Left face
-                -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0,
-                //Right face
-                1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0};
+        float[] normals = {0};
+        float[] textCoord = {0};
 
         int[] indices = new int[]{
                 //Front face
@@ -476,10 +481,11 @@ public class MeshBuilder {
                 //Back face
                 8, 9, 9, 10, 10, 11, 11, 8};
 
-        Mesh lMesh = new Mesh(vertices, lFloats, normals, indices);
+        Mesh lMesh = new Mesh(vertices, textCoord, normals, indices);
+        //we set the new strategy
+        lMesh.setDrawingStrategy(new BoundingBoxDrawingStrategy());
         Map<String, String> lOptionalAttributes = MeshBuilder.getPositionAttributesMap(xLength, yLength, zLength);
         lMesh.putOptionalAttributes(lOptionalAttributes);
         return lMesh;
-
     }
 }
