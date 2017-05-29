@@ -2,6 +2,7 @@
   (:import (embla3d.engine.meshs MeshBuilder)
            [embla3d.engine World])
   (gen-class))
+
 ;;UTILS------------------------------------------------------------------
 (defn flat-map "flatten 'map'" [m]
   (flatten (conj (vals m))))
@@ -19,11 +20,10 @@
     (atom {:world world :thread thread})))
 
 ;;Since we completely destroy the old architecture we will migrate the basic method to this module
-;;TODO/README ONLY USE WORLD IT is A FACADE, no DIRECT USE OF MANAGEMENT/BUILDER TOOLS
-;; Material Fucntions---------------------------------------------
+;;README ONLY USE WORLD IT is A FACADE, no DIRECT USE OF MANAGEMENT/BUILDER TOOLS
 
 ;; Mesh Functions------------------------------------------------
-;;TODO create basic meshes
+
 (defn create-mesh!
   "Create an item in the `world` with the  specified id, position, mesh"
   [world & {:keys [vertices text-coord normals faces weight rgb texture-name]
@@ -66,7 +66,7 @@
             :or   {id       "can't read the doc..."
                    position [0 0 -2]
                    scale    1
-                   mesh     (create-mesh! world)}}]
+                   mesh     (create-mesh! world)}}]         ;;error here
   (.createItem world id (float-array position) scale mesh))
 
 (defn create-block!
@@ -86,7 +86,8 @@
 ;;TODO NEED CAMERA MANAGEMENT
 
 ;; Collision
-(defn create-boudingbox!
+
+(defn create-bouding-box!
   "Create a boundingbox in the `world` with the
   specified id, position, length, scale"
   [world & {:keys [id position length scale]
@@ -96,12 +97,14 @@
                    scale    1}}]
 
   (.createBoundingBox world id (float-array position) scale (float-array length)))
+(defn add-bounding-box!
+  "Add the specified 'bounding box' to the specified 'item'"
+  [item bounding-box]
+  (.setBoundingBox item bounding-box))
 (defn check-collision!
   "Check if 2 items are in collision in the `world` with the
   specified items"
   [world item1 item2]
   (.isInCollision world item1 item2))
 
-(defn test1 [world]
-  (.test world (float-array [1 2 3])))
 ;; Generic Generic------------------------------------------------
