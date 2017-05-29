@@ -105,7 +105,7 @@ public class World implements Runnable {
      * @param pMesh     mesh
      * @return the item
      */
-    public Item createItem(String id, Float[] pPosition, float pScale, Mesh pMesh) {
+    public Item createItem(String id, float[] pPosition, float pScale, Mesh pMesh) {
         if (pPosition.length != 3) {
             throw new RuntimeException("Position must represent a 3D position because we live in a 3D world");
         }
@@ -134,7 +134,7 @@ public class World implements Runnable {
         Vector3f lMaterialColor = new Vector3f(rgb[0], rgb[1], rgb[2]);
         Material lMaterial = mNucleus.createMaterial(lMaterialColor);
         //Texture part
-        if (!pTextureName.isEmpty()) {
+        if (pTextureName != null && !pTextureName.isEmpty()) {
             Texture lTexture = mStringTextureConcurrentHashMap.get(pTextureName);
             if (lTexture == null) {
                 lTexture = mNucleus.createTexture(pTextureName);
@@ -154,14 +154,18 @@ public class World implements Runnable {
      * @param pScale    scale
      * @return BoundingBox
      */
-    public Item createBoundingBox(String id, Float[] pPosition, float pScale, float []pLength) {
+    public Item createBoundingBox(String id, float[] pPosition, float pScale, float[] pLength) {
         Item lItem = mNucleus.createBoundingBox(id, pPosition, pScale, pLength);
         mSceneVertex.add(lItem);
         return lItem;
     }
 
-    public boolean isInCollision(Item item1, Item item2)
-    {
+    public void test(float[] t) {
+        System.out.println(t[0]);
+
+    }
+
+    public boolean isInCollision(Item item1, Item item2) {
         return Collision.isInCollision(item1, item2);
     }
 

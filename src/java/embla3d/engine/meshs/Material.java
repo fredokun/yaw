@@ -34,8 +34,6 @@ public class Material {
     public Material() {
         this.mColor = DEFAULT_COLOUR;
         this.mReflectance = REFLECTANCE_DEFAULT_VALUE;
-        //TODO REMOVE test only
-        //this.mTexture = new Texture("/ressources/grassblock.png");
     }
 
     /**

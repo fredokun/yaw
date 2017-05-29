@@ -73,9 +73,8 @@ public class ItemManagement {
     public static Item createBoundingBox(String id, float[] pPosition, float pScale, float[] pLength) {
         Mesh appearance = MeshBuilder.generateBoundingBox(pLength[0], pLength[1], pLength[2]);
         appearance.getMaterial().setColor(new Vector3f(0,255,0));
-        Item item = new Item(id, new Vector3f(pPosition[0], pPosition[0], pPosition[0]), new Vector3f(), pScale, true, appearance, null);
 
-        return item;
+        return new Item(id, new Vector3f(pPosition[0], pPosition[0], pPosition[0]), new Vector3f(), pScale, true, appearance, null);
     }
 
 
