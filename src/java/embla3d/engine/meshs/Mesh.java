@@ -2,6 +2,7 @@ package embla3d.engine.meshs;
 
 import embla3d.engine.items.Item;
 import embla3d.engine.shader.ShaderProgram;
+import embla3d.engine.util.LoggerEMBLA3D;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 
@@ -23,7 +24,7 @@ import static org.lwjgl.opengl.GL30.*;
  *
  */
 public class Mesh {
-    protected final List<Integer> vboIdList;
+    private final List<Integer> vboIdList;
     //reference to the VAO(wrapper)
     private int mVaoId;
     //VBO's ID
@@ -35,10 +36,9 @@ public class Mesh {
     private float[] mTextCoords;
     private int mWeight;  // the mWeight of an object in a group (e.g. a mass in a group planets)
     private Material mMaterial;
-
-
     private Map<String, String> mOptionalAttributes;
-
+    //strategy when we draw the elements
+    private MeshDrawingStrategy mDrawingStrategy;
 
     /**
      * Construct a Mesh with the specified mMaterial , mVertices, mNormals , mTextureCoordinate and mIndices.
@@ -51,7 +51,6 @@ public class Mesh {
     public Mesh(float[] pVertices, float[] pTextCoords, float[] pNormals, int[] pIndices) {
         this(pVertices, pTextCoords, pNormals, pIndices, pVertices.length);
     }
-
 
     /**
      * Construct a Mesh with the specified  mVertices, mNormals, mIndices , mTextureCoordinate and mWeight
@@ -138,21 +137,18 @@ public class Mesh {
         //initRender
         initRender();
 
-        // Bind to the VAO
-
 
         pShaderProgram.setUniform("material", mMaterial);
         for (Item lItem : pItems) {
             //can be moved to Item class
             Matrix4f modelViewMat = new Matrix4f(pViewMatrix).mul(lItem.getWorldMatrix());
             pShaderProgram.setUniform("modelViewMatrix", modelViewMat);
-
-            // Draw the mVertices
-            if (lItem.isBoundingBox())
-                glDrawElements(GL_LINES, mIndices.length, GL_UNSIGNED_INT, 0);
-            else
-                glDrawElements(GL_TRIANGLES, mIndices.length, GL_UNSIGNED_INT, 0);
-
+            if (mDrawingStrategy != null) {
+                //delegate the drawing
+                mDrawingStrategy.drawMesh(this);
+            } else {
+                LoggerEMBLA3D.getLogger().severe("No drawing strategy has been set for the mesh");
+            }
 
         }
         //end render
@@ -203,7 +199,7 @@ public class Mesh {
         this.mOptionalAttributes.putAll(pOptionalAttributes);
     }
 
-    protected void initRender() {
+    public void initRender() {
 
         Texture texture = mMaterial != null ? mMaterial.getTexture() : null;
         if (texture != null) {
@@ -237,7 +233,6 @@ public class Mesh {
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
-
     public float[] getVertices() {
         return mVertices;
     }
@@ -260,6 +255,10 @@ public class Mesh {
 
     public int getWeight() {
         return mWeight;
+    }
+
+    public void setDrawingStrategy(MeshDrawingStrategy pDrawingStrategy) {
+        mDrawingStrategy = pDrawingStrategy;
     }
 
     public void setTextCoords(float[] pTextCoord) {

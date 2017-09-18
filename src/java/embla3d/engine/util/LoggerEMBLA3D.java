@@ -174,11 +174,6 @@ public class LoggerEMBLA3D extends PrintStream {
         if (!mLogDir.exists()) {
             mLogDir.mkdir();
         }
-        try {
-            mFileHandler = new FileHandler("messagesLog/" + System.currentTimeMillis() + ".log");
-        } catch (IOException pE) {
-            pE.printStackTrace();
-        }
         LogManager.getLogManager().reset();
     }
 
@@ -200,6 +195,11 @@ public class LoggerEMBLA3D extends PrintStream {
      * Allow to activate the file mode of Logger.
      */
     public void activateFileMode() {
+        try {
+            mFileHandler = new FileHandler("messagesLog/" + System.currentTimeMillis() + ".log");
+        } catch (IOException pE) {
+            pE.printStackTrace();
+        }
         logger.addHandler(mFileHandler);
     }
 

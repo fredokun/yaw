@@ -58,7 +58,6 @@
                (int-array (flat-map faces))
                (int weight) (float-array rgb) texture-name))
 ;; Items Functions------------------------------------------------
-;;TODO create basic block item
 (defn create-item!
   "Create an item in the `world` with the
   specified id, position, mesh"
@@ -83,7 +82,9 @@
                 :scale scale
                 :mesh (create-mesh! world :rgb color :texture-name texture)))
 
-;;TODO NEED CAMERA MANAGEMENT
+;;CAMERA MANAGEMENT------------------------------------------------
+(defn camera "Retrieve the main camera of the world" [world] (.getCamera world))
+
 
 ;; Collision
 
@@ -107,4 +108,14 @@
   [world item1 item2]
   (.isInCollision world item1 item2))
 
-;; Generic Generic------------------------------------------------
+;; Item/camera Manipulation ------------------------------------------------
+(defn rotate! [item & {:keys [x y z]
+                       :or   {x 0
+                              y 0
+                              z 0}}]
+  (.rotate item x y z))
+(defn translate! [item & {:keys [x y z]
+                          :or   {x 0
+                                 y 0
+                                 z 0}}]
+  (.translate item x y z))
