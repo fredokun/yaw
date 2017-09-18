@@ -4,7 +4,7 @@
 
 ## Disclaimer
 
-Embla3D is *not yet* usable, except for extremely simplistic examples!
+Yaw is *not yet* usable, except for extremely simplistic examples!
 The Java/OpenGL-side of things is mostly developed by 1-year masters'students.
 The Clojure part is for the cream of the cream ;-).
 
@@ -21,7 +21,7 @@ For now the Clojure API is just a thin layer above
  the java mess... So expect many *bang*s (`!`'s) ...
 
 Most of the current API can be found in the
-`embla3d.world` namespace.
+`yaw.world` namespace.
 
 So you can fire your repl 
 
@@ -32,7 +32,7 @@ $ lein repl
 and type (after the `=>` prompt of course):
 
 ```
-(use 'embla3d.world)
+(use 'yaw.world)
 ```
 
 An openGL window lives in a `universe` (because we're megalomaniacs!)
@@ -49,7 +49,7 @@ the (for now, empty) *world*.
 (def world (:world @univ))
 ```
 
-Embla3D will only use basic 3D objects with simple materials.
+Yaw will only use basic 3D objects with simple materials.
 For new there's only a bunch of available objects, and the 
 material only talks about *color* and *reflectance*.
 
@@ -78,7 +78,7 @@ now is *ambient light*.
 ## Summary
 
 ```clojure
-(use 'embla3d.world)
+(use 'yaw.world)
 (def univ (start-universe!))
 (def world (:world @univ))
 (def block (create-block! world))

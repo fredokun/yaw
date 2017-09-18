@@ -1,12 +1,11 @@
 (ns yaw.world
-  (:import [yaw.engine World]
-           [yaw.engine.items MyItem]
-           [yaw.engine.camera CameraManagement]
-           [yaw.engine.light LightManagement]
-           [yaw.engine.camera Camera]
-           [yaw.engine.items ItemManagement]
-           (yaw.engine.meshs MeshBuilder))
-  (:gen-class))
+  (:import (yaw.engine.meshs MeshBuilder)
+           [yaw.engine World])
+  (gen-class))
+
+;;UTILS------------------------------------------------------------------
+(defn flat-map "flatten 'map'" [m]
+  (flatten (conj (vals m))))
 
 (defn start-universe!
   "Start an empty yaw universe."
@@ -16,675 +15,107 @@
              width  800
              height 600}}]
   (let [world (World. x y width height)
-        thread (future (.init world))]
+        thread (future world)]
     (.start (Thread. world))
     (atom {:world world :thread thread})))
 
-;; Skybox management----------------------------------------------------------------------------------
+;;Since we completely destroy the old architecture we will migrate the basic method to this module
+;;README ONLY USE WORLD IT is A FACADE, no DIRECT USE OF MANAGEMENT/BUILDER TOOLS
 
-(defn set-skybox!
-  "Set the skybox of `world` of the specified dimensions
- and color."
-  [world & {:keys [width height length color]
-            :or   {width  500
-                   height 500
-                   length 500
-                   color  [0 0 1.0]}}]
-  (let [[r g b] color]
-    (.setSkybox world width length height r g b)))
+;; Mesh Functions------------------------------------------------
 
-(defn remove-skybox!
-  "Remove the skybox from `world`."
-  [world]
-  (.removeSkybox world))
-
-;; Light Management-----------------------------------------------------------------------------------
-
-(defn sun-light!
-  "Set the sun light of the `world` with 
-  the specified color, intensity and origin coordinates."
-  [world & {:keys [color intensity origin]
-            :or   {color     [0 0 0]
-                   intensity 0.0
-                   origin    [0 -1 0]}}]
-  (let [[r g b] color
-        [x y z] origin]
-    (LightManagement/setSunLight world r g b intensity x y z)))
-
-(defn remove-sun-light!
-  "Remove the sun light of the `world`."
-  [world]
-  (LightManagement/removeSunLight world))
-
-(defn ambient-light!
-  "Set the ambient light of the `world` to the 
-  specified color and intensity."
-  [world r g b intensity]
-  (LightManagement/setAmbientLight world r g b intensity))
-
-(defn spot-light!
-  "Set the spot light `number` of the `world` with the specified color,
-  at the specified position with the spot light parameters.
-  Note that there is a limit to the number of available spot lights,
-  one can use the [[max-spot-light]] function to query this value."
-  [world number & {:keys [red green blue x y z intensity
-                          const-attenuate linear-attenuate quadratic-attenuate
-                          xcone ycone zcone cutoff-angle]
-                   :or   {red                 0.8
-                          green               0.8
-                          blue                0.8
-                          x                   0
-                          y                   0
-                          z                   0
-                          intensity           1
-                          const-attenuate     0
-                          linear-attenuate    0.5
-                          quadratic-attenuate 0
-                          xcone               0
-                          ycone               0
-                          zcone               -1
-                          cutoff-angle        10}}]
-  (LightManagement/addSpotLight world red green blue x y z intensity
-                                const-attenuate linear-attenuate quadratic-attenuate
-                                xcone ycone zcone cutoff-angle number))
-
-(defn max-spot-light
-  "return the maximum spot lights in the current `world`."
-  [world]
-  (.getMaxSpotLight (.getSceneLight world)))
-
-(defn addPointLight [world r g b x y z intensity constantAtt linearAtt quadraticAtt number]
-  (LightManagement/addPointLight world r g b x y z intensity constantAtt linearAtt quadraticAtt number))
-
-(defn getSpotLightList [world]
-  (.getSpotTable (.getSceneLight world)))
-
-(defn getPointLightList [world]
-  (.getPointTable (.getSceneLight world)))
-
-(defn getIntensity [pointlight]
-  (.getIntensity pointlight))
-
-(defn setIntensity [pointlight intensity]
-  (.setIntensity pointlight intensity))
-
-(defn getConstantAtt [pointlight]
-  (.getConstantAtt pointlight))
-
-(defn setConstantAtt [pointlight att]
-  (.setConstantAtt pointlight att))
-
-(defn getLinearAtt [pointlight]
-  (.getLinearAtt pointlight))
-
-(defn setLinearAtt [pointlight att]
-  (.setLinearAtt pointlight att))
-
-(defn getQuadraticAtt [pointlight]
-  (.getQuadraticAtt pointlight))
-
-(defn setQuadraticAtt [pointlight att]
-  (.setQuadraticAtt pointlight att))
-
-(defn getConedir [spotlight]
-  (let [pos (.getConedir spotlight)]
-    (vec ((.x pos) (.y pos) (.z pos)))))
-
-(defn setConedir [spotlight x y z]
-  (.setConedir spotlight x y z))
-
-(defn setConedirVector [spotlight vector]
-  (.setConedir spotlight vector))
-
-(defn getCutoffAngle [spotlight]
-  (.getCutoffAngle spotlight))
-
-(defn setCutoffAngle [spotlight float]
-  (.setCutoffAngle spotlight float))
-
-(defn setSpecularPower [world power]
-  (.setSpecularPower (.getSceneLight world) power))
-
-(defn getSpecularPower [world]
-  (.getSpecularPower (.getSceneLight world)))
-
-;; Camera Management--------------------------------------------------------------
-(defn createCamera [world]
-  (CameraManagement/addCamera world))
-
-(defn addCamera [world camera]
-  (CameraManagement/addCamera world camera))
-
-(defn setLiveCamera [world camera]
-  (CameraManagement/setLiveCamera world camera))
-
-(defn getCamera [world numero]
-  (CameraManagement/getCamera world numero))
-
-(defn getCamerasList [world]
-  (vec (.getCamerasList world)))
-
-(defn getLiveCamera [world]
-  (CameraManagement/getLiveCamera world))
-
-(defn removeCameraNumber [world numero]
-  (CameraManagement/removeCamera world numero))
-
-(defn removeCamera [world camera]
-  (CameraManagement/removeCamera world camera))
-
-(defn setPositionCamera [camera x y z]
-  (.setPosition camera (new org.joml.Vector3f x y z)))
-
-(defn setOrientation [camera x y z]
-  (.setOrientation camera x y z))
-
-(defn setOrientationVector [camera vector]
-  (.setOrientation camera vector))
-
-(defn getOrientation [camera]
-  (let [orientation (.getOrientation camera)]
-    (vector (.x orientation) (.y orientation) (.z orientation))))
-
-
-;; Objects Management------------------------------------------------
-
-(defn createGround [world r g b width length]
-  (MeshBuilder/generateGround 1 1 1))
+(defn create-mesh!
+  "Create an item in the `world` with the  specified id, position, mesh"
+  [world & {:keys [vertices text-coord normals faces weight rgb texture-name]
+            :or   {texture-name ""
+                   rgb          [1 1 1]
+                   weight       1
+                   vertices     {:v0 [-1 1 1] :v1 [-1 -1 1] :v2 [1 -1 1] :v3 [1 1 1]
+                                 :v4 [-1 1 -1] :v5 [1 1 -1] :v6 [-1 -1 -1] :v7 [1 -1 -1]}
+                   normals      {:front  [0 0 1 0 0 1 0 0 1 0 0 1]
+                                 :top    [0 1 0 0 1 0 0 1 0 0 1 0]
+                                 :back   [0 0 -1 0 0 -1 0 0 -1 0 0 -1]
+                                 :bottom [0 -1 0 0 -1 0 0 -1 0 0 -1 0]
+                                 :left   [-1 0 0 -1 0 0 -1 0 0 -1 0 0]
+                                 :right  [1 0 0 1 0 0 1 0 0 1 0 0]}
+                   faces        {:front  [0 1 3 3 1 2]
+                                 :top    [4 0 3 5 4 3]
+                                 :back   [7 6 4 7 4 5]
+                                 :bottom [2 1 6 2 6 7]
+                                 :left   [6 1 0 6 0 4]
+                                 :right  [3 2 7 5 3 7]}
+                   text-coord   {:front  [0 0 0 0.5 0.5 0.5 0.5 0]
+                                 :back   [0 0 0.5 0 0 0.5 0.5 0.5]
+                                 :top    [0 0.5 0.5 0.5 0 1 0.5 1]
+                                 :right  [0 0 0 0.5]
+                                 :left   [0.5 0 0.5 0.5]
+                                 :bottom [0.5 0 1 0 0.5 0.5 1 0.5]}
+                   }}]
+  (.createMesh world
+               (float-array (flat-map vertices))
+               (float-array (flat-map text-coord))
+               (float-array (flat-map normals))
+               (int-array (flat-map faces))
+               (int weight) (float-array rgb) texture-name))
+;; Items Functions------------------------------------------------
+(defn create-item!
+  "Create an item in the `world` with the
+  specified id, position, mesh"
+  [world & {:keys [id position scale mesh]
+            :or   {id       "can't read the doc..."
+                   position [0 0 -2]
+                   scale    1
+                   mesh     (create-mesh! world)}}]         ;;error here
+  (.createItem world id (float-array position) scale mesh))
 
 (defn create-block!
   "Create a rectangular block in the `world` with the
   specified id, position, color"
   [world & {:keys [id position scale color texture]
-            :or   {color      [0 0 1]
-                   dimensions [1 1 1]
-                   scale      1
-                   position   [0 0 -2]
-                   id         ""}}]
-  (let [[r g b] color
-        [xl yl zl] dimensions
-        [xp yp zp] position]
-    (let [item (ItemManagement/createBlock world r g b xl yl zl scale)]
-      (.translate item xp yp zp)
-      item)))
-
-;;TODO create basic meshes
-(defn create-block-mesh! []
-
-  )
-
-(defn create-item!
-  "Create an item in the `world` with the
-  specified id, position, mesh"
-  [world & {:keys [id position scale mesh]
-            :or   {id       ""
-                   position [0 0 -2]
+            :or   {texture  ""
+                   color    [0 0 1]
                    scale    1
-                   mesh     (create-block-mesh!)}}]
+                   position [0 0 -2]
+                   id       ""}}]
+  (create-item! world :id id
+                :position position
+                :scale scale
+                :mesh (create-mesh! world :rgb color :texture-name texture)))
 
-  (let [item (.createItem world id position scale mesh)]
-    item))
+;;CAMERA MANAGEMENT------------------------------------------------
+(defn camera "Retrieve the main camera of the world" [world] (.getCamera world))
 
-(defn createHalfBlock [world r g b xL yL zL scale]
-  (ItemManagement/createHalfBlock world r g b xL yL zL scale))
 
-(defn createPyramid [world r g b xL yL zL scale]
-  (ItemManagement/createPyramid world r g b xL yL zL scale))
+;; Collision
 
-(defn createTetrahedron [world r g b scale]
-  (ItemManagement/createRegTetrahedron world r g b scale))
+(defn create-bouding-box!
+  "Create a boundingbox in the `world` with the
+  specified id, position, length, scale"
+  [world & {:keys [id position length scale]
+            :or   {id       "can't read the doc..."
+                   position [0 0 -2]
+                   length   [1 1 1]
+                   scale    1}}]
 
-(defn createOctahedron [world r g b scale]
-  (ItemManagement/createRegOctahedron world r g b scale))
+  (.createBoundingBox world id (float-array position) scale (float-array length)))
+(defn add-bounding-box!
+  "Add the specified 'bounding box' to the specified 'item'"
+  [item bounding-box]
+  (.setBoundingBox item bounding-box))
+(defn check-collision!
+  "Check if 2 items are in collision in the `world` with the
+  specified items"
+  [world item1 item2]
+  (.isInCollision world item1 item2))
 
-(defn clone [world item]
-  (ItemManagement/clone world item))
-
-(defn removeItem [world item]
-  (ItemManagement/removeItem world item))
-
-(defn getItemsList [world]
-  (vec (.getItemsList (.getSceneVertex world))))
-
-(defn setScale [item scale]
-  (.setScale item scale))
-
-(defn getScale [item]
-  (.getScale item))
-
-(defn getReflectance [item]
-  (.getReflectance item))
-
-(defn setReflectance [item refl]
-  (.setReflectance item refl))
-
-(defn getColor [item]
-  (let [pos (.getColor item)]
-    (vector (.x pos) (.y pos) (.z pos))))
-
-(defn setColor [item r g b]
-  (.setColor item r g b))
-
-(defn setColorVector [item vector]
-  (.setColor item vector))
-
-(defn setRotation [item x y z]
-  (.setRotation item x y z))
-
-(defn setRotationVector [item vector]
-  (.setRotation item vector))
-
-(defn getRotation [item]
-  (let [pos (.getRotation item)]
-    (vector (.x pos) (.y pos) (.z pos))))
-
-(defn revolveAroundVector [item center degX degY degZ]
-  (.revolveAround item center degX degY degZ))
-
-(defn revolveAround [item centerX centerY centerZ degX degY degZ]
-  (.revolveAround item (new org.joml.Vector3f centerX centerY centerZ) degX degY degZ))
-
-(defn repelByVector [item center dist]
-  (.repelBy item center dist))
-
-(defn repelBy [item centerX centerY centerZ dist]
-  (.repelBy item (new org.joml.Vector3f centerX centerY centerZ) dist))
-
-;; Item Group -----------------------------------------------
-(defn getGroupsList [world]
-  (vec (.getItemGroupArrayList world)))
-
-(defn removeGroup [world group]
-  (ItemManagement/removeGroup world group))
-
-(defn createGroup [world]
-  (ItemManagement/createGroup world))
-
-(defn addItem [group item]
-  (.add group item))
-
-(defn removeFromGroup [group item]
-  (.remove group item))
-
-(defn separate [group distance]
-  (.separate group distance))
-
-(defn multScale [group scale]
-  (.multScale group scale))
-
-(defn groupItems [group]
-  (.getItems group))
-
-;; Multiple usage [Camera, Item, Group]-----------------------------
+;; Item/camera Manipulation ------------------------------------------------
 (defn rotate! [item & {:keys [x y z]
                        :or   {x 0
                               y 0
                               z 0}}]
   (.rotate item x y z))
-
-;; Multiple usage [Camera, Item, Light, Group]----------------------
-(defn translate [item x y z]
+(defn translate! [item & {:keys [x y z]
+                          :or   {x 0
+                                 y 0
+                                 z 0}}]
   (.translate item x y z))
-
-(defn setPosition [item x y z]
-  (.setPosition item x y z))
-
-(defn setPositionVector [item vector]
-  (.setPosition item vector))
-
-(defn getPosition [item]
-  (let [pos (.getPosition item)]
-    (vector (.x pos) (.y pos) (.z pos))))
-
-
-;; Callback Management
-(defn registerCallback [world keyString function]
-  (.registerCallback (.getCallback world) keyString function))
-
-(defn clearCallback [world keyString]
-  (.clearCallback (.getCallback world) keyString))
-
-(defn clearFunctionOfKey [world keyString function]
-  (.clearFunctionOfKey (.getCallback world) keyString function))
-
-;; Save Tools
-;; Each object is converted to a Clojure vector to be saved. The vector
-;; contains generally in its first position the Class of the object, which is 
-;; followed by the arguments to be given to the constructor during loading.
-
-;; Save Tools for Items
-(defn meshToVector [mesh]
-  "Converts Meshes into a savable vector."
-  (let [material (.getMaterial mesh)
-        color (.getColor material)]
-    (condp = (.getClass mesh)
-      yaw.engine.meshs.BlockMesh (vector yaw.engine.meshGenerator.BlockGenerator (.xLength mesh) (.yLength mesh) (.zLength mesh) (.x color) (.y color) (.z color) (.getReflectance material))
-      yaw.engine.meshs.HalfBlockMesh (vector yaw.engine.meshGenerator.HalfBlockGenerator (.xLength mesh) (.yLength mesh) (.zLength mesh) (.x color) (.y color) (.z color) (.getReflectance material))
-      yaw.engine.meshs.GroundMesh (vector yaw.engine.meshGenerator.GroundGenerator (.width mesh) (.length mesh) (.height mesh) (.x color) (.y color) (.z color) (.getReflectance material))
-      yaw.engine.meshs.PyramidMesh (vector yaw.engine.meshGenerator.PyramidGenerator (.xLength mesh) (.yLength mesh) (.zLength mesh) (.x color) (.y color) (.z color) (.getReflectance material))
-      yaw.engine.meshs.TetrahedronMesh (vector yaw.engine.meshGenerator.RegTetrahedronGenerator (.x color) (.y color) (.z color) (.getReflectance material))
-      yaw.engine.meshs.OctahedronMesh (vector yaw.engine.meshGenerator.RegOctahedronGenerator (.x color) (.y color) (.z color) (.getReflectance material))
-      yaw.engine.meshs.Mesh (vector yaw.engine.meshs.Mesh (vec (.getVertices mesh)) (.x color) (.y color) (.z color) (.getReflectance material) (vec (.getNormals mesh)) (vec (.getIndices mesh)) (.getWeight mesh)))))
-
-
-
-(defn myItemToVector [myItem]
-  "Converts a MyItem into a savable vector."
-  (let [rotation (.getRotation myItem)
-        translation (.getPosition myItem)]
-    (vector (.getScale myItem) (.x rotation) (.y rotation) (.z rotation) (.x translation) (.y translation) (.z translation))))
-
-
-(defn createMyItemVector [mesh itemListVec]
-  "Saves all MyItem in the given List (as vector) in EDN format."
-  (if (= (.length itemListVec) 1)
-    (vector (meshToVector mesh) (myItemToVector (first itemListVec)))
-    (conj (createMyItemVector mesh (pop itemListVec)) (myItemToVector (last itemListVec)))))
-
-
-(defn saveMeshMap [meshMapVec]
-  "Saves all items of the given meshMap (as vector) in EDN format."
-  (if (= (.length meshMapVec) 0)
-    (vector)
-    (if (= (.length meshMapVec) 1)
-      (vector (createMyItemVector (.getKey (first meshMapVec)) (vec (.getValue (first meshMapVec)))))
-      (conj (saveMeshMap (pop meshMapVec)) (createMyItemVector (.getKey (last meshMapVec)) (vec (.getValue (last meshMapVec))))))))
-
-
-;; Save Tools for Groups
-(defn createGroupVector [groupItemsListVec allItemsArrayList]
-  "Converts an ItemGroup into a savable vector."
-  (if (= (.length groupItemsListVec) 0)
-    (vector)
-    (if (= (.length groupItemsListVec) 1)
-      (vector (.indexOf allItemsArrayList (first groupItemsListVec)))
-      (conj (createGroupVector (pop groupItemsListVec) allItemsArrayList) (.indexOf allItemsArrayList (last groupItemsListVec))))))
-
-
-(defn saveGroupsList [groupsListVec allItemsArrayList]
-  "Saves all groups of the given groupsList (as vector) in EDN format."
-  (if (= (.length groupsListVec) 0)
-    (vector)
-    (if (= (.length groupsListVec) 1)
-      (vector (createGroupVector (vec (.getItems (first groupsListVec))) allItemsArrayList))
-      (conj (saveGroupsList (pop groupsListVec) allItemsArrayList) (createGroupVector (vec (.getItems (last groupsListVec))) allItemsArrayList)))))
-
-
-;; Save Tools for Cameras
-(defn cameraToVector [cam]
-  "Converts a Camera into a savable vector."
-  (let [position (.getPosition cam)
-        orientation (.getOrientation cam)]
-    (vector (.getClass cam) (.getFieldOfView cam) (.getzNear cam) (.getzFar cam) (.x position) (.y position) (.z position) (.x orientation) (.y orientation) (.z orientation))))
-
-
-(defn createCameraVector [cameraListVec]
-  "Creates a vector containing all Cameras, converted into savable vectors."
-  (if (= (.length cameraListVec) 0)
-    (vector)
-    (conj (createCameraVector (pop cameraListVec)) (cameraToVector (last cameraListVec)))))
-
-
-;; Save Tools for Lights
-(defn pointLightToVector [pl]
-  "Converts a PointLight into a savable vector."
-  (let [color (.getColor pl)
-        position (.getPosition pl)]
-    (vector (.getClass pl) (.x color) (.y color) (.z color) (.x position) (.y position) (.z position) (.getIntensity pl) (.getConstantAtt pl) (.getLinearAtt pl) (.getQuadraticAtt pl))))
-
-
-(defn createPointLightVector [pointLightArrVec]
-  "Creates a vector containing all PointLights, converted into savable vectors."
-  (if (= (.length pointLightArrVec) 1)
-    (vector (pointLightToVector (first pointLightArrVec)))
-    (conj (createPointLightVector (pop pointLightArrVec)) (pointLightToVector (last pointLightArrVec)))))
-
-
-(defn spotLightToVector [sl]
-  "Converts a SpotLight into a savable vector."
-  (let [color (.getColor sl)
-        position (.getPosition sl)
-        conedir (.getConedir sl)]
-    (vector (.getClass sl) (.x color) (.y color) (.z color) (.x position) (.y position) (.z position) (.getIntensity sl) (.getConstantAtt sl) (.getLinearAtt sl) (.getQuadraticAtt sl) (.x conedir) (.y conedir) (.z conedir) (.getCutoffAngle sl))))
-
-
-(defn createSpotLightVector [spotLightArrVec]
-  "Creates a vector containing all SpotLights, converted into savable vectors."
-  (if (= (.length spotLightArrVec) 1)
-    (vector (spotLightToVector (first spotLightArrVec)))
-    (conj (createSpotLightVector (pop spotLightArrVec)) (spotLightToVector (last spotLightArrVec)))))
-
-
-;; Save Functions
-(defn saveItems [world]
-  "Returns a vector containing all items of the given world in EDN format."
-  (let [meshMapVec (vec (.getMeshMap (.getSceneVertex world)))]
-    (saveMeshMap meshMapVec)))
-
-
-(defn saveGroups [world]
-  "Returns a vector containing all groups of the given world in EDN format."
-  (saveGroupsList (vec (.getItemGroupArrayList world)) (.getItemsList (.getSceneVertex world))))
-
-
-(defn saveCameras [world]
-  "Returns a vector containing all cameras of the given world in EDN format."
-  (vector (cameraToVector (.getCamera world)) (createCameraVector (vec (.getCamerasList world)))))
-
-
-(defn saveLights [world]
-  "Returns a vector containing all lights of the given world in EDN format."
-  (let [sceneLight (.getSceneLight world)
-        ambientLight (.getAmbientLight sceneLight)
-        aColor (.getColor ambientLight)
-        sun (.getSun sceneLight)
-        sColor (.getColor sun)
-        sDirection (.getDirection sun)
-        ;; Representation of the ambientLight as a Clojure vector
-        ambientVector [(.getClass ambientLight) (.x aColor) (.y aColor) (.z aColor) (.getIntensity ambientLight)]
-        ;; Representation of the Sun as a Clojure vector
-        sunVector [(.getClass sun) (.x sColor) (.y sColor) (.z sColor) (.getIntensity sun) (.x sDirection) (.y sDirection) (.z sDirection)]
-        ;; Representation of PointLights as a Clojure vector
-        pointLightVector (createPointLightVector (vec (.getPointTable sceneLight)))
-        ;; Representation of spotLights as a Clojure vector
-        spotLightVector (createSpotLightVector (vec (.getSpotTable sceneLight)))]
-
-    (vector (.specularPower sceneLight) ambientVector sunVector pointLightVector spotLightVector)))
-
-
-(defn saveSkybox [world]
-  (let [skybox (.getSkybox world)]
-    (if (= skybox nil)
-      (vector)
-      (let [color (.color skybox)]
-        (vector (.width skybox) (.length skybox) (.height skybox) (.x color) (.y color) (.z color))))))
-
-
-(defn saveFile [filename world]
-  "Saves all items, cameras and lights of the given world into a file, in EDN format."
-  (let [itemsVector (saveItems world)
-        groupsVector (saveGroups world)
-        camerasVector (saveCameras world)
-        lightsVector (saveLights world)
-        skyboxVector (saveSkybox world)]
-    (spit filename (with-out-str (pr (vector itemsVector groupsVector camerasVector lightsVector skyboxVector))))
-    filename))
-
-
-;; Load Tools
-(defn ednToObject [ednData]
-  "Loads an object previously saved in a vector."
-  (if (vector? ednData)
-    (let [c (resolve (first ednData))
-          a (ednToObject (rest (lazy-seq ednData)))]
-      (clojure.lang.Reflector/invokeConstructor c (into-array a)))
-    (if (= ednData '())
-      '()
-      (if (vector? (first ednData))
-        (conj (ednToObject (rest ednData)) (into-array (first ednData)))
-        (conj (ednToObject (rest ednData)) (first ednData))))))
-
-
-
-
-;; Load Tools for Items
-(defn loadMesh [mesh]
-  "Loads a Mesh."
-  (case (get mesh 0)
-    yaw.engine.meshGenerator.BlockGenerator (yaw.engine.meshGenerator.BlockGenerator/generate (get mesh 1) (get mesh 2) (get mesh 3) (get mesh 4) (get mesh 5) (get mesh 6) (get mesh 7))
-    yaw.engine.meshGenerator.HalfBlockGenerator (yaw.engine.meshGenerator.HalfBlockGenerator/generate (get mesh 1) (get mesh 2) (get mesh 3) (get mesh 4) (get mesh 5) (get mesh 6) (get mesh 7))
-    yaw.engine.meshGenerator.GroundGenerator (yaw.engine.meshGenerator.GroundGenerator/generate (get mesh 1) (get mesh 2) (get mesh 3) (get mesh 4) (get mesh 5) (get mesh 6) (get mesh 7))
-    yaw.engine.meshGenerator.PyramidGenerator (yaw.engine.meshGenerator.PyramidGenerator/generate (get mesh 1) (get mesh 2) (get mesh 3) (get mesh 4) (get mesh 5) (get mesh 6) (get mesh 7))
-    yaw.engine.meshGenerator.RegTetrahedronGenerator (yaw.engine.meshGenerator.RegTetrahedronGenerator/generate (get mesh 1) (get mesh 2) (get mesh 3) (get mesh 4))
-    yaw.engine.meshGenerator.RegOctahedronGenerator (yaw.engine.meshGenerator.RegOctahedronGenerator/generate (get mesh 1) (get mesh 2) (get mesh 3) (get mesh 4))
-    yaw.engine.meshs.Mesh (yaw.engine.meshs.Mesh. (float-array (get mesh 1)) (get mesh 2) (get mesh 3) (get mesh 4) (get mesh 5) (float-array (get mesh 6)) (int-array (get mesh 7)) (get mesh 8))))
-
-
-(defn loadGenericItems [mesh itemsList itemRefsMap world]
-  "Loads GenericItems, associating them with their Mesh, and adds them to the sceneVertex."
-  (let [itemVec (first itemsList)
-        sceneVertex (.getSceneVertex world)]
-    (if (= (.size itemsList) 1)
-      (let [javaItem (yaw.engine.items.GenericItem. mesh (get itemVec 0) (get itemVec 1) (get itemVec 2) (get itemVec 3) (get itemVec 4) (get itemVec 5) (get itemVec 6))]
-        (.add sceneVertex javaItem)
-        (assoc itemRefsMap (.size itemRefsMap) javaItem))
-      (let [javaItem (yaw.engine.items.GenericItem. mesh (get itemVec 0) (get itemVec 1) (get itemVec 2) (get itemVec 3) (get itemVec 4) (get itemVec 5) (get itemVec 6))]
-        (.add sceneVertex javaItem)
-        (loadGenericItems mesh (rest itemsList) (assoc itemRefsMap (.size itemRefsMap) javaItem) world)))))
-
-
-(defn loadMeshItems [meshItems itemRefsMap world]
-  "Loads items sharing one Mesh."
-  (let [mesh (loadMesh (first meshItems))]
-    (loadGenericItems mesh (rest meshItems) itemRefsMap world)))
-
-(defn loadMeshMap [meshMapList itemRefsMap world]
-  "Loads all items of the given meshMap (as list)."
-  (if (= (.size meshMapList) 0)
-    itemRefsMap
-    (let [itemRefsMap (loadMeshItems (first meshMapList) itemRefsMap world)]
-      (loadMeshMap (rest meshMapList) itemRefsMap world))))
-
-
-;; Load Tools for Groups
-(defn createNGroups [n world]
-  "Creates n groups in the world."
-  (if (= n 0)
-    nil
-    (do
-      (ItemManagement/createGroup world)
-      (createNGroups (- n 1) world))))
-
-
-
-(defn addItemsToGroup [groupItemsList groupId itemRefsMap world]
-  "Adds items from the groupItemsList to the group corresponding to the given groupId."
-  (cond (> (.size groupItemsList) 0)
-        (let [groupsList (.getItemGroupArrayList world)]
-          (addItem (.get groupsList groupId) (.get itemRefsMap (first groupItemsList)))
-          (addItemsToGroup (rest groupItemsList) groupId itemRefsMap world))))
-
-
-
-(defn addItemsToGroups [groupsList curId itemRefsMap world]
-  "Adds items from the groupsList vector to corresponding groups."
-  (cond (> (.length groupsList) 0)
-        (do
-          (addItemsToGroup (lazy-seq (last groupsList)) curId itemRefsMap world)
-          (addItemsToGroups (pop groupsList) (- curId 1) itemRefsMap world))))
-
-
-;; Load Tools for Cameras
-(defn addCameras [cameraList world index]
-  "Adds all cameras contained in the provided list to the World."
-  (if (= cameraList '())
-    nil
-    (do
-      (CameraManagement/addCamera world (ednToObject (first cameraList)))
-      (addCameras (rest cameraList) world (+ index 1)))))
-
-
-;; Load Tools for Lights
-(defn addPointLights [pointLights sceneLight index]
-  "Adds all pointLights contained in the provided list to the SceneLight."
-  (if (= pointLights '())
-    nil
-    (do
-      (.setPointTable sceneLight (ednToObject (first pointLights)) index)
-      (addPointLights (rest pointLights) sceneLight (+ index 1)))))
-
-
-(defn addSpotLights [spotLights sceneLight index]
-  "Adds all spotLights contained in the provided list to the SceneLight."
-  (if (= spotLights '())
-    nil
-    (do
-      (.setSpotTable sceneLight (ednToObject (first spotLights)) index)
-      (addSpotLights (rest spotLights) sceneLight (+ index 1)))))
-
-
-;; Load Functions
-(defn loadItems [loadedItems itemRefsMap world]
-  "Loads all MyItem objects from an EDN vector created with saveItems."
-  (loadMeshMap (lazy-seq loadedItems) itemRefsMap world))
-
-
-(defn loadGroups [loadedGroups itemRefsMap world]
-  "Loads all groups from an EDN vector created with saveGroups."
-  (cond (> (.size loadedGroups) 0)
-        (do
-          (createNGroups (.size loadedGroups) world)
-          (addItemsToGroups loadedGroups (- (.size loadedGroups) 1) itemRefsMap world))))
-
-
-(defn loadCameras [loadedCameras world]
-  "Loads all Camera objects from an EDN vector created with saveCameras."
-  (.setCamera world (ednToObject (get loadedCameras 0)))
-  (.emptyListCamera world)
-  (addCameras (lazy-seq (get loadedCameras 1)) world 0))
-
-
-(defn loadLights [loadedLights world]
-  "Loads all lights from an EDN vector created with saveLights."
-  (let [sceneLight (.getSceneLight world)]
-    (set! (.specularPower sceneLight) (get loadedLights 0))
-    (.setAmbient sceneLight (ednToObject (get loadedLights 1)))
-    (.setSun sceneLight (ednToObject (get loadedLights 2)))
-    (addPointLights (lazy-seq (get loadedLights 3)) sceneLight 0)
-    (addSpotLights (lazy-seq (get loadedLights 4)) sceneLight 0)))
-
-
-(defn loadSkybox [skyboxVec world]
-  "Loads the Skybox, if there is one."
-  (if (= (.length skyboxVec) 0)
-    nil
-    (let [skybox (yaw.engine.skybox.Skybox. (get skyboxVec 0) (get skyboxVec 1) (get skyboxVec 2) (get skyboxVec 3) (get skyboxVec 4) (get skyboxVec 5))]
-      (.setSkybox world skybox))))
-
-
-(defn loadFile [filename world]
-  "Removes the world and loads the items, cameras, lights and skybox contained in the given file in a new world."
-  (.close world)
-  (Thread/sleep 200)
-  (let [universe (start-universe!)
-        world (:world @universe)
-        loadedVector (read-string (slurp filename))
-        itemRefsMap (loadItems (get loadedVector 0) '{} world)]
-    (loadGroups (get loadedVector 1) itemRefsMap world)
-    (loadCameras (get loadedVector 2) world)
-    (loadLights (get loadedVector 3) world)
-    (loadSkybox (get loadedVector 4) world)
-    universe))
-(defn create-mesh! [vertices text-pos faces normals]
-
-  )
-(defn create-block! [x y z]
-  {:vertices {:v1 [x y z]
-              :v2 [x y z]
-              :v3 [x y z]
-              :v4 [x y z]
-              :v5 [x y z]}
-   :text-pos [:v1 :v1 :v1 :v1]
-   :faces    {[:v1 :v2 :v3 :v4] []}
-   :normals  []})
-
