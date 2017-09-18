@@ -1,130 +1,127 @@
 package embla3d.engine;
 
-import embla3d.engine.items.MyItem;
-import embla3d.engine.meshs.Material;
+import embla3d.engine.items.Item;
 import embla3d.engine.meshs.Mesh;
+import embla3d.engine.shader.ShaderProgram;
+import org.joml.Matrix4f;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
-
+/**
+ * Class representing a scene
+ * we manage the rendering efficiency by splitting the meshes in two different structure
+ * the first one (notInit) represent the mesh that must not be rendered ( we remove them from the gpu) unless we want to
+ * and the second is a map where each mesh has a list of items
+ */
 public class SceneVertex {
-    public static boolean itemAdded=false;
-    protected HashMap<Mesh, ArrayList<MyItem>> meshMap;
-    protected ArrayList<Mesh> notInit;
+    //old code from a previous attempt to manage a group of scene vertex
+    private boolean itemAdded = false;
+    private HashMap<Mesh, List<Item>> mMeshMap;
+    private ArrayList<Mesh> notInit;
 
-    public SceneVertex(){
-        meshMap = new HashMap<Mesh, ArrayList<MyItem>>();
-        notInit = new ArrayList<Mesh>();
+
+    public SceneVertex() {
+        mMeshMap = new HashMap<>();
+        notInit = new ArrayList<>();
     }
 
-    public void removeItem(MyItem item){
-        ArrayList<MyItem> temp=meshMap.get(item.getAppearance());
-        temp.remove(item);
+    /**
+     * Add the item in the map if the associated mesh is already a key
+     * otherwise the association is created and the mesh is added to the nonInit List
+     *
+     * @param pItem the item
+     */
+    public synchronized void add(Item pItem) {
+        itemAdded = true;
+            /*retrieve the stored mesh in the item*/
+        Mesh lMesh = pItem.getAppearance();
+        List<Item> lItems = mMeshMap.get(lMesh);
+        if (lItems == null) {
+            lItems = new ArrayList<>();
+            mMeshMap.put(lMesh, lItems);
+            notInit.add(lMesh);
+        }
+        lItems.add(pItem);
+
     }
 
-    public ArrayList<MyItem> getItemsList(){
-        ArrayList<MyItem> items=new ArrayList<MyItem>();
-        for(Mesh m:meshMap.keySet())
-            items.addAll(meshMap.get(m));
-		return items;
-    }
-	
-    public HashMap<Mesh, ArrayList<MyItem>> getMeshMap() {
-	return meshMap;
+    /**
+     * Remove the specified item from the mMeshMap
+     *
+     * @param pItem item to be removed
+     */
+    public void removeItem(Item pItem) {
+        List<Item> lItems = mMeshMap.get(pItem.getAppearance());
+        lItems.remove(pItem);
     }
 
+    /**
+     * Invoke the method cleanup on all the active mesh
+     */
     public void cleanUp() {
-		for(Mesh m : meshMap.keySet()){
-			m.cleanUp();
-		}
-	}
-
-    public void initMesh(){
-	for(Mesh m:notInit){
-	    m.init();
-	}
-	notInit.clear();
+        for (Mesh lMesh : mMeshMap.keySet()) {
+            lMesh.cleanUp();
+        }
     }
-    public void draw(ShaderProgram sh, Matrix4f viewMatrix) {
-	ArrayList<Mesh> rmListe = new ArrayList<Mesh>();
-	for(Mesh m: meshMap.keySet()){
-	    ArrayList<MyItem> items = meshMap.get(m);
-	    if(items.isEmpty()){
-		rmListe.add(m);
-	    }else{
-		m.draw(items,sh, viewMatrix);
-	    }
-	}
-	for(Mesh m : rmListe){
-	    m.cleanUp();
-	    meshMap.remove(m);
-	}
+
+    /**
+     * Invoke the method init on all the mesh in the non initialize mesh collection
+     */
+    public void initMesh() {
+        for (Mesh lMesh : notInit) {
+            lMesh.init();
+        }
+        notInit.clear();
+    }
+
+    /**
+     * Invoke the method render on all mesh with associated items
+     * otherwise clean then remove mesh which has an empty list of items
+     *
+     * @param pShaderProgram Shader program that will render
+     * @param pViewMatrix    the View Matrix
+     */
+
+    public void draw(ShaderProgram pShaderProgram, Matrix4f pViewMatrix) {
+        List<Mesh> lRmListe = new ArrayList<>();
+        for (Mesh lMesh : mMeshMap.keySet()) {
+            List<Item> lItems = mMeshMap.get(lMesh);
+            if (lItems.isEmpty()) {
+                lRmListe.add(lMesh);
+            } else {
+                lMesh.render(lItems, pShaderProgram, pViewMatrix);
+            }
+        }
+        /*Clean then remove*/
+        for (Mesh lMesh : lRmListe) {
+            lMesh.cleanUp();
+            mMeshMap.remove(lMesh);
+        }
     }
 
     // XXX: remove?
+    /*Maybe
     public void update() {
-	for(Mesh m: meshMap.keySet()){
-	    for(MyItem i : meshMap.get(m))
-		i.update();
-	}
+        for (Mesh m : mMeshMap.keySet()) {
+            for (Item i : mMeshMap.get(m))
+                i.update();
+        }
+    }*/
+
+    /**
+     * Retrieve all the items of the scene
+     *
+     * @return the list of item
+     */
+    public ArrayList<Item> getItemsList() {
+        ArrayList<Item> lItems = new ArrayList<>();
+        mMeshMap.values().forEach(lItems::addAll);
+        return lItems;
     }
 
-
-    public void add(MyItem item){
-	synchronized(this){
-	    itemAdded=true;
-	    if(meshMap.keySet().contains(item.getAppearance()))
-		meshMap.get(item.getAppearance()).add(item);
-	    else{
-		ArrayList<MyItem> l = new ArrayList<MyItem>();
-		l.add(item);
-		meshMap.put(item.getAppearance(),l);
-		notInit.add(item.getAppearance());
-	    }
-	}
-    }
-
-    public void add(Mesh m){
-	MyItem item = new MyItem(m);
-	this.add(item);
-    }
-
-    public void add(float[] vertices, Material material , float[] normals, int[] indices){
-	Mesh newMesh = new Mesh(vertices,material, normals,indices);
-	MyItem item = new MyItem(newMesh);
-	this.add(item);
-    }
-
-    public void add(float[] vertices, Material material, float[] normals, int[] indices,
-		    float scale, Vector3f rotation, Vector3f position) {
-	Mesh newMesh = new Mesh(vertices,material,normals,indices);
-	MyItem newItem = new MyItem(newMesh, scale, rotation, position);
-	this.add(newItem);
-    }
-
-    public void add(float[] vertices, Material material , float[] normals, int[] indices, int weight){
-	Mesh newMesh = new Mesh(vertices,material, normals,indices, weight);
-	MyItem item = new MyItem(newMesh);
-	this.add(item);
-    }
-
-    public void add(float[] vertices, Material material, float[] normals, int[] indices, int weight,
-		    float scale, Vector3f rotation, Vector3f position) {
-	Mesh newMesh = new Mesh(vertices,material,normals,indices,weight);
-	MyItem newItem = new MyItem(newMesh, scale, rotation, position);
-	this.add(newItem);
-    }
-	
-    public void add(Mesh apparence, float scale, Vector3f rotation,
-		    Vector3f position) {
-	MyItem newItem = new MyItem(apparence, scale, rotation, position);
-	this.add(newItem);
-    }
-	
-    public void clone(MyItem i){
-	this.add(new MyItem(i));
+    public boolean isItemAdded() {
+        return itemAdded;
     }
 }

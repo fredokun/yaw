@@ -1,90 +1,80 @@
 package embla3d.engine.items;
 
-import embla3d.engine.World;
-import embla3d.engine.meshGenerator.BlockGenerator;
-import embla3d.engine.meshGenerator.GroundGenerator;
-import embla3d.engine.meshGenerator.HalfBlockGenerator;
-import embla3d.engine.meshGenerator.PyramidGenerator;
-import embla3d.engine.meshGenerator.RegOctahedronGenerator;
-import embla3d.engine.meshGenerator.RegTetrahedronGenerator;
-import embla3d.engine.meshs.Material;
 import embla3d.engine.meshs.Mesh;
-
+import embla3d.engine.meshs.MeshBuilder;
 import org.joml.Vector3f;
 
-
+/**
+ * Class to create some shapes (Block, HalfBlock, Pyramid, Octahedron, Tetrahedron) * and basic functions for these items
+ * TODO Refactor change these create method into a more generic method
+ * mesh_name must be a parameter of the function
+ */
 public class ItemManagement {
-    public static GenericItem createBlock(World world, float red, float green, float blue, float xLength, float yLength, float zLength, float scale) {
-        Material material = new Material(new Vector3f(red, green, blue), 1000.f);
-        Mesh appearance = BlockGenerator.generate(xLength, yLength, zLength, material);
-        GenericItem item = new GenericItem(appearance, scale, new Vector3f(), new Vector3f(0f, 0f, -2f));
-        world.getSceneVertex().add(item);
+    /**
+     * Create an item with the specified parameters and add it to the  world
+     *
+     * @param id        id
+     * @param pPosition position
+     * @param pScale    scale
+     * @param pMesh     mesh
+     * @return the item
+     */
+    public static Item createItem(String id, float[] pPosition, float pScale, Mesh pMesh) {
+        Item item = new Item(id, pPosition, pScale, false, pMesh);
+
         return item;
     }
 
-    public static GenericItem createHalfBlock(World world, float red, float green, float blue, float xLength, float yLength, float zLength, float scale) {
-        Material material = new Material(new Vector3f(red, green, blue), 1000.f);
-        Mesh appearance = HalfBlockGenerator.generate(xLength, yLength, zLength, material);
-        GenericItem item = new GenericItem(appearance, scale, new Vector3f(), new Vector3f(0f, 0f, -2f));
-        world.getSceneVertex().add(item);
-        return item;
-    }
+    /*
+        public static Item createBlock( float red, float green, float blue, float xLength, float yLength, float zLength, float scale) {
+            Mesh appearance = MeshBuilder.generate(BLOCK_MESH, xLength, yLength, zLength, red, green, blue);
+            Item item = new Item(appearance, scale, new Vector3f(0f, 0f, -2f));
+            //
+            Item item = new Item(appearance, scale, new Vector3f(0f, 0f, -2f), false);
 
-    public static GenericItem createPyramid(World world, float red, float green, float blue, float xLength, float yLength, float zLength, float scale) {
-        Material material = new Material(new Vector3f(red, green, blue), 1000.f);
-        Mesh appearance = PyramidGenerator.generate(xLength, yLength, zLength, material);
-        GenericItem item = new GenericItem(appearance, scale, new Vector3f(), new Vector3f(0f, 0f, -2f));
-        world.getSceneVertex().add(item);
-        return item;
-    }
-
-    public static GenericItem createRegTetrahedron(World world, float red, float green, float blue, float scale) {
-        Material material = new Material(new Vector3f(red, green, blue), 1000.f);
-        Mesh appearance = RegTetrahedronGenerator.generate(material);
-        GenericItem item = new GenericItem(appearance, scale, new Vector3f(), new Vector3f(0f, 0f, -2f));
-        world.getSceneVertex().add(item);
-        return item;
-    }
-
-    public static GenericItem createRegOctahedron(World world, float red, float green, float blue, float scale) {
-        Material material = new Material(new Vector3f(red, green, blue), 1000.f);
-        Mesh appearance = RegOctahedronGenerator.generate(material);
-        GenericItem item = new GenericItem(appearance, scale, new Vector3f(), new Vector3f(0f, 0f, -2f));
-        world.getSceneVertex().add(item);
-        return item;
-    }
-
-    public static GenericItem createGround(World world, float red, float green, float blue, float width, float length) {
-        Material material = new Material(new Vector3f(red, green, blue), 1000.f);
-        Mesh appearance = GroundGenerator.generate(width, length, 0, material);
-        GenericItem item = new GenericItem(appearance, 1.0f, new Vector3f(), new Vector3f(0f, -2f, 0f));
-        world.getSceneVertex().add(item);
-        return item;
-    }
-
-    public static GenericItem clone(World world, GenericItem i) {
-        GenericItem item = new GenericItem(i);
-        world.getSceneVertex().add(item);
-        return item;
-    }
-
-    public static void removeItem(World world, GenericItem item) {
-        world.getSceneVertex().removeItem(item);
-        for (ItemGroup g : item.getGroups()) {
-            g.remove(item);
+            return item;
         }
-    }
 
-    public static ItemGroup createGroup(World world) {
-        ItemGroup group = new ItemGroup();
-        world.getGroupsList().add(group);
-        return group;
-    }
+        public static Item createHalfBlock( float red, float green, float blue, float xLength, float yLength, float zLength, float scale) {
+            Mesh appearance = MeshBuilder.generate(HALF_BLOCK_MESH, xLength, yLength, zLength, red, green, blue);
+            Item item = new Item(appearance, scale, new Vector3f(0f, 0f, -2f), false);
 
-    public static void removeGroup(World world, ItemGroup g) {
-        world.getGroupsList().remove(g);
-        for (MyItem i : g.getItems())
-            i.removeFromGroup(g);
+            return item;
+        }
+
+        public static Item createPyramid( float red, float green, float blue, float xLength, float yLength, float zLength, float scale) {
+            Mesh appearance = MeshBuilder.generate(PYRAMID_MESH, xLength, yLength, zLength, red, green, blue);
+            Item item = new Item(appearance, scale, new Vector3f(0f, 0f, -2f), false);
+
+            return item;
+        }
+
+        public static Item createRegTetrahedron( float red, float green, float blue, float scale) {
+            Mesh appearance = MeshBuilder.generate(TETRAHEDRON_MESH, 0, 0, 0, red, green, blue);
+            Item item = new Item(appearance, scale, new Vector3f(0f, 0f, -2f), false);
+
+            return item;
+        }
+
+        public static Item createRegOctahedron( float red, float green, float blue, float scale) {
+            Mesh appearance = MeshBuilder.generate(OCTAHEDRON_MESH, 0, 0, 0, red, green, blue);
+            Item item = new Item(appearance, scale, new Vector3f(0f, 0f, -2f), false);
+
+            return item;
+        }
+
+        public static Item createGround( float red, float green, float blue, float width, float length) {
+            Mesh appearance = MeshBuilder.generate(GROUND_MESH, width, length, 0, red, green, blue);
+            Item item = new Item(appearance, 1.0f, new Vector3f(0f, -2f, 0f), false);
+
+            return item;
+        }
+    */
+    public static Item createBoundingBox(String id, float[] pPosition, float pScale, float[] pLength) {
+        Mesh appearance = MeshBuilder.generateBoundingBox(pLength[0], pLength[1], pLength[2]);
+        appearance.getMaterial().setColor(new Vector3f(0,255,0));
+
+        return new Item(id, new Vector3f(pPosition[0], pPosition[0], pPosition[0]), new Vector3f(), pScale, true, appearance, null);
     }
 
 
