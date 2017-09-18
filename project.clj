@@ -13,9 +13,9 @@
        (vec (set (concat (get JVM-OPTS :common)
                    (get JVM-OPTS os))))))
 
-(defproject embla3d "0.1.0"
+(defproject yaw "0.1.0"
   :description "A simple 3D programming world."
-  :url "https://github.com/fredokun/embla3D"
+  :url "https://github.com/fredokun/yaw"
   :license {:name "The MIT License"
             :url  "http://opensource.org/licenses/MIT"}
   :dependencies [[org.clojure/clojure "1.8.0"]
