@@ -1,4 +1,4 @@
-# Embla3D : (ultimately) a 3D live-coding experience for children of all ages
+# Yaw : (ultimately) a 3D live-coding experience for children of all ages
 
 (for now a dumb imperative (!) Clojure wrapper for LWJGL...)
 
