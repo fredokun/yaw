@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: org.lwjgl/lwjgl-jemalloc:3.1.5:natives-linux">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/lwjgl/lwjgl-jemalloc/3.1.5/lwjgl-jemalloc-3.1.5-natives-linux.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

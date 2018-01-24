@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: org.lwjgl/lwjgl-tootle:3.1.5">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/lwjgl/lwjgl-tootle/3.1.5/lwjgl-tootle-3.1.5.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

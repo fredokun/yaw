@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: org.lwjgl/lwjgl-yoga:3.1.5:natives-windows">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/lwjgl/lwjgl-yoga/3.1.5/lwjgl-yoga-3.1.5-natives-windows.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
