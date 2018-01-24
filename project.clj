@@ -72,7 +72,7 @@
 (def all-dependencies
   (into ;; Add your non-LWJGL dependencies here
    '[[org.clojure/clojure "1.9.0"]
-     [org.joml/joml "1.9.7"]
+     [org.joml/joml "1.8.4"]
      [org.l33tlabs.twl/pngdecoder "1.0"]]
    (lwjgl-deps-with-natives)))
 

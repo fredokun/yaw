@@ -64,6 +64,12 @@ If not, then something went wrong ... please fill an issue
 in this case (if you're on a mac please stay tuned and
 blame the company behind it)...
 
+To see something we should put it a little bit farther away.
+
+```clojure
+(translate! block :z -2)
+```
+
 We can rotate our cube, e.g. 20 degrees on y...
 
 ```clojure
