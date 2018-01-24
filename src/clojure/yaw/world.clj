@@ -1,8 +1,8 @@
 (ns yaw.world
   (:import (yaw.engine.meshs MeshBuilder)
-           (yaw.engine World))
+           (yaw.engine World)))
   ;;(gen-class)
-  )
+
 
 ;;UTILS------------------------------------------------------------------
 (defn flat-map "flatten 'map'" [m]
@@ -50,8 +50,8 @@
                                  :top    [0 0.5 0.5 0.5 0 1 0.5 1]
                                  :right  [0 0 0 0.5]
                                  :left   [0.5 0 0.5 0.5]
-                                 :bottom [0.5 0 1 0 0.5 0.5 1 0.5]}
-                   }}]
+                                 :bottom [0.5 0 1 0 0.5 0.5 1 0.5]}}}]
+
   (.createMesh world
                (float-array (flat-map vertices))
                (float-array (flat-map text-coord))
