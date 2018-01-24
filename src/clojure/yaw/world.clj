@@ -1,7 +1,8 @@
 (ns yaw.world
   (:import (yaw.engine.meshs MeshBuilder)
-           [yaw.engine World])
-  (gen-class))
+           (yaw.engine World))
+  ;;(gen-class)
+  )
 
 ;;UTILS------------------------------------------------------------------
 (defn flat-map "flatten 'map'" [m]
