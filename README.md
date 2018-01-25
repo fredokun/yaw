@@ -5,8 +5,8 @@
 ## Disclaimer
 
 Yaw is *not yet* usable, except for extremely simplistic examples!
-The Java/OpenGL-side of things is mostly developed by 1-year masters'students.
-The Clojure part is for the cream of the cream ;-).
+The Java/OpenGL-side of things is a basic engine relatively well-tested.
+The Clojure part is minimalistic for now.
 
 ## Requirements
 
@@ -88,6 +88,7 @@ now is *ambient light*.
 (def univ (start-universe!))
 (def world (:world @univ))
 (def block (create-block! world))
+(translate! block :z -1)
 (rotate! block :y 20)
 ```
 
