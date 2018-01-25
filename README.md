@@ -1,4 +1,6 @@
-# Yaw : (ultimately) a 3D live-coding experience for children of all ages
+# Yaw : live-coding a (simple) 3D world
+
+**(ultimately) a 3D live-coding experience for Clojurians of all ages**
 
 (for now a dumb imperative (!) Clojure wrapper for LWJGL...)
 
