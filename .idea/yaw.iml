@@ -30,7 +30,7 @@
     <orderEntry type="library" name="Leiningen: org.clojure/core.specs.alpha:0.1.24" level="project" />
     <orderEntry type="library" name="Leiningen: org.clojure/spec.alpha:0.1.143" level="project" />
     <orderEntry type="library" name="Leiningen: org.clojure/tools.nrepl:0.2.12" level="project" />
-    <orderEntry type="library" name="Leiningen: org.joml/joml:1.8.4" level="project" />
+    <orderEntry type="library" name="Leiningen: org.joml/joml:1.9.7" level="project" />
     <orderEntry type="library" name="Leiningen: org.l33tlabs.twl/pngdecoder:1.0" level="project" />
     <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-assimp:3.1.5" level="project" />
     <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-assimp:3.1.5:natives-linux" level="project" />

@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file:///opt/pesch/Projets/embla3D/embla3d.iml" filepath="/opt/pesch/Projets/embla3D/embla3d.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/yaw.iml" filepath="$PROJECT_DIR$/.idea/yaw.iml" />
     </modules>
   </component>
