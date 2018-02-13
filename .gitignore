@@ -15,3 +15,5 @@ pom.xml.asc
 *~
 /yaw/java/bin/
 *classpath
+.idea/libraries/
+.idea/workspace.xml

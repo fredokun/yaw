@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="Leiningen: org.lwjgl/lwjgl-sse:3.1.5:natives-macos">
-    <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/org/lwjgl/lwjgl-sse/3.1.5/lwjgl-sse-3.1.5-natives-macos.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
