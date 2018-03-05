@@ -24,6 +24,7 @@
 ;;README ONLY USE WORLD IT is A FACADE, no DIRECT USE OF MANAGEMENT/BUILDER TOOLS
 
 ;; Mesh Functions------------------------------------------------
+;; TODO: delete this when `create-simple-mesh` is stable (and we can handle texture)
 
 (defn create-mesh!
   "Create an item in the `world` with the  specified id, position, mesh"
@@ -58,6 +59,50 @@
                (float-array (flat-map normals))
                (int-array (flat-map faces))
                (int weight) (float-array rgb) texture-name))
+
+(defn create-simple-mesh!
+  "Create an item in the `world` from the specified mesh object"
+  [world & {{:keys [vertices tris]
+           :or {vertices {:a [1 1 1]
+                           :b [1 -1 1]
+                           :c [-1 -1 1]
+                           :d [-1 1 1]
+                           :e [1 1 -1]
+                           :f [1 -1 -1]
+                           :g [-1 -1 -1]
+                           :h [-1 1 -1]}
+                tris [{:n [0 0 1]
+                        :v [:a :c :b]}
+                       {:n [0 0 1]
+                        :v [:a :d :c]}
+                       {:n [0 0 -1]
+                        :v [:e :f :h]}
+                       {:n [0 0 -1]
+                        :v [:f :g :h]}
+                       {:n [0 1 0]
+                        :v [:a :e :h]}
+                       {:n [0 1 0]
+                        :v [:a :h :d]}
+                       {:n [0 -1 0]
+                        :v [:b :c :f]}
+                       {:n [0 -1 0]
+                        :v [:f :c :g]}
+                       {:n [1 0 0]
+                        :v [:a :f :e]}
+                       {:n [1 0 0]
+                        :v [:a :b :f]}
+                       {:n [-1 0 0]
+                        :v [:d :h :c]}
+                       {:n [-1 0 0]
+                        :v [:c :h :g]}]}}
+            :geometry
+            rgb :rgb}]
+  (let [vidx (zipmap (keys vertices) (range (count vertices)))
+        coords (float-array (mapcat second vertices))
+        normals (float-array (mapcat (fn [{n :n v :v}] (concat n n n)) tris))
+        indices (int-array (mapcat (fn [{n :n v :v}] (map #(% vidx) v)) tris))]
+    (.createMesh world coords normals indices (float-array rgb))))
+
 ;; Items Functions------------------------------------------------
 (defn create-item!
   "Create an item in the `world` with the
@@ -81,11 +126,10 @@
   (create-item! world :id id
                 :position position
                 :scale scale
-                :mesh (create-mesh! world :rgb color :texture-name texture)))
+                :mesh (create-simple-mesh! world :rgb color)))
 
 ;;CAMERA MANAGEMENT------------------------------------------------
 (defn camera "Retrieve the main camera of the world" [world] (.getCamera world))
-
 
 ;; Collision
 
