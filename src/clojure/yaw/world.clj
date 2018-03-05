@@ -126,7 +126,8 @@
   (create-item! world :id id
                 :position position
                 :scale scale
-                :mesh (create-simple-mesh! world :rgb color)))
+                :mesh (create-simple-mesh! world :rgb color :texture-name texture)))
+
 
 ;;CAMERA MANAGEMENT------------------------------------------------
 (defn camera "Retrieve the main camera of the world" [world] (.getCamera world))
