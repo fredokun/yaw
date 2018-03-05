@@ -11,13 +11,13 @@
 ;; maybe use `keyword?` instead?
 (s/def ::vertices (s/map-of ident? :vector/gen))
 
-(s/def :face/n :vector/norm)
-(s/def :face/v (s/coll-of ident?))
-(s/def ::face (s/keys :req-un [:face/n :face/v]))
+(s/def :tri/n :vector/norm)
+(s/def :tri/v (s/coll-of ident? :count 3))
+(s/def ::tri (s/keys :req-un [:tri/n :tri/v]))
 
-(s/def ::faces (s/map-of ident? ::face))
+(s/def ::tris (s/coll-of ::tri))
 
-(s/def ::geometry (s/keys :req-un [::vertices ::faces]))
+(s/def ::geometry (s/keys :req-un [::vertices ::tris]))
 
 ;; Wrap the geometry in a `mesh` (`object`?) that will also
 ;; hold texture and material info
@@ -38,15 +38,27 @@
 ;;                       :f [1 -1 -1]
 ;;                       :g [-1 -1 -1]
 ;;                       :h [-1 1 -1]}
-;;            :faces {:A {:n [0 0 1]
-;;                        :v [:a :b :c :d]}
-;;                    :B {:n [0 0 -1]
-;;                        :v [:e :f :g :h]}
-;;                    :C {:n [0 1 0]
-;;                        :v [:a :e :h :d]}
-;;                    :D {:n [0 -1 0]
-;;                        :v [:b :f :g :c]}
-;;                    :E {:n [1 0 0]
-;;                        :v [:a :e :f :b]}
-;;                    :F {:n [-1 0 0]
-;;                        :v [:d :c :g :h]}}})
+;;            :tris [{:n [0 0 1]
+;;                    :v [:a :b :c]}
+;;                   {:n [0 0 1]
+;;                    :v [:a :c :d]}
+;;                   {:n [0 0 -1]
+;;                    :v [:e :f :h]}
+;;                   {:n [0 0 -1]
+;;                    :v [:f :g :h]}
+;;                   {:n [0 1 0]
+;;                    :v [:a :e :h]}
+;;                   {:n [0 1 0]
+;;                    :v [:a :h :d]}
+;;                   {:n [0 -1 0]
+;;                    :v [:b :f :c]}
+;;                   {:n [0 -1 0]
+;;                    :v [:f :g :c]}
+;;                   {:n [1 0 0]
+;;                    :v [:a :e :f]}
+;;                   {:n [1 0 0]
+;;                    :v [:a :f :b]}
+;;                   {:n [-1 0 0]
+;;                    :v [:d :c :h]}
+;;                   {:n [-1 0 0]
+;;                    :v [:c :g :h]}]})
