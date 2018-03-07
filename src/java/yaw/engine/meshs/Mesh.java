@@ -53,6 +53,17 @@ public class Mesh {
     }
 
     /**
+     * Construct a Mesh with the specified mVertices, mNormals and mIndices.
+     *
+     * @param pVertices   Vertex array
+     * @param pNormals    Normal vectors
+     * @param pIndices    Triangles
+     */
+    public Mesh(float[] pVertices, float[] pNormals, int[] pIndices) {
+        this(pVertices, null, pNormals, pIndices, pVertices.length);
+    }
+
+    /**
      * Construct a Mesh with the specified  mVertices, mNormals, mIndices , mTextureCoordinate and mWeight
      *
      * @param pVertices   Vertex array
