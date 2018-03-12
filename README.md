@@ -82,6 +82,12 @@ It's working (hopefully) but we don't really see the edges
 of the block. That's because the only light in the scene for
 now is *ambient light*.
 
+### More shapes
+
+One can also quickly create a square-based pyramid like so
+```clojure
+(def pyr (create-pyramid! world))
+```
 
 ## Summary
 
