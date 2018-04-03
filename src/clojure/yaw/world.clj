@@ -1,6 +1,7 @@
 (ns yaw.world
   (:import (yaw.engine.meshs MeshBuilder)
-           (yaw.engine World)))
+           (yaw.engine World))
+  (:require [yaw.mesh]))
   ;;(gen-class)
 
 
@@ -62,42 +63,11 @@
 
 (defn create-simple-mesh!
   "Create an item in the `world` from the specified mesh object"
-  [world & {{:keys [vertices tris]
-           :or {vertices {:a [1 1 1]
-                           :b [1 -1 1]
-                           :c [-1 -1 1]
-                           :d [-1 1 1]
-                           :e [1 1 -1]
-                           :f [1 -1 -1]
-                           :g [-1 -1 -1]
-                           :h [-1 1 -1]}
-                tris [{:n [0 0 1]
-                        :v [:a :c :b]}
-                       {:n [0 0 1]
-                        :v [:a :d :c]}
-                       {:n [0 0 -1]
-                        :v [:e :f :h]}
-                       {:n [0 0 -1]
-                        :v [:f :g :h]}
-                       {:n [0 1 0]
-                        :v [:a :e :h]}
-                       {:n [0 1 0]
-                        :v [:a :h :d]}
-                       {:n [0 -1 0]
-                        :v [:b :c :f]}
-                       {:n [0 -1 0]
-                        :v [:f :c :g]}
-                       {:n [1 0 0]
-                        :v [:a :f :e]}
-                       {:n [1 0 0]
-                        :v [:a :b :f]}
-                       {:n [-1 0 0]
-                        :v [:d :h :c]}
-                       {:n [-1 0 0]
-                        :v [:c :h :g]}]}}
-            :geometry
-            rgb :rgb}]
-  (let [vidx (zipmap (keys vertices) (range (count vertices)))
+  [world & {:keys [geometry rgb]
+            :or {geometry (yaw.mesh/box-geometry {})
+                 rgb [0 0 1]}}]
+  (let [{:keys [vertices tris]} geometry
+        vidx (zipmap (keys vertices) (range (count vertices)))
         coords (float-array (mapcat second vertices))
         normals (float-array (mapcat (fn [{n :n v :v}] (concat n n n)) tris))
         indices (int-array (mapcat (fn [{n :n v :v}] (map #(% vidx) v)) tris))]
@@ -126,8 +96,21 @@
   (create-item! world :id id
                 :position position
                 :scale scale
-                :mesh (create-simple-mesh! world :rgb color :texture-name texture)))
+                :mesh (create-simple-mesh! world :rgb color)))
 
+(defn create-pyramid!
+  "Create a rectangular block in the `world` with the
+  specified id, position, color"
+  [world & {:keys [id position scale color texture]
+            :or   {texture  ""
+                   color    [0 0 1]
+                   scale    1
+                   position [0 0 -2]
+                   id       ""}}]
+  (create-item! world :id id
+                :position position
+                :scale scale
+                :mesh (create-simple-mesh! world :rgb color :geometry (yaw.mesh/pyramid-geometry {}))))
 
 ;;CAMERA MANAGEMENT------------------------------------------------
 (defn camera "Retrieve the main camera of the world" [world] (.getCamera world))
