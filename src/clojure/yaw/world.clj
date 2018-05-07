@@ -84,6 +84,11 @@
                    mesh     (create-mesh! world)}}]         ;;error here
   (.createItem world id (float-array position) scale mesh))
 
+(defn remove-item!
+  "Remove the specified `item` from the `world`"
+  [world item]
+  (.removeItem world item))
+
 (defn create-block!
   "Create a rectangular block in the `world` with the
   specified id, position, color"
@@ -172,3 +177,5 @@
                                  y 0
                                  z 0}}]
   (.translate item x y z))
+
+(defn clone! [world item] (.clone world item))
