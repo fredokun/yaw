@@ -115,7 +115,7 @@
 ;;CAMERA MANAGEMENT------------------------------------------------
 (defn camera "Retrieve the main camera of the world" [world] (.getCamera world))
 
-;; Collision
+;;COLLISIONS------------------------------------------------------
 
 (defn create-bouding-box!
   "Create a boundingbox in the `world` with the
