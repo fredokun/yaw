@@ -115,6 +115,13 @@
 ;;CAMERA MANAGEMENT------------------------------------------------
 (defn camera "Retrieve the main camera of the world" [world] (.getCamera world))
 
+(defn clear-cameras! "Remove all the cameras from the `world`" [world] (.emptyListCamera world))
+
+(defn add-camera!
+  "Add a camera to the `world`"
+  [world idx camera]
+  (.addCamera world idx camera))
+
 ;;COLLISIONS------------------------------------------------------
 
 (defn create-bouding-box!
