@@ -137,6 +137,23 @@
   [world item1 item2]
   (.isInCollision world item1 item2))
 
+;;SKYBOX MANAGEMENT---------------------------------------------------
+(defn skybox "Retrieve the skybox of the world" [world] (.getSkybox world))
+
+(defn set-skybox!
+  "Create a flat-colored skybox for the `world` with the
+  specified scale and color"
+  [world & {[w,l,h] :scale,
+            [r,g,b] :color,
+            :or {[w,l,h] [1000 1000 1000]
+                 [r,g,b] [0 0 0]}}]
+  (.setSkybox world w l h r g b))
+
+(defn clear-skybox!
+  "Remove the current skybox from the `world`"
+  [world]
+  (.removeSkybox world))
+
 ;; Item/camera Manipulation ------------------------------------------------
 (defn rotate! [item & {:keys [x y z]
                        :or   {x 0
