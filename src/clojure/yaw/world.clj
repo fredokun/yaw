@@ -166,6 +166,19 @@
   [world]
   (.removeSkybox world))
 
+;;GROUP MANAGEMENT---------------------------------------------------------
+(defn groups "Retrieve the groups of the `world`" [world] (into [] (.getItemGroupArrayList world)))
+
+(defn new-group!
+  "Get a new group created in the `world`"
+  [world]
+  (.createGroup world))
+
+(defn remove-group!
+  "Remove the specified group from the `world`"
+  [world group]
+  (.removeGroup world group))
+
 ;; Item/camera Manipulation ------------------------------------------------
 (defn rotate! [item & {:keys [x y z]
                        :or   {x 0
