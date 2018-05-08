@@ -21,6 +21,22 @@
     (.start (Thread. world))
     (atom {:world world :thread thread})))
 
+;;CALLBACKS---------------------------------------------------------------
+(defn callmap "Retrieve the `world` callback map"
+  [world] (.getCallback world))
+
+(defn register-callback! "Add a callback to the `world` callmap"
+  [world name f]
+  (.registerCallback (callmap world) name f))
+
+(defn clear-callback! "Remove the named callback from the `world` callmap"
+  [world name]
+  (.clearCallback (callmap world) name))
+
+(defn clear-keystroke! "Remove the specified function from the callback corresponding to the specified key"
+  [world key f]
+  (.clearFunctionOfKey (callmap world) key f))
+
 ;;Since we completely destroy the old architecture we will migrate the basic method to this module
 ;;README ONLY USE WORLD IT is A FACADE, no DIRECT USE OF MANAGEMENT/BUILDER TOOLS
 
