@@ -171,10 +171,10 @@
 (defn set-skybox!
   "Create a flat-colored skybox for the `world` with the
   specified scale and color"
-  [world & {[w,l,h] :scale,
-            [r,g,b] :color,
-            :or {[w,l,h] [1000 1000 1000]
-                 [r,g,b] [0 0 0]}}]
+  [world & {[w l h] :scale
+            [r g b] :color
+            :or {w 1000 l 1000 h 1000
+                 r 0 g 0 b 0}}]
   (.setSkybox world w l h r g b))
 
 (defn clear-skybox!
