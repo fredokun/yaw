@@ -1,6 +1,7 @@
 (ns yaw.world
   (:import (yaw.engine.meshs MeshBuilder)
-           (yaw.engine World))
+           (yaw.engine World)
+           (yaw.engine.light AmbientLight DirectionalLight))
   (:require [yaw.mesh]))
   ;;(gen-class)
 
@@ -142,6 +143,23 @@
   "Add a camera to the `world`"
   [world idx camera]
   (.addCamera world idx camera))
+
+;;LIGHT------------------------------------------------------------
+(defn lights "Retrieve the lighting settings of the world scene" [world] (.getSceneLight world))
+
+(defn set-ambient-light!
+  "Set the ambient light of the world"
+  [world & {:keys [r g b i]
+            :or {r 1 g 1 b 1 i 1}}]
+  (.setAmbient (lights world) (AmbientLight. r g b i)))
+
+(defn set-sun!
+  "Set the sun of the world"
+  [world & {:keys [color direction]
+            :or {color [1 1 1 0.6]
+                 direction [-1 -1 -1]}}]
+  (let [[r g b i] color [dx dy dz] direction]
+  (.setSun (lights world) (DirectionalLight. r g b i dx dy dz))))
 
 ;;COLLISIONS------------------------------------------------------
 
