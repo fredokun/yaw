@@ -1,7 +1,7 @@
 (ns yaw.world
   (:import (yaw.engine.meshs MeshBuilder)
            (yaw.engine World)
-           (yaw.engine.light AmbientLight DirectionalLight))
+           (yaw.engine.light AmbientLight DirectionalLight PointLight))
   (:require [yaw.mesh]))
   ;;(gen-class)
 
@@ -163,6 +163,16 @@
                  direction [-1 -1 -1]}}]
   (let [[r g b] color [dx dy dz] direction]
     (.setSun (lights world) (DirectionalLight. r g b i dx dy dz))))
+
+(defn set-point-light!
+  "Set the `n`th pointlight with the given `color`, `position`, `itensity`, and attenuation factors"
+  [world n & {{:keys [const lin quad] :or {const 0.3 lin 0.5 quad 0.9}} :att
+              :keys [color i position]
+              :or {color [1 1 1]
+                   i 1
+                   position [0 0 0]}}]
+  (let [[r g b] color [px py pz] position]
+    (.setPointLight (lights world) (PointLight. r g b px py pz i const lin quad) n)))
 
 ;;COLLISIONS------------------------------------------------------
 
