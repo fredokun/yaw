@@ -149,17 +149,20 @@
 
 (defn set-ambient-light!
   "Set the ambient light of the world"
-  [world & {:keys [r g b i]
-            :or {r 1 g 1 b 1 i 1}}]
-  (.setAmbient (lights world) (AmbientLight. r g b i)))
+  [world & {:keys [color i]
+            :or {color [1 1 1]
+                 i 0.3}}]
+  (let [[r g b] color]
+    (.setAmbient (lights world) (AmbientLight. r g b i))))
 
 (defn set-sun!
   "Set the sun of the world"
-  [world & {:keys [color direction]
-            :or {color [1 1 1 0.6]
+  [world & {:keys [color i direction]
+            :or {color [1 1 1]
+                 i 0.6
                  direction [-1 -1 -1]}}]
-  (let [[r g b i] color [dx dy dz] direction]
-  (.setSun (lights world) (DirectionalLight. r g b i dx dy dz))))
+  (let [[r g b] color [dx dy dz] direction]
+    (.setSun (lights world) (DirectionalLight. r g b i dx dy dz))))
 
 ;;COLLISIONS------------------------------------------------------
 
