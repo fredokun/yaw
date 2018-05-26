@@ -1,10 +1,9 @@
 (ns yaw.world
   (:import (yaw.engine.meshs MeshBuilder)
            (yaw.engine World)
-           (yaw.engine.light AmbientLight DirectionalLight PointLight))
+           (yaw.engine.light AmbientLight DirectionalLight PointLight SpotLight))
   (:require [yaw.mesh]))
   ;;(gen-class)
-
 
 ;;UTILS------------------------------------------------------------------
 (defn flat-map "flatten 'map'" [m]
@@ -173,6 +172,18 @@
                    position [0 0 0]}}]
   (let [[r g b] color [px py pz] position]
     (.setPointLight (lights world) (PointLight. r g b px py pz i const lin quad) n)))
+
+(defn set-spot-light!
+  "Set the `n`th spotlight with the given `color`, `intensity`, `position`, `direction` and attenuation factors"
+  [world n & {{:keys [const lin quad] :or {const 0.3 lin 0.5 quad 0.9}} :att
+              :keys [color i position direction angle]
+              :or {color [1 1 1]
+                   i 1
+                   position [0 0 0]
+                   direction [0 0 -1]
+                   angle 30}}]
+  (let [[r g b] color [px py pz] position [dx dy dz] direction]
+    (.setSpotLight (lights world) (SpotLight. r g b px py pz i const lin quad dx dy dz angle) n)))
 
 ;;COLLISIONS------------------------------------------------------
 
