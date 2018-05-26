@@ -85,10 +85,11 @@ Cette classe propose un nombre de méthodes d'altération de la scène directeme
     
     public Item createItem(String id, float[] pPosition, float pScale, Mesh
     pMesh);
-    
-    public Mesh createMesh(float[] pVertices, float[] pNormals, int[] pIndices,
-    float[] rgb);
-    
+
+    public Mesh createMesh(float[] pVertices, float[] pTextCoords, float[]
+    pNormals, int[] pIndices, int pWeight, float[] rgb, String
+    pTextureName);
+         
     public Item createBoundingBox(String id, float[] pPosition, float pScale,
     float[] pLength);
     
@@ -99,6 +100,9 @@ Cette classe propose un nombre de méthodes d'altération de la scène directeme
     public void removeSkybox();
 
     public SceneLight getSceneLight();
+   
+    public void addCamera(int pIndex, Camera pCamera);
+ 
     //... reste omis
   }
 \end{lstlisting}
@@ -125,15 +129,59 @@ Cette classe propose un nombre de méthodes d'altération de la scène directeme
     
     public AmbientLight getAmbientLight();
     public void setAmbient(AmbientLight ambient);
-    
+   
     //... reste omis
   }
 \end{lstlisting}
 
 La gestion des lumières se fait à travers une instance de la classe
-\lstinline|SceneLight|, présentée partiellement en listing \ref{lst:lightsclass}.
+\lstinline|SceneLight|, présentée partiellement en listing
+\ref{lst:lightsclass}.
+
+Il est possible d'avoir jusqu'à \lstinline|MAX_POINTLIGHT| sources de lumières
+ponctuelles, et jusqu'à \lstinline|MAX_SPOTLIGHT| projecteurs.
+
+Contrairement à la création des objets dans \lstinline|World|, la création des lumières se
+fait directement par constructeur.
+
+\section{Interface Clojure}
+
+L'interface Clojure de YAW est une interface quasiment traduite. Un fichier
+\texttt{world.clj} comporte un ensemble de fonctions appelant directement les
+méthodes de la classe \lstinline|World|.
+
+\begin{lstlisting}[caption=Interface initiale simplifiée de \texttt{world.clj},label={lst:worldclj},language=Lisp]
+  
+  (defn start-universe! [& {:keys [width height x y]}] (...))
+  
+  (defn create-mesh! [world & {:keys [vertices text-coord normals faces weight
+    rgb texture-name]}] (...))
+  
+  (defn create-item! [world & {:keys [id position scale mesh]}] (...))
+
+  (defn create-block! [world & {:keys [id position scale color texture]}] (...))
+
+  (defn create-bouding-box! [world & {:keys [id position length scale]}] (...))
+  (defn add-bounding-box! [item bounding-box] (...))
+  (defn check-collision! [world item1 item2] (...))
+
+  (defn rotate! [item & {:keys [x y z]} (...))
+  (defn translate! [item & {:keys [x y z]} (...))
+  
+\end{lstlisting}
+
+Les fonctions clojure présentée en listing \ref{lst:worldclj} ont été
+simplifiées par souci de brièveté: les arguments suivant les esperluettes sont
+optionels et ont des valeurs par défaut.
+Ces fonctions ont un point d'exclamation à la fin de leur nom, ce qui dans la
+communauté Clojure a été accpeté comme convention pour signifier qu'une fonction
+a des effets de bords sur la mémoire et n'est pas \og thread-safe.\fg{}
+
+L'interface est incomplète, manque la gestion des lumières, des caméras, et
+d'autres fonctionnalités diverses offertes par la bibliothèque Java.
 
 \chapter{Recherche}
+
 \section{Inspirations initiales}
 \subsection{React}
 
