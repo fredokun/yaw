@@ -81,7 +81,7 @@
 (defn create-simple-mesh!
   "Create an item in the `world` from the specified mesh object"
   [world & {:keys [geometry rgb]
-            :or {geometry (yaw.mesh/box-geometry {})
+            :or {geometry (yaw.mesh/box-geometry)
                  rgb [0 0 1]}}]
   (let [{:keys [vertices tris]} geometry
         vidx (zipmap (keys vertices) (range (count vertices)))
@@ -132,7 +132,7 @@
   (create-item! world :id id
                 :position position
                 :scale scale
-                :mesh (create-simple-mesh! world :rgb color :geometry (yaw.mesh/pyramid-geometry {}))))
+                :mesh (create-simple-mesh! world :rgb color :geometry (yaw.mesh/pyramid-geometry))))
 
 ;;CAMERA MANAGEMENT------------------------------------------------
 (defn camera "Retrieve the main camera of the world" [world] (.getCamera world))
