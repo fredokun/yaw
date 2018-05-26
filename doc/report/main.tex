@@ -1,0 +1,163 @@
+\documentclass{report}
+\usepackage[utf8]{inputenc} % Required for inputting international characters
+\usepackage[T1]{fontenc} % Output font encoding for international characters
+\usepackage[a4paper,
+            inner=30mm, outer=20mm,
+            top=25mm, bottom=25mm,
+            headheight=15mm, headsep=7mm
+            ]{geometry}
+            
+\usepackage[french]{babel}
+\usepackage{csquotes}
+\usepackage[style=numeric-comp]{biblatex}
+\usepackage{graphicx}
+\usepackage{todonotes}
+
+\usepackage{color}
+\definecolor{lstgrey}{rgb}{0.95,0.95,0.95}
+\usepackage{listings}
+\lstset{language=C,
+       backgroundcolor=\color{lstgrey},
+       frame=single,
+       basicstyle=\footnotesize\ttfamily,
+       captionpos=b,
+       tabsize=2,
+     }
+     
+\addbibresource{references.bib}% Syntax for version >= 1.2
+
+\begin{document}
+
+\input{title.tex}
+
+\tableofcontents
+
+\chapter{Le projet}
+
+Ce projet s'inscrit dans la continuité de précédents PSTLs. L'objectif
+principal est d'étendre les fonctionnalités actuelles vers une API réactive.
+
+YAW (Yet Another World) est une bibliothèque Java, développée au fil de plusieurs
+PSTL, de manipulation et affichage d'objets 3D avec une surcouche Clojure.
+L'objectif de ce projet est de trouver un moyen d'offrir une interface de
+programmation interactive permettant de facilement développer des applications
+3D de façon déclarative.
+
+\chapter{Remerciements}
+
+\chapter{YAW: code existant}
+
+YAW est une bibliothèque Java/Clojure de rendu et manipulation 3D faisant principalement
+interface avec OpenGL.
+
+OpenGL est une bibliothèque de rendu très bas-niveau,
+manipulant des points et des triangles, sans aucune notion d'objets ou de
+transformations telles que des rotations ou translations.
+YAW offre ces fonctionnalités de manipulation de plus haut niveau, tout en
+gardant le contrôle de l'utilisateur sur la géométrie des objets manipulés.
+
+\section{Interface Java}
+
+\subsection{La classe \lstinline|World|}
+L'interface publique Java de YAW est principalement accédée par la classe
+\lstinline|World|.
+
+Cette classe représente un fenétre sur un espace 3D et sa population.
+Le listing \ref{lst:worldclass} liste quelques méthodes proposées par cette
+classe.
+
+Un processus notable est celui d'ajout d'un objet 3D dans la scène.
+L'objet (dans le code \emph{item}) est inséré dans le monde avec un nom, une
+position et une échelle, et un \emph{mesh}.
+Ce \emph{mesh} est aussi créé via une méthode de \lstinline|World| avec les
+données bas-niveau de géométrie requises par OpenGL.
+
+Cette classe propose un nombre de méthodes d'altération de la scène directement,
+à l'exception des lumières, qui nécessitent de récupèrer la
+\lstinline|SceneLight| et d'interagir avec.
+
+\begin{lstlisting}[caption=Interface incomplète de la classe World, label={lst:worldclass},language=Java]
+  public class World implements Runnable {
+    // ... implementation de Runnable omise, il s'agit de la gestion de la
+    //     fenetre.
+    
+    public World(int pInitX, int pInitY, int pInitWidth, int pInitHeight);
+    
+    public Item createItem(String id, float[] pPosition, float pScale, Mesh
+    pMesh);
+    
+    public Mesh createMesh(float[] pVertices, float[] pNormals, int[] pIndices,
+    float[] rgb);
+    
+    public Item createBoundingBox(String id, float[] pPosition, float pScale,
+    float[] pLength);
+    
+    public boolean isInCollision(Item item1, Item item2);
+    
+    public void setSkybox(float pWidth, float pLength, float pHeight, float pR,
+    float pG, float pB);
+    public void removeSkybox();
+
+    public SceneLight getSceneLight();
+    //... reste omis
+  }
+\end{lstlisting}
+
+\subsection{Les lumières}
+
+\begin{lstlisting}[caption=Interface incomplète de la classe SceneLight, label={lst:lightsclass},language=Java]
+  public class SceneLight {
+    public static final int MAX_POINTLIGHT = 5;
+    public static final int MAX_SPOTLIGHT = 5;
+ 
+    public SceneLight();
+     
+    public void removeAmbient();
+    
+    public void removeSun();
+   
+    public void setPointLight(PointLight pl, int pos);
+    
+    public void setSpotLight(SpotLight sl, int pos);
+ 
+    public DirectionalLight getSun();
+    public void setSun(DirectionalLight sun);
+    
+    public AmbientLight getAmbientLight();
+    public void setAmbient(AmbientLight ambient);
+    
+    //... reste omis
+  }
+\end{lstlisting}
+
+La gestion des lumières se fait à travers une instance de la classe
+\lstinline|SceneLight|, présentée partiellement en listing \ref{lst:lightsclass}.
+
+\chapter{Recherche}
+\section{Inspirations initiales}
+\subsection{React}
+
+\subsection{Unity}
+\section{Reagent}
+\section{Re-frame}
+
+\chapter{Fonctionnalités}
+\section{Programmation fonctionnelle réactive}
+\subsection{Objectif}
+\subsection{Plan de réalisation}
+\subsection{Problèmes}
+\section{Moteur de jeu}
+\subsection{Objectif}
+\subsection{Plan de réalisation}
+\subsection{Problèmes}
+\section{Live Coding}
+\subsection{Objectif}
+\subsection{Plan de réalisation}
+\subsection{Problèmes}
+
+\chapter{Conclusion}
+
+
+\printbibliography
+
+\end{document}
