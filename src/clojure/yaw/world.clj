@@ -1,9 +1,9 @@
 (ns yaw.world
   (:import (yaw.engine.meshs MeshBuilder)
-           (yaw.engine World))
+           (yaw.engine World)
+           (yaw.engine.light AmbientLight DirectionalLight PointLight SpotLight))
   (:require [yaw.mesh]))
   ;;(gen-class)
-
 
 ;;UTILS------------------------------------------------------------------
 (defn flat-map "flatten 'map'" [m]
@@ -20,6 +20,22 @@
         thread (future world)]
     (.start (Thread. world))
     (atom {:world world :thread thread})))
+
+;;CALLBACKS---------------------------------------------------------------
+(defn callmap "Retrieve the `world` callback map"
+  [world] (.getCallback world))
+
+(defn register-callback! "Add a callback to the `world` callmap"
+  [world name f]
+  (.registerCallback (callmap world) name f))
+
+(defn clear-callback! "Remove the named callback from the `world` callmap"
+  [world name]
+  (.clearCallback (callmap world) name))
+
+(defn clear-keystroke! "Remove the specified function from the callback corresponding to the specified key"
+  [world key f]
+  (.clearFunctionOfKey (callmap world) key f))
 
 ;;Since we completely destroy the old architecture we will migrate the basic method to this module
 ;;README ONLY USE WORLD IT is A FACADE, no DIRECT USE OF MANAGEMENT/BUILDER TOOLS
@@ -64,7 +80,7 @@
 (defn create-simple-mesh!
   "Create an item in the `world` from the specified mesh object"
   [world & {:keys [geometry rgb]
-            :or {geometry (yaw.mesh/box-geometry {})
+            :or {geometry (yaw.mesh/box-geometry)
                  rgb [0 0 1]}}]
   (let [{:keys [vertices tris]} geometry
         vidx (zipmap (keys vertices) (range (count vertices)))
@@ -83,6 +99,11 @@
                    scale    1
                    mesh     (create-mesh! world)}}]         ;;error here
   (.createItem world id (float-array position) scale mesh))
+
+(defn remove-item!
+  "Remove the specified `item` from the `world`"
+  [world item]
+  (.removeItem world item))
 
 (defn create-block!
   "Create a rectangular block in the `world` with the
@@ -110,12 +131,61 @@
   (create-item! world :id id
                 :position position
                 :scale scale
-                :mesh (create-simple-mesh! world :rgb color :geometry (yaw.mesh/pyramid-geometry {}))))
+                :mesh (create-simple-mesh! world :rgb color :geometry (yaw.mesh/pyramid-geometry))))
 
 ;;CAMERA MANAGEMENT------------------------------------------------
 (defn camera "Retrieve the main camera of the world" [world] (.getCamera world))
 
-;; Collision
+(defn clear-cameras! "Remove all the cameras from the `world`" [world] (.emptyListCamera world))
+
+(defn add-camera!
+  "Add a camera to the `world`"
+  [world idx camera]
+  (.addCamera world idx camera))
+
+;;LIGHT------------------------------------------------------------
+(defn lights "Retrieve the lighting settings of the world scene" [world] (.getSceneLight world))
+
+(defn set-ambient-light!
+  "Set the ambient light of the world"
+  [world & {:keys [color i]
+            :or {color [1 1 1]
+                 i 0.3}}]
+  (let [[r g b] color]
+    (.setAmbient (lights world) (AmbientLight. r g b i))))
+
+(defn set-sun!
+  "Set the sun of the world"
+  [world & {:keys [color i direction]
+            :or {color [1 1 1]
+                 i 0.6
+                 direction [-1 -1 -1]}}]
+  (let [[r g b] color [dx dy dz] direction]
+    (.setSun (lights world) (DirectionalLight. r g b i dx dy dz))))
+
+(defn set-point-light!
+  "Set the `n`th pointlight with the given `color`, `position`, `itensity`, and attenuation factors"
+  [world n & {{:keys [const lin quad] :or {const 0.3 lin 0.5 quad 0.9}} :att
+              :keys [color i position]
+              :or {color [1 1 1]
+                   i 1
+                   position [0 0 0]}}]
+  (let [[r g b] color [px py pz] position]
+    (.setPointLight (lights world) (PointLight. r g b px py pz i const lin quad) n)))
+
+(defn set-spot-light!
+  "Set the `n`th spotlight with the given `color`, `intensity`, `position`, `direction` and attenuation factors"
+  [world n & {{:keys [const lin quad] :or {const 0.3 lin 0.5 quad 0.9}} :att
+              :keys [color i position direction angle]
+              :or {color [1 1 1]
+                   i 1
+                   position [0 0 0]
+                   direction [0 0 -1]
+                   angle 30}}]
+  (let [[r g b] color [px py pz] position [dx dy dz] direction]
+    (.setSpotLight (lights world) (SpotLight. r g b px py pz i const lin quad dx dy dz angle) n)))
+
+;;COLLISIONS------------------------------------------------------
 
 (defn create-bouding-box!
   "Create a boundingbox in the `world` with the
@@ -137,6 +207,36 @@
   [world item1 item2]
   (.isInCollision world item1 item2))
 
+;;SKYBOX MANAGEMENT---------------------------------------------------
+(defn skybox "Retrieve the skybox of the world" [world] (.getSkybox world))
+
+(defn set-skybox!
+  "Create a flat-colored skybox for the `world` with the
+  specified scale and color"
+  [world & {[w l h] :scale
+            [r g b] :color
+            :or {w 1000 l 1000 h 1000
+                 r 0 g 0 b 0}}]
+  (.setSkybox world w l h r g b))
+
+(defn clear-skybox!
+  "Remove the current skybox from the `world`"
+  [world]
+  (.removeSkybox world))
+
+;;GROUP MANAGEMENT---------------------------------------------------------
+(defn groups "Retrieve the groups of the `world`" [world] (into [] (.getItemGroupArrayList world)))
+
+(defn new-group!
+  "Get a new group created in the `world`"
+  [world]
+  (.createGroup world))
+
+(defn remove-group!
+  "Remove the specified group from the `world`"
+  [world group]
+  (.removeGroup world group))
+
 ;; Item/camera Manipulation ------------------------------------------------
 (defn rotate! [item & {:keys [x y z]
                        :or   {x 0
@@ -148,3 +248,5 @@
                                  y 0
                                  z 0}}]
   (.translate item x y z))
+
+(defn clone! [world item] (.clone world item))
