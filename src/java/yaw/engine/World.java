@@ -298,10 +298,18 @@ public class World implements Runnable {
     private void worldLoop() throws InterruptedException {
     /* Initialization of the window we currently use. */
         glViewport(initX, initY, initWidth, initHeight);
+        double MS_PER_UPDATE = 10; // arbitrary. TODO test values
+        double acc = 0d;
+        long curt = System.nanoTime();
         while (!Window.windowShouldClose() && mLoop) { /* Check if the window has not been closed. */
-            //refressh rate ??
-            Thread.sleep(20); // XXX ? Why sleep ?
-            mCamera.update();
+            long newt = System.nanoTime();
+            double framems = (newt - curt) / 1000000;
+            curt = newt;
+
+            acc += framems;
+
+            // INPUT PROCESS
+
             mCallback.update();
 
             /*Clean the window*/
@@ -315,6 +323,13 @@ public class World implements Runnable {
             }
             mSkyboxToBeRemoved.clear();
 
+            // SCENE UPDATE
+            while (acc >= MS_PER_UPDATE) {
+                update( MS_PER_UPDATE );
+                acc -= MS_PER_UPDATE;
+            }
+
+            // RENDER
 
            /*  Input of critical section, allows to protect the creation of our logic of Game .
                1 Maximum thread in Synchronize -> mutual exclusion.*/
@@ -327,6 +342,10 @@ public class World implements Runnable {
                Update the window's picture */
             Window.update();
         }
+    }
+
+    private void update (double dt) {
+        
     }
 
     /**
