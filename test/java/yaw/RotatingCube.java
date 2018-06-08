@@ -41,11 +41,10 @@ public class RotatingCube implements UpdateCallback {
 			totalDeltaTime = 0.0;
 			prevDeltaRefreshMillis = currentMillis;
 		}
-		
-		Vector3f rot = new Vector3f(0.0f, 3.1415925f * (float) deltaTime, 0.0f);
-		cube.setRotation(rot);
-		
-		
+
+		cube.rotate(0.0f, 3.1415925f * (float) deltaTime, 0.0f);
+
+
 	}
 	
 	public static void main(String[] args) {
