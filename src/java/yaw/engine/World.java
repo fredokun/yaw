@@ -73,7 +73,7 @@ public class World implements Runnable {
     public void run() {
         try {
             this.init();
-            this.worldLoop();
+            this.UFRV();
         } catch (Exception pE) {
             pE.printStackTrace();
         } finally {
@@ -288,6 +288,58 @@ public class World implements Runnable {
         mItemGroupArrayList.remove(pGroup);
         for (Item lItem : pGroup.getItems()) {
             lItem.removeFromGroup(pGroup);
+        }
+    }
+
+    // UpdateRate: FIXED
+    // FrameRate: VARIABLE
+    private void UFRV() throws InterruptedException {
+        double dt = 0.01; // Update Rate: 1 ~= 2 fps | 0.001 ~= 1000 fps
+        /* Initialization of the window we currently use. */
+        glViewport(initX, initY, initWidth, initHeight);
+        double beforeTime = glfwGetTime();
+        double lag = 0d;
+        while (!Window.windowShouldClose() && mLoop) { /* Check if the window has not been closed. */
+            double nowTime = glfwGetTime();
+            double framet = nowTime - beforeTime;
+            beforeTime = nowTime;
+            lag += framet;
+
+            //refressh rate ??
+//            Thread.sleep(20); // XXX ? Why sleep ?
+            mCamera.update();
+            mCallback.update();
+
+            if(updateCallback != null) {
+                while (lag >= dt) {
+                    updateCallback.update(dt);
+                    lag -= dt;
+                }
+            }
+
+            /*Clean the window*/
+            boolean isResized = Window.clear();
+
+           /* Input of critical section, allows to protect the resource mSkyboxToBeRemoved .
+              Deallocation of VAO and VBO, Moreover Delete the buffers VBO and VAO. */
+
+            for (Skybox lSkybox : mSkyboxToBeRemoved) {
+                lSkybox.cleanUp();
+            }
+            mSkyboxToBeRemoved.clear();
+
+
+           /*  Input of critical section, allows to protect the creation of our logic of Game .
+               1 Maximum thread in Synchronize -> mutual exclusion.*/
+            synchronized (mSceneVertex) {
+                //Update the world
+                mRenderer.render(mSceneVertex, mSceneLight, isResized, mCamera, mSkybox);
+            }
+
+           /*  Rendered with vSync (vertical Synchronization)
+               Update the window's picture */
+            Window.update();
+
         }
     }
 
