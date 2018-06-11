@@ -14,6 +14,7 @@ public class RotatingCube implements UpdateCallback {
 	private static long deltaRefreshMillis = 1000;
 	private long prevDeltaRefreshMillis = 0;
 	private Item cube ;
+	private float speed = 10;
 	
 	public RotatingCube(Item cube) {
 		this.cube = cube;
@@ -36,13 +37,13 @@ public class RotatingCube implements UpdateCallback {
 		long currentMillis = System.currentTimeMillis();
 		if (currentMillis - prevDeltaRefreshMillis > deltaRefreshMillis) {
 			double avgDeltaTime = totalDeltaTime / (double) nbUpdates;
-			System.out.println("Average deltaTime = " + Double.toString(avgDeltaTime) +" s");
+			System.out.println("Average deltaTime = " + Double.toString(avgDeltaTime) +" s ("+nbUpdates+")");
 			nbUpdates = 0;
 			totalDeltaTime = 0.0;
 			prevDeltaRefreshMillis = currentMillis;
 		}
 
-		cube.rotate(0.0f, 3.1415925f * (float) deltaTime, 0.0f);
+		cube.rotate(0.0f, 3.1415925f * speed * (float) deltaTime, 0.0f);
 
 
 	}
