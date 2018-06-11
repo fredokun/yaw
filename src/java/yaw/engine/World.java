@@ -73,7 +73,7 @@ public class World implements Runnable {
     public void run() {
         try {
             this.init();
-            this.worldLoop();
+            this.UFRV();
         } catch (Exception pE) {
             pE.printStackTrace();
         } finally {
@@ -147,6 +147,28 @@ public class World implements Runnable {
         lMesh.setMaterial(lMaterial);
         return lMesh;
     }
+
+    /**
+     * Create a mesh with the specified parameters
+     * Mesh won't be load into the grahpic cards unless you bind it to an item
+     *
+     * @param pVertices    vetices
+     * @param pNormals     normals
+     * @param pIndices     indices
+     * @return the mesh
+     */
+    public Mesh createMesh(float[] pVertices, float[] pNormals, int[] pIndices, float[] rgb) {
+        if (rgb.length != 3) {
+        throw new RuntimeException("RGB must represent 3 colors");
+    }
+        Vector3f lMaterialColor = new Vector3f(rgb[0], rgb[1], rgb[2]);
+        Material lMaterial = mNucleus.createMaterial(lMaterialColor);
+        Mesh lMesh = mNucleus.createMesh(pVertices, pNormals, pIndices);
+        lMesh.setMaterial(lMaterial);
+        return lMesh;
+    }
+
+
 
     /**
      * Create a bounding box with the specified parameters and add it to the  world
@@ -266,6 +288,58 @@ public class World implements Runnable {
         mItemGroupArrayList.remove(pGroup);
         for (Item lItem : pGroup.getItems()) {
             lItem.removeFromGroup(pGroup);
+        }
+    }
+
+    // UpdateRate: FIXED
+    // FrameRate: VARIABLE
+    private void UFRV() throws InterruptedException {
+        double dt = 0.01; // Update Rate: 1 ~= 2 fps | 0.001 ~= 1000 fps
+        /* Initialization of the window we currently use. */
+        glViewport(initX, initY, initWidth, initHeight);
+        double beforeTime = glfwGetTime();
+        double lag = 0d;
+        while (!Window.windowShouldClose() && mLoop) { /* Check if the window has not been closed. */
+            double nowTime = glfwGetTime();
+            double framet = nowTime - beforeTime;
+            beforeTime = nowTime;
+            lag += framet;
+
+            //refressh rate ??
+//            Thread.sleep(20); // XXX ? Why sleep ?
+            mCamera.update();
+            mCallback.update();
+
+            if(updateCallback != null) {
+                while (lag >= dt) {
+                    updateCallback.update(dt);
+                    lag -= dt;
+                }
+            }
+
+            /*Clean the window*/
+            boolean isResized = Window.clear();
+
+           /* Input of critical section, allows to protect the resource mSkyboxToBeRemoved .
+              Deallocation of VAO and VBO, Moreover Delete the buffers VBO and VAO. */
+
+            for (Skybox lSkybox : mSkyboxToBeRemoved) {
+                lSkybox.cleanUp();
+            }
+            mSkyboxToBeRemoved.clear();
+
+
+           /*  Input of critical section, allows to protect the creation of our logic of Game .
+               1 Maximum thread in Synchronize -> mutual exclusion.*/
+            synchronized (mSceneVertex) {
+                //Update the world
+                mRenderer.render(mSceneVertex, mSceneLight, isResized, mCamera, mSkybox);
+            }
+
+           /*  Rendered with vSync (vertical Synchronization)
+               Update the window's picture */
+            Window.update();
+
         }
     }
 

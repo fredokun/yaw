@@ -62,6 +62,12 @@ public class WorldNucleus {
         return lMesh;
     }
 
+    public Mesh createMesh(float[] pVertices, float[] pNormals, int[]pIndices) {
+        Mesh lMesh = new Mesh(pVertices, pNormals, pIndices);
+        lMesh.setDrawingStrategy(new DefaultDrawingStrategy());
+        return lMesh;
+    }
+
     public Item createItem(Item pItem) {
         return new Item(pItem);
     }
