@@ -15,6 +15,7 @@ import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.lwjgl.opengl.GL11.glViewport;
+import static org.lwjgl.glfw.GLFW.glfwGetTime;
 
 /**
  * Allows the creation of the world and manages through a thread the events, the updates and the rendering to the screen at constant rate.
@@ -26,13 +27,14 @@ public class World implements Runnable {
     private Vector<Camera> mCamerasList;
     private Renderer mRenderer;
     private SceneLight mSceneLight;
-    private Callback mCallback;
+    private KeyCallback mCallback;
     private Vector<ItemGroup> mItemGroupArrayList;
     private Skybox mSkybox = null;
     private ConcurrentHashMap<String, Texture> mStringTextureConcurrentHashMap;
     private boolean mLoop;
     private int initX, initY, initWidth, initHeight;
     private WorldNucleus mNucleus;
+    private UpdateCallback updateCallback;
 
     /**
      * Initializes the elements to create the window
@@ -62,7 +64,7 @@ public class World implements Runnable {
         this.mSkyboxToBeRemoved = new Vector<>();
         this.mLoop = true;
         this.mStringTextureConcurrentHashMap = new ConcurrentHashMap<>();
-
+        updateCallback = null;
     }
 
     /**
@@ -71,7 +73,7 @@ public class World implements Runnable {
     public void run() {
         try {
             this.init();
-            this.worldLoop();
+            this.UFRV();
         } catch (Exception pE) {
             pE.printStackTrace();
         } finally {
@@ -182,15 +184,14 @@ public class World implements Runnable {
         return lItem;
     }
 
-    public void test(float[] t) {
-        System.out.println(t[0]);
-
-    }
-
     public boolean isInCollision(Item item1, Item item2) {
         return Collision.isInCollision(item1, item2);
     }
 
+    public void registerUpdateCallback(UpdateCallback cb) {
+    	updateCallback = cb;
+    }
+    
     /**
      * Allows to initialize the parameters of the class World.
      *
@@ -290,6 +291,58 @@ public class World implements Runnable {
         }
     }
 
+    // UpdateRate: FIXED
+    // FrameRate: VARIABLE
+    private void UFRV() throws InterruptedException {
+        double dt = 0.01; // Update Rate: 1 ~= 2 fps | 0.001 ~= 1000 fps
+        /* Initialization of the window we currently use. */
+        glViewport(initX, initY, initWidth, initHeight);
+        double beforeTime = glfwGetTime();
+        double lag = 0d;
+        while (!Window.windowShouldClose() && mLoop) { /* Check if the window has not been closed. */
+            double nowTime = glfwGetTime();
+            double framet = nowTime - beforeTime;
+            beforeTime = nowTime;
+            lag += framet;
+
+            //refressh rate ??
+//            Thread.sleep(20); // XXX ? Why sleep ?
+            mCamera.update();
+            mCallback.update();
+
+            if(updateCallback != null) {
+                while (lag >= dt) {
+                    updateCallback.update(dt);
+                    lag -= dt;
+                }
+            }
+
+            /*Clean the window*/
+            boolean isResized = Window.clear();
+
+           /* Input of critical section, allows to protect the resource mSkyboxToBeRemoved .
+              Deallocation of VAO and VBO, Moreover Delete the buffers VBO and VAO. */
+
+            for (Skybox lSkybox : mSkyboxToBeRemoved) {
+                lSkybox.cleanUp();
+            }
+            mSkyboxToBeRemoved.clear();
+
+
+           /*  Input of critical section, allows to protect the creation of our logic of Game .
+               1 Maximum thread in Synchronize -> mutual exclusion.*/
+            synchronized (mSceneVertex) {
+                //Update the world
+                mRenderer.render(mSceneVertex, mSceneLight, isResized, mCamera, mSkybox);
+            }
+
+           /*  Rendered with vSync (vertical Synchronization)
+               Update the window's picture */
+            Window.update();
+
+        }
+    }
+
     /**
      * Start the game loop
      *
@@ -298,6 +351,7 @@ public class World implements Runnable {
     private void worldLoop() throws InterruptedException {
     /* Initialization of the window we currently use. */
         glViewport(initX, initY, initWidth, initHeight);
+        double beforeTime = glfwGetTime();
         while (!Window.windowShouldClose() && mLoop) { /* Check if the window has not been closed. */
             //refressh rate ??
             Thread.sleep(20); // XXX ? Why sleep ?
@@ -326,6 +380,12 @@ public class World implements Runnable {
            /*  Rendered with vSync (vertical Synchronization)
                Update the window's picture */
             Window.update();
+            
+            if(updateCallback != null) {
+            	double afterTime = glfwGetTime();
+            	updateCallback.update(afterTime - beforeTime);
+            	beforeTime = afterTime;
+            }
         }
     }
 
@@ -379,7 +439,7 @@ public class World implements Runnable {
         return mSceneLight;
     }
 
-    public Callback getCallback() {
+    public KeyCallback getCallback() {
         return mCallback;
     }
 }
