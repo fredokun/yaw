@@ -39,6 +39,7 @@ public class World implements Runnable {
     double fpsVoulue = 120.0;
     double millisBetwinFrame = 1000.0/fpsVoulue;
     double millisbetwinUpdateS = 2.0;
+    double lag = 0d;
     /**
      * Initializes the elements to create the window
      *
@@ -319,8 +320,13 @@ public class World implements Runnable {
             case 2:
                 System.out.println("WordLoop 2: game loop with dt and wait between frame for match wanted FPS");
                 break;
-            default:
+            case 3 :
                 System.out.println("WordLoop 3: game loop with dt and wait between frame and update for match wanted FPS");
+                break;
+            default:
+                System.out.println("WordLoop 4: game loop with UpdateRate: FIXED and FrameRate: VARIABLE ");
+
+
         }
 
         /* Initialization of the window we currently use. */
@@ -365,8 +371,11 @@ public class World implements Runnable {
                 case 2:
                     beforeTime= update2( beforeTime);
                     break;
-                default:
+                case 3:
                     beforeTime= update3( beforeTime);
+					break;
+				default:
+					 beforeTime= UFRV( beforeTime);	
             }
         }
     }
@@ -413,6 +422,26 @@ public class World implements Runnable {
         }
         else{
             Thread.sleep( (long) millisBetwinFrame);
+        }
+        return beforeTime;
+    }
+    private double UFRV(double beforeTime) throws InterruptedException {
+        double dt = 0.01;
+        double nowTime = glfwGetTime();
+        double framet = nowTime - beforeTime;
+        beforeTime = nowTime;
+        lag += framet;
+
+        //refressh rate ??
+//            Thread.sleep(20); // XXX ? Why sleep ?
+        mCamera.update();
+        mCallback.update();
+
+        if(updateCallback != null) {
+            while (lag >= dt) {
+                updateCallback.update(dt);
+                lag -= dt;
+            }
         }
         return beforeTime;
     }
