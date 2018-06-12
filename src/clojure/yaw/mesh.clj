@@ -14,9 +14,9 @@
   "Generate a box mesh.
 
   Create a low-level geometry object from a high-level simple keyword map."
-  [{:keys [anchor scale]
-    :or {anchor [0 0 0]
-         scale [1 1 1]}}]
+  [& {:keys [anchor scale]
+      :or {anchor [0 0 0]
+           scale [1 1 1]}}]
   (let [v (anchor-fun anchor scale)]
 
     {:vertices {:a (v [1 1 1])
@@ -56,9 +56,9 @@
   "Generate a squared-based pyramid mesh
 
   Create a low-level geometry object from a high-level simple keyword map."
-  [{:keys [anchor scale]
-    :or {anchor [0 0 0]
-         scale [1 1 1]}}]
+  [& {:keys [anchor scale]
+      :or {anchor [0 0 0]
+           scale [1 1 1]}}]
   (let [v (anchor-fun anchor scale)
         n (Math/cos (/ Math/PI 4))]
 

@@ -8,10 +8,10 @@ import java.util.HashMap;
 import static org.lwjgl.glfw.GLFW.*;
 
 
-public class Callback {
+public class KeyCallback {
     HashMap<Integer, ArrayList<Object>> map;
 
-    public Callback() {
+    public KeyCallback() {
         map = new HashMap<Integer, ArrayList<Object>>();
     }
 

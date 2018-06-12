@@ -44,8 +44,8 @@ public class WorldNucleus {
         return new SceneLight();
     }
 
-    public Callback createCallback() {
-        return new Callback();
+    public KeyCallback createCallback() {
+        return new KeyCallback();
     }
 
     public Material createMaterial(Vector3f pMaterialColor) {
