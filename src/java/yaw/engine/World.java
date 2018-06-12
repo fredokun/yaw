@@ -1,5 +1,6 @@
 package yaw.engine;
 
+import org.joml.Vector3f;
 import yaw.engine.camera.Camera;
 import yaw.engine.collision.Collision;
 import yaw.engine.items.Item;
@@ -9,13 +10,12 @@ import yaw.engine.meshs.Material;
 import yaw.engine.meshs.Mesh;
 import yaw.engine.meshs.Texture;
 import yaw.engine.skybox.Skybox;
-import org.joml.Vector3f;
 
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.glfw.GLFW.glfwGetTime;
+import static org.lwjgl.opengl.GL11.glViewport;
 
 /**
  * Allows the creation of the world and manages through a thread the events, the updates and the rendering to the screen at constant rate.
@@ -35,7 +35,10 @@ public class World implements Runnable {
     private int initX, initY, initWidth, initHeight;
     private WorldNucleus mNucleus;
     private UpdateCallback updateCallback;
-
+    private int boucle;
+    double fpsVoulue = 120.0;
+    double millisBetwinFrame = 1000.0/fpsVoulue;
+    double millisbetwinUpdateS = 2.0;
     /**
      * Initializes the elements to create the window
      *
@@ -51,6 +54,18 @@ public class World implements Runnable {
         this.initWidth = pInitWidth;
         this.initHeight = pInitHeight;
     }
+    public World(int pInitX, int pInitY, int pInitWidth, int pInitHeight,double fpsVoulue , double millisbetwinUpdateS,int boucle ) {
+        this();
+        this.initX = pInitX;
+        this.initY = pInitY;
+        this.initWidth = pInitWidth;
+        this.initHeight = pInitHeight;
+        this.boucle = boucle;
+        this.fpsVoulue = fpsVoulue;
+        this.millisBetwinFrame = 1000.0/fpsVoulue;
+        this.millisbetwinUpdateS = millisbetwinUpdateS;
+
+}
 
     public World() {
         this.mNucleus = WorldNucleus.getInstance();
@@ -73,7 +88,7 @@ public class World implements Runnable {
     public void run() {
         try {
             this.init();
-            this.UFRV();
+            this.worldLoop();
         } catch (Exception pE) {
             pE.printStackTrace();
         } finally {
@@ -147,7 +162,6 @@ public class World implements Runnable {
         lMesh.setMaterial(lMaterial);
         return lMesh;
     }
-
     /**
      * Create a mesh with the specified parameters
      * Mesh won't be load into the grahpic cards unless you bind it to an item
@@ -167,9 +181,7 @@ public class World implements Runnable {
         lMesh.setMaterial(lMaterial);
         return lMesh;
     }
-
-
-
+	
     /**
      * Create a bounding box with the specified parameters and add it to the  world
      *
@@ -291,70 +303,32 @@ public class World implements Runnable {
         }
     }
 
-    // UpdateRate: FIXED
-    // FrameRate: VARIABLE
-    private void UFRV() throws InterruptedException {
-        double dt = 0.01; // Update Rate: 1 ~= 2 fps | 0.001 ~= 1000 fps
-        /* Initialization of the window we currently use. */
-        glViewport(initX, initY, initWidth, initHeight);
-        double beforeTime = glfwGetTime();
-        double lag = 0d;
-        while (!Window.windowShouldClose() && mLoop) { /* Check if the window has not been closed. */
-            double nowTime = glfwGetTime();
-            double framet = nowTime - beforeTime;
-            beforeTime = nowTime;
-            lag += framet;
-
-            //refressh rate ??
-//            Thread.sleep(20); // XXX ? Why sleep ?
-            mCamera.update();
-            mCallback.update();
-
-            if(updateCallback != null) {
-                while (lag >= dt) {
-                    updateCallback.update(dt);
-                    lag -= dt;
-                }
-            }
-
-            /*Clean the window*/
-            boolean isResized = Window.clear();
-
-           /* Input of critical section, allows to protect the resource mSkyboxToBeRemoved .
-              Deallocation of VAO and VBO, Moreover Delete the buffers VBO and VAO. */
-
-            for (Skybox lSkybox : mSkyboxToBeRemoved) {
-                lSkybox.cleanUp();
-            }
-            mSkyboxToBeRemoved.clear();
-
-
-           /*  Input of critical section, allows to protect the creation of our logic of Game .
-               1 Maximum thread in Synchronize -> mutual exclusion.*/
-            synchronized (mSceneVertex) {
-                //Update the world
-                mRenderer.render(mSceneVertex, mSceneLight, isResized, mCamera, mSkybox);
-            }
-
-           /*  Rendered with vSync (vertical Synchronization)
-               Update the window's picture */
-            Window.update();
-
-        }
-    }
-
     /**
      * Start the game loop
      *
      * @throws InterruptedException Exception
      */
     private void worldLoop() throws InterruptedException {
-    /* Initialization of the window we currently use. */
+        switch (boucle) {
+            case 0:
+                System.out.println("WordLoop 0: old game loop with dt and 20 millis between frame");
+                break;
+            case 1:
+                System.out.println("WordLoop 1: game loop with dt");
+                break;
+            case 2:
+                System.out.println("WordLoop 2: game loop with dt and wait between frame for match wanted FPS");
+                break;
+            default:
+                System.out.println("WordLoop 3: game loop with dt and wait between frame and update for match wanted FPS");
+        }
+
+        /* Initialization of the window we currently use. */
         glViewport(initX, initY, initWidth, initHeight);
         double beforeTime = glfwGetTime();
         while (!Window.windowShouldClose() && mLoop) { /* Check if the window has not been closed. */
             //refressh rate ??
-            Thread.sleep(20); // XXX ? Why sleep ?
+
             mCamera.update();
             mCallback.update();
 
@@ -380,13 +354,67 @@ public class World implements Runnable {
            /*  Rendered with vSync (vertical Synchronization)
                Update the window's picture */
             Window.update();
-            
-            if(updateCallback != null) {
-            	double afterTime = glfwGetTime();
-            	updateCallback.update(afterTime - beforeTime);
-            	beforeTime = afterTime;
+
+            switch (boucle) {
+                case 0:
+                    beforeTime= update0( beforeTime);
+                    break;
+                case 1:
+                    beforeTime= update1( beforeTime);
+                    break;
+                case 2:
+                    beforeTime= update2( beforeTime);
+                    break;
+                default:
+                    beforeTime= update3( beforeTime);
             }
         }
+    }
+    private double update0(double beforeTime) throws InterruptedException {
+        if(updateCallback != null) {
+            double afterTime = glfwGetTime();
+            updateCallback.update(afterTime - beforeTime);
+            beforeTime = afterTime;
+        }
+        Thread.sleep(20); // XXX ? Why sleep ?
+        return beforeTime;
+    }
+    private double update1(double beforeTime) throws InterruptedException {
+        if(updateCallback != null) {
+            double afterTime = glfwGetTime();
+            updateCallback.update(afterTime - beforeTime);
+            beforeTime = afterTime;
+        }
+        return beforeTime;
+    }
+    private double update2(double beforeTime) throws InterruptedException {
+        double afterTime = glfwGetTime();
+        double dt = afterTime - beforeTime;
+        if (updateCallback != null) {
+
+            updateCallback.update(dt);
+            beforeTime = afterTime;
+        }
+        Thread.sleep( (long) (millisBetwinFrame- dt));
+        return beforeTime;
+    }
+    private double update3(double beforeTime) throws InterruptedException {
+        double beforeTimeCalcl = glfwGetTime();
+        double afterTime = glfwGetTime();
+        if(updateCallback != null) {
+            while( afterTime- beforeTimeCalcl < millisBetwinFrame/1000.0 ) {
+                beforeTime = afterTime;
+                afterTime = glfwGetTime();
+                double dt = afterTime - beforeTime ;
+                updateCallback.update(dt);
+
+                Thread.sleep( (long) (millisbetwinUpdateS-dt));
+            }
+        }
+        else{
+            Thread.sleep( (long) millisBetwinFrame);
+        }
+        return beforeTime;
     }
 
     /**
