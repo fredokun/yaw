@@ -164,26 +164,6 @@ public class World implements Runnable {
         return lMesh;
     }
     /**
-     * Create a mesh with the specified parameters
-     * Mesh won't be load into the grahpic cards unless you bind it to an item
-     *
-     * @param pVertices    vetices
-     * @param pNormals     normals
-     * @param pIndices     indices
-     * @return the mesh
-     */
-    public Mesh createMesh(float[] pVertices, float[] pNormals, int[] pIndices, float[] rgb) {
-        if (rgb.length != 3) {
-        throw new RuntimeException("RGB must represent 3 colors");
-    }
-        Vector3f lMaterialColor = new Vector3f(rgb[0], rgb[1], rgb[2]);
-        Material lMaterial = mNucleus.createMaterial(lMaterialColor);
-        Mesh lMesh = mNucleus.createMesh(pVertices, pNormals, pIndices);
-        lMesh.setMaterial(lMaterial);
-        return lMesh;
-    }
-	
-    /**
      * Create a bounding box with the specified parameters and add it to the  world
      *
      * @param id        id

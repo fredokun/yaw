@@ -16,6 +16,21 @@ The Clojure part is minimalistic for now.
  - Java : 1.8 +
  - Leiningen 2.7.1+
  - LWJGL 3.0+ (via Hello_jgl, thanks !)
+## How compare Game loop
+run the Main in RotatingCube 
+and change the paramater like u want :
+BOUCLE :
+		0 =>  old game loop with dt and 20 millis between frame
+		1 =>  game loop with dt
+		2 =>  game loop with dt and wait between frame for match wanted FPS
+		3 =>  game loop with dt and wait between frame and update for match wanted FPS
+		4 =>  game loop with UpdateRate: FIXED and FrameRate: VARIABLE
+
+FPS
+	the wanted FPS
+	
+MillisBetweenUpdates	
+	the wait time between update in game loop 3 
 
 ## How to start ?
 
