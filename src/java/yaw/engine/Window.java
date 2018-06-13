@@ -31,7 +31,7 @@ public class Window {
      * @param initWidth  Width of the window.
      * @param initHeight Height of the window.
      */
-    public static void init(int initWidth, int initHeight) {
+    public static void init(int initWidth, int initHeight, boolean vsync) {
         if (!glfwInit()) { /* This function initializes the GLFW library. Before that GLFW functions can be used, GLFW must be initialized . */
             throw new IllegalStateException("Unable to initialize GLFW");
         }
@@ -76,7 +76,7 @@ public class Window {
         caps = GL.createCapabilities(); /* Creates a new GLCapabilities instance for the OpenGL context that is current in the current thread. */
 
 
-        glfwSwapInterval(1); /* Allows synchronization at a constant rate. */
+        glfwSwapInterval(vsync? 1:0);
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);/* Specifies the red, green, blue, and alpha values used by glClear to clear the color buffers. */
 
         /*activate depth comparisons and update the depth buffe*/
