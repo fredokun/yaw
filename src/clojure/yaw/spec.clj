@@ -57,3 +57,20 @@
 ;;                     :v [:d :h :c]}
 ;;                    {:n [-1 0 0]
 ;;                     :v [:c :h :g]}]})
+
+;; GLOBAL PARAMETERS
+(s/def :params/pos :vector/gen)
+(s/def :params/target (s/or :item qualified-keyword?
+                            :vec :vector/gen))
+(s/def :params/fov number?)
+
+;; CAMERAS
+(s/def :scene/camera (s/cat :tag #{:camera}
+                            :id-kw qualified-keyword?
+                            :params (s/keys :req-un [:params/pos :params/target]
+                                            :opt-un [:params/fov])))
+;; (s/conform :scene/camera [:camera :test/cam1 {:pos [0 2 -3] :target [0 0 0] :fov 90}])
+;; => {:tag :camera, :id-kw :test/cam1, :params {:pos [0 2 -3], :target [:vec [0 0 0]], :fov 90}}
+
+;; (s/conform :scene/camera [:camera :test/cam2 {:pos [0 2 -3] :target :test/item}])
+;; => {:tag :camera, :id-kw :test/cam2, :params {:pos [0 2 -3], :target [:item :test/item]}}
