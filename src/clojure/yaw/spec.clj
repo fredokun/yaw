@@ -142,10 +142,41 @@
 ;; (s/conform :scene/light [:sun {:dir [0 0 -1] :color :blue}])
 ;; => [:sun {:tag :sun, :params {:dir [0 0 -1], :color [:kw :blue]}}]
 
+;; GROUPS
+(s/def :scene/group (s/cat :tag #{:group}
+                           :id-kw qualified-keyword?
+                           :params (s/keys :req-un [:params/pos]
+                                           :opt-un [:params/rot :params/scale])
+                           :items (s/+ (s/spec :scene/item))))
+
+;; (s/conform :scene/group [:group :test/group {:pos [0 1 0]}
+;;                          [:item :test/item1 {:mesh :mesh/box :pos [0 0 2] :color :red}]
+;;                          [:item :test/item2 {:mesh :mesh/box :pos [0 0 -2] :color :blue}]
+;;                          [:item :test/item3 {:mesh :mesh/cone :pos [0 0 0] :color [0 0.3 0]}]])
+;; => {:tag :group,
+;;  :id-kw :test/group,
+;;  :params {:pos [0 1 0]},
+;;  :items [{:tag :item,
+;;           :id-kw :test/item1,
+;;           :params {:mesh :mesh/box,
+;;                    :pos [0 0 2],
+;;                    :color [:kw :red]}}
+;;          {:tag :item,
+;;           :id-kw :test/item2,
+;;           :params {:mesh :mesh/box,
+;;                    :pos [0 0 -2],
+;;                    :color [:kw :blue]}}
+;;          {:tag :item,
+;;           :id-kw :test/item3,
+;;           :params {:mesh :mesh/cone,
+;;                    :pos [0 0 0],
+;;                    :color [:rgb [0 0.3 0]]}}]}
+
 ;; GENERAL
 (s/def :scene/object (s/or :camera :scene/camera
                            :item :scene/item
-                           :light :scene/light))
+                           :light :scene/light
+                           :group :scene/group))
 
 ;; (s/conform :scene/object [:camera :test/cam {:pos [0 2 -5] :target [0 0 0]}])
 ;; => [:camera {:tag :camera, :id-kw :test/cam, :params {:pos [0 2 -5], :target [:vec [0 0 0]]}}]
