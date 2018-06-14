@@ -60,9 +60,17 @@
 
 ;; GLOBAL PARAMETERS
 (s/def :params/pos :vector/gen)
+(s/def :params/rot :vector/gen)
+(s/def :params/scale :vector/gen)
+(s/def :params/color (s/or :kw #{:red :blue :yellow :white :black} ;;more?
+                           :rgb :vector/norm))
+
 (s/def :params/target (s/or :item qualified-keyword?
                             :vec :vector/gen))
 (s/def :params/fov number?)
+
+;; mesh
+(s/def :params/mesh #{:mesh/box :mesh/cone :mesh/pyramid}) ;; exhaustive list?
 
 ;; CAMERAS
 (s/def :scene/camera (s/cat :tag #{:camera}
@@ -74,3 +82,15 @@
 
 ;; (s/conform :scene/camera [:camera :test/cam2 {:pos [0 2 -3] :target :test/item}])
 ;; => {:tag :camera, :id-kw :test/cam2, :params {:pos [0 2 -3], :target [:item :test/item]}}
+
+;; OBJECTS
+(s/def :scene/item (s/cat :tag #{:item}
+                          :id-kw qualified-keyword?
+                          :params (s/keys :req-un [:params/mesh :params/pos]
+                                          :opt-un [:params/rot :params/scale :params/color])))
+
+;; (s/conform :scene/item [:item :test/item {:mesh :mesh/box :pos [0 0 0] :rot [20 0 20] :color :red}])
+;; => {:tag :item, :id-kw :test/item, :params {:mesh :mesh/box, :pos [0 0 0], :rot [20 0 20], :color [:kw :red]}}
+
+;; (s/conform :scene/item [:item :test/item2 {:mesh :mesh/cone :pos [0 2 0] :scale [1 2 1] :color [0 1 0.9]}])
+;; => {:tag :item, :id-kw :test/item2, :params {:mesh :mesh/cone, :pos [0 2 0], :scale [1 2 1], :color [:rgb [0 1 0.9]]}}
