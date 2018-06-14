@@ -3,8 +3,10 @@
 
 (s/def :coord/gen number?)
 (s/def :coord/norm (s/and :coord/gen #(and (<= % 1) (>= % -1))))
+(s/def :coord/pnorm (s/and :coord/gen #(and (<= % 1) (>= % 0))))
 
 (s/def :vector/norm (s/tuple :coord/norm :coord/norm :coord/norm))
+(s/def :vector/pnorm (s/tuple :coord/pnorm :coord/pnorm :coord/pnorm))
 
 (s/def :vector/gen (s/tuple :coord/gen :coord/gen :coord/gen))
 
@@ -63,7 +65,8 @@
 (s/def :params/rot :vector/gen)
 (s/def :params/scale :vector/gen)
 (s/def :params/color (s/or :kw #{:red :blue :yellow :white :black} ;;more?
-                           :rgb :vector/norm))
+                           :rgb :vector/pnorm))
+
 (s/def :params/dir :vector/norm)
 
 (s/def :params/target (s/or :item qualified-keyword?
