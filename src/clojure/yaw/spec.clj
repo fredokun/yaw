@@ -119,6 +119,11 @@
                                  :params (s/keys :req-un [:params/pos :params/color]
                                                  :opt-un [:params/i])))
 
+(s/def :scene/light (s/or :ambient :scene/ambient-light
+                          :sun :scene/sun-light
+                          :spot :scene/spot-light
+                          :point :scene/point-light))
+
 ;; (s/conform :scene/ambient-light [:ambient {:color :blue :i 0.3}])
 ;; => {:tag :ambient, :params {:color [:kw :blue], :i 0.3}}
 
@@ -130,4 +135,24 @@
 
 ;; (s/conform :scene/point-light [:light :test/point1 {:color [0 1 0] :pos [0 0 2]}])
 ;; => {:tag :light, :id-kw :test/point1, :params {:color [:rgb [0 1 0]], :pos [0 0 2]}}
+
+;; (s/conform :scene/light [:light :test/point2 {:color :red :pos [0 0 0] :i 0.3}])
+;; => [:point {:tag :light, :id-kw :test/point2, :params {:color [:kw :red], :pos [0 0 0], :i 0.3}}]
+
+;; (s/conform :scene/light [:sun {:dir [0 0 -1] :color :blue}])
+;; => [:sun {:tag :sun, :params {:dir [0 0 -1], :color [:kw :blue]}}]
+
+;; GENERAL
+(s/def :scene/object (s/or :camera :scene/camera
+                           :item :scene/item
+                           :light :scene/light))
+
+;; (s/conform :scene/object [:camera :test/cam {:pos [0 2 -5] :target [0 0 0]}])
+;; => [:camera {:tag :camera, :id-kw :test/cam, :params {:pos [0 2 -5], :target [:vec [0 0 0]]}}]
+
+;; (s/conform :scene/object [:light :test/light {:pos [0 0 1] :color :yellow :i 0.3}])
+;; => [:light [:point {:tag :light, :id-kw :test/light, :params {:pos [0 0 1], :color [:kw :yellow], :i 0.3}}]]
+
+;; (s/conform :scene/object [:item :test/item {:pos [0 0 0] :mesh :mesh/box}])
+;; => [:item {:tag :item, :id-kw :test/item, :params {:pos [0 0 0], :mesh :mesh/box}}]
 
