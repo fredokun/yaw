@@ -64,10 +64,14 @@
 (s/def :params/scale :vector/gen)
 (s/def :params/color (s/or :kw #{:red :blue :yellow :white :black} ;;more?
                            :rgb :vector/norm))
+(s/def :params/dir :vector/norm)
 
 (s/def :params/target (s/or :item qualified-keyword?
                             :vec :vector/gen))
 (s/def :params/fov number?)
+
+;; intensity
+(s/def :params/i number?)
 
 ;; mesh
 (s/def :params/mesh #{:mesh/box :mesh/cone :mesh/pyramid}) ;; exhaustive list?
@@ -94,3 +98,33 @@
 
 ;; (s/conform :scene/item [:item :test/item2 {:mesh :mesh/cone :pos [0 2 0] :scale [1 2 1] :color [0 1 0.9]}])
 ;; => {:tag :item, :id-kw :test/item2, :params {:mesh :mesh/cone, :pos [0 2 0], :scale [1 2 1], :color [:rgb [0 1 0.9]]}}
+
+;; LIGHTS
+(s/def :scene/ambient-light (s/cat :tag #{:ambient}
+                                   :params (s/keys :req-un [:params/color]
+                                                   :opt-un [:params/i])))
+(s/def :scene/sun-light (s/cat :tag #{:sun}
+                               :params (s/keys :req-un [:params/dir :params/color]
+                                               :opt-un [:params/i])))
+
+(s/def :scene/spot-light (s/cat :tag #{:spot}
+                                :id-kw qualified-keyword?
+                                :params (s/keys :req-un [:params/pos :params/dir :params/color]
+                                                :opt-un [:params/i])))
+(s/def :scene/point-light (s/cat :tag #{:light}
+                                 :id-kw qualified-keyword?
+                                 :params (s/keys :req-un [:params/pos :params/color]
+                                                 :opt-un [:params/i])))
+
+;; (s/conform :scene/ambient-light [:ambient {:color :blue :i 0.3}])
+;; => {:tag :ambient, :params {:color [:kw :blue], :i 0.3}}
+
+;; (s/conform :scene/sun-light [:sun {:color [0 0 1] :dir [0 0 -1]}])
+;; => {:tag :sun, :params {:color [:rgb [0 0 1]], :dir [0 0 -1]}}
+
+;; (s/conform :scene/spot-light [:spot :test/spot1 {:color [1 0 0] :dir [-1 -1 0] :i 0.4 :pos [-2 4 0]}])
+;; => {:tag :spot, :id-kw :test/spot1, :params {:color [:rgb [1 0 0]], :dir [-1 -1 0], :i 0.4, :pos [-2 4 0]}}
+
+;; (s/conform :scene/point-light [:light :test/point1 {:color [0 1 0] :pos [0 0 2]}])
+;; => {:tag :light, :id-kw :test/point1, :params {:color [:rgb [0 1 0]], :pos [0 0 2]}}
+
