@@ -37,11 +37,14 @@
     (t/is (= {:tag :item :id-kw :test/item :params {:mesh :mesh/box :pos [0 0 0] :rot [0 0 0]}}
              (s/conform :scene/item [:item :test/item {:mesh :mesh/box :pos [0 0 0] :rot [0 0 0]}]))
           "Rotation")
-    (t/is (= {:tag :item :id-kw :test/item :params {:mesh :mesh/box :pos [0 0 0] :color [:rgb [0 0 0]]}}
-             (s/conform :scene/item [:item :test/item {:mesh :mesh/box :pos [0 0 0] :color [0 0 0]}]))
+    (t/is (= {:tag :item :id-kw :test/item :params {:mesh :mesh/box :pos [0 0 0] :mat [:color [:rgb [0 0 0]]]}}
+             (s/conform :scene/item [:item :test/item {:mesh :mesh/box :pos [0 0 0] :mat [0 0 0]}]))
           "RGB color")
-    (t/is (= {:tag :item :id-kw :test/item :params {:mesh :mesh/box :pos [0 0 0] :color [:kw :red]}}
-             (s/conform :scene/item [:item :test/item {:mesh :mesh/box :pos [0 0 0] :color :red}]))
+    (t/is (= {:tag :item :id-kw :test/item :params {:mesh :mesh/box :pos [0 0 0] :mat [:color [:kw :red]]}}
+             (s/conform :scene/item [:item :test/item {:mesh :mesh/box :pos [0 0 0] :mat :red}]))
+          "Keyword color")
+    (t/is (= {:tag :item :id-kw :test/item :params {:mesh :mesh/box :pos [0 0 0] :mat [:texture "cube_grass.png"]}}
+             (s/conform :scene/item [:item :test/item {:mesh :mesh/box :pos [0 0 0] :mat "cube_grass.png"}]))
           "Keyword color"))
   (t/testing "Failing"
     (t/is (s/invalid? (s/conform :scene/item [:camera :test/cam {:pos [0 0 0] :target [0 0 0]}]))
@@ -143,19 +146,19 @@
 (t/deftest group-spec
   (t/testing "Conforming"
     (t/is (= {:tag :group :id-kw :test/group :params {:pos [0 0 0]}
-              :items [{:tag :item :id-kw :test/item :params {:mesh :mesh/box :pos [0 0 0] :color [:kw :red]}}]}
+              :items [{:tag :item :id-kw :test/item :params {:mesh :mesh/box :pos [0 0 0]}}]}
              (s/conform :scene/group [:group :test/group {:pos [0 0 0]}
-                                      [:item :test/item {:mesh :mesh/box :pos [0 0 0] :color :red}]]))
+                                      [:item :test/item {:mesh :mesh/box :pos [0 0 0]}]]))
           "Minimal working group")
     (t/is (= {:tag :group :id-kw :test/group :params {:pos [0 0 0] :rot [0 0 0]}
-              :items [{:tag :item :id-kw :test/item :params {:mesh :mesh/box :pos [0 0 0] :color [:kw :red]}}]}
+              :items [{:tag :item :id-kw :test/item :params {:mesh :mesh/box :pos [0 0 0] :mat [:color [:kw :red]]}}]}
              (s/conform :scene/group [:group :test/group {:pos [0 0 0] :rot [0 0 0]}
-                                      [:item :test/item {:mesh :mesh/box :pos [0 0 0] :color :red}]]))
+                                      [:item :test/item {:mesh :mesh/box :pos [0 0 0] :mat :red}]]))
           "Rotation")
     (t/is (= {:tag :group :id-kw :test/group :params {:pos [0 0 0] :scale [0 0 0]}
-              :items [{:tag :item :id-kw :test/item :params {:mesh :mesh/box :pos [0 0 0] :color [:kw :red]}}]}
+              :items [{:tag :item :id-kw :test/item :params {:mesh :mesh/box :pos [0 0 0] :mat [:color [:kw :red]]}}]}
              (s/conform :scene/group [:group :test/group {:pos [0 0 0] :scale [0 0 0]}
-                                      [:item :test/item {:mesh :mesh/box :pos [0 0 0] :color :red}]]))
+                                      [:item :test/item {:mesh :mesh/box :pos [0 0 0] :mat :red}]]))
           "Scale"))
   (t/testing "Failing"
     (t/is (s/invalid? (s/conform :scene/group [:group {:pos [0 0 0]} [:item :test/item {:mesh :mesh/box :pos [0 0 0]}]]))

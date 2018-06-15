@@ -66,6 +66,9 @@
 (s/def :params/scale :vector/gen)
 (s/def :params/color (s/or :kw #{:red :blue :yellow :white :black} ;;more?
                            :rgb :vector/pnorm))
+(s/def :params/texture string?)
+(s/def :params/mat (s/or :color :params/color
+                         :texture :params/texture))
 
 (s/def :params/dir :vector/norm)
 
@@ -89,7 +92,7 @@
 (s/def :scene/item (s/cat :tag #{:item}
                           :id-kw qualified-keyword?
                           :params (s/keys :req-un [:params/mesh :params/pos]
-                                          :opt-un [:params/rot :params/scale :params/color])))
+                                          :opt-un [:params/rot :params/scale :params/mat])))
 
 ;; LIGHTS
 (s/def :scene/ambient-light (s/cat :tag #{:ambient}
