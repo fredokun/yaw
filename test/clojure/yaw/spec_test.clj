@@ -192,13 +192,27 @@
         "Keyword color"))
 
 (t/deftest scene-spec
-  (t/is (= {:tag :scene :items []}
+  (t/is (= {:tag :scene}
            (s/conform :scene/scene [:scene]))
         "Minimal empty scene")
   (t/is (= {:tag :scene :params {:skybox {:color [:kw :red] :scale [30 30 30]}}}
-           (s/conform :scene/scene [:scene {:skybox {:color :scale [30 30 30]}}]))
+           (s/conform :scene/scene [:scene {:skybox {:color :red :scale [30 30 30]}}]))
         "Empty scene with skybox")
   (t/is (= {:tag :scene :items [[:light [:point {:tag :light :id-kw :test/light :params {:pos [0 0 0] :color [:kw :red]}}]]]}
            (s/conform :scene/scene [:scene [:light :test/light {:pos [0 0 0] :color :red}]]))
-        "Scene with a light"))
+        "Scene with a light")
+  (t/is (= {:tag :scene :params {:camera :test/cam2}
+            :items [[:camera {:tag :camera
+                              :id-kw :test/cam1
+                              :params {:pos [0 0 0]
+                                       :target [:vec [0 3 -5]]}}]
+                    [:camera {:tag :camera
+                              :id-kw :test/cam2
+                              :params {:pos [0 3 -5]
+                                       :target [:vec [0 0 0]]}}]]}
+           (s/conform :scene/scene [:scene {:camera :test/cam2}
+                                    [:camera :test/cam1 {:pos [0 0 0] :target [0 3 -5]}]
+                                    [:camera :test/cam2 {:pos [0 3 -5] :target [0 0 0]}]]))
+        "Scene with specified camera"))
+
 

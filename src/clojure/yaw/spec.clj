@@ -135,5 +135,5 @@
 
 ;; SCENE
 (s/def :scene/scene (s/cat :tag #{:scene}
-                           :params (s/? (s/keys :opt-un [:params/skybox :params/camera]))
+                           :params (s/? (s/keys :opt-un [:scene/skybox :params/camera]))
                            :items (s/* (s/spec :scene/object))))
