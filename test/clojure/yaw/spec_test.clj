@@ -158,13 +158,27 @@
                                       [:item :test/item {:mesh :mesh/box :pos [0 0 0] :color :red}]]))
           "Scale"))
   (t/testing "Failing"
-    (t/is (s/invalid? (conform :scene/group [:group {:pos [0 0 0]} [:item :test/item {:mesh :mesh/box :pos [0 0 0]}]]))
+    (t/is (s/invalid? (s/conform :scene/group [:group {:pos [0 0 0]} [:item :test/item {:mesh :mesh/box :pos [0 0 0]}]]))
           "Omit id keyword")
-    (t/is (s/invalid? (conform :scene/group [:group :test/group {:pos [0 0 0]}]))
+    (t/is (s/invalid? (s/conform :scene/group [:group :test/group {:pos [0 0 0]}]))
           "At least one item")
-    (t/is (s/invalid? (conform :scene/group [:group :test/parent-group {:pos [0 0 0]}
+    (t/is (s/invalid? (s/conform :scene/group [:group :test/parent-group {:pos [0 0 0]}
                                              [:group :test/child-group {:pos [0 0 0]}
                                               [:item :test/nested-item {:mesh :mesh/box :pos [0 0 0]}]]]))
           "No nested groups")
-    (t/is (s/invalid? (conform :scene/group [:group :test/group [:item :test/item {:mesh :mesh/box :pos [0 0 0]}]]))
+    (t/is (s/invalid? (s/conform :scene/group [:group :test/group [:item :test/item {:mesh :mesh/box :pos [0 0 0]}]]))
           "Position is required")))
+
+(t/deftest scene-object-spec
+  (t/is (= [:camera {:tag :camera, :id-kw :test/cam, :params {:pos [0 2 -5], :target [:vec [0 0 0]]}}]
+           (s/conform :scene/object [:camera :test/cam {:pos [0 2 -5] :target [0 0 0]}]))
+        "Camera object")
+  (t/is (= [:light [:point {:tag :light, :id-kw :test/light, :params {:pos [0 0 1], :color [:kw :yellow], :i 0.3}}]]
+           (s/conform :scene/object [:light :test/light {:pos [0 0 1] :color :yellow :i 0.3}]))
+        "Point light object")
+  (t/is (= [:light [:ambient {:tag :ambient, :params {:color [:kw :yellow]}}]]
+           (s/conform :scene/object [:ambient {:color :yellow}]))
+        "Point light object")
+  (t/is (= [:item {:tag :item, :id-kw :test/item, :params {:pos [0 0 0], :mesh :mesh/box}}]
+           (s/conform :scene/object [:item :test/item {:pos [0 0 0] :mesh :mesh/box}]))
+        "Item object"))

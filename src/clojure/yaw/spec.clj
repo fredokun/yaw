@@ -126,13 +126,3 @@
                            :item :scene/item
                            :light :scene/light
                            :group :scene/group))
-
-;; (s/conform :scene/object [:camera :test/cam {:pos [0 2 -5] :target [0 0 0]}])
-;; => [:camera {:tag :camera, :id-kw :test/cam, :params {:pos [0 2 -5], :target [:vec [0 0 0]]}}]
-
-;; (s/conform :scene/object [:light :test/light {:pos [0 0 1] :color :yellow :i 0.3}])
-;; => [:light [:point {:tag :light, :id-kw :test/light, :params {:pos [0 0 1], :color [:kw :yellow], :i 0.3}}]]
-
-;; (s/conform :scene/object [:item :test/item {:pos [0 0 0] :mesh :mesh/box}])
-;; => [:item {:tag :item, :id-kw :test/item, :params {:pos [0 0 0], :mesh :mesh/box}}]
-
