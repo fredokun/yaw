@@ -191,3 +191,14 @@
            (s/conform :scene/skybox {:color :red :scale [30 30 30]}))
         "Keyword color"))
 
+(t/deftest scene-spec
+  (t/is (= {:tag :scene :items []}
+           (s/conform :scene/scene [:scene]))
+        "Minimal empty scene")
+  (t/is (= {:tag :scene :params {:skybox {:color [:kw :red] :scale [30 30 30]}}}
+           (s/conform :scene/scene [:scene {:skybox {:color :scale [30 30 30]}}]))
+        "Empty scene with skybox")
+  (t/is (= {:tag :scene :items [[:light [:point {:tag :light :id-kw :test/light :params {:pos [0 0 0] :color [:kw :red]}}]]]}
+           (s/conform :scene/scene [:scene [:light :test/light {:pos [0 0 0] :color :red}]]))
+        "Scene with a light"))
+
