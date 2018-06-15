@@ -182,3 +182,9 @@
   (t/is (= [:item {:tag :item, :id-kw :test/item, :params {:pos [0 0 0], :mesh :mesh/box}}]
            (s/conform :scene/object [:item :test/item {:pos [0 0 0] :mesh :mesh/box}]))
         "Item object"))
+
+(t/deftest skybox-spec
+  (t/is (= {:color [:kw :red] :scale [30 30 30]}
+           (s/conform :scene/skybox {:color :red :scale [30 30 30]}))
+        "Keyword color"))
+

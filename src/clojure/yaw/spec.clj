@@ -121,8 +121,12 @@
                                            :opt-un [:params/rot :params/scale])
                            :items (s/+ (s/spec :scene/item))))
 
+;; SKYBOX
+(s/def :scene/skybox (s/keys :req-un [:params/scale :params/color]))
+
 ;; GENERAL
 (s/def :scene/object (s/or :camera :scene/camera
                            :item :scene/item
                            :light :scene/light
                            :group :scene/group))
+
