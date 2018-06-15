@@ -91,12 +91,6 @@
                           :params (s/keys :req-un [:params/mesh :params/pos]
                                           :opt-un [:params/rot :params/scale :params/color])))
 
-;; (s/conform :scene/item [:item :test/item {:mesh :mesh/box :pos [0 0 0] :rot [20 0 20] :color :red}])
-;; => {:tag :item, :id-kw :test/item, :params {:mesh :mesh/box, :pos [0 0 0], :rot [20 0 20], :color [:kw :red]}}
-
-;; (s/conform :scene/item [:item :test/item2 {:mesh :mesh/cone :pos [0 2 0] :scale [1 2 1] :color [0 1 0.9]}])
-;; => {:tag :item, :id-kw :test/item2, :params {:mesh :mesh/cone, :pos [0 2 0], :scale [1 2 1], :color [:rgb [0 1 0.9]]}}
-
 ;; LIGHTS
 (s/def :scene/ambient-light (s/cat :tag #{:ambient}
                                    :params (s/keys :req-un [:params/color]
