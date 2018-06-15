@@ -84,11 +84,6 @@
                             :id-kw qualified-keyword?
                             :params (s/keys :req-un [:params/pos :params/target]
                                             :opt-un [:params/fov])))
-;; (s/conform :scene/camera [:camera :test/cam1 {:pos [0 2 -3] :target [0 0 0] :fov 90}])
-;; => {:tag :camera, :id-kw :test/cam1, :params {:pos [0 2 -3], :target [:vec [0 0 0]], :fov 90}}
-
-;; (s/conform :scene/camera [:camera :test/cam2 {:pos [0 2 -3] :target :test/item}])
-;; => {:tag :camera, :id-kw :test/cam2, :params {:pos [0 2 -3], :target [:item :test/item]}}
 
 ;; OBJECTS
 (s/def :scene/item (s/cat :tag #{:item}
