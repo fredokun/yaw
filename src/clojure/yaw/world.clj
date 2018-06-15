@@ -11,12 +11,13 @@
 
 (defn start-universe!
   "Start an empty yaw universe."
-  [& {:keys [width height x y]
+  [& {:keys [width height x y vsync]
       :or   {x      0
              y      0
              width  800
-             height 600}}]
-  (let [world (World. x y width height)
+             height 600
+             vsync true}}]
+  (let [world (World. x y width height vsync)
         thread (future world)]
     (.start (Thread. world))
     (atom {:world world :thread thread})))

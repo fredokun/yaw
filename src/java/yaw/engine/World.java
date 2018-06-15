@@ -33,8 +33,23 @@ public class World implements Runnable {
     private ConcurrentHashMap<String, Texture> mStringTextureConcurrentHashMap;
     private boolean mLoop;
     private int initX, initY, initWidth, initHeight;
+    private boolean initVSYNC;
     private WorldNucleus mNucleus;
     private UpdateCallback updateCallback;
+
+    /**
+     * Initializes the elements to create the window
+     *
+     * @param pInitX      initX
+     * @param pInitY      initY
+     * @param pInitWidth  initWidth
+     * @param pInitHeight initHeight
+     * @param pInitVSYNC  initVSYNC
+     */
+    public World(int pInitX, int pInitY, int pInitWidth, int pInitHeight, boolean pInitVSYNC) {
+        this(pInitX, pInitY, pInitWidth, pInitHeight);
+        this.initVSYNC = pInitVSYNC;
+    }
 
     /**
      * Initializes the elements to create the window
@@ -63,6 +78,7 @@ public class World implements Runnable {
         this.mItemGroupArrayList = new Vector<>();
         this.mSkyboxToBeRemoved = new Vector<>();
         this.mLoop = true;
+        this.initVSYNC = true;
         this.mStringTextureConcurrentHashMap = new ConcurrentHashMap<>();
         updateCallback = null;
     }
@@ -198,7 +214,7 @@ public class World implements Runnable {
      * @throws Exception Exception
      */
     public void init() throws Exception {
-        Window.init(initWidth, initHeight);
+        Window.init(initWidth, initHeight, initVSYNC);
         // Create the rendering logic of our game.
         mRenderer.init();
 
