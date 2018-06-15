@@ -139,3 +139,32 @@
           "Spot")
     (t/is (= [:ambient {:tag :ambient :params {:color [:kw :blue]}}]
              (s/conform :scene/light [:ambient {:color :blue}])))))
+
+(t/deftest group-spec
+  (t/testing "Conforming"
+    (t/is (= {:tag :group :id-kw :test/group :params {:pos [0 0 0]}
+              :items [{:tag :item :id-kw :test/item :params {:mesh :mesh/box :pos [0 0 0] :color [:kw :red]}}]}
+             (s/conform :scene/group [:group :test/group {:pos [0 0 0]}
+                                      [:item :test/item {:mesh :mesh/box :pos [0 0 0] :color :red}]]))
+          "Minimal working group")
+    (t/is (= {:tag :group :id-kw :test/group :params {:pos [0 0 0] :rot [0 0 0]}
+              :items [{:tag :item :id-kw :test/item :params {:mesh :mesh/box :pos [0 0 0] :color [:kw :red]}}]}
+             (s/conform :scene/group [:group :test/group {:pos [0 0 0] :rot [0 0 0]}
+                                      [:item :test/item {:mesh :mesh/box :pos [0 0 0] :color :red}]]))
+          "Rotation")
+    (t/is (= {:tag :group :id-kw :test/group :params {:pos [0 0 0] :scale [0 0 0]}
+              :items [{:tag :item :id-kw :test/item :params {:mesh :mesh/box :pos [0 0 0] :color [:kw :red]}}]}
+             (s/conform :scene/group [:group :test/group {:pos [0 0 0] :scale [0 0 0]}
+                                      [:item :test/item {:mesh :mesh/box :pos [0 0 0] :color :red}]]))
+          "Scale"))
+  (t/testing "Failing"
+    (t/is (s/invalid? (conform :scene/group [:group {:pos [0 0 0]} [:item :test/item {:mesh :mesh/box :pos [0 0 0]}]]))
+          "Omit id keyword")
+    (t/is (s/invalid? (conform :scene/group [:group :test/group {:pos [0 0 0]}]))
+          "At least one item")
+    (t/is (s/invalid? (conform :scene/group [:group :test/parent-group {:pos [0 0 0]}
+                                             [:group :test/child-group {:pos [0 0 0]}
+                                              [:item :test/nested-item {:mesh :mesh/box :pos [0 0 0]}]]]))
+          "No nested groups")
+    (t/is (s/invalid? (conform :scene/group [:group :test/group [:item :test/item {:mesh :mesh/box :pos [0 0 0]}]]))
+          "Position is required")))
