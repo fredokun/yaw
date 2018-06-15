@@ -54,3 +54,88 @@
           "Omit position")
     (t/is (s/invalid? (s/conform :scene/item [:item :test/item {:mesh :mesh/megalodon :pos [0 0 0]}]))
           "Invalid mesh")))
+
+(t/deftest light-spec
+  (t/testing "Ambient"
+    (t/testing "Conforming"
+      (t/is (= {:tag :ambient :params {:color [:rgb [0 0 0]]}}
+               (s/conform :scene/ambient-light [:ambient {:color [0 0 0]}]))
+            "Minimal ambient light")
+      (t/is (= {:tag :ambient :params {:color [:kw :blue]}}
+               (s/conform :scene/ambient-light [:ambient {:color :blue}]))
+            "Keyword color")
+      (t/is (= {:tag :ambient :params {:color [:kw :red] :i 0}}
+               (s/conform :scene/ambient-light [:ambient {:color :red :i 0}]))
+            "Intensity"))
+    (t/testing "Failing"
+      (t/is (s/invalid? (s/conform :scene/ambient-light [:ambient]))
+            "Omit all parameters")
+      (t/is (s/invalid? (s/conform :scene/ambient-light [:ambient {:i 0}]))
+            "Color is required")
+      (t/is (s/invalid? (s/conform :scene/ambient-light [:ambient :test/ambient {:color :red}]))
+            "Ambient is unique")
+      (t/is (s/invalid? (s/conform :scene/ambient-light [:ambient {:color [0 0 0] :i -3}]))
+            "Intensity must be positive")))
+
+  (t/testing "Sun"
+    (t/testing "Conforming"
+      (t/is (= {:tag :sun :params {:color [:rgb [0 0 0]] :dir [0 0 0]}}
+               (s/conform :scene/sun-light [:sun {:color [0 0 0] :dir [0 0 0]}]))
+            "Minimal working sunlight")
+      (t/is (= {:tag :sun :params {:color [:rgb [0 0 0]] :dir [0 0 0] :i 0}}
+               (s/conform :scene/sun-light [:sun {:color [0 0 0] :dir [0 0 0] :i 0}]))
+            "Intensity"))
+    (t/testing "Failing"
+      (t/is (s/invalid? (s/conform :scene/sun-light [:sun {:color [0 0 0]}]))
+            "Direction is required")
+      (t/is (s/invalid? (s/conform :scene/sun-light [:sun :test/sun {:color [0 0 0] :dir [0 0 0]}]))
+            "Sun is unique")))
+
+  (t/testing "Spotlight"
+    (t/testing "Conforming"
+      (t/is (= {:tag :spot :id-kw :test/spot :params {:color [:rgb [0 0 0]] :dir [0 0 0] :pos [0 0 0]}}
+               (s/conform :scene/spot-light [:spot :test/spot {:color [0 0 0] :dir [0 0 0] :pos [0 0 0]}]))
+            "Minimal working spot")
+
+      ;; (t/is (= {:tag :spot :id-kw :test/spot :params {:color [:kw :blue] :dir [:item :test/item] :pos [0 0 0]}}
+      ;;          (s/conform :scene/spot-light [:spot :test/spot {:color :blue :dir :test/item :pos [0 0 0]}]))
+      ;;       "Item target")
+      ;; TODO ? Discuss.
+
+      (t/is (= {:tag :spot :id-kw :test/spot :params {:color [:kw :red] :dir [0 0 0] :pos [0 0 0] :i 0}}
+               (s/conform :scene/spot-light [:spot :test/spot {:color :red :dir [0 0 0] :pos [0 0 0] :i 0}]))
+            "Intensity"))
+    (t/testing "Failing"
+      (t/is (s/invalid? (s/conform :scene/spot-light [:spot {:color :red :dir [0 0 0] :pos [0 0 0]}]))
+            "Omit id keyword")
+      (t/is (s/invalid? (s/conform :scene/spot-light [:sun :test/spot {:color :red :dir [0 0 0] :pos [0 0 0]}]))
+            "Wrong tag")
+      (t/is (s/invalid? (s/conform :scene/spot-light [:spot :test/spot {:color :red :dir [0 0 0]}]))
+            "Position is required")))
+
+  (t/testing "Pointlight"
+    (t/testing "Conforming"
+      (t/is (= {:tag :light :id-kw :test/point :params {:color [:kw :yellow] :pos [0 0 0]}}
+               (s/conform :scene/point-light [:light :test/point {:color :yellow :pos [0 0 0]}]))
+            "Minimal working point")
+      (t/is (= {:tag :light :id-kw :test/point :params {:color [:kw :yellow] :pos [0 0 0] :i 0}}
+               (s/conform :scene/point-light [:light :test/point {:color :yellow :pos [0 0 0] :i 0}]))
+            "Intensity"))
+    (t/testing "Failing"
+      (t/is (s/invalid? (s/conform :scene/point-light [:light {:color :yellow :pos [0 0 0]}]))
+            "Omit id keyword")
+      (t/is (s/invalid? (s/conform :scene/point-light [:light :test/point {:color :yellow}]))
+            "Position is required")))
+
+  (t/testing "Lights"
+    (t/is (= [:sun {:tag :sun, :params {:dir [0 0 -1], :color [:kw :blue]}}]
+           (s/conform :scene/light [:sun {:dir [0 0 -1] :color :blue}]))
+          "Sun")
+    (t/is (= [:point {:tag :light, :id-kw :test/point, :params {:color [:kw :red], :pos [0 0 0], :i 0.3}}]
+             (s/conform :scene/light [:light :test/point {:color :red :pos [0 0 0] :i 0.3}]))
+          "Point")
+    (t/is (= [:spot {:tag :spot :id-kw :test/spot :params {:color [:kw :red] :pos [0 0 0] :dir [0 0 0]}}]
+             (s/conform :scene/light [:spot :test/spot {:color :red :pos [0 0 0] :dir [0 0 0]}]))
+          "Spot")
+    (t/is (= [:ambient {:tag :ambient :params {:color [:kw :blue]}}]
+             (s/conform :scene/light [:ambient {:color :blue}])))))

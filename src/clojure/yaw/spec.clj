@@ -74,7 +74,7 @@
 (s/def :params/fov number?)
 
 ;; intensity
-(s/def :params/i number?)
+(s/def :params/i #(or (pos? %) (zero? %)))
 
 ;; mesh
 (s/def :params/mesh #{:mesh/box :mesh/cone :mesh/pyramid}) ;; exhaustive list?
@@ -103,6 +103,7 @@
                                 :id-kw qualified-keyword?
                                 :params (s/keys :req-un [:params/pos :params/dir :params/color]
                                                 :opt-un [:params/i])))
+
 (s/def :scene/point-light (s/cat :tag #{:light}
                                  :id-kw qualified-keyword?
                                  :params (s/keys :req-un [:params/pos :params/color]
@@ -112,24 +113,6 @@
                           :sun :scene/sun-light
                           :spot :scene/spot-light
                           :point :scene/point-light))
-
-;; (s/conform :scene/ambient-light [:ambient {:color :blue :i 0.3}])
-;; => {:tag :ambient, :params {:color [:kw :blue], :i 0.3}}
-
-;; (s/conform :scene/sun-light [:sun {:color [0 0 1] :dir [0 0 -1]}])
-;; => {:tag :sun, :params {:color [:rgb [0 0 1]], :dir [0 0 -1]}}
-
-;; (s/conform :scene/spot-light [:spot :test/spot1 {:color [1 0 0] :dir [-1 -1 0] :i 0.4 :pos [-2 4 0]}])
-;; => {:tag :spot, :id-kw :test/spot1, :params {:color [:rgb [1 0 0]], :dir [-1 -1 0], :i 0.4, :pos [-2 4 0]}}
-
-;; (s/conform :scene/point-light [:light :test/point1 {:color [0 1 0] :pos [0 0 2]}])
-;; => {:tag :light, :id-kw :test/point1, :params {:color [:rgb [0 1 0]], :pos [0 0 2]}}
-
-;; (s/conform :scene/light [:light :test/point2 {:color :red :pos [0 0 0] :i 0.3}])
-;; => [:point {:tag :light, :id-kw :test/point2, :params {:color [:kw :red], :pos [0 0 0], :i 0.3}}]
-
-;; (s/conform :scene/light [:sun {:dir [0 0 -1] :color :blue}])
-;; => [:sun {:tag :sun, :params {:dir [0 0 -1], :color [:kw :blue]}}]
 
 ;; GROUPS
 (s/def :scene/group (s/cat :tag #{:group}
