@@ -64,7 +64,7 @@
 (s/def :params/pos :vector/gen)
 (s/def :params/rot :vector/gen)
 (s/def :params/scale :vector/gen)
-(s/def :params/color (s/or :kw #{:red :blue :yellow :white :black} ;;more?
+(s/def :params/color (s/or :kw #{:red :green :blue :yellow :cyan :magenta :white :black } ;;more?
                            :rgb :vector/pnorm))
 (s/def :params/texture string?)
 (s/def :params/mat (s/or :color :params/color
