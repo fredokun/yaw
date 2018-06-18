@@ -13,14 +13,14 @@
   "Returns a rgb tuple from a keyword color"
   [color]
   (case color
-      :black [0 0 0]
-      :red [1 0 0]
-      :blue [0 0 1]
-      :green [0 1 0]
-      :yellow [1 1 0]
-      :cyan [0 1 1]
-      :magenta [1 0 1]
-      :white [1 1 1]))
+    :black [0 0 0]
+    :red [1 0 0]
+    :blue [0 0 1]
+    :green [0 1 0]
+    :yellow [1 1 0]
+    :cyan [0 1 1]
+    :magenta [1 0 1]
+    :white [1 1 1]))
 
 (defn color
   "Returns a rgb tuple from any sort of color"
@@ -56,16 +56,18 @@
                      :scale (:scale skybox)
                      :color (color (:color skybox))))
     (let [items (reduce item-map empty-item-map items)]
-      (println items)
       (run! (fn [[k v]]
-              (let [m (apply w/create-simple-mesh! world (mesh/mesh (:mesh v)) )
-                    i (w/create-item! world :id (str k)
-                                      :position (get v :pos [0 0 0])
-                                      :scale (get v :scale 1))]
+              (let [m (mesh/mesh (:mesh v))
+                    m (w/create-simple-mesh!
+                       world
+                       :geometry m
+                       :rgb (color (second (get v :mat [0 0 0]))))
+                    i (w/create-item!
+                       world
+                       :id (str k)
+                       :position (get v :pos [0 0 0])
+                       :scale (get v :scale 1)
+                       :mesh m)]
                 (apply w/rotate! i (explode (get v :rot [0 0 0])))))
             (:items items)))))
-
-
-(display [:scene {:skybox {:color :red :scale [30 30 30]}}
-          [:item :test/box {:mesh :mesh/box :color :white :pos [0 0 -5] :rot [0 45 0]}]])
 
