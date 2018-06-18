@@ -22,7 +22,7 @@
     :magenta [1 0 1]
     :white [1 1 1]))
 
-(defn color
+(defn color-rgb
   "Returns a rgb tuple from any sort of color"
   [[kw v]]
   (case kw
@@ -30,8 +30,8 @@
     :rgb v))
 
 (def empty-item-map
-  {:cameras []
-   :lights {:ambient nil :sun nil :points [] :spots []}
+  {:cameras {}
+   :lights {:ambient nil :sun nil :points {} :spots {}}
    :groups {}
    :items {}})
 (defn item-map
@@ -39,7 +39,14 @@
   ([] empty-item-map)
   ([m [kw v]]
    (case kw
-     :item (assoc-in m [:items (:id-kw v)] (:params v)))))
+     :item (assoc-in m [:items (:id-kw v)] (:params v))
+     :camera (assoc-in m [:cameras (:id-kw v)] (:params v))
+     :light (let [[kw v] v]
+              (case kw
+                :ambient (assoc-in m [:lights :ambient] (:params v))
+                :sun (assoc-in m [:lights :sun] (:params v))
+                :point (assoc-in m [:lights :points (:id-kw v)] (:params v))
+                :spot (assoc-in m [:lights :spots (:id-kw v)] (:params v)))))))
 
 (defn display
   "Opens a window and displays a 3D scene in it"
@@ -54,14 +61,25 @@
     (if (some? skybox)
       (w/set-skybox! world
                      :scale (:scale skybox)
-                     :color (color (:color skybox))))
+                     :color (color-rgb (:color skybox))))
     (let [items (reduce item-map empty-item-map items)]
+      (if (some? (-> items :lights :ambient))
+        (let [{:keys [color i]
+               :or {color [:kw :white]
+                    i 0.3}} (-> items :lights :ambient)]
+          (w/set-ambient-light! world :color (color-rgb color) :i i)))
+      (if (some? (-> items :lights :sun))
+        (let [{:keys [color i dir]
+               :or {color [:kw :white]
+                    i 0.6
+                    dir [-1 -1 -1]}} (-> items :lights :sun)]
+          (w/set-sun! world :color (color-rgb color) :i i :direction dir)))
       (run! (fn [[k v]]
               (let [m (mesh/mesh (:mesh v))
                     m (w/create-simple-mesh!
                        world
                        :geometry m
-                       :rgb (color (second (get v :mat [0 0 0]))))
+                       :rgb (color-rgb (second (get v :mat [:color [:kw :white]]))))
                     i (w/create-item!
                        world
                        :id (str k)
@@ -71,3 +89,9 @@
                 (apply w/rotate! i (explode (get v :rot [0 0 0])))))
             (:items items)))))
 
+(display [:scene
+          {:skybox {:color [0.3 0 0.3] :scale [30 30 30]}}
+          [:ambient {:color :white :i 0.1}]
+          [:sun {:color :yellow :i 0.4 :dir [-1 -1 -1]}]
+          [:item :test/cone {:mesh :mesh/cone :mat :white :pos [0 0 -5] :rot [-90 0 0]}]
+          [:item :test/box {:mesh :mesh/box :pos [2 3 -5] :mat :blue}]])
