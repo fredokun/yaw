@@ -80,19 +80,19 @@
                 (w/set-point-light!
                  world
                  n
-                 :color (color-rgb (get v :color [:kw :white]))
+                 :color (color-rgb (:color v))
                  :i (get v :i 0.3)
-                 :position (get v :pos [0 0 0]))))
+                 :position (:pos v))))
             (-> items :lights :points))
       (run! (fn [[k v]]
               (let [n (:id-n v)]
                 (w/set-spot-light!
                  world
                  n
-                 :color (color-rgb (get v :color [:kw :white]))
+                 :color (color-rgb (:color v))
                  :i (get v :i 0.3)
-                 :position (get v :pos [0 0 0])
-                 :direction (get v :dir [0 0 -1])
+                 :position (:pos v)
+                 :direction (:dir v)
                  :angle (get v :angle 20))))
             (-> items :lights :spots))
       (run! (fn [[k v]]
@@ -104,17 +104,8 @@
                     i (w/create-item!
                        world
                        :id (str k)
-                       :position (get v :pos [0 0 0])
+                       :position (:pos v)
                        :scale (get v :scale 1)
                        :mesh m)]
                 (apply w/rotate! i (explode (get v :rot [0 0 0])))))
             (:items items)))))
-
-(display [:scene
-          {:skybox {:color [0.3 0 0.3] :scale [30 30 30]}}
-          [:ambient {:color :white :i 0.1}]
-          [:light :test/point 0 {:i 0.5 :color :red :pos [1 1 -5]}]
-          [:spot :test/spot 0 {:i 0.6 :color [0 0 1] :pos [0 0 0] :dir [0 0 -1] :angle 1}]
-          [:sun {:color :yellow :i 0.4 :dir [-1 -1 -1]}]
-          [:item :test/cone {:mesh :mesh/cone :mat :white :pos [0 0 -5] :rot [-90 0 0]}]
-          [:item :test/box {:mesh :mesh/box :pos [2 1 -7] :mat :blue}]])
