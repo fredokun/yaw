@@ -1,7 +1,8 @@
 (ns yaw.world
   (:import (yaw.engine.meshs MeshBuilder)
            (yaw.engine World)
-           (yaw.engine.light AmbientLight DirectionalLight PointLight SpotLight))
+           (yaw.engine.light AmbientLight DirectionalLight PointLight SpotLight)
+           (yaw.engine.camera Camera))
   (:require [yaw.mesh]))
   ;;(gen-class)
 
@@ -135,14 +136,34 @@
                 :mesh (create-simple-mesh! world :rgb color :geometry (yaw.mesh/pyramid-geometry))))
 
 ;;CAMERA MANAGEMENT------------------------------------------------
+(defn cameras "Retrieve the list of cameras of the world" [world] (.getCamerasList world))
+
 (defn camera "Retrieve the main camera of the world" [world] (.getCamera world))
 
 (defn clear-cameras! "Remove all the cameras from the `world`" [world] (.emptyListCamera world))
 
 (defn add-camera!
   "Add a camera to the `world`"
-  [world idx camera]
-  (.addCamera world idx camera))
+  ([world idx camera]
+   (.addCamera world idx camera))
+  ([world camera]
+   (.add (cameras world) camera)))
+
+(defn set-camera!
+  "Set the current camera of the `world`"
+  [world camera]
+  (.setCamera world camera))
+
+(defn create-camera!
+  "Create a camera with the given parameters"
+  [{:keys [fov near far pos target]
+    :or {fov 60 near 0.1 far 1000.0 pos [5 5 5] target [0 0 0]}}]
+  (println fov near far pos target)
+  (let [[px py pz] pos
+        [ox oy oz] target]
+    (Camera. (float fov) (float near) (float far)
+             (float px) (float py) (float pz)
+             (float ox) (float oy) (float oz))))
 
 ;;LIGHT------------------------------------------------------------
 (defn lights "Retrieve the lighting settings of the world scene" [world] (.getSceneLight world))
