@@ -49,7 +49,7 @@
                                 [:lights :spots (:id-kw v)]
                                 (assoc (:params v) :id-n (:id-n v))))))))
 
-(defn display
+(defn display-scene
   "Opens a window and displays a 3D scene in it"
   [scene]
   (let [scene (s/conform :scene/scene scene)
@@ -75,6 +75,20 @@
                     i 0.6
                     dir [-1 -1 -1]}} (-> items :lights :sun)]
           (w/set-sun! world :color (color-rgb color) :i i :direction dir)))
+
+      (run! (fn [[k v]]
+              (println k v)
+              (let [c (w/create-camera!
+                       (update v :target
+                               (fn [[tk tv]]
+                                 (case tk
+                                   :item (:pos (get (:items items) tv) )
+                                   :vec tv))))]
+                (w/add-camera! world c)
+                (if (= k camera)
+                  (w/set-camera! world c))))
+            (:cameras items))
+
       (run! (fn [[k v]]
               (let [n (:id-n v)]
                 (w/set-point-light!
@@ -95,6 +109,7 @@
                  :direction (:dir v)
                  :angle (get v :angle 20))))
             (-> items :lights :spots))
+
       (run! (fn [[k v]]
               (let [m (mesh/mesh (:mesh v))
                     m (w/create-simple-mesh!
