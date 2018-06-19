@@ -9,24 +9,21 @@
   [[x y z]]
   (list :x x :y y :z z))
 
-(defn kw-rgb
-  "Returns a rgb tuple from a keyword color"
-  [color]
-  (case color
-    :black [0 0 0]
-    :red [1 0 0]
-    :blue [0 0 1]
-    :green [0 1 0]
-    :yellow [1 1 0]
-    :cyan [0 1 1]
-    :magenta [1 0 1]
-    :white [1 1 1]))
+(def kw-rgb
+  {:black [0 0 0]
+   :red [1 0 0]
+   :blue [0 0 1]
+   :green [0 1 0]
+   :yellow [1 1 0]
+   :cyan [0 1 1]
+   :magenta [1 0 1]
+   :white [1 1 1]})
 
 (defn color-rgb
   "Returns a rgb tuple from any sort of color"
   [[kw v]]
   (case kw
-    :kw (kw-rgb v)
+    :kw (get kw-rgb v)
     :rgb v))
 
 (def empty-item-map
