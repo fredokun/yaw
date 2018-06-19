@@ -95,6 +95,7 @@
                                           :opt-un [:params/rot :params/scale :params/mat])))
 
 ;; LIGHTS
+(s/def :scene/light-id (s/and number? #(< % 5) #(>= % 0)))
 (s/def :scene/ambient-light (s/cat :tag #{:ambient}
                                    :params (s/keys :req-un [:params/color]
                                                    :opt-un [:params/i])))
@@ -104,11 +105,13 @@
 
 (s/def :scene/spot-light (s/cat :tag #{:spot}
                                 :id-kw qualified-keyword?
+                                :id-n :scene/light-id
                                 :params (s/keys :req-un [:params/pos :params/dir :params/color]
                                                 :opt-un [:params/i])))
 
 (s/def :scene/point-light (s/cat :tag #{:light}
                                  :id-kw qualified-keyword?
+                                 :id-n :scene/light-id
                                  :params (s/keys :req-un [:params/pos :params/color]
                                                  :opt-un [:params/i])))
 

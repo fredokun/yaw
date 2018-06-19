@@ -45,8 +45,12 @@
               (case kw
                 :ambient (assoc-in m [:lights :ambient] (:params v))
                 :sun (assoc-in m [:lights :sun] (:params v))
-                :point (assoc-in m [:lights :points (:id-kw v)] (:params v))
-                :spot (assoc-in m [:lights :spots (:id-kw v)] (:params v)))))))
+                :point (assoc-in m
+                                 [:lights :points (:id-kw v)]
+                                 (assoc (:params v) :id-n (:id-n v)))
+                :spot (assoc-in m
+                                [:lights :spots (:id-kw v)]
+                                (assoc (:params v) :id-n (:id-n v))))))))
 
 (defn display
   "Opens a window and displays a 3D scene in it"
@@ -75,6 +79,26 @@
                     dir [-1 -1 -1]}} (-> items :lights :sun)]
           (w/set-sun! world :color (color-rgb color) :i i :direction dir)))
       (run! (fn [[k v]]
+              (let [n (:id-n v)]
+                (w/set-point-light!
+                 world
+                 n
+                 :color (color-rgb (get v :color [:kw :white]))
+                 :i (get v :i 0.3)
+                 :position (get v :pos [0 0 0]))))
+            (-> items :lights :points))
+      (run! (fn [[k v]]
+              (let [n (:id-n v)]
+                (w/set-spot-light!
+                 world
+                 n
+                 :color (color-rgb (get v :color [:kw :white]))
+                 :i (get v :i 0.3)
+                 :position (get v :pos [0 0 0])
+                 :direction (get v :dir [0 0 -1])
+                 :angle (get v :angle 20))))
+            (-> items :lights :spots))
+      (run! (fn [[k v]]
               (let [m (mesh/mesh (:mesh v))
                     m (w/create-simple-mesh!
                        world
@@ -92,6 +116,8 @@
 (display [:scene
           {:skybox {:color [0.3 0 0.3] :scale [30 30 30]}}
           [:ambient {:color :white :i 0.1}]
+          [:light :test/point 0 {:i 0.5 :color :red :pos [1 1 -5]}]
+          [:spot :test/spot 0 {:i 0.6 :color [0 0 1] :pos [0 0 0] :dir [0 0 -1] :angle 1}]
           [:sun {:color :yellow :i 0.4 :dir [-1 -1 -1]}]
           [:item :test/cone {:mesh :mesh/cone :mat :white :pos [0 0 -5] :rot [-90 0 0]}]
-          [:item :test/box {:mesh :mesh/box :pos [2 3 -5] :mat :blue}]])
+          [:item :test/box {:mesh :mesh/box :pos [2 1 -7] :mat :blue}]])
