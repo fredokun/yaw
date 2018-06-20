@@ -1,29 +1,17 @@
 (ns clojure.yaw.scene
-  (:require [yaw.world :as w]
-            [yaw.mesh :as mesh]
-            [yaw.spec]
-            [clojure.spec.alpha :as s]))
-
-(defn explode
-  "Explodes a vector [x y z] tuple into (:x x :y y :z z)"
-  [[x y z]]
-  (list :x x :y y :z z))
-
-(def kw-rgb
-  {:black [0 0 0]
-   :red [1 0 0]
-   :blue [0 0 1]
-   :green [0 1 0]
-   :yellow [1 1 0]
-   :cyan [0 1 1]
-   :magenta [1 0 1]
-   :white [1 1 1]})
+  (:require
+   [yaw.util :as u]
+   [yaw.world :as w]
+   [yaw.mesh :as mesh]
+   [yaw.spec]
+   [clojure.spec.alpha :as s]
+   [clojure.data]))
 
 (defn color-rgb
   "Returns a rgb tuple from any sort of color"
   [[kw v]]
   (case kw
-    :kw (get kw-rgb v)
+    :kw (get u/color-kw v)
     :rgb v))
 
 (def empty-item-map
@@ -82,7 +70,7 @@
                        (update v :target
                                (fn [[tk tv]]
                                  (case tk
-                                   :item (:pos (get (:items items) tv) )
+                                   :item (:pos (get (:items items) tv))
                                    :vec tv))))]
                 (w/add-camera! world c)
                 (if (= k camera)
@@ -122,5 +110,34 @@
                        :position (:pos v)
                        :scale (get v :scale 1)
                        :mesh m)]
-                (apply w/rotate! i (explode (get v :rot [0 0 0])))))
+                (apply w/rotate! i (u/explode (get v :rot [0 0 0])))))
             (:items items)))))
+
+(defn diff
+  "Gives the diff of two intermediary scenes"
+  [scene-old scene-new]
+  (let [[to-del to-add _] (clojure.data/diff scene-old scene-new)]
+    [to-del to-add]
+    (reduce-kv (fn [d k v]
+                 (if (not (contains? (:items to-del) k))
+                   (conj d [:item/add k v])
+                   (reduce-kv (fn [d p v]
+                                (case p
+                                  :rot (conj d [:item/rotate k (mapv u/-? v (-> to-del :items k :rot))])
+                                  :pos (conj d [:item/translate k (mapv u/-? v (-> to-del :items k :pos))])
+                                  :mat (conj d [:item/remat k v])
+                                  :scale (conj d [:item/rescale k v])))
+                              d
+                              v)))
+               (reduce-kv (fn [d k v]
+                            (if (not (contains? (:items to-add) k))
+                              (conj d [:item/remove k])
+                              d))
+                          [:diff]
+                          (:items to-del))
+               (:items to-add))))
+
+(diff {:items {:test/box {:rot [0 0 3] :pos [0 0 0]}
+               :test/item {:rot [0 0 0] :pos [0 0 0]}}}
+      {:items {:test/box {:rot [0 0 2] :pos [0 0 0]}
+               :item/test {:rot [0 0 0] :pos [1 1 0]}}})
