@@ -113,31 +113,51 @@
                 (apply w/rotate! i (u/explode (get v :rot [0 0 0])))))
             (:items items)))))
 
+(defn- diff-items
+  "Reduces the given old and new item maps to a sequence of effect representations it conjoins to the accumulator"
+  [acc old new]
+  (reduce-kv (fn [d k v]
+               (if (not (contains? old k))
+                 (conj d [:item/add k v])
+                 (reduce-kv (fn [d p v]
+                              (case p
+                                :rot (conj d [:item/rotate k (mapv u/-? v (-> old k :rot))])
+                                :pos (conj d [:item/translate k (mapv u/-? v (-> old k :pos))])
+                                :mat (conj d [:item/remat k v])
+                                :scale (conj d [:item/rescale k v])))
+                            d v)))
+             (reduce-kv (fn [d k v]
+                          (if (not (contains? new k))
+                            (conj d [:item/remove k])
+                            d))
+                        acc old)
+             new))
+
+(defn- diff-cameras
+  "Reduces the given old and new item maps to a sequence of effect representations it conjoins to the accumulator"
+  [acc old new]
+  (reduce-kv (fn [d k v]
+               (if (not (contains? old k))
+                 (conj d [:cam/add k v])
+                 (reduce-kv (fn [d p v]
+                              (case p
+                                :target (conj d [:cam/retarget k v])
+                                :pos (conj d [:cam/translate k (mapv u/-? v (-> old k :pos))])
+                                :fov (conj d [:cam/refov k v])))
+                            d v)))
+             (reduce-kv (fn [d k v]
+                          (if (not (contains? new k))
+                            (conj d [:cam/remove k])
+                            d))
+                        acc old)
+             new))
+
 (defn diff
   "Gives the diff of two intermediary scenes"
   [scene-old scene-new]
   (let [[to-del to-add _] (clojure.data/diff scene-old scene-new)]
-    [to-del to-add]
-    (reduce-kv (fn [d k v]
-                 (if (not (contains? (:items to-del) k))
-                   (conj d [:item/add k v])
-                   (reduce-kv (fn [d p v]
-                                (case p
-                                  :rot (conj d [:item/rotate k (mapv u/-? v (-> to-del :items k :rot))])
-                                  :pos (conj d [:item/translate k (mapv u/-? v (-> to-del :items k :pos))])
-                                  :mat (conj d [:item/remat k v])
-                                  :scale (conj d [:item/rescale k v])))
-                              d
-                              v)))
-               (reduce-kv (fn [d k v]
-                            (if (not (contains? (:items to-add) k))
-                              (conj d [:item/remove k])
-                              d))
-                          [:diff]
-                          (:items to-del))
-               (:items to-add))))
-
-(diff {:items {:test/box {:rot [0 0 3] :pos [0 0 0]}
-               :test/item {:rot [0 0 0] :pos [0 0 0]}}}
-      {:items {:test/box {:rot [0 0 2] :pos [0 0 0]}
-               :item/test {:rot [0 0 0] :pos [1 1 0]}}})
+    (diff-items (diff-cameras [:diff]
+                              (:cameras to-del)
+                              (:cameras to-add))
+                (:items to-del)
+                (:items to-add))))
