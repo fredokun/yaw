@@ -134,7 +134,7 @@
              new))
 
 (defn- diff-cameras
-  "Reduces the given old and new item maps to a sequence of effect representations it conjoins to the accumulator"
+  "Reduces the given old and new camera maps to a sequence of effect representations it conjoins to the accumulator"
   [acc old new]
   (reduce-kv (fn [d k v]
                (if (not (contains? old k))
@@ -152,12 +152,92 @@
                         acc old)
              new))
 
+(defn- diff-points
+  [acc old new]
+  (reduce-kv (fn [d k v]
+               (if (not (contains? old k))
+                 (conj d [:light/add k v])
+                 (reduce-kv (fn [d p v]
+                              (case p
+                                :color (conj d [:light/recolor k v])
+                                :pos (conj d [:light/translate k v])
+                                :i (conj d [:light/intensity k v])
+                                d))
+                            d v)))
+             (reduce-kv (fn [d k v]
+                          (if (not (contains? new k))
+                            (conj d [:light/remove k])
+                            d))
+                        acc old)
+             new))
+
+(defn- diff-spots
+  [acc old new]
+  (reduce-kv (fn [d k v]
+               (if (not (contains? old k))
+                 (conj d [:spot/add k v])
+                 (reduce-kv (fn [d p v]
+                              (case p
+                                :color (conj d [:spot/recolor k v])
+                                :pos (conj d [:spot/translate k v])
+                                :i (conj d [:spot/intensity k v])
+                                :dir (conj d [:spot/redirect k v])
+                                d))
+                            d v)))
+               (reduce-kv (fn [d k v]
+                            (if (not (contains? new k))
+                              (conj d [:spot/remove k])
+                              d))
+                          acc old)
+               new))
+
+(defn- diff-ambient
+  [acc old new]
+  (if (nil? old)
+    (conj acc [:ambient/set new])
+    (if (nil? new)
+      (conj acc [:ambient/unset])
+      (reduce-kv (fn [d p v]
+                   (case p
+                     :color (conj d [:ambient/recolor v])
+                     :i (conj d [:ambient/intensity v])
+                     d))
+                 acc new))))
+
+(defn- diff-sun
+  [acc old new]
+  (if (nil? old)
+    (conj acc [:sun/set new])
+    (if (nil? new)
+      (conj acc [:sun/unset])
+      (reduce-kv (fn [d p v]
+                   (case p
+                     :color (conj d [:sun/recolor v])
+                     :i (conj d [:sun/intensity v])
+                     :dir (conj d [:sun/redirect v])
+                     d))
+                 acc new))))
+
+(defn- diff-lights
+  "Reduces the given old and new light maps to a sequence of effect representations it conjoins to the accumulator"
+  [acc old new]
+  (reduce-kv (fn [d k v]
+               (case k
+                 :ambient (diff-ambient d (:ambient old) v)
+                 :sun (diff-sun d (:sun old) v)
+                 :points (diff-points d (:points old) v)
+                 :spots (diff-spots d (:spots old) v)
+                 d))
+             acc new))
+
 (defn diff
   "Gives the diff of two intermediary scenes"
   [scene-old scene-new]
   (let [[to-del to-add _] (clojure.data/diff scene-old scene-new)]
-    (diff-items (diff-cameras [:diff]
-                              (:cameras to-del)
-                              (:cameras to-add))
-                (:items to-del)
-                (:items to-add))))
+    (diff-items (diff-cameras (diff-lights [:diff]
+                                           (get to-del :lights {})
+                                           (get to-add :lights {}))
+                              (get to-del :cameras {})
+                              (get to-add :cameras {}))
+                (get to-del :items {})
+                (get to-add :items {}))))
