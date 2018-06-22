@@ -26,7 +26,7 @@
                     :mesh/cone (yaw.mesh/cone-geometry)
                     :mesh/pyramid (yaw.mesh/pyramid-geometry)}})))
 
-(defn register-mesh
+(defn register-mesh!
   "Given a universe, a keyword id, and mesh data, associates the id to the data in the universe atom"
   [univ id mesh]
   (swap! univ assoc-in [:meshes id] mesh))
