@@ -241,3 +241,33 @@
                               (get to-add :cameras {}))
                 (get to-del :items {})
                 (get to-add :items {}))))
+
+(defn display-diff
+  "Takes a universe and a diff, and executes the effects described by the diff"
+  [univ diff]
+  (let [[tag & actions] diff]
+    (if (not= tag :diff)
+      (throw (ex-info "Invalid Diff"
+                      {:expected :diff
+                       :actual tag}))
+      (run!
+       (fn [[action & details]]
+         (case action
+           :item/add (let [[id params] details
+                           m (get (:meshes @univ) (:mesh params))
+                           m (w/create-simple-mesh!
+                              (:world @univ)
+                              :geometry m
+                              :rgb (color-rgb (second (get params :mat [:color [:kw :white]]))))
+                           i (w/create-item!
+                              (:world @univ)
+                              :id (str id)
+                              :position (:pos params)
+                              :scale (get params :scale 1)
+                              :mesh m)]
+                       (apply w/rotate! i (u/explode (get params :rot [0 0 0]))))))
+       actions))))
+
+;; (display-diff (w/start-universe!)
+;;               [:diff
+;;                [:item/add :test/box {:mesh :mesh/box :pos [0 0 -4] :mat [:color [:kw :red]]}]])
