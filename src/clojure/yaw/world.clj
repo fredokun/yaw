@@ -21,7 +21,15 @@
   (let [world (World. x y width height vsync)
         thread (future world)]
     (.start (Thread. world))
-    (atom {:world world :thread thread})))
+    (atom {:world world :thread thread
+           :meshes {:mesh/box (yaw.mesh/box-geometry)
+                    :mesh/cone (yaw.mesh/cone-geometry)
+                    :mesh/pyramid (yaw.mesh/pyramid-geometry)}})))
+
+(defn register-mesh
+  "Given a universe, a keyword id, and mesh data, associates the id to the data in the universe atom"
+  [univ id mesh]
+  (swap! univ assoc-in [:meshes id] mesh))
 
 ;;CALLBACKS---------------------------------------------------------------
 (defn callmap "Retrieve the `world` callback map"

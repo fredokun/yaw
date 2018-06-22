@@ -99,7 +99,7 @@
             (-> items :lights :spots))
 
       (run! (fn [[k v]]
-              (let [m (mesh/mesh (:mesh v))
+              (let [m ((:mesh v) (:meshes @univ))
                     m (w/create-simple-mesh!
                        world
                        :geometry m
