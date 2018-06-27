@@ -1,10 +1,17 @@
 (ns yaw.world
   (:import (yaw.engine.meshs MeshBuilder)
+           (yaw.engine.items Item)
            (yaw.engine World)
            (yaw.engine.light AmbientLight DirectionalLight PointLight SpotLight)
            (yaw.engine.camera Camera))
   (:require [yaw.mesh]))
   ;;(gen-class)
+
+(def empty-item-map
+  {:cameras {}
+   :lights {:ambient nil :sun nil :points {} :spots {}}
+   :groups {}
+   :items {}})
 
 ;;UTILS------------------------------------------------------------------
 (defn flat-map "flatten 'map'" [m]
@@ -24,7 +31,8 @@
     (atom {:world world :thread thread
            :meshes {:mesh/box (yaw.mesh/box-geometry)
                     :mesh/cone (yaw.mesh/cone-geometry)
-                    :mesh/pyramid (yaw.mesh/pyramid-geometry)}})))
+                    :mesh/pyramid (yaw.mesh/pyramid-geometry)}
+           :data empty-item-map})))
 
 (defn register-mesh!
   "Given a universe, a keyword id, and mesh data, associates the id to the data in the universe atom"
@@ -114,6 +122,11 @@
   "Remove the specified `item` from the `world`"
   [world item]
   (.removeItem world item))
+
+(defn set-item-color!
+  "Replaces the material of the item with the specified color"
+  [item [r g b]]
+  (.setColor item r g b))
 
 (defn create-block!
   "Create a rectangular block in the `world` with the

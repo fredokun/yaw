@@ -5,12 +5,12 @@
   [[x y z]]
   (list :x x :y y :z z))
 
-(defn -?
+(defn ?-
   "Takes two nilable numbers,"
   [a b]
   (if (nil? a)
     (if (nil? b)
-      nil
+      0
       (- b))
     (if (nil? b)
       a
