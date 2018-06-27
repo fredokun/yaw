@@ -1,7 +1,8 @@
-(ns clojure.yaw.spec-test
+(ns yaw.spec-test
   (:require [clojure.spec.alpha :as s]
             [yaw.spec :as ys]
-            [clojure.test :as t]))
+            [clojure.test :as t]
+            [yaw.scene :as ysc]))
 
 (t/deftest camera-specs
   (t/testing "Conforming"
@@ -132,7 +133,7 @@
 
   (t/testing "Lights"
     (t/is (= [:sun {:tag :sun, :params {:dir [0 0 -1], :color [:kw :blue]}}]
-           (s/conform :scene/light [:sun {:dir [0 0 -1] :color :blue}]))
+             (s/conform :scene/light [:sun {:dir [0 0 -1] :color :blue}]))
           "Sun")
     (t/is (= [:point {:tag :light, :id-kw :test/point, :params {:color [:kw :red], :pos [0 0 0], :i 0.3}}]
              (s/conform :scene/light [:light :test/point {:color :red :pos [0 0 0] :i 0.3}]))
@@ -166,8 +167,8 @@
     (t/is (s/invalid? (s/conform :scene/group [:group :test/group {:pos [0 0 0]}]))
           "At least one item")
     (t/is (s/invalid? (s/conform :scene/group [:group :test/parent-group {:pos [0 0 0]}
-                                             [:group :test/child-group {:pos [0 0 0]}
-                                              [:item :test/nested-item {:mesh :mesh/box :pos [0 0 0]}]]]))
+                                               [:group :test/child-group {:pos [0 0 0]}
+                                                [:item :test/nested-item {:mesh :mesh/box :pos [0 0 0]}]]]))
           "No nested groups")
     (t/is (s/invalid? (s/conform :scene/group [:group :test/group [:item :test/item {:mesh :mesh/box :pos [0 0 0]}]]))
           "Position is required")))
@@ -215,4 +216,22 @@
                                     [:camera :test/cam2 {:pos [0 3 -5] :target [0 0 0]}]]))
         "Scene with specified camera"))
 
-
+(t/deftest internal-spec
+  (t/is (s/valid? :yaw.scene.internal/scene
+                  (ysc/item-map
+                   [:scene
+                    [:item :reagent-like.core/cube-1
+                     {:mesh :mesh/box :pos [1 2 3]}]
+                    :scene
+                    [:item :reagent-like.core/cube-2
+                     {:mesh :mesh/box :pos [2 3 3] :mat :red}]
+                    [:camera :reagent-like.core/cam-1
+                     {:pos [1 2 3],
+                      :target [4 5 6]}]
+                    [:light :reagent-like.core/point-1
+                     {:pos [2 2 2]
+                      :color :yellow}]
+                    [:spot :reagent-like.core/spot-1
+                     {:pos [3 3 3] :dir [-0.2 0.3 0] :color :red}]
+                    [:ambient {:color [0 0 1] :i 0.3}]
+                    [:sun {:color [0 1 0] :dir [0 0.2 0.6]}]]))))
