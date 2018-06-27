@@ -35,7 +35,7 @@
 (defn display-scene
   "Opens a window and displays a 3D scene in it"
   [scene]
-  (let [scene (s/conform :scene/scene scene)
+  (let [scene (s/conform :yaw.spec.scene/scene scene)
         params (get scene :params {})
         skybox (get params :skybox nil)
         camera (get params :camera nil)
@@ -330,7 +330,8 @@
                              params (merge {:fov 60} params)
                              c (w/create-camera! params)]
                          (swap! univ assoc-in [:items id] c)
-                         (swap! univ assoc-in [:data :cameras id] params))
+                         (swap! univ assoc-in [:data :cameras id] params)
+                         (w/add-camera! (:world @univ) c))
            :camera/translate (let [[id [x y z]] details
                                    i (get-in @univ [:items id])]
                                (swap! univ update-in [:data :cameras id :pos] #(mapv + % [x y z]))
@@ -345,5 +346,23 @@
            :camera/refov (let [[id value] details
                                i (get-in @univ [:items id])]
                            (swap! univ assoc-in [:data :cameras id :fov] value)
-                           (w/set-camera-fov! i value))))
+                           (w/set-camera-fov! i value))
+           :light/add (let [[id params] details
+                            n (count (get-in @univ [:data :lights :points]))
+                            l (w/create-point-light! params)]
+                        (swap! univ assoc-in [:data :lights :points id] params)
+                        (w/set-point-light! (:world @univ) n l))
+           :spot/add (let [[id params] details
+                           n (count (get-in @univ [:data :lights :spots]))
+                           l (w/create-spot-light! params)]
+                       (swap! univ assoc-in [:data :lights :spots id] params)
+                       (w/set-spot-light! (:world @univ) n l))
+           :ambient/set (let [[params] details
+                              a (w/create-ambient-light! params)]
+                          (swap! univ assoc-in [:data :lights :ambient] params)
+                          (w/set-ambient-light! (:world @univ) a))
+           :sun/set (let [[params] details
+                          s (w/create-sun-light! params)]
+                      (swap! univ assoc-in [:data :lights :sun] params)
+                      (w/set-sun! (:world @univ) s))))
        actions))))

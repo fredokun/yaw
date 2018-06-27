@@ -119,7 +119,6 @@
 (s/def :yaw.spec.scene.light/spot
   (s/cat :tag #{:spot}
          :id-kw qualified-keyword?
-         :id-n :yaw.spec.scene/light-id
          :params (s/keys :req-un [:yaw.spec.values/pos
                                   :yaw.spec.values/dir
                                   :yaw.spec.values/color]
@@ -128,7 +127,6 @@
 (s/def :yaw.spec.scene.light/point
   (s/cat :tag #{:light}
          :id-kw qualified-keyword?
-         :id-n :yaw.spec.scene/light-id
          :params (s/keys :req-un [:yaw.spec.values/pos
                                   :yaw.spec.values/color]
                          :opt-un [:yaw.spec.values/i])))

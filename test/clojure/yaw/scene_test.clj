@@ -54,6 +54,85 @@
                                            :rot [0 y 0]}]])))
         (Thread/sleep 30)))))
 
+(defn -ambient-light
+  []
+  (let [univ (w/start-universe!)]
+    (sut/display-diff
+     univ
+     (sut/diff (:data @univ)
+               (sut/item-map [:scene
+                              [:item :test/box
+                               {:mesh :mesh/box :pos [0 0 -5]
+                                :rot [45 45 0]}]
+                              [:ambient
+                               {:color :red
+                                :i 0.2}]])))))
+
+(defn -sun-light
+  []
+  (let [univ (w/start-universe!)]
+    (sut/display-diff
+     univ
+     (sut/diff (:data @univ)
+               (sut/item-map [:scene
+                              [:item :test/box
+                               {:mesh :mesh/box :pos [0 0 -5]
+                                :rot [45 45 0]}]
+                              [:ambient
+                               {:color :red
+                                :i 0.2}]
+                              [:sun
+                               {:color :white
+                                :dir [1 0 0]}]])))))
+
+
+
+(defn -point-light
+  []
+  (let [univ (w/start-universe!)]
+        (sut/display-diff
+         univ
+         (sut/diff (:data @univ)
+                   (sut/item-map [:scene
+                                  [:item :test/box
+                                   {:mesh :mesh/box :pos [0 0 -5]
+                                    :rot [45 45 0]}]
+                                  [:ambient
+                                   {:color :red
+                                    :i 0.2}]
+                                  [:light :test/point
+                                   {:color :white
+                                    :pos [1 1 -4]
+                                    :i 0.5}]])))))
+
+(defn -spot-light
+  []
+  (let [univ (w/start-universe!)]
+    (sut/display-diff
+     univ
+     (sut/diff (:data @univ)
+               (sut/item-map [:scene
+                              [:item :test/box
+                               {:mesh :mesh/box :pos [0 0 -5]
+                                :rot [45 45 0]}]
+                              [:ambient
+                               {:color :red
+                                :i 0.2}]
+                              [:spot :test/spot
+                               {:color :white
+                                :pos [3 3 -4]
+                                :dir [-0.3 -0.3 0.4]
+                                :i 0.5}]])))))
+
+
 (-lone-box)
 
 (-rotating-cube)
+
+(-ambient-light)
+
+(-sun-light)
+
+(-point-light)
+
+(-spot-light)
