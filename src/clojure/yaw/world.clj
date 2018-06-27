@@ -186,6 +186,16 @@
              (float px) (float py) (float pz)
              (float ox) (float oy) (float oz))))
 
+(defn set-camera-target!
+  "Sets the target of a camera"
+  [camera [x y z]]
+  (.setOrientation camera x y z))
+
+(defn set-camera-fov!
+  "Sets the fov of a camera"
+  [camera fov]
+  (.setFieldOfView camera fov))
+
 ;;LIGHT------------------------------------------------------------
 (defn lights "Retrieve the lighting settings of the world scene" [world] (.getSceneLight world))
 

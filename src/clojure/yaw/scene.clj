@@ -334,5 +334,16 @@
            :camera/translate (let [[id [x y z]] details
                                    i (get-in @univ [:items id])]
                                (swap! univ update-in [:data :cameras id :pos] #(mapv + % [x y z]))
-                               (w/rotate! i :x x :y y :z z))))
+                               (w/rotate! i :x x :y y :z z))
+           :camera/retarget (let [[id [type *value*]] details
+                                  i (get-in @univ [:items id])
+                                  value (case type
+                                          :item (get-in @univ [:items *value* :pos])
+                                          :vec *value*)]
+                              (swap! univ assoc-in [:data :cameras id :target] [type *value*])
+                              (w/set-camera-target! i value))
+           :camera/refov (let [[id value] details
+                               i (get-in @univ [:items id])]
+                           (swap! univ assoc-in [:data :cameras id :fov] value)
+                           (w/set-camera-fov! i value))))
        actions))))
