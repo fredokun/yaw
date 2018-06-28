@@ -44,15 +44,14 @@
 (defn -rotating-cube
   []
   (let [univ (w/start-universe!)]
-    (for [y (range 90)]
-      (do
-        (sut/display-diff
-         univ
-         (sut/diff (:data @univ)
-                   (sut/item-map [:scene [:item :test/box
-                                          {:mesh :mesh/box :pos [0 0 -5]
-                                           :rot [0 y 0]}]])))
-        (Thread/sleep 30)))))
+    (doseq [y (range 90)]
+      (sut/display-diff
+       univ
+       (sut/diff (:data @univ)
+                 (sut/item-map [:scene [:item :test/box
+                                        {:mesh :mesh/box :pos [0 0 -5]
+                                         :rot [0 y 0]}]])))
+      (Thread/sleep 30))))
 
 (defn -ambient-light
   []
