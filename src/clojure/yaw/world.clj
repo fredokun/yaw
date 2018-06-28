@@ -1,10 +1,17 @@
 (ns yaw.world
   (:import (yaw.engine.meshs MeshBuilder)
+           (yaw.engine.items Item)
            (yaw.engine World)
            (yaw.engine.light AmbientLight DirectionalLight PointLight SpotLight)
            (yaw.engine.camera Camera))
   (:require [yaw.mesh]))
   ;;(gen-class)
+
+(def empty-item-map
+  {:cameras {}
+   :lights {:ambient nil :sun nil :points {} :spots {}}
+   :groups {}
+   :items {}})
 
 ;;UTILS------------------------------------------------------------------
 (defn flat-map "flatten 'map'" [m]
@@ -21,7 +28,16 @@
   (let [world (World. x y width height vsync)
         thread (future world)]
     (.start (Thread. world))
-    (atom {:world world :thread thread})))
+    (atom {:world world :thread thread
+           :meshes {:mesh/box (yaw.mesh/box-geometry)
+                    :mesh/cone (yaw.mesh/cone-geometry)
+                    :mesh/pyramid (yaw.mesh/pyramid-geometry)}
+           :data empty-item-map})))
+
+(defn register-mesh!
+  "Given a universe, a keyword id, and mesh data, associates the id to the data in the universe atom"
+  [univ id mesh]
+  (swap! univ assoc-in [:meshes id] mesh))
 
 ;;CALLBACKS---------------------------------------------------------------
 (defn callmap "Retrieve the `world` callback map"
@@ -107,6 +123,11 @@
   [world item]
   (.removeItem world item))
 
+(defn set-item-color!
+  "Replaces the material of the item with the specified color"
+  [item [r g b]]
+  (.setColor item r g b))
+
 (defn create-block!
   "Create a rectangular block in the `world` with the
   specified id, position, color"
@@ -165,47 +186,75 @@
              (float px) (float py) (float pz)
              (float ox) (float oy) (float oz))))
 
+(defn set-camera-target!
+  "Sets the target of a camera"
+  [camera [x y z]]
+  (.setOrientation camera x y z))
+
+(defn set-camera-fov!
+  "Sets the fov of a camera"
+  [camera fov]
+  (.setFieldOfView camera fov))
+
 ;;LIGHT------------------------------------------------------------
 (defn lights "Retrieve the lighting settings of the world scene" [world] (.getSceneLight world))
 
+(defn create-ambient-light!
+  [{:keys [color i]
+    :or {color [1 1 1]
+         i 0.3}}]
+  (let [[r g b] color]
+    (AmbientLight. r g b i)))
+
+(defn create-sun-light!
+  [{:keys [color i dir]
+    :or {color [1 1 1]
+         i 0.6
+         dir [-1 -1 -1]}}]
+  (let [[r g b] color
+        [dx dy dz] dir]
+    (DirectionalLight. r g b i dx dy dz)))
+
+(defn create-point-light!
+  [{{:keys [const lin quad] :or {const 0.3 lin 0.5 quad 0.9}} :att
+    :keys [color i pos]
+    :or {color [1 1 1]
+         i 1
+         pos [0 0 0]}}]
+  (let [[r g b] color
+        [px py pz] pos]
+    (PointLight. r g b px py pz i const lin quad)))
+
+(defn create-spot-light!
+  [ {{:keys [const lin quad] :or {const 0.3 lin 0.5 quad 0.9}} :att
+     :keys [color i position direction angle]
+     :or {color [1 1 1]
+          i 1
+          position [0 0 0]
+          direction [0 0 -1]
+          angle 30}}]
+  (let [[r g b] color [px py pz] position [dx dy dz] direction]
+    (SpotLight. r g b px py pz i const lin quad dx dy dz angle)))
+
 (defn set-ambient-light!
   "Set the ambient light of the world"
-  [world & {:keys [color i]
-            :or {color [1 1 1]
-                 i 0.3}}]
-  (let [[r g b] color]
-    (.setAmbient (lights world) (AmbientLight. r g b i))))
+  [world l]
+    (.setAmbient (lights world) l))
 
 (defn set-sun!
   "Set the sun of the world"
-  [world & {:keys [color i direction]
-            :or {color [1 1 1]
-                 i 0.6
-                 direction [-1 -1 -1]}}]
-  (let [[r g b] color [dx dy dz] direction]
-    (.setSun (lights world) (DirectionalLight. r g b i dx dy dz))))
+  [world l]
+    (.setSun (lights world) l))
 
 (defn set-point-light!
   "Set the `n`th pointlight with the given `color`, `position`, `itensity`, and attenuation factors"
-  [world n & {{:keys [const lin quad] :or {const 0.3 lin 0.5 quad 0.9}} :att
-              :keys [color i position]
-              :or {color [1 1 1]
-                   i 1
-                   position [0 0 0]}}]
-  (let [[r g b] color [px py pz] position]
-    (.setPointLight (lights world) (PointLight. r g b px py pz i const lin quad) n)))
+  [world n l]
+    (.setPointLight (lights world) l n))
 
 (defn set-spot-light!
   "Set the `n`th spotlight with the given `color`, `intensity`, `position`, `direction` and attenuation factors"
-  [world n & {{:keys [const lin quad] :or {const 0.3 lin 0.5 quad 0.9}} :att
-              :keys [color i position direction angle]
-              :or {color [1 1 1]
-                   i 1
-                   position [0 0 0]
-                   direction [0 0 -1]
-                   angle 30}}]
-  (let [[r g b] color [px py pz] position [dx dy dz] direction]
-    (.setSpotLight (lights world) (SpotLight. r g b px py pz i const lin quad dx dy dz angle) n)))
+  [world n l]
+    (.setSpotLight (lights world) l n))
 
 ;;COLLISIONS------------------------------------------------------
 
