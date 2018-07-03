@@ -32,82 +32,6 @@
        (throw (ex-info "Invalid scene" (s/explain-data :yaw.spec.scene/scene *xs*)))
        (reduce item-map empty-item-map (:content xs))))))
 
-(defn display-scene
-  "Opens a window and displays a 3D scene in it"
-  [scene]
-  (let [scene (s/conform :yaw.spec.scene/scene scene)
-        params (get scene :params {})
-        skybox (get params :skybox nil)
-        camera (get params :camera nil)
-        items (get scene :content [])
-        univ (w/start-universe!)
-        world (:world @univ)]
-    (if (some? skybox)
-      (w/set-skybox! world
-                     :scale (:scale skybox)
-                     :color (:color skybox)))
-    (let [items (reduce item-map empty-item-map items)]
-      (if (some? (-> items :lights :ambient))
-        (let [{:keys [color i]
-               :or {color [:kw :white]
-                    i 0.3}} (-> items :lights :ambient)]
-          (w/set-ambient-light! world :color color :i i)))
-      (if (some? (-> items :lights :sun))
-        (let [{:keys [color i dir]
-               :or {color [:kw :white]
-                    i 0.6
-                    dir [-1 -1 -1]}} (-> items :lights :sun)]
-          (w/set-sun! world :color color :i i :direction dir)))
-
-      (run! (fn [[k v]]
-              (println k v)
-              (let [c (w/create-camera!
-                       (update v :target
-                               (fn [[tk tv]]
-                                 (case tk
-                                   :item (:pos (get (:items items) tv))
-                                   :vec tv))))]
-                (w/add-camera! world c)
-                (if (= k camera)
-                  (w/set-camera! world c))))
-            (:cameras items))
-
-      (run! (fn [[k v]]
-              (let [n (:id-n v)]
-                (w/set-point-light!
-                 world
-                 n
-                 :color (:color v)
-                 :i (get v :i 0.3)
-                 :position (:pos v))))
-            (-> items :lights :points))
-      (run! (fn [[k v]]
-              (let [n (:id-n v)]
-                (w/set-spot-light!
-                 world
-                 n
-                 :color (:color v)
-                 :i (get v :i 0.3)
-                 :position (:pos v)
-                 :direction (:dir v)
-                 :angle (get v :angle 20))))
-            (-> items :lights :spots))
-
-      (run! (fn [[k v]]
-              (let [m ((:mesh v) (:meshes @univ))
-                    m (w/create-simple-mesh!
-                       world
-                       :geometry m
-                       :rgb (second (get v :mat [:color [1 1 1]])))
-                    i (w/create-item!
-                       world
-                       :id (str k)
-                       :position (:pos v)
-                       :scale (get v :scale 1)
-                       :mesh m)]
-                (apply w/rotate! i (u/explode (get v :rot [0 0 0])))))
-            (:items items)))))
-
 (defn get-new
   [old new]
   new)
@@ -281,7 +205,7 @@
 ;;                 (get to-del :items {})
 ;;                 (get to-add :items {}))))
 
-(defn display-diff
+(defn display-diff!
   "Takes a universe and a diff, and executes the effects described by the diff"
   [univ diff]
   (let [[tag & actions] diff]
@@ -366,3 +290,11 @@
                       (swap! univ assoc-in [:data :lights :sun] params)
                       (w/set-sun! (:world @univ) s))))
        actions))))
+
+(defn display-scene!
+  [univ scene]
+  (let [d (diff (:data @univ) (item-map scene))]
+    (println "DIFF:")
+    (println d)
+    (display-diff! univ d)))
+
