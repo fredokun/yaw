@@ -1,7 +1,12 @@
 (ns yaw.core
   (:require [clojure.set :as set]
             [yaw.ratom :as ratom :refer [reactive-atom?]]
-            [yaw.scene :as ysc]))
+            [yaw.scene :as ysc]
+            [yaw.world :as w]))
+
+;; Re-direction of controller atom creation
+;; (allows to close yaw.world to public use)
+(defn start-universe! [] (w/start-universe!))
 
 ;;{
 ;; ## Component render

@@ -1,9 +1,6 @@
 (ns clojure.yaw.ratom-test
   (:require  [yaw.core :as y]
-             [yaw.world :as w]
-             [yaw.scene :as ysc]
-             [yaw.ratom :as sut]
-            [clojure.test :as t]))
+             [clojure.test :as t]))
 
 (defn lone-box
   "Single box in the center of the canvas."
@@ -16,7 +13,7 @@
 ;; because the reactions happen immediately
 ;; however, re-evaluating the last line will make the cube turn.
 
-(def +myctrl+ (w/start-universe!))
+(def +myctrl+ (y/start-universe!))
 (def +rat+ (y/reactive-atom +myctrl+ 0))
 ;; Look at the println output (simulation of rendered scene)
 (println "<<<<<FIRST RENDER>>>>>>")
