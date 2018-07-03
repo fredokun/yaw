@@ -32,7 +32,9 @@
            :meshes {:mesh/box (yaw.mesh/box-geometry)
                     :mesh/cone (yaw.mesh/cone-geometry)
                     :mesh/pyramid (yaw.mesh/pyramid-geometry)}
-           :data empty-item-map})))
+           :data empty-item-map
+           :items {}
+           :components {}})))
 
 (defn register-mesh!
   "Given a universe, a keyword id, and mesh data, associates the id to the data in the universe atom"
