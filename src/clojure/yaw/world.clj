@@ -184,7 +184,7 @@
   (println fov near far pos target)
   (let [[px py pz] pos
         [ox oy oz] target]
-    (Camera. (float fov) (float near) (float far)
+    (Camera. (float (Math/toRadians fov)) (float near) (float far)
              (float px) (float py) (float pz)
              (float ox) (float oy) (float oz))))
 
@@ -196,7 +196,7 @@
 (defn set-camera-fov!
   "Sets the fov of a camera"
   [camera fov]
-  (.setFieldOfView camera fov))
+  (.setFieldOfView camera (Math/toRadians fov)))
 
 ;;LIGHT------------------------------------------------------------
 (defn lights "Retrieve the lighting settings of the world scene" [world] (.getSceneLight world))
