@@ -93,7 +93,10 @@
                                                    vec-diff)
                                 :fov (action-value d :cam/refov id
                                                    (-> old id :fov) v
-                                                   get-new)))
+                                                   get-new)
+                                :live (action-value d :cam/set id
+                                                    (-> old id :live) v
+                                                    get-new)))
                             d v)))
              acc new))
 
@@ -215,6 +218,7 @@
                        :actual tag}))
       (run!
        (fn [[action & details]]
+         (println details)
          (case action
            :item/add (let [[id params] details
                            params (merge {:mat [:color [1 1 1]] :scale 1 :pos [0 0 0] :rot [0 0 0]}
@@ -250,27 +254,42 @@
                           (w/rotate! i :x x :y y :z z))
            :item/remesh (throw (ex-info "Unimplemented action"))
            :item/rescale (throw (ex-info "Unimplemented action"))
-           :camera/add (let [[id params] details
-                             params (merge {:fov 60} params)
-                             c (w/create-camera! params)]
-                         (swap! univ assoc-in [:items id] c)
-                         (swap! univ assoc-in [:data :cameras id] params)
-                         (w/add-camera! (:world @univ) c))
-           :camera/translate (let [[id [x y z]] details
-                                   i (get-in @univ [:items id])]
-                               (swap! univ update-in [:data :cameras id :pos] #(mapv + % [x y z]))
-                               (w/rotate! i :x x :y y :z z))
-           :camera/retarget (let [[id [type *value*]] details
-                                  i (get-in @univ [:items id])
-                                  value (case type
-                                          :item (get-in @univ [:items *value* :pos])
-                                          :vec *value*)]
-                              (swap! univ assoc-in [:data :cameras id :target] [type *value*])
-                              (w/set-camera-target! i value))
-           :camera/refov (let [[id value] details
-                               i (get-in @univ [:items id])]
-                           (swap! univ assoc-in [:data :cameras id :fov] value)
-                           (w/set-camera-fov! i value))
+
+           :cam/add (let [[id params] details
+                          params (merge {:fov 60} params)
+                          live (:live params)
+                          params (update
+                                  (dissoc params :live)
+                                  :target
+                                  (fn [[tk tv]]
+                                    (case tk
+                                      :item (get-in univ [:data :items tv :pos])
+                                      :vec tv)))
+                          c (w/create-camera! params)]
+                      (swap! univ assoc-in [:items id] c)
+                      (swap! univ assoc-in [:data :cameras id] params)
+                      (w/add-camera! (:world @univ) c)
+                      (when live (w/set-camera! (:world @univ) c)))
+           :cam/translate (let [[id [x y z]] details
+                                i (get-in @univ [:items id])]
+                            (swap! univ update-in [:data :cameras id :pos] #(mapv + % [x y z]))
+                            (w/rotate! i :x x :y y :z z))
+           :cam/retarget (let [[id [type *value*]] details
+                               i (get-in @univ [:items id])
+                               value (case type
+                                       :item (get-in @univ [:items *value* :pos])
+                                       :vec *value*)]
+                           (swap! univ assoc-in [:data :cameras id :target] [type *value*])
+                           (w/set-camera-target! i value))
+           :cam/refov (let [[id value] details
+                            i (get-in @univ [:items id])]
+                        (swap! univ assoc-in [:data :cameras id :fov] value)
+                        (w/set-camera-fov! i value))
+           :cam/set (let [[id value] details
+                          i (get-in @univ [:items id])]
+                      (swap! univ assoc-in [:data :cameras id :live] value)
+                      (when value (w/set-camera! (:world @univ) i)))
+
            :light/add (let [[id params] details
                             n (count (get-in @univ [:data :lights :points]))
                             l (w/create-point-light! params)]

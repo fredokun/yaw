@@ -79,6 +79,8 @@
 
 (s/def :yaw.spec.values/fov number?)
 
+(s/def :yaw.spec.values/live boolean?)
+
 ;; intensity
 (s/def :yaw.spec.values/i #(<= 0 %))
 
@@ -91,7 +93,8 @@
          :id-kw qualified-keyword?
          :params (s/keys :req-un [:yaw.spec.values/pos
                                   :yaw.spec.values/target]
-                         :opt-un [:yaw.spec.values/fov])))
+                         :opt-un [:yaw.spec.values/fov
+                                  :yaw.spec.values/live])))
 
                                         ; ITEMS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (s/def :yaw.spec.scene/item
