@@ -1,5 +1,7 @@
 (ns clojure.yaw.ratom-test
-  (:require  [yaw.core :as y]
+  (:require  [yaw.world :as w]
+             [yaw.reaction :as r]
+             [yaw.render :as render]
              [clojure.test :as t]))
 
 (defn lone-box
@@ -20,11 +22,11 @@
 ;; because the reactions happen immediately
 ;; however, re-evaluating the last line will make the cube turn.
 
-(def +myctrl+ (y/start-universe!))
-(def +rat+ (y/reactive-atom +myctrl+ 0))
+(def +myctrl+ (w/start-universe!))
+(def +rat+ (r/reactive-atom +myctrl+ 0))
 ;; Look at the println output (simulation of rendered scene)
 (println "<<<<<FIRST RENDER>>>>>>")
-(y/render! +myctrl+ [scene +rat+])
+(render/render! +myctrl+ [scene +rat+])
 
 (println "<<<<<FIRST SWAP>>>>>>")
 (swap! +rat+ (partial + 20))
@@ -34,6 +36,10 @@
 (doseq [x (range 360)]
   (swap! +rat+ (fn [_] x))
   (Thread/sleep 30))
+
+(defonce +update+ (r/create-update-ratom +myctrl+))
+
+(remove-watch +update+ :yaw.reaction/reaction)
 
 (yaw.world/create-block! (:world @+myctrl+) :position [0 0 -5])
 (.getPosition (get-in @+myctrl+ [:items ::main-cam]))

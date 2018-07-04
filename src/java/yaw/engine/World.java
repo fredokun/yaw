@@ -204,7 +204,7 @@ public class World implements Runnable {
         return Collision.isInCollision(item1, item2);
     }
 
-    public void registerUpdateCallback(UpdateCallback cb) {
+    public synchronized void registerUpdateCallback(UpdateCallback cb) {
     	updateCallback = cb;
     }
     

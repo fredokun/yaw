@@ -1,7 +1,8 @@
 (ns yaw.world
   (:import (yaw.engine.meshs MeshBuilder)
            (yaw.engine.items Item)
-           (yaw.engine World)
+           (yaw.engine World
+                       UpdateCallback)
            (yaw.engine.light AmbientLight DirectionalLight PointLight SpotLight)
            (yaw.engine.camera Camera))
   (:require [yaw.mesh]))
@@ -323,3 +324,4 @@
   (.translate item x y z))
 
 (defn clone! [world item] (.clone world item))
+
