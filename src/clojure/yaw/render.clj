@@ -99,11 +99,11 @@
               ratoms (filter reactive-atom? args)
               new-ratoms (filter #(not (contains? ratoms-map %)) ratoms)
               ratom-args (mapv deref ratoms)]
-          (println "[render-component] component=" component)
-          (println "  => args=" args)
-          (println "  => ratom-args=" ratom-args)
+          ;;(println "[render-component] component=" component)
+          ;;(println "  => args=" args)
+          ;;(println "  => ratom-args=" ratom-args)
           (if-let [comp-infos (get (:components ctrl) component)]
-            (do (when (:previous-available comp-infos)
+            (do #_(when (:previous-available comp-infos)
                   (println " => previous args= " (:previous-args comp-infos))
                   (println " => previous ratom args= " (:previous-ratom-args comp-infos)))
                 (if (and (:previous-available comp-infos)
@@ -111,7 +111,7 @@
                          (= (:previous-ratom-args comp-infos) ratom-args))
                   ;; no need for a new rendering
                   (do
-                    (println "  ---> No need for new rendering <---")
+                    ;; (println "  ---> No need for new rendering <---")
                     (recur (cons (:previous-render comp-infos) (cons [::return component] (rest elements)))
                            (register-ratoms-map ratoms-map new-ratoms component)
                            rendering
@@ -120,7 +120,7 @@
                            ctrl))
                   ;; need to update the component
                   (let [invoked (apply component args)]
-                    (println "  ---> Rendering required <---")
+                    ;;(println "  ---> Rendering required <---")
                     (recur (cons invoked (cons [::return component] (rest elements)))
                            (register-ratoms-map ratoms-map new-ratoms component)
                            rendering
@@ -139,7 +139,7 @@
                       (ratom/depend-component! new-ratom component))
                   invoked (apply component args)
                   ratom-args (mapv deref ratoms)]
-              (println "  ---> Registering unknown component <---")
+              ;;(println "  ---> Registering unknown component <---")
               (recur (cons invoked (cons [::return component] (rest elements)))
                      (register-ratoms-map ratoms-map new-ratoms component)
                      rendering
@@ -179,9 +179,9 @@
           rendering (:rendering results-map)
           rendered (:rendered results-map)
           seen (:seen results-map)]
-      (println "=== BEGIN RENDER ===")
+      ;;(println "=== BEGIN RENDER ===")
       (ysc/display-scene! controller rendering)
-      (println "=== END RENDER ===")
+      ;;(println "=== END RENDER ===")
       [rendered seen])))
 
 

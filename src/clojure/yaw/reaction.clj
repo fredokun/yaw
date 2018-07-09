@@ -11,14 +11,15 @@
 ;;}
 
 (defn reaction-handler [ratom controller dep-comps old-value new-value]
-  (println "Reaction triggerred")
-  (println "old value:" old-value)
-  (println "new value:" new-value)
+  ;;(println "Reaction triggerred")
+  ;;(println "old value:" old-value)
+  ;;(println "new value:" new-value)
   (if (= new-value old-value)
-    (println "No need for re-rendering (same state after a swap)")
+    (do ;;(println "No need for re-rendering (same state after a swap)")
+      )
     ;; rendering starts now
     (let [components (:components @controller)]
-      (println "Rendering triggered by reaction")
+      ;;(println "Rendering triggered by reaction")
       (loop [comps dep-comps, already-rendered #{}]
         (when (seq comps)
           ;; (if (already-rendered (first comps))
@@ -41,13 +42,11 @@
     (add-watch rat ::reaction reaction-handler)
     rat))
 
-
-
 (defn create-update-ratom [universe]
   (let [world (:world @universe)
-        ratom (reactive-atom universe 0.0)]
+        ratom (atom 0.0)]
     (.registerUpdateCallback world (reify yaw.engine.UpdateCallback
                                      (update [this delta-time]
-                                       (println "Update! " delta-time " ms")
+                                       ;; (println "Update! " delta-time " ms")
                                        (swap! ratom (fn [_] delta-time)))))
     ratom))

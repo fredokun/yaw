@@ -7,7 +7,7 @@
 (defn osc-lin
   [mnv mxv t period]
   (let [slope (/ (- mxv mnv) period)]
-    (+ mnv (mod (* t slope) period))))
+    (+ mnv (* t slope))))
 
 (defn lone-box
   "Single box in the center of the canvas."
@@ -19,7 +19,7 @@
   [:scene
    [:ambient {:color :blue :i 0.3}]
    [:sun {:color :red :i 0.8 :dir [-1 0 0]}]
-   [:light ::light {:color :yellow :pos [1 1 -4]}]
+   [:light ::light {:color :yellow :pos [0.5 0 -4]}]
    [lone-box [0 0 -5] zatom]])
 
 
@@ -34,11 +34,11 @@
 (render/render! +myctrl+ [scene +rot+])
 
 (add-watch +update+ :yaw.reaction/propagation
-           (fn [_ _ _ _ new]
+           (fn [_ _ _ new]
              (swap! +oscillator+
                     (fn [{:keys [v t]}]
                       (let [tm (+ t new)]
-                        {:v (osc-lin 0 360 tm 100) :t tm})))))
+                        {:v (osc-lin 0 360 tm 5) :t tm})))))
 
 (add-watch +oscillator+ :yaw.reaction/propagation
            (fn [_ _ _ _ new]

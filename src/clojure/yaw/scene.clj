@@ -313,7 +313,7 @@
 (defn display-scene!
   [univ scene]
   (let [d (diff (:data @univ) (item-map scene))]
-    (println "DIFF:")
-    (println d)
+    ;;(println "DIFF:")
+    ;;(println d)
     (display-diff! univ d)))
 
