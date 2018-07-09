@@ -4,6 +4,11 @@
              [yaw.render :as render]
              [clojure.test :as t]))
 
+(defn osc-lin
+  [mnv mxv t period]
+  (let [slope (/ (- mxv mnv) period)]
+    (+ mnv (mod (* t slope) period))))
+
 (defn lone-box
   "Single box in the center of the canvas."
   [pos zatom]
@@ -17,35 +22,26 @@
    [:light ::light {:color :yellow :pos [1 1 -4]}]
    [lone-box [0 0 -5] zatom]])
 
-;; The following test, if you evaluate it in bulk,
-;; will display a cube at 40°
-;; because the reactions happen immediately
-;; however, re-evaluating the last line will make the cube turn.
 
-(def +myctrl+ (w/start-universe!))
-(def +rat+ (r/reactive-atom +myctrl+ 0))
-;; Look at the println output (simulation of rendered scene)
-(println "<<<<<FIRST RENDER>>>>>>")
-(render/render! +myctrl+ [scene +rat+])
+(defonce +myctrl+ (w/start-universe!))
 
-(println "<<<<<FIRST SWAP>>>>>>")
-(swap! +rat+ (partial + 20))
-(println "<<<<<SECOND SWAP>>>>>>")
-(swap! +rat+ (partial + 20))
+(defonce +rot+ (r/reactive-atom +myctrl+ 0))
 
-(doseq [x (range 360)]
-  (swap! +rat+ (fn [_] x))
-  (Thread/sleep 30))
+(defonce +oscillator+ (r/reactive-atom +myctrl+ {:v 0.0 :t 0.0}))
 
 (defonce +update+ (r/create-update-ratom +myctrl+))
 
-(remove-watch +update+ :yaw.reaction/reaction)
+(render/render! +myctrl+ [scene +rot+])
 
-(yaw.world/create-block! (:world @+myctrl+) :position [0 0 -5])
-(.getPosition (get-in @+myctrl+ [:items ::main-cam]))
-(.getFieldOfView (get-in @+myctrl+ [:items ::main-cam]))
+(add-watch +update+ :yaw.reaction/propagation
+           (fn [_ _ _ _ new]
+             (swap! +oscillator+
+                    (fn [{:keys [v t]}]
+                      (let [tm (+ t new)]
+                        {:v (osc-lin 0 360 tm 100) :t tm})))))
 
-(= (get-in @+myctrl+ [:items ::main-cam])
-   (yaw.world/camera (:world @+myctrl+)))
+(add-watch +oscillator+ :yaw.reaction/propagation
+           (fn [_ _ _ _ new]
+             (swap! +rot+
+                    (fn [_] (:v new)))))
 
-(.getFieldOfView (yaw.world/camera (:world @+myctrl+)))
