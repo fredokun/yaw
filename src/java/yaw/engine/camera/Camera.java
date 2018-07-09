@@ -225,4 +225,8 @@ public class Camera {
     public float getFieldOfView() {
         return fieldOfView;
     }
+
+    public void setFieldOfView(float fov) {
+        this.fieldOfView = fov;
+    }
 }

@@ -44,8 +44,8 @@ public class WorldNucleus {
         return new SceneLight();
     }
 
-    public Callback createCallback() {
-        return new Callback();
+    public KeyCallback createCallback() {
+        return new KeyCallback();
     }
 
     public Material createMaterial(Vector3f pMaterialColor) {
@@ -58,6 +58,12 @@ public class WorldNucleus {
 
     public Mesh createMesh(float[] pVertices, float[] pTextCoords, float[] pNormals, int[] pIndices, int pWeight) {
         Mesh lMesh = new Mesh(pVertices, pTextCoords, pNormals, pIndices, pWeight);
+        lMesh.setDrawingStrategy(new DefaultDrawingStrategy());
+        return lMesh;
+    }
+
+    public Mesh createMesh(float[] pVertices, float[] pNormals, int[]pIndices) {
+        Mesh lMesh = new Mesh(pVertices, pNormals, pIndices);
         lMesh.setDrawingStrategy(new DefaultDrawingStrategy());
         return lMesh;
     }

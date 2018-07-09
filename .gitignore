@@ -12,8 +12,14 @@ pom.xml.asc
 .lein-failures
 .nrepl-port
 .nrepl-history
-*~
 /yaw/java/bin/
 *classpath
+
+# IDEA
 .idea/libraries/
 .idea/workspace.xml
+
+# Emacs artefacts
+*~
+\#*\#
+.\#*
