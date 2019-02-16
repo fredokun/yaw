@@ -106,8 +106,11 @@
                         (mapv + [x y z] @+vector+))))))
 
 
+;; Need to change the redefinition of add-watch for ratoms
+;; It seems that trying to add another watcher on +pos+ will remove the former watcher
+;; So we can use the following implementation
 ;; (add-watch +pos+ :yaw.reaction/propagation
-;;            (fn [_ _ _ [x y z]]
+;;            (fn [_ _ _ _ [x y z]]
 ;;              (if-not (pos-ok? [x y z])
 ;;                (let [[old_vx old_vy old_vz] @+vector+
 ;;                      ;;we calculate a value for vx of the vector
