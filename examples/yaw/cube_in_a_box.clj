@@ -1,11 +1,11 @@
 
 (ns yaw.cube-in-a-box
+  "A simple 3D example using a reagent-like approach."
   (:require 
    [clojure.set :as set]
    [yaw.world :as w]
    [yaw.reaction :as r]
    [yaw.render :as render]))
-
 
 (def min-x -2)
 (def max-x 2)
