@@ -13,7 +13,7 @@ import org.joml.Vector3f;
         import yaw.engine.meshs.Mesh;
         import yaw.engine.meshs.MeshBuilder;
 
-public class GroupRotatingCubes implements UpdateCallback {
+public class    GroupRotatingCubes implements UpdateCallback {
     private int nbUpdates = 0;
     private double totalDeltaTime = 0.0;
     private static long deltaRefreshMillis = 1000;
@@ -67,7 +67,7 @@ public class GroupRotatingCubes implements UpdateCallback {
 
             float[] pos = {(float)Math.random()*(4)-2, (float)Math.random()*(4)-2, -6f };
             Item tmp = world.createItem(String.format("cube%d", i),pos,1.0f,Mcubes[i]);
-            tmp.getAppearance().getMaterial().setTexture(new Texture("/ressources/diamond_block.png"));
+            tmp.getAppearance().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
 
             Wcubes.add(tmp);
 

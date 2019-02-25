@@ -68,7 +68,6 @@ public class RotatingCubeLight implements UpdateCallback {
         float[] pos = { 0f, 0f, 0f };
         Item cube = world.createItem("cube", pos, 1.0f, cubem);
         cube.getAppearance().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
-        //cube.rotate(0,45,0);
         RotatingCubeLight rCube = new RotatingCubeLight(cube);
 
         world.registerUpdateCallback(rCube);

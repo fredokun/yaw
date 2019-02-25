@@ -15,9 +15,7 @@ public class MainTestGroundCamera {
 
         for (int i = 0; i < 10; i++) {
             Item item = world.createItem(i + "", f, 1, MeshBuilder.generateBlock(1, 1, 1));
-          //  item.translate((int) (Math.random() * 10)-5, (int) (Math.random() * 10)-5, (int) (Math.random() * 10)-5);
             item.translate(i,i,i);
-            //item.rotate((int) (Math.random() * 90), (int) (Math.random() * 90), (int) (Math.random() * 90));
 
             if (i % 3 == 0)
                 item.getAppearance().getMaterial().setTexture(new Texture("/ressources/grassblock.png"));
