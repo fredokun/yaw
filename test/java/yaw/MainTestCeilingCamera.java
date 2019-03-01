@@ -16,9 +16,7 @@ public class MainTestCeilingCamera {
 
         for (int i = 0; i < 10; i++) {
             Item item = world.createItem(i + "", f, 1, MeshBuilder.generateBlock(1, 1, 1));
-          //  item.translate((int) (Math.random() * 10)-5, (int) (Math.random() * 10)-5, (int) (Math.random() * 10)-5);
             item.translate(i,i,i);
-            //item.rotate((int) (Math.random() * 90), (int) (Math.random() * 90), (int) (Math.random() * 90));
 
             if (i % 3 == 0)
                 item.getAppearance().getMaterial().setTexture(new Texture("/ressources/grassblock.png"));
@@ -30,24 +28,8 @@ public class MainTestCeilingCamera {
         world.getCamera().translate(0.f, 30, 0);
         world.getCamera().rotate(-90,0,0);
 
-        float z = -10;
-        boolean sensinverse = false;
 
         while (true) {
-        /*    if(sensinverse){
-                z+=1;
-                world.getCamera().translate(0,0,1);
-                if(z>=10){
-                    sensinverse = false;
-                }
-            }else{
-                world.getCamera().translate(0,0,-1);
-                z-=1;
-                if(z<=-10){
-                    sensinverse = true;
-                }
-            }
-*/
             world.getCamera().rotate(0, 0.06f, 0); /* Allows to advance the edge in the scene 3D. */
             Thread.sleep(10); /* Allows to see the block (cube) move at constant rate. */
         }

@@ -121,9 +121,9 @@ public class Camera {
     /**
      * Changes the position of the camera.
      *
-     * @param x coordonnée d'axe x
-     * @param y coordonnée d'axe y
-     * @param z coordonnée d'axe z
+     * @param x coordinate x
+     * @param y coordinate y
+     * @param z coordinate z
      */
     public void setPosition(float x, float y, float z) {
         this.position.x = x;
@@ -142,9 +142,9 @@ public class Camera {
     /**
      * Changes the orientation of the camera.
      *
-     * @param x coordonnée d'axe x
-     * @param y coordonnée d'axe y
-     * @param z coordonnée d'axe z
+     * @param x coordinate x
+     * @param y coordinate y
+     * @param z coordinate z
      */
     public void setOrientation(float x, float y, float z) {
         this.orientation.x = x;
