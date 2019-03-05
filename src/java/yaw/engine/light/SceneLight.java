@@ -68,10 +68,14 @@ public class SceneLight {
             lightPos.x = aux.x;
             lightPos.y = aux.y;
             lightPos.z = aux.z;
+
+            //update light position
+            currPointLight.setPosition(lightPos);
+
             sh.setUniform("pointLights", currPointLight, i);
         }
 
-        // Process Spot Ligths
+        // Process Spot Light
         for (int i = 0; i < MAX_SPOTLIGHT; i++) {
             // Get a copy of the spot light object and transform its position and cone direction to view coordinates
             SpotLight currSpotLight = new SpotLight(mSpotTable[i]);
@@ -86,7 +90,10 @@ public class SceneLight {
             lightPos.y = aux.y;
             lightPos.z = aux.z;
 
-            sh.setUniform("spotLights", currSpotLight, i);
+            //update spot light
+            currSpotLight.setPosition(lightPos);
+
+            sh.setUniform("spotLight", currSpotLight, i);
         }
 
         // Get a copy of the directional light object and transform its position to view coordinates
