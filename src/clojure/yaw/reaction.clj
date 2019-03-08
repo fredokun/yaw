@@ -50,3 +50,35 @@
                                        ;; (println "Update! " delta-time " ms")
                                        (swap! ratom (fn [_] delta-time)))))
     ratom))
+
+(def app-db (atom {}))
+(def subscriptions (atom {}))
+(def event-handlers (atom {}))
+
+(defn register-state [id val]
+  (swap! app-db (fn [old]
+                  (assoc old id (atom val)))))
+
+(defn register-subcription [id f]
+  (swap! subscriptions (fn [old]
+                         (assoc old id f))))
+
+(defn register-event [id f]
+  (swap! event-handlers (fn [old]
+                          (assoc old id f))))
+
+(defn init-state  [id val]
+  (swap! (:id @app-db) (fn [_] val)))
+
+(defn update-state [id val]
+  (swap! (:id @app-db) (fn [_] val)))
+
+(defn subscribe [controller v]
+  (let [id (first v)
+        fun (get @subscriptions id)
+        state (fun @app-db)
+        ratom (reactive-atom controller @state)]
+    (do
+      (add-watch state :k (fn [_ _ _ new]
+                            (swap! ratom (fn [_] new))))
+      ratom)))
