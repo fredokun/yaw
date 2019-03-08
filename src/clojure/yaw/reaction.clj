@@ -54,12 +54,14 @@
 (def app-db (atom {}))
 (def subscriptions (atom {}))
 (def event-handlers (atom {}))
+(def event-queue (agent []))
+
 
 (defn register-state [id val]
   (swap! app-db (fn [old]
                   (assoc old id (atom val)))))
 
-(defn register-subcription [id f]
+(defn register-subscription [id f]
   (swap! subscriptions (fn [old]
                          (assoc old id f))))
 
@@ -68,10 +70,10 @@
                           (assoc old id f))))
 
 (defn init-state  [id val]
-  (swap! (:id @app-db) (fn [_] val)))
+  (swap! (id @app-db) (fn [_] val)))
 
 (defn update-state [id val]
-  (swap! (:id @app-db) (fn [_] val)))
+  (swap! (id @app-db) val))
 
 (defn subscribe [controller v]
   (let [id (first v)
@@ -82,3 +84,17 @@
       (add-watch state :k (fn [_ _ _ new]
                             (swap! ratom (fn [_] new))))
       ratom)))
+
+(defn handle-event [queue]
+  (if (pos-int? (count queue))
+    (let [fun (get @event-handlers (first queue))]
+      (when (not (nil? fun)) (fun))
+      (send event-queue rest)
+      (send event-queue handle-event)
+      queue)
+    []))
+
+(defn dispatch [[id & args]]
+  (when (keyword? id)
+    (send event-queue conj id)
+    (send event-queue handle-event)))

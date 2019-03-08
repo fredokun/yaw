@@ -135,7 +135,7 @@
 (defn the-cube
   "Create a cube with its position linked to the `pos` reactive atom."
   []
-  (let [pos (react/subscribe +myctrl+ [::cube-changed])]
+  (let [cube-state (react/subscribe +myctrl+ [::cube-changed])]
     [:item :test/box {:mesh :mesh/box
                       :pos (:pos @cube-state)
                       :rot [0 0 0]
