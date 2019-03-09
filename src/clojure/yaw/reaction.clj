@@ -98,3 +98,12 @@
   (when (keyword? id)
     (send event-queue conj id)
     (send event-queue handle-event)))
+
+
+(defn activate! [controller vscene]
+  (dispatch [:react/initialize])
+  (render/render! controller vscene)
+  (let [update (create-update-ratom controller)]
+    (add-watch update :update-yaw (fn [_ _ _ _]
+                                    (dispatch [:react/frame-update])))))
+
