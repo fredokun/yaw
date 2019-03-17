@@ -7,7 +7,7 @@
    [yaw.reaction :as react]
    [yaw.render :as render]))
 
-(declare +myctrl+)
+(def +myctrl+ (world/start-universe!))
 
 ;;; =====================
 ;;; The state part
@@ -40,6 +40,7 @@
 (react/register-event
  :react/frame-update
  (fn []
+   ;; (println "[event] frame-update => ::move-cube")
    (react/dispatch [::move-cube])))
 
 (declare update-cube-state)
@@ -47,6 +48,7 @@
 (react/register-event
  ::move-cube
  (fn []
+   ;; (println "[event] ::move-cube -> change-state")
    (react/update-state ::cube-state 
                        (fn [cube-state]
                          (update-cube-state cube-state)))))
@@ -138,13 +140,12 @@
 
 (defn the-cube
   "Create a cube with its position linked to the `pos` reactive atom."
-  []
-  (let [cube-state (react/subscribe +myctrl+ [::cube-changed])]
-    [:item :test/box {:mesh :mesh/box
-                      :pos (:pos @cube-state)
-                      :rot [0 0 0]
-                      :mat :red
-                      :scale 0.3}]))
+  [cube-state]
+  [:item :test/box {:mesh :mesh/box
+                    :pos (:pos @cube-state)
+                    :rot [0 0 0]
+                    :mat :red
+                    :scale 0.3}])
 
 (defn scene []
   [:scene
@@ -159,12 +160,12 @@
    [marker [min-x max-y min-z] "6"]
    [marker [max-x max-y min-z] "7"]
    [marker [max-x min-y min-z] "8"]
-   [the-cube]])
+   (let [cube-state (react/subscribe +myctrl+ [::cube-changed])]
+    [the-cube cube-state])])
 
 ;;; =====================
 ;;; The main part
 ;;; =====================
 
-(def +myctrl+ (world/start-universe!))
 (react/activate! +myctrl+ [scene])
 ;; (react/dispatch :react/initialize)

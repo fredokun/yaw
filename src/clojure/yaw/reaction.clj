@@ -51,9 +51,9 @@
                                        (swap! ratom (fn [_] delta-time)))))
     ratom))
 
-(def app-db (atom {}))
-(def subscriptions (atom {}))
-(def event-handlers (atom {}))
+(defonce app-db (atom {}))
+(defonce subscriptions (atom {}))
+(defonce event-handlers (atom {}))
 (def event-queue (agent []))
 
 
@@ -81,6 +81,7 @@
         state (fun @app-db)
         ratom (reactive-atom controller @state)]
     (do
+      ;; TODO Find a way to use a unique key
       (add-watch state :k (fn [_ _ _ new]
                             (swap! ratom (fn [_] new))))
       ratom)))
