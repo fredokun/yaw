@@ -50,3 +50,61 @@
                                        ;; (println "Update! " delta-time " ms")
                                        (swap! ratom (fn [_] delta-time)))))
     ratom))
+
+(defonce app-db (atom {}))
+(defonce subscriptions (atom {}))
+(defonce event-handlers (atom {}))
+(def event-queue (agent []))
+
+
+(defn register-state [id val]
+  (swap! app-db (fn [old]
+                  (assoc old id (atom val)))))
+
+(defn register-subscription [id f]
+  (swap! subscriptions (fn [old]
+                         (assoc old id f))))
+
+(defn register-event [id f]
+  (swap! event-handlers (fn [old]
+                          (assoc old id f))))
+
+(defn init-state  [id val]
+  (swap! (id @app-db) (fn [_] val)))
+
+(defn update-state [id val]
+  (swap! (id @app-db) val))
+
+(defn subscribe [controller v]
+  (let [id (first v)
+        fun (get @subscriptions id)
+        state (fun @app-db)
+        ratom (reactive-atom controller @state)]
+    (do
+      ;; TODO Find a way to use a unique key
+      (add-watch state :k (fn [_ _ _ new]
+                            (swap! ratom (fn [_] new))))
+      ratom)))
+
+(defn handle-event [queue]
+  (if (pos-int? (count queue))
+    (let [fun (get @event-handlers (first queue))]
+      (when (not (nil? fun)) (fun))
+      (send event-queue rest)
+      (send event-queue handle-event)
+      queue)
+    []))
+
+(defn dispatch [[id & args]]
+  (when (keyword? id)
+    (send event-queue conj id)
+    (send event-queue handle-event)))
+
+
+(defn activate! [controller vscene]
+  (dispatch [:react/initialize])
+  (render/render! controller vscene)
+  (let [update (create-update-ratom controller)]
+    (add-watch update :update-yaw (fn [_ _ _ _]
+                                    (dispatch [:react/frame-update])))))
+
