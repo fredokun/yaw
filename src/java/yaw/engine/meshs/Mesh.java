@@ -1,6 +1,6 @@
 package yaw.engine.meshs;
 
-import yaw.engine.items.Item;
+import yaw.engine.items.ItemObject;
 import yaw.engine.shader.ShaderProgram;
 import yaw.engine.util.LoggerYAW;
 import org.joml.Matrix4f;
@@ -143,14 +143,14 @@ public class Mesh {
      * @param pShaderProgram shaderProgram
      * @param pViewMatrix    viewMatrix
      */
-    public void render(List<Item> pItems, ShaderProgram pShaderProgram, Matrix4f pViewMatrix) {
+    public void render(List<ItemObject> pItems, ShaderProgram pShaderProgram, Matrix4f pViewMatrix) {
 
         //initRender
         initRender();
 
 
         pShaderProgram.setUniform("material", mMaterial);
-        for (Item lItem : pItems) {
+        for (ItemObject lItem : pItems) {
             //can be moved to Item class
             Matrix4f modelViewMat = new Matrix4f(pViewMatrix).mul(lItem.getWorldMatrix());
             pShaderProgram.setUniform("modelViewMatrix", modelViewMat);

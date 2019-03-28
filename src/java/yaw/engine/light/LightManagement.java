@@ -24,8 +24,8 @@ public class LightManagement {
      *
 	 * @return DirectionalLight
 	 */
-    public static DirectionalLight setSunLight(World world,float red,float green,float blue,
-					       float intensity,float dx,float dy,float dz){
+    public static DirectionalLight setSunLight(World world, float red, float green, float blue,
+                                               float intensity, float dx, float dy, float dz){
 	DirectionalLight sun=new DirectionalLight(new Vector3f(red,green,blue), intensity, new Vector3f(dx,dy,dz));
 	world.getSceneLight().setSun(sun);
 	return sun;
@@ -63,7 +63,7 @@ public class LightManagement {
 	 * @param blue      Blue color
 	 * @param intensity intensity
 	 */
-    public static void setAmbientLight(World world,float red,float  green ,float blue,float intensity){
+    public static void setAmbientLight(World world, float red, float  green , float blue, float intensity){
 	AmbientLight ambiant=new AmbientLight(new Vector3f(red,green,blue),intensity);
 	world.getSceneLight().setAmbient(ambiant);
 	//return ambiant;
@@ -91,8 +91,8 @@ public class LightManagement {
      *
 	 * @return              SpotLight
 	 */
-    public static SpotLight addSpotLight(World world,float red,float green,float blue,float x,float y,float z,float intensity
-					 ,float constantA,float linearAtt,float quadraticAtt,float xcone,float ycone,float zcone,float cutoffAngle,int pos){
+    public static SpotLight addSpotLight(World world, float red, float green, float blue, float x, float y, float z, float intensity
+					 , float constantA, float linearAtt, float quadraticAtt, float xcone, float ycone, float zcone, float cutoffAngle, int pos){
 	SpotLight sl=new SpotLight(new Vector3f(red,green,blue),new Vector3f(x,y,z)
 				   ,intensity,constantA,linearAtt,quadraticAtt,new Vector3f(xcone,ycone,zcone),cutoffAngle);
 	world.getSceneLight().setSpotLight(sl, pos);
@@ -117,8 +117,8 @@ public class LightManagement {
      *
 	 * @return PointLight
 	 */
-    public static PointLight addPointLight(World world,float red,float green,float blue,float x,float y,float z,float intensity
-					   ,float constantA,float linearAtt,float quadraticAtt,int pos){
+    public static PointLight addPointLight(World world, float red, float green, float blue, float x, float y, float z, float intensity
+					   , float constantA, float linearAtt, float quadraticAtt, int pos){
 	PointLight pl=new PointLight(new Vector3f(red,green,blue),new Vector3f(x,y,z),intensity,constantA,linearAtt,quadraticAtt);
 	world.getSceneLight().setPointLight(pl, pos);
 	return pl;

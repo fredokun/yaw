@@ -2,10 +2,9 @@ package yaw.engine.debug;
 
 
 import yaw.engine.World;
-import yaw.engine.items.Item;
-import yaw.engine.meshs.MeshBuilder;
+import yaw.engine.items.ItemObject;
 import yaw.engine.meshs.Texture;
-
+import yaw.engine.meshs.MeshBuilder;
 /**
  * The Main Class that launches our game engine.
  */
@@ -21,9 +20,9 @@ public class MainRainDrop {
         //THE WORLD IS NOW INIT IN THE THREAD
         //testing texture here
         /*Float[] f = new Float[]{0.f, 0.f, -2.f};
-        Item c1 = world.createItem("1", f, 1, MeshBuilder.generateBlock(1, 1, 1));
+        Item c1 = world.createItem("1", f, 1, MeshBuilderOld.generateBlock(1, 1, 1));
 
-        Item c2 = world.createItem("2", f, 3, MeshBuilder.generateTetrahedron());
+        Item c2 = world.createItem("2", f, 3, MeshBuilderOld.generateTetrahedron());
 
         c1.translate(0, 0, 0); *//* Allows to resize our block.*//*
         c2.setPosition(-3, 0, 0); *//* Allows to resize our Pyramid. *//*
@@ -33,16 +32,16 @@ public class MainRainDrop {
         (new Thread(world)).start();/* Launches the thread responsible for the display and our game loop. */
 
         for (int i = 0; i < 7; i++) {
-            Item item = world.createItem(i + "", f, 1, MeshBuilder.generateBlock(1, 1, 1));
+            ItemObject item = world.createItemObject(i + "", f, 1, MeshBuilder.generateBlock(1, 1, 1));
             item.translate((int) (Math.random() * 5), (int) (Math.random() * 5), (int) (Math.random() * 5));
             //item.rotate((int) (Math.random() * 90), (int) (Math.random() * 90), (int) (Math.random() * 90));
 
             if (i % 3 == 0)
-                item.getAppearance().getMaterial().setTexture(new Texture("/ressources/grassblock.png"));
+                item.getMesh().getMaterial().setTexture(new Texture("/ressources/grassblock.png"));
             else if (i % 3 == 1)
-                item.getAppearance().getMaterial().setTexture(new Texture("/ressources/sand.png"));
+                item.getMesh().getMaterial().setTexture(new Texture("/ressources/sand.png"));
             else
-                item.getAppearance().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
+                item.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
         }
 
 

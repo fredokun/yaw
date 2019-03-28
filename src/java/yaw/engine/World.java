@@ -1,13 +1,9 @@
 package yaw.engine;
 
 import yaw.engine.camera.Camera;
-import yaw.engine.collision.Collision;
-import yaw.engine.items.Item;
-import yaw.engine.items.ItemGroup;
+import yaw.engine.items.*;
 import yaw.engine.light.SceneLight;
-import yaw.engine.meshs.Material;
-import yaw.engine.meshs.Mesh;
-import yaw.engine.meshs.Texture;
+import yaw.engine.meshs.*;
 import yaw.engine.skybox.Skybox;
 import org.joml.Vector3f;
 
@@ -123,18 +119,18 @@ public class World implements Runnable {
      * @param pMesh     mesh
      * @return the item
      */
-    public Item createItem(String id, float[] pPosition, float pScale, Mesh pMesh) {
+    public ItemObject createItemObject(String id, float[] pPosition, float pScale, Mesh pMesh) {
         if (pPosition.length != 3) {
             throw new RuntimeException("Position must represent a 3D position because we live in a 3D world");
         }
-        Item lItem = mNucleus.createItem(id, pPosition, pScale, pMesh);
+        ItemObject lItem = new ItemObject(id, pPosition, pScale, pMesh);
         mSceneVertex.add(lItem);
         return lItem;
     }
 
     /**
      * Create a mesh with the specified parameters
-     * Mesh won't be load into the grahpic cards unless you bind it to an item
+     * MeshOld won't be load into the grahpic cards unless you bind it to an item
      *
      * @param pVertices    vetices
      * @param pTextCoords  texture coordonates
@@ -166,7 +162,7 @@ public class World implements Runnable {
 
     /**
      * Create a mesh with the specified parameters
-     * Mesh won't be load into the grahpic cards unless you bind it to an item
+     * MeshOld won't be load into the grahpic cards unless you bind it to an item
      *
      * @param pVertices    vetices
      * @param pNormals     normals
@@ -175,8 +171,8 @@ public class World implements Runnable {
      */
     public Mesh createMesh(float[] pVertices, float[] pNormals, int[] pIndices, float[] rgb) {
         if (rgb.length != 3) {
-        throw new RuntimeException("RGB must represent 3 colors");
-    }
+            throw new RuntimeException("RGB must represent 3 colors");
+        }
         Vector3f lMaterialColor = new Vector3f(rgb[0], rgb[1], rgb[2]);
         Material lMaterial = mNucleus.createMaterial(lMaterialColor);
         Mesh lMesh = mNucleus.createMesh(pVertices, pNormals, pIndices);
@@ -194,20 +190,25 @@ public class World implements Runnable {
      * @param pScale    scale
      * @return BoundingBox
      */
-    public Item createBoundingBox(String id, float[] pPosition, float pScale, float[] pLength) {
-        Item lItem = mNucleus.createBoundingBox(id, pPosition, pScale, pLength);
-        mSceneVertex.add(lItem);
-        return lItem;
+    public HitBox createHitBox(String id, float[] pPosition, float pScale, float[] pLength){
+        Mesh appearance = MeshBuilder.generateBoundingBox(pLength[0], pLength[1], pLength[2]);
+        appearance.getMaterial().setColor(new Vector3f(0,255,0));
+        HitBox hb = new HitBox(id, new Vector3f(pPosition[0], pPosition[1], pPosition[2]), new Vector3f(), pScale, appearance);
+        mSceneVertex.add(hb);
+        return hb;
+
     }
 
-    public boolean isInCollision(Item item1, Item item2) {
-        return Collision.isInCollision(item1, item2);
+
+
+    public boolean isInCollision(HitBox hb1, HitBox hb2) {
+        return hb1.isIsCollisionWith(hb2);
     }
 
     public synchronized void registerUpdateCallback(UpdateCallback cb) {
-    	updateCallback = cb;
+        updateCallback = cb;
     }
-    
+
     /**
      * Allows to initialize the parameters of the class World.
      *
@@ -266,8 +267,8 @@ public class World implements Runnable {
      * @param pItem item to be cloned
      * @return the cloned item
      */
-    public Item clone(Item pItem) {
-        Item item = mNucleus.createItem(pItem);
+    public ItemObject clone(ItemObject pItem) {
+        ItemObject item = mNucleus.createItemREF(pItem);
         mSceneVertex.add(item);
         return item;
     }
@@ -277,11 +278,8 @@ public class World implements Runnable {
      *
      * @param pItem the item
      */
-    public void removeItem(Item pItem) {
+    public void removeItem(ItemObject pItem) {
         mSceneVertex.removeItem(pItem);
-        for (ItemGroup g : pItem.getGroups()) {
-            g.remove(pItem);
-        }
     }
 
     /**
@@ -290,7 +288,7 @@ public class World implements Runnable {
      * @return group of item
      */
     public ItemGroup createGroup() {
-        ItemGroup group = mNucleus.createItemGroup();
+        ItemGroup group = mNucleus.createItemGroupREF();
         mItemGroupArrayList.add(group);
         return group;
     }
@@ -302,8 +300,8 @@ public class World implements Runnable {
      */
     public void removeGroup(ItemGroup pGroup) {
         mItemGroupArrayList.remove(pGroup);
-        for (Item lItem : pGroup.getItems()) {
-            lItem.removeFromGroup(pGroup);
+        for (String nameItem : pGroup.getItems().keySet()) {
+            pGroup.remove(pGroup.getItems().get(nameItem));
         }
     }
 
@@ -365,7 +363,7 @@ public class World implements Runnable {
      * @throws InterruptedException Exception
      */
     private void worldLoop() throws InterruptedException {
-    /* Initialization of the window we currently use. */
+        /* Initialization of the window we currently use. */
         glViewport(initX, initY, initWidth, initHeight);
         double beforeTime = glfwGetTime();
         while (!Window.windowShouldClose() && mLoop) { /* Check if the window has not been closed. */
@@ -396,11 +394,11 @@ public class World implements Runnable {
            /*  Rendered with vSync (vertical Synchronization)
                Update the window's picture */
             Window.update();
-            
+
             if(updateCallback != null) {
-            	double afterTime = glfwGetTime();
-            	updateCallback.update(afterTime - beforeTime);
-            	beforeTime = afterTime;
+                double afterTime = glfwGetTime();
+                updateCallback.update(afterTime - beforeTime);
+                beforeTime = afterTime;
             }
         }
     }
@@ -409,11 +407,11 @@ public class World implements Runnable {
      * Deallocates the resources used by the world
      */
     private void cleanup() {
-    /* Deallocations renderer, SceneVertex and Skybox. */
+        /* Deallocations renderer, SceneVertex and Skybox. */
         mRenderer.cleanUp();
         mSceneVertex.cleanUp();
         if (mSkybox != null) mSkybox.cleanUp();
-            /* Deallocation of the window's resources. */
+        /* Deallocation of the window's resources. */
         Window.cleanUp();
         this.notifyFinished();
     }

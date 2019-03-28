@@ -61,7 +61,7 @@
 ;;Since we completely destroy the old architecture we will migrate the basic method to this module
 ;;README ONLY USE WORLD IT is A FACADE, no DIRECT USE OF MANAGEMENT/BUILDER TOOLS
 
-;; Mesh Functions------------------------------------------------
+;; MeshOld Functions------------------------------------------------
 ;; TODO: delete this when `create-simple-mesh` is stable (and we can handle texture)
 
 (defn create-mesh!
