@@ -1,8 +1,9 @@
 package yaw.engine.collision;
 
-import yaw.engine.items.Item;
+import yaw.engine.items.HitBox;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
+import yaw.engine.items.ItemObject;
 
 import java.util.ArrayList;
 
@@ -19,8 +20,8 @@ public class Collision {
      * @param item2
      * @return isInCollision
      */
-    public static boolean isInCollision(Item item1, Item item2) {
-        if (item1.getBoundingBox() == null && item2.getBoundingBox() == null) {
+    /*public static boolean isInCollision(ItemObject item1, ItemObject item2) {
+        if (item1.gethi() == null && item2.getBoundingBox() == null) {
             System.out.println("One or both item have not boundingBox defined -> can't check collision");
             return false;
         }
@@ -56,7 +57,11 @@ public class Collision {
 
 
         return false;
-    }
+    }*/
+
+
+
+
 
 
     /**
@@ -119,11 +124,11 @@ public class Collision {
      * @param item item
      * @return listVertex
      */
-    public static ArrayList<Vector4f> tabToListVertex(Item item) {
+    public static ArrayList<Vector4f> tabToListVertex(ItemObject item) {
         ArrayList<Vector4f> listVertex = new ArrayList<>();
-        for (int i = 0; i < item.getAppearance().getVertices().length; i += 3) {
-            Vector4f vec = new Vector4f(item.getAppearance().getVertices()[i], item.getAppearance().getVertices()[i + 1]
-                    , item.getAppearance().getVertices()[i + 2], 1.0f);
+        for (int i = 0; i < item.getMesh().getVertices().length; i += 3) {
+            Vector4f vec = new Vector4f(item.getMesh().getVertices()[i], item.getMesh().getVertices()[i + 1]
+                    , item.getMesh().getVertices()[i + 2], 1.0f);
             if (!isVecAlreadyAdd(listVertex, vec))
                 listVertex.add(vec);
         }
@@ -135,6 +140,35 @@ public class Collision {
 
         return listVertex;
     }
+
+
+    // ---------- ITEM REFACTORING ----------
+
+    //used in the Item class refactoring
+    public static ArrayList<Vector4f> tabToListVertex(HitBox item) {
+        ArrayList<Vector4f> listVertex = new ArrayList<>();
+        for (int i = 0; i < item.getMesh().getVertices().length; i += 3) {
+            Vector4f vec = new Vector4f(item.getMesh().getVertices()[i], item.getMesh().getVertices()[i + 1]
+                    , item.getMesh().getVertices()[i + 2], 1.0f);
+            if (!isVecAlreadyAdd(listVertex, vec))
+                listVertex.add(vec);
+        }
+
+        //get Real position of vertex after rotation or translation
+        for (int i = 0; i < listVertex.size(); i++)
+            listVertex.set(i, listVertex.get(i).mul(item.getWorldMatrix()));
+
+
+        return listVertex;
+    }
+
+
+
+
+
+
+
+
 
     public static boolean isVecAlreadyAdd(ArrayList<Vector4f> listVertex, Vector4f vec) {
         for (Vector4f vector : listVertex) {

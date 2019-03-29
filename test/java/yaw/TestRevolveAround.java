@@ -1,16 +1,15 @@
 package yaw;
 
+import org.joml.Vector3f;
 import yaw.engine.UpdateCallback;
 import yaw.engine.World;
 import yaw.engine.items.ItemObject;
-import yaw.engine.light.DirectionalLight;
-import yaw.engine.light.SpotLight;
 import yaw.engine.meshs.*;
 
 /**
- *  Just a rotating cube with light
+ * Temporary test to test revolveAround
  */
-public class RotatingCubeLight implements UpdateCallback {
+public class TestRevolveAround implements UpdateCallback {
     private int nbUpdates = 0;
     private double totalDeltaTime = 0.0;
     private static long deltaRefreshMillis = 1000;
@@ -18,7 +17,7 @@ public class RotatingCubeLight implements UpdateCallback {
     private ItemObject cube ;
     private float speed = 10;
 
-    public RotatingCubeLight(ItemObject cube) {
+    public TestRevolveAround(ItemObject cube) {
         this.cube = cube;
     }
 
@@ -45,7 +44,12 @@ public class RotatingCubeLight implements UpdateCallback {
             prevDeltaRefreshMillis = currentMillis;
         }
 
-        cube.rotate(0.0f, 3.1415925f * speed * (float) deltaTime, 0.0f);
+        cube.revolveAround(new Vector3f(0,0,0),0f,1f,0f);
+        cube.rotate(0,1,0);
+
+
+
+
 
 
     }
@@ -53,21 +57,13 @@ public class RotatingCubeLight implements UpdateCallback {
     public static void main(String[] args) {
         Mesh cubem = createCube();
 
-
         World world = new World(0, 0, 800, 600);
-        world.getCamera().setPosition(0,5,5);
-        world.getCamera().rotate(-45,0,0);
-
-        //world.getSceneLight().getSpotTable()[0] = new SpotLight(0, 255, 0, 0, 0, 0, 1, 0, 0.5f, 0, 0, 0, -5, 10f);
-        world.getSceneLight().getSpotTable()[1] = new SpotLight(0, 255, 0, 0f, -0.3f,-3f, 1, 0, 0.75f, 0, 0, -5, -5, 3);
-        world.getSceneLight().getSpotTable()[2] = new SpotLight(255, 0, 0, 0, 0.3f, -3, 1f, 0, 0.75f, 0, 0f, -5, -5, 3f);
-        world.getSceneLight().setSun(new DirectionalLight());
-
-        float[] pos = { 0f, 0f, 0f };
+        world.getCamera().setPosition(0,0,6);
+        float[] pos = { 0f, 0f, -2f };
         ItemObject cube = world.createItemObject("cube", pos, 1.0f, cubem);
         cube.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
-        //cube.rotate(0,45,0);
-        RotatingCubeLight rCube = new RotatingCubeLight(cube);
+        //cube.setPosition(new Vector3f(0f,3f,0f));
+        TestRevolveAround rCube = new TestRevolveAround(cube);
 
         world.registerUpdateCallback(rCube);
 

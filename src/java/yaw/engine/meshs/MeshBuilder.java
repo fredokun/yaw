@@ -1,8 +1,8 @@
 package yaw.engine.meshs;
 
 import yaw.engine.meshs.strategy.BoundingBoxDrawingStrategy;
-import yaw.engine.meshs.strategy.DefaultDrawingStrategy;
 import org.joml.Vector3f;
+import yaw.engine.meshs.strategy.DefaultDrawingStrategy;
 
 import java.util.HashMap;
 import java.util.Map;
