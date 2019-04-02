@@ -1,5 +1,6 @@
 package yaw;
 
+import org.joml.Vector3f;
 import yaw.engine.UpdateCallback;
 import yaw.engine.World;
 import yaw.engine.items.HitBox;
@@ -10,28 +11,20 @@ import yaw.engine.light.DirectionalLight;
 import yaw.engine.meshs.Mesh;
 import yaw.engine.meshs.MeshBuilder;
 import yaw.engine.skybox.Skybox;
-import org.joml.Vector3f;
 
 /**
  * Test class for Hit boxes: rotations, colllision, multi-bounding-box hitboxes
  */
-public class TestHitBox implements UpdateCallback {
+public class HitboxRotate implements UpdateCallback {
     private int nbUpdates = 0;
     private double totalDeltaTime = 0.0;
     private static long deltaRefreshMillis = 1000;
     private long prevDeltaRefreshMillis = 0;
     private ItemGroup cube_1_hitbox ;
-    private ItemGroup cube_2_hitbox ;
     private float speed = 10;
 
-    public TestHitBox(ItemGroup cubes_1, ItemGroup cubes_2) {
+    public HitboxRotate(ItemGroup cubes_1) {
         this.cube_1_hitbox = cubes_1;
-        this.cube_2_hitbox = cubes_2;
-    }
-
-    public ItemGroup getItem(int n) {
-        if(n==1) return cube_1_hitbox;
-        return cube_2_hitbox;
     }
 
     static Mesh createGroupHb(int n) {
@@ -55,31 +48,10 @@ public class TestHitBox implements UpdateCallback {
         }
 
         // A quick view of rotating hitboxes
-        //cube_1_hitbox.rotate(0f, 1f, 0f);
-        //cube_2_hitbox.rotate(0f, 1f, 0f);
 
-        //Collision Test, this is testing the collision between each hitbox of each item for the example, this will not be the same for accurate tests
-        cube_2_hitbox.translate(-0.01f,0,0);
-        if(cube_1_hitbox.getItems().get("hitbox 1") instanceof HitBox &&
-                cube_2_hitbox.getItems().get("hitbox 1") instanceof HitBox &&
-                cube_1_hitbox.getItems().get("hitbox 2") instanceof HitBox &&
-                cube_2_hitbox.getItems().get("hitbox 2") instanceof HitBox ){
-            HitBox hb_1_1 =  (HitBox)cube_1_hitbox.getItems().get("hitbox 1");
-            HitBox hb_1_2 =  (HitBox)cube_1_hitbox.getItems().get("hitbox 2");
-            HitBox hb_2_1 =  (HitBox)cube_2_hitbox.getItems().get("hitbox 1");
-            HitBox hb_2_2 =  (HitBox)cube_2_hitbox.getItems().get("hitbox 2");
-            if(hb_1_1.isIsCollisionWith(hb_2_1) || hb_1_1.isIsCollisionWith(hb_2_2) ||
-                    hb_1_2.isIsCollisionWith(hb_2_1) || hb_1_2.isIsCollisionWith(hb_2_2)){
-                System.out.println("There is a collision");
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
 
-            }
 
-        }
+        cube_1_hitbox.rotate(1f, 1f, 0f);
 
 
     }
@@ -129,18 +101,6 @@ public class TestHitBox implements UpdateCallback {
 
 
 
-        //Creation of the second group
-        ItemGroup gr2 = new ItemGroup();
-        ItemObject c2 = world.createItemObject("2", f, 1, MeshBuilder.generateHalfBlock(1, 1, 1));
-        gr2.add("item",c2);
-        HitBox j = world.createHitBox("c1 first bounding box",f,1f,tabA);
-        j.setPosition(new Vector3f(f[0]+0.f,f[1]+0.f,f[2]+0.25f));
-        gr2.add("hitbox 1", j);
-        HitBox j2 = world.createHitBox("c1 second bounding box",f,1f,tabA);
-        j2.setPosition(new Vector3f(f[0]-0.f,f[1]-0.f,f[2]-0.25f));
-        gr2.add("hitbox 2", j2);
-        gr2.translate(3,0,0);
-
 
 
 
@@ -159,7 +119,7 @@ public class TestHitBox implements UpdateCallback {
         world.setSkybox(new Skybox(500, 500, 500, new Vector3f(0,0,0)));
 
 
-        TestHitBox mBb = new TestHitBox(gr1, gr2);
+        HitboxRotate mBb = new HitboxRotate(gr1);
 
         gr1.rotate(0,45,0);
         world.getCamera().translate(0,0,7);

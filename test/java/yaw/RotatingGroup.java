@@ -46,7 +46,8 @@ public class RotatingGroup implements UpdateCallback {
         }
 
         //cubes.rotate(0.0f, 3.1415925f * speed * (float) deltaTime, 0.0f);
-        cubes.rotate(0f, 1f, 0f);
+        cubes.fetchItem("first").rotate(0f, 1f, 0f);
+        cubes.rotate(0f, 0f, 1f);
 
         /*for(int i=0; i<cubes.getItems().size();i++){
             cubes.getItems().get(i).rotate(0.0f, -6.283f * speed * (float) deltaTime, 0.0f);
@@ -82,6 +83,7 @@ public class RotatingGroup implements UpdateCallback {
         g.add("first",cube);
 
         g.add("second",cube2);
+        //g.rotate(0, 45, 0);
 
         System.out.println(g.getCenter());
         RotatingGroup rGroup = new RotatingGroup(g);
