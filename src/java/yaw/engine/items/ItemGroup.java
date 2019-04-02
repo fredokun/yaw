@@ -1,120 +1,157 @@
 package yaw.engine.items;
 
-import yaw.engine.meshs.Material;
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
+import yaw.engine.meshs.Material;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-public class ItemGroup {
-    /**
-     * Class which will contain items with coordinates specific to the center of the group
-     *
-     * @param items           new ArrayList<Item>
-     * @param center          Vector3f
-     * @param weight          int
-     */
+/**
+ *  Group management
+ */
+public class ItemGroup extends Item {
+    private Map<String, ItemObject> items;
+    private float weight;
 
 
-    public Vector3f mCenter;
-    private ArrayList<Item> mItems;
-    private int mWeight;
+    public ItemGroup(String pId, Vector3f pRotation, Vector3f pPosition, float pScale){
+       super(pId,pRotation,pPosition,pScale);
+       items = new HashMap<String, ItemObject>();
+       weight = 0;
+    }
+
+
+
+    public ItemGroup(ItemGroup ig){
+        this(ig.mId,ig.mRotation,ig.mPosition,ig.mScale);
+    }
+
+
 
     public ItemGroup() {
-        mItems = new ArrayList<>();
-        mCenter = new Vector3f();
-        mWeight = 0;
+        this("Group", new Vector3f(), new Vector3f(),1);
     }
 
-    public ItemGroup(ArrayList<Item> objs) {
-        mItems = objs;
-        mWeight = 0;
-        double x = 0, y = 0, z = 0;
-        for (Item i : objs) {
-            int w = i.getAppearance().getWeight();
-            x += i.getPosition().x * w;
-            y += i.getPosition().y * w;
-            z += i.getPosition().z * w;
-            mWeight += w;
-        }
-        x /= mWeight;
-        y /= mWeight;
-        z /= mWeight;
-        mCenter = new Vector3f((float) x, (float) y, (float) z);
+    @Override
+    public Item clone() {
+        return new ItemGroup(this);
     }
 
-    /**
-     * Add an item in group and update center
+    /** this method adds an item to the group, updates the weight and the center.
+     *
+     * @param s name of the add item
+     * @param i the Item
      */
-    public void add(Item i) {
-        int nWeight = mWeight + i.getAppearance().getWeight();
-        double ratioGr = mWeight / (double) nWeight, ratioI = i.getAppearance().getWeight() / (double) nWeight;
-        mWeight = nWeight;
-        mCenter = new Vector3f((float) ((mCenter.x * ratioGr) + (i.getPosition().x * ratioI)), (float) ((mCenter.y * ratioGr) + (i.getPosition().y * ratioI)), (float) ((mCenter.z * ratioGr) + (i.getPosition().z * ratioI)));
-        mItems.add(i);
-        i.addToGroup(this);
-    }
-
-    /**
-     * remove an item of the group and update center
-     */
-    public void remove(Item i) {
-        mItems.remove(i);
-        i.removeFromGroup(this);
-        this.mWeight -= i.getAppearance().getWeight();
+    public void add(String s, ItemObject i) {
+        float nWeight = weight + i.getMesh().getWeight();
+        double ratioGr = weight / (double) nWeight, ratioI = i.getMesh().getWeight() / (double) nWeight;
+        weight = nWeight;
+        //center = new Vector3f((float) ((center.x * ratioGr) + (i.getPosition().x * ratioI)), (float) ((center.y * ratioGr) + (i.getPosition().y * ratioI)), (float) ((center.z * ratioGr) + (i.getPosition().z * ratioI)));
+        items.put(s, i);
         updateCenter();
     }
 
-    public void updateCenter() {
+
+    /** remove the item i from the group, update the center and the weight
+     *
+     * @param i the item to remove
+     */
+    public void remove(ItemObject i) {
+        items.remove(i);
+        this.weight -= i.getMesh().getWeight();
+        updateCenter();
+    }
+
+
+    /**
+     * Update the center of the group
+     */
+    public void updateCenter(){
         double x = 0, y = 0, z = 0;
-        for (Item i : mItems) {
-            int w = i.getAppearance().getWeight();
-            x += i.getPosition().x * w;
-            y += i.getPosition().y * w;
-            z += i.getPosition().z * w;
+        for (String s  : items.keySet()) {
+            Item tmp = items.get(s);
+            int w = items.get(s).getMesh().getWeight();
+            x += tmp.getPosition().x ;
+            y += tmp.getPosition().y ;
+            z += tmp.getPosition().z ;
+
         }
-        x /= mWeight;
-        y /= mWeight;
-        z /= mWeight;
+        x /= (items.size()*1.f);
+        y /= (items.size()*1.f);
+        z /= (items.size()*1.f);
         mCenter = new Vector3f((float) x, (float) y, (float) z);
     }
 
-    /**
-     * Apply translation for all items in the group
-     */
-    public void translate(Vector3f translation) {
-        for (Item i : mItems)
-            i.getPosition().add(translation);
+    @Override
+    public void rotate(float x, float y, float z) {
+
+        Vector3f rotation = new Vector3f(x, y, z);
+        for (String s  : items.keySet()){
+            items.get(s).getRotation().add(rotation);
+            items.get(s).revolveAround(mCenter, rotation.x, rotation.y, rotation.z);
+
+        }
+
     }
 
-    /**
-     * Apply translation for all items in the group
-     */
+    @Override
     public void translate(float x, float y, float z) {
         Vector3f translation = new Vector3f(x, y, z);
-        for (Item i : mItems)
-            i.getPosition().add(translation);
+        for (String s  : items.keySet()){
+            items.get(s).getPosition().add(translation);
+        }
+        updateCenter();
+
     }
 
-    /**
-     * Rotate all items in the group
-     */
-    public void rotate(Vector3f rotation) {
-        for (Item i : mItems) {
-            i.getRotation().add(rotation);
-            i.revolveAround(mCenter, rotation.x, rotation.y, rotation.z);
+    @Override
+    public void revolveAround(Vector3f center, float degX, float degY, float degZ) {
+
+        Vector4f pos = new Vector4f(mPosition, 1f);
+        pos.add(-center.x, -center.y, -center.z, 0);
+        Matrix4f trans = new Matrix4f();
+        trans.rotateX((float) Math.toRadians(degX));
+        trans.rotateY((float) Math.toRadians(degY));
+        trans.rotateZ((float) Math.toRadians(degZ));
+        trans.transform(pos);
+        pos.add(center.x, center.y, center.z, 0);
+        mPosition = new Vector3f(pos.x, pos.y, pos.z);
+
+    }
+
+    @Override
+    public void repelBy(Vector3f center, float dist) {
+        Vector3f dif = new Vector3f(mPosition.x - center.x, mPosition.y - center.y, mPosition.z - center.z);
+        float norm = dif.length();
+        if (norm != 0) {
+            float move = (dist / norm) + 1;
+            dif.mul(move);
+            dif.add(center);
+            mPosition = dif;
+        }
+
+    }
+
+
+    public Item fetchItem(String s ){
+        try {
+            return items.get(s);
+        }catch(NullPointerException e){
+            System.out.println("Item named s is not in the ItemOld Map");
+            return null;
         }
     }
 
-    /**
-     * Rotate all items in the group
-     */
-    public void rotate(float x, float y, float z) {
-        Vector3f rotation = new Vector3f(x, y, z);
-        for (Item i : mItems) {
-            i.getRotation().add(rotation);
-            i.revolveAround(mCenter, rotation.x, rotation.y, rotation.z);
-        }
+    @Override
+    public void update() {
+
     }
+
+
+
+
 
     public void setPosition(float x, float y, float z) {
         setPosition(new Vector3f(x, y, z));
@@ -122,33 +159,52 @@ public class ItemGroup {
 
     public void setPosition(Vector3f pos) {
         float x = pos.x - mCenter.x, y = pos.y - mCenter.y, z = pos.z - mCenter.z;
-        for (Item i : mItems) {
-            i.translate(x, y, z, this);
+        for (String s : items.keySet()) {
+            ItemObject i = items.get(s);
+            i.translate(x, y, z);
+            items.put(s,i);
         }
         mCenter = pos;
     }
 
     public void separate(float dist) {
-        for (Item i : mItems)
+        for (String s : items.keySet()) {
+            ItemObject i = items.get(s);
             i.repelBy(mCenter, dist);
+        }
     }
 
     public void setColor(float r, float g, float b) {
-        for (Item i : mItems)
-            i.getAppearance().setMaterial(new Material(new Vector3f(r, g, b), 0.f));
+        for (String s : items.keySet()) {
+            ItemObject i = items.get(s);
+            i.getMesh().setMaterial(new Material(new Vector3f(r, g, b), 0.f));
+            items.put(s,i);
+        }
     }
 
     public void setColor(Vector3f color) {
-        for (Item i : mItems)
-            i.getAppearance().setMaterial(new Material(color, 0.f));
+        for (String s : items.keySet()) {
+            ItemObject i = items.get(s);
+            i.getMesh().setMaterial(new Material(color, 0.f));
+            items.put(s,i);
+        }
     }
 
     public void multScale(float val) {
-        for (Item i : mItems)
+        for (String s : items.keySet()) {
+            ItemObject i = items.get(s);
             i.setScale(i.getScale() * val);
+            items.put(s, i);
+        }
     }
 
-    public ArrayList<Item> getItems() {
-        return mItems;
+    public Map<String, ItemObject> getItems(){
+            return items;
+
     }
+
+
+
+
+
 }

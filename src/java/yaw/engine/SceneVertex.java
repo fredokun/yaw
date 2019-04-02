@@ -1,6 +1,8 @@
 package yaw.engine;
 
-import yaw.engine.items.Item;
+
+
+import yaw.engine.items.ItemObject;
 import yaw.engine.meshs.Mesh;
 import yaw.engine.shader.ShaderProgram;
 import org.joml.Matrix4f;
@@ -18,7 +20,7 @@ import java.util.List;
 public class SceneVertex {
     //old code from a previous attempt to manage a group of scene vertex
     private boolean itemAdded = false;
-    private HashMap<Mesh, List<Item>> mMeshMap;
+    private HashMap<Mesh, List<ItemObject>> mMeshMap;
     private ArrayList<Mesh> notInit;
 
 
@@ -33,11 +35,11 @@ public class SceneVertex {
      *
      * @param pItem the item
      */
-    public synchronized void add(Item pItem) {
+    public synchronized void add(ItemObject pItem) {
         itemAdded = true;
-            /*retrieve the stored mesh in the item*/
-        Mesh lMesh = pItem.getAppearance();
-        List<Item> lItems = mMeshMap.get(lMesh);
+        //retrieve the stored mesh in the item
+        Mesh lMesh = pItem.getMesh();
+        List<ItemObject> lItems = mMeshMap.get(lMesh);
         if (lItems == null) {
             lItems = new ArrayList<>();
             mMeshMap.put(lMesh, lItems);
@@ -47,13 +49,29 @@ public class SceneVertex {
 
     }
 
+    // REFACTORING TEST
+
+    /*public synchronized void add(ItemObject pItem) {
+        itemAdded = true;
+        //retrieve the stored mesh in the item
+        MeshOld lMesh = pItem.getMesh();
+        List<ItemObject> lItems = mMeshMap.get(lMesh);
+        if (lItems == null) {
+            lItems = new ArrayList<>();
+            mMeshMap.put(lMesh, lItems);
+            notInit.add(lMesh);
+        }
+        lItems.add(pItem);
+
+    }*/
+
     /**
      * Remove the specified item from the mMeshMap
      *
      * @param pItem item to be removed
      */
-    public void removeItem(Item pItem) {
-        List<Item> lItems = mMeshMap.get(pItem.getAppearance());
+    public void removeItem(ItemObject pItem) {
+        List<ItemObject> lItems = mMeshMap.get(pItem.getMesh());
         lItems.remove(pItem);
     }
 
@@ -87,7 +105,7 @@ public class SceneVertex {
     public void draw(ShaderProgram pShaderProgram, Matrix4f pViewMatrix) {
         List<Mesh> lRmListe = new ArrayList<>();
         for (Mesh lMesh : mMeshMap.keySet()) {
-            List<Item> lItems = mMeshMap.get(lMesh);
+            List<ItemObject> lItems = mMeshMap.get(lMesh);
             if (lItems.isEmpty()) {
                 lRmListe.add(lMesh);
             } else {
@@ -115,8 +133,8 @@ public class SceneVertex {
      *
      * @return the list of item
      */
-    public ArrayList<Item> getItemsList() {
-        ArrayList<Item> lItems = new ArrayList<>();
+    public ArrayList<ItemObject> getItemsList() {
+        ArrayList<ItemObject> lItems = new ArrayList<>();
         mMeshMap.values().forEach(lItems::addAll);
         return lItems;
     }

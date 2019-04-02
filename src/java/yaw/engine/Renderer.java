@@ -28,7 +28,7 @@ public class Renderer {
         mShaderProgram.createFragmentShader(fragShader.SHADER_STRING);
 
 
-       /* Binds the code and checks that everything has been done correctly. */
+        /* Binds the code and checks that everything has been done correctly. */
         mShaderProgram.link();
         /* Initialization of the camera's uniform. */
         mShaderProgram.createUniform("projectionMatrix");
@@ -101,7 +101,7 @@ public class Renderer {
         /* Rendering of the light. */
         pSceneLight.render(mShaderProgram, viewMat);
 
-       /* Init Objects. */
+        /* Init Objects. */
         pSceneVertex.initMesh();
 
         /* Update objects

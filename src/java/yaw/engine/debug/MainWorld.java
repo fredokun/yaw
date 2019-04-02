@@ -2,13 +2,15 @@ package yaw.engine.debug;
 
 import yaw.engine.World;
 import yaw.engine.collision.Collision;
-import yaw.engine.items.Item;
+import yaw.engine.items.HitBox;
+import yaw.engine.items.ItemGroup;
+import yaw.engine.items.ItemObject;
 import yaw.engine.light.AmbientLight;
 import yaw.engine.light.DirectionalLight;
 import yaw.engine.light.SpotLight;
-import yaw.engine.meshs.MeshBuilder;
 import yaw.engine.skybox.Skybox;
 import org.joml.Vector3f;
+import yaw.engine.meshs.MeshBuilder;
 
 /**
  * The Main Class that launches our game engine.
@@ -26,9 +28,9 @@ public class MainWorld {
         //THE WORLD IS NOW INIT IN THE THREAD
         //testing texture here
         /*Float[] f = new Float[]{0.f, 0.f, -2.f};
-        Item c1 = world.createItem("1", f, 1, MeshBuilder.generateBlock(1, 1, 1));
+        Item c1 = world.createItem("1", f, 1, MeshBuilderOld.generateBlock(1, 1, 1));
 
-        Item c2 = world.createItem("2", f, 3, MeshBuilder.generateTetrahedron());
+        Item c2 = world.createItem("2", f, 3, MeshBuilderOld.generateTetrahedron());
 
         c1.translate(0, 0, 0); *//* Allows to resize our block.*//*
         c2.setPosition(-3, 0, 0); *//* Allows to resize our Pyramid. *//*
@@ -37,20 +39,34 @@ public class MainWorld {
         float[] f = new float[]{0.f, 0.f, -2.f};
         (new Thread(world)).start();/* Launches the thread responsible for the display and our game loop. */
 
-        Item c1 = world.createItem("1", f, 1, MeshBuilder.generateBlock(1, 1, 1));
+
+        ItemGroup g1 = new ItemGroup();
+        ItemObject c1 = world.createItemObject("1", f, 1, MeshBuilder.generateHalfBlock(1, 1, 1));
         float[] tab = {1.0f, 1.0f, 1.0f}; // a cube
-        c1.setBoundingBox(world.createBoundingBox("c1 bounding box", f, 2, tab));
+        HitBox i = world.createHitBox("c1 first bounding box",f,1f,tab);
+        i.setPosition(new Vector3f(f[0],f[1],f[2]));
+        g1.add("cube", c1);
+        g1.add("hitbox", i);
 
-        float[] tab2 = {2.0f, 1.0f, 1.0f}; // a rectangle
-        Item c2 = world.createItem("1", f, 1, MeshBuilder.generateBlock(1, 1, 1));
-        c2.setBoundingBox(world.createBoundingBox("c1 bounding box", f, 2, tab2));
 
-        c1.translate(1, 0, 0);
-        c2.translate(2, 2, 0);
-        c1.rotate(0, 0, 10);
-        c2.rotate(0, 10, 0);
 
-        System.out.println("Collision ?: " + Collision.isInCollision(c1, c2));
+
+        ItemGroup g2 = new ItemGroup();
+        float[] tab2 = {1.0f, 1.0f, 1.0f}; // a rectangle
+        ItemObject c2 = world.createItemObject("2", f, 1, MeshBuilder.generateHalfBlock(1, 1, 1));
+        HitBox i2 = world.createHitBox("c1 first bounding box",f,1f,tab2);
+        i2.setPosition(new Vector3f(0f,0f,-2.f));
+        g2.add("cube", c2);
+        g2.add("hitbox", i2);
+
+
+
+        g1.translate(3, 0, 0);
+        g2.translate(2, 2, 0);
+        g1.rotate(0, 0, 10);
+        g2.rotate(0, 10, 0);
+
+        System.out.println("Collision ?: " + i.isIsCollisionWith(i2));
 
 
         /* Creating Light for Our World */
@@ -63,12 +79,12 @@ public class MainWorld {
        /* A skybox will allow us to set a background to give the illusion that our 3D world is bigger. */
         world.setSkybox(new Skybox(500, 500, 500, new Vector3f(0, 0, 0)));
 
-        world.getCamera().translate(2, 2, 7);
+        world.getCamera().translate(0, 2, 7);
         while (true) {
             //world.getCamera().rotate(0, 5, 0); /* Allows to advance the edge in the scene 3D. */
-            //c1.rotate(-1, -1, -1);
+            g1.rotate(-1, -1, -1);
 
-            //c2.rotate(-1, -1, -1);
+            g2.rotate(-1, -1, -1);
             /* world.c.translate(0,0,-5); */
             Thread.sleep(50); /* Allows to see the block (cube) move at constant rate. */
         }

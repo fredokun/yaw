@@ -1,13 +1,9 @@
 package yaw.engine;
 
+import yaw.engine.meshs.*;
 import yaw.engine.camera.Camera;
-import yaw.engine.items.Item;
-import yaw.engine.items.ItemGroup;
-import yaw.engine.items.ItemManagement;
+import yaw.engine.items.*;
 import yaw.engine.light.SceneLight;
-import yaw.engine.meshs.Material;
-import yaw.engine.meshs.Mesh;
-import yaw.engine.meshs.Texture;
 import yaw.engine.meshs.strategy.DefaultDrawingStrategy;
 import yaw.engine.skybox.Skybox;
 import org.joml.Vector3f;
@@ -68,11 +64,15 @@ public class WorldNucleus {
         return lMesh;
     }
 
-    public Item createItem(Item pItem) {
-        return new Item(pItem);
+    public ItemObject createItemREF(ItemObject pItem) {
+        return new ItemObject(pItem);
     }
 
-    public ItemGroup createItemGroup() {
+    public Item createItemREF(Item pItem) {
+        return pItem.clone();
+    }
+
+    public ItemGroup createItemGroupREF() {
         return new ItemGroup();
     }
 
@@ -80,12 +80,26 @@ public class WorldNucleus {
         return new Skybox(pWidth, pLength, pHeight, pVector3f);
     }
 
-    public Item createItem(String pId, float[] pPosition, float pScale, Mesh pMesh) {
-        return ItemManagement.createItem(pId, pPosition, pScale, pMesh);
+    //REFACTORING TEST
+
+
+    public ItemObject createItemREF(String pId, float[] pPosition, float pScale, Mesh pMesh) {
+        ItemObject item = new ItemObject(pId, pPosition, pScale, pMesh);
+
+        return item;
     }
 
-    public Item createBoundingBox(String id, float[] pPosition, float pScale, float[] pLenght) {
-        return ItemManagement.createBoundingBox(id, pPosition, pScale, pLenght);
 
+
+
+
+
+
+    public HitBox createHitbox(String id, float[] pPosition, float pScale, float[] pLength) {
+        Mesh appearance = MeshBuilder.generateBoundingBox(pLength[0], pLength[1], pLength[2]);
+        appearance.getMaterial().setColor(new Vector3f(0,255,0));
+
+        return new HitBox(id, new Vector3f(pPosition[0], pPosition[1], pPosition[2]), new Vector3f(), pScale, appearance);
     }
+
 }
