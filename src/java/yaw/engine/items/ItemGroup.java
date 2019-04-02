@@ -81,19 +81,28 @@ public class ItemGroup extends Item {
         x /= (items.size()*1.f);
         y /= (items.size()*1.f);
         z /= (items.size()*1.f);
-        mCenter = new Vector3f((float) x, (float) y, (float) z);
+        mPosition = new Vector3f((float) x, (float) y, (float) z);
     }
 
     @Override
-    public void rotate(float x, float y, float z) {
+    public void rotate(float angle, float ax, float ay, float az) {
 
-        Vector3f rotation = new Vector3f(x, y, z);
-        for (String s  : items.keySet()){
-            items.get(s).getRotation().add(rotation);
-            items.get(s).revolveAround(mCenter, rotation.x, rotation.y, rotation.z);
-
+        for (Item item : items.values()){
+            item.rotateAround(angle, ax, ay, az, mPosition.x, mPosition.y, mPosition.z);
         }
 
+    }
+
+    @Override
+    public void rotateAround(float angle, float ax, float ay, float az, float cx, float cy, float cz) {
+        for(Item item : items.values()) {
+            item.rotateAround(angle, ax, ay, az, cx, cy, cz);
+        }
+        Vector3f center = new Vector3f(cx, cy, cz);
+        new Matrix4f().translate(center)
+                .rotate((float) Math.toRadians(angle), ax, ay, az)
+                .translate(center.negate())
+                .transformPosition(mPosition);
     }
 
     @Override
@@ -158,19 +167,19 @@ public class ItemGroup extends Item {
     }
 
     public void setPosition(Vector3f pos) {
-        float x = pos.x - mCenter.x, y = pos.y - mCenter.y, z = pos.z - mCenter.z;
+        float x = pos.x - mPosition.x, y = pos.y - mPosition.y, z = pos.z - mPosition.z;
         for (String s : items.keySet()) {
             ItemObject i = items.get(s);
             i.translate(x, y, z);
             items.put(s,i);
         }
-        mCenter = pos;
+        mPosition = pos;
     }
 
     public void separate(float dist) {
         for (String s : items.keySet()) {
             ItemObject i = items.get(s);
-            i.repelBy(mCenter, dist);
+            i.repelBy(mPosition, dist);
         }
     }
 

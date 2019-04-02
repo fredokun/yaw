@@ -85,7 +85,6 @@ public class RotatingGroup implements UpdateCallback {
         g.add("second",cube2);
         //g.rotate(0, 45, 0);
 
-        System.out.println(g.getCenter());
         RotatingGroup rGroup = new RotatingGroup(g);
 
 

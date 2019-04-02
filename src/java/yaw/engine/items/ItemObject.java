@@ -49,14 +49,18 @@ public class ItemObject extends Item {
     }
 
     @Override
-    public void translate(float x, float y, float z) {
-        this.setPosition(this.getPosition().add(x,y,z));
-        this.updateCenter(this.getPosition());
+    public void rotateAround(float angle, float ax, float ay, float az, float cx, float cy, float cz) {
 
     }
 
     @Override
+    public void translate(float x, float y, float z) {
+        this.setPosition(this.getPosition().add(x,y,z));
+    }
+
+    @Override
     public void revolveAround(Vector3f center, float degX, float degY, float degZ) {
+
         Vector4f pos = new Vector4f(mPosition, 1f);
         pos.add(-center.x, -center.y, -center.z, 0);
         Matrix4f trans = new Matrix4f();
@@ -106,9 +110,5 @@ public class ItemObject extends Item {
     @Override
     public void update() {
 
-    }
-
-    public void updateCenter(Vector3f new_center) {
-        mCenter = new_center;
     }
 }

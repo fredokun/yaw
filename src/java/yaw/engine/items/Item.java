@@ -11,7 +11,6 @@ public abstract class Item {
     protected float mScale;
     protected Vector3f mPosition;
     protected Vector3f mRotation;
-    protected Vector3f mCenter;
 
 
     /**
@@ -27,7 +26,6 @@ public abstract class Item {
         mRotation = pRotation;
         mPosition = pPosition;
         mId = pId;
-        mCenter = pPosition;
     }
 
     /**
@@ -56,7 +54,9 @@ public abstract class Item {
      * @param y degree of rotation on axis Y
      * @param z degree of rotation on axis Z
      */
-    public abstract void rotate(float x, float y, float z);
+    public void rotate(float angle, float ax, float ay, float az) {
+        rotateAround(angle, ax, ay, az, mPosition.x, mPosition.y, mPosition.z);
+    }
 
 
     /** Moving an Item
@@ -76,7 +76,13 @@ public abstract class Item {
      */
     public abstract void revolveAround(Vector3f center, float degX, float degY, float degZ);
 
-
+    public void rotateAround(float angle, float ax, float ay, float az, float cx, float cy, float cz) {
+        Vector3f center = new Vector3f(cx, cy, cz);
+        new Matrix4f().translate(center)
+                .rotate((float) Math.toRadians(angle), ax, ay, az)
+                .translate(center.negate())
+                .transformPosition(mPosition);
+    }
 
     public abstract void repelBy(Vector3f center, float dist);
 
@@ -126,30 +132,6 @@ public abstract class Item {
     }
 
     public void setPosition(Vector3f pos){this.mPosition = pos;}
-
-
-    //Center
-    public Vector3f getCenter(){ return mCenter; }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }

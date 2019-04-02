@@ -50,8 +50,11 @@ public class HitboxRotate implements UpdateCallback {
         // A quick view of rotating hitboxes
 
 
-
-        cube_1_hitbox.rotate(1f, 1f, 0f);
+        System.out.println("======================= ");
+        System.out.println("Group pos=" + cube_1_hitbox.getPosition());
+        System.out.println("Hitbox1 pos=" + cube_1_hitbox.fetchItem("hitbox 1").getPosition());
+        System.out.println("Hitbox2 pos=" + cube_1_hitbox.fetchItem("hitbox 2").getPosition());
+        cube_1_hitbox.rotate(1f, 0f, 1f);
 
 
     }
@@ -100,7 +103,6 @@ public class HitboxRotate implements UpdateCallback {
         HitBox i2 = world.createHitBox("c1 second bounding box",f,1f,tabA);
         i2.setPosition(new Vector3f(f[0]-0.f,f[1]-0.f,f[2]-0.25f));
         gr1.add("hitbox 2", i2);
-
 
 
 
