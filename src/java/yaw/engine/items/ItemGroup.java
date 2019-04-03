@@ -25,7 +25,7 @@ public class ItemGroup extends Item {
 
 
     public ItemGroup(ItemGroup ig){
-        this(ig.mId,ig.orientation,ig.position,ig.scale);
+        this(ig.getId(),ig.orientation,ig.position,ig.scale);
     }
 
 
@@ -84,19 +84,9 @@ public class ItemGroup extends Item {
         position = new Vector3f((float) x, (float) y, (float) z);
     }
 
-    @Override
-    public void rotate(float angle, float ax, float ay, float az) {
-
-        for (Item item : items.values()){
-            item.rotateAround(angle, ax, ay, az, position.x, position.y, position.z);
-        }
-
-    }
-
-    @Override
     public void rotateAround(float angle, float ax, float ay, float az, float cx, float cy, float cz) {
         for(Item item : items.values()) {
-            item.rotateAround(angle, ax, ay, az, cx, cy, cz);
+            item.rotateAxisAround(angle, ax, ay, az, cx, cy, cz);
         }
         Vector3f center = new Vector3f(cx, cy, cz);
         new Matrix4f().translate(center)

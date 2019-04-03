@@ -54,8 +54,7 @@ public class HitboxRotate implements UpdateCallback {
         System.out.println("Group pos=" + cube_1_hitbox.getPosition());
         System.out.println("Hitbox1 pos=" + cube_1_hitbox.fetchItem("hitbox 1").getPosition());
         System.out.println("Hitbox2 pos=" + cube_1_hitbox.fetchItem("hitbox 2").getPosition());
-        cube_1_hitbox.rotate(1f, 0f, 1f);
-
+        cube_1_hitbox.rotateX(1f);
 
     }
 
@@ -125,7 +124,7 @@ public class HitboxRotate implements UpdateCallback {
 
         HitboxRotate mBb = new HitboxRotate(gr1);
 
-        gr1.rotate(0,45,0);
+        gr1.rotateY(45);
         world.getCamera().translate(0,0,7);
 
         world.registerUpdateCallback(mBb);

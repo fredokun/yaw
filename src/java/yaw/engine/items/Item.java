@@ -1,5 +1,6 @@
 package yaw.engine.items;
 
+import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -13,7 +14,7 @@ public abstract class Item {
     /** Position of (the center) of the Item in the World coordinates system. */
     protected Vector3f position;
 
-    /** Orientation (current rotation status) of the Item. */
+    /** Orientation of the Item. */
     protected Vector3f orientation;
 
     /** Scaling factor (1.0f default) */
@@ -34,32 +35,79 @@ public abstract class Item {
         this.scale = scale;
     }
 
-    public Item(Item item){
-        this(item.id, item.orientation,item.position,item.scale);
+    /* ----- Getters and Setters ----- */
+
+    public String getId() {return id;}
+
+
+    public Vector3f getOrientation() {
+        return orientation;
+    }
+    public void setOrientation(Vector3f orientation) {
+        this.orientation = orientation;
     }
 
 
-    public abstract Item clone();
+    public Vector3f getPosition() {
+        return position;
+    }
+    public void setPosition(Vector3f pos){this.position = pos;}
 
-
-    /**Rotating an item
-     *
-     * @param x degree of rotation on axis X
-     * @param y degree of rotation on axis Y
-     * @param z degree of rotation on axis Z
-     */
-    public void rotate(float angle, float ax, float ay, float az) {
-        rotateAround(angle, ax, ay, az, position.x, position.y, position.z);
+    public float getScale() {
+        return scale;
+    }
+    public void setScale(float val) {
+        scale = val;
     }
 
+    /* ----- Transformations ----- */
 
-    /** Moving an Item
+
+    /** Translation
      *
-     * @param x the distance that we want the Item to move on axis X
-     * @param y the distance that we want the Item to move on axis Y
-     * @param z the distance that we want the Item to move on axis Z
+     * @param tx the distance that we want the Item to move on axis X
+     * @param ty the distance that we want the Item to move on axis Y
+     * @param tz the distance that we want the Item to move on axis Z
      */
-    public abstract void translate(float x, float y, float z);
+    public void translate(float tx, float ty, float tz) {
+        position.add(tx, ty, tz);
+    }
+
+    /**
+     * Rotate along X axis
+     * @param angle of rotation (in degree)
+     */
+    public void rotateX(float angle) {
+        rotateAxis(angle, new Vector3f(1.0f, 0.0f, 0.0f));
+    }
+
+    /**
+     * Rotate along Y axis
+     * @param angle of rotation (in degree)
+     */
+    public void rotateY(float angle) {
+        rotateAxis(angle, new Vector3f(0.0f, 1.0f, 0.0f));
+    }
+
+    /**
+     * Rotate along Z axis
+     * @param angle of rotation (in degree)
+     */
+    public void rotateZ(float angle) {
+        rotateAxis(angle, new Vector3f(0.0f, 0.0f, 1.0f));
+    }
+
+    public void rotateAxis(float angle, Vector3f axis) {
+        new Matrix3f().rotate((float) Math.toRadians(angle), axis).transform(orientation);
+    }
+
+    public void rotateAxisAround(float angle, float ax, float ay, float az, float cx, float cy, float cz) {
+        Vector3f center = new Vector3f(cx, cy, cz);
+        new Matrix4f().translate(center)
+                .rotate((float) Math.toRadians(angle), ax, ay, az)
+                .translate(center.negate())
+                .transformPosition(position);
+    }
 
     /**Make an Item revolve around a point, like a planet around a star
      *
@@ -70,13 +118,6 @@ public abstract class Item {
      */
     public abstract void revolveAround(Vector3f center, float degX, float degY, float degZ);
 
-    public void rotateAround(float angle, float ax, float ay, float az, float cx, float cy, float cz) {
-        Vector3f center = new Vector3f(cx, cy, cz);
-        new Matrix4f().translate(center)
-                .rotate((float) Math.toRadians(angle), ax, ay, az)
-                .translate(center.negate())
-                .transformPosition(position);
-    }
 
     public abstract void repelBy(Vector3f center, float dist);
 
@@ -94,38 +135,6 @@ public abstract class Item {
                 scale(scale);
     }
 
-    // ----- Getters and Setters -----
-
-    //Scale
-    public float getScale() {
-        return scale;
-    }
-
-    public void setScale(float val) {
-        scale = val;
-    }
-
-
-    //Id
-    public String getId() {return id;}
-
-
-    //Rotation
-    public Vector3f getRotation() {
-        return orientation;
-    }
-
-    public void setRotation(Vector3f rotation) {
-        this.orientation = rotation;
-    }
-
-
-    //Translation
-    public Vector3f getPosition() {
-        return position;
-    }
-
-    public void setPosition(Vector3f pos){this.position = pos;}
 
 
 }

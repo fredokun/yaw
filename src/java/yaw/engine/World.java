@@ -123,7 +123,10 @@ public class World implements Runnable {
         if (pPosition.length != 3) {
             throw new RuntimeException("Position must represent a 3D position because we live in a 3D world");
         }
-        ItemObject lItem = new ItemObject(id, pPosition, pScale, pMesh);
+        ItemObject lItem = new ItemObject(id, new Vector3f(pPosition[0], pPosition[1], pPosition[2])
+                                      , new Vector3f(), pScale, pMesh);
+
+                id, pPosition, pScale, pMesh);
         mSceneVertex.add(lItem);
         return lItem;
     }

@@ -7,55 +7,15 @@ import yaw.engine.meshs.Material;
 import yaw.engine.meshs.Mesh;
 
 /**
- * Basic Item implementing all the Item methods. This is were all the moves are done for Items and Hitboxes
+ * An ItemObject is a concrete 3D item associated to a Mesh
  */
 public class ItemObject extends Item {
 
-    protected Mesh mesh;
+    private Mesh mesh;
 
-
-
-    public ItemObject(String pId, Vector3f pRotation, Vector3f pPosition, float pScale, Mesh mesh){
-        super(pId,pRotation,pPosition,pScale);
+    public ItemObject(String id, Vector3f position, Vector3f orientation, float scale, Mesh mesh){
+        super(id, position, orientation, scale);
         this.mesh= mesh;
-    }
-
-
-
-
-    public ItemObject(String pId, float[] pPosition, float pScale, Mesh mesh){
-        super(pId,pPosition,pScale);
-        this.mesh= mesh;
-    }
-
-
-    public ItemObject(ItemObject item){
-        super(item);
-    }
-
-
-
-
-
-
-    @Override
-    public Item clone() {
-        return new ItemObject(this);
-    }
-
-    @Override
-    public void rotate(float x, float y, float z) {
-        this.setRotation(getRotation().add(x, y, z));
-    }
-
-    @Override
-    public void rotateAround(float angle, float ax, float ay, float az, float cx, float cy, float cz) {
-
-    }
-
-    @Override
-    public void translate(float x, float y, float z) {
-        this.setPosition(this.getPosition().add(x,y,z));
     }
 
     @Override
