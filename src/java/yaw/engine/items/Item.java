@@ -4,44 +4,38 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 /**
- * Abstract Class for all Items with all basic getters and setters defined
+ * Abstract class representing the common features of 3D items.
  */
 public abstract class Item {
-    protected String mId;
-    protected float mScale;
-    protected Vector3f mPosition;
-    protected Vector3f mRotation;
+    /** String identifier of the item. */
+    private String id;
+
+    /** Position of (the center) of the Item in the World coordinates system. */
+    protected Vector3f position;
+
+    /** Orientation (current rotation status) of the Item. */
+    protected Vector3f orientation;
+
+    /** Scaling factor (1.0f default) */
+    protected float scale;
 
 
     /**
-     * Construct a item with the specified mesh, scale, rotation, translation
-     *
-     * @param pId            id of th item
-     * @param pRotation      rotation vector3f
-     * @param pPosition      position vector3f
-     * @param pScale         scale
+     * Create a new item with the speficied values.
+     * @param id the (unique) identifier for the item
+     * @param position the initial world-coordinates position
+     * @param orientation the initial orientation (angles in degrees)
+     * @param scale the initial scaling factor
      */
-    public Item(String pId, Vector3f pRotation, Vector3f pPosition, float pScale) {
-        mScale = pScale;
-        mRotation = pRotation;
-        mPosition = pPosition;
-        mId = pId;
-    }
-
-    /**
-     * Create an item with the specified id position mesh and scale and default rotation is (0,0,0)
-     * pPosition size must be 3
-     *
-     * @param pId       id
-     * @param pPosition position
-     * @param pScale    scale
-     */
-    public Item(String pId, float[] pPosition, float pScale) {
-        this(pId, new Vector3f(), new Vector3f(pPosition[0], pPosition[1], pPosition[2]), pScale);
+    public Item(String id, Vector3f position, Vector3f orientation, float scale) {
+        this.id = id;
+        this.position = position;
+        this.orientation = orientation;
+        this.scale = scale;
     }
 
     public Item(Item item){
-        this(item.mId, item.mRotation,item.mPosition,item.mScale);
+        this(item.id, item.orientation,item.position,item.scale);
     }
 
 
@@ -55,7 +49,7 @@ public abstract class Item {
      * @param z degree of rotation on axis Z
      */
     public void rotate(float angle, float ax, float ay, float az) {
-        rotateAround(angle, ax, ay, az, mPosition.x, mPosition.y, mPosition.z);
+        rotateAround(angle, ax, ay, az, position.x, position.y, position.z);
     }
 
 
@@ -81,7 +75,7 @@ public abstract class Item {
         new Matrix4f().translate(center)
                 .rotate((float) Math.toRadians(angle), ax, ay, az)
                 .translate(center.negate())
-                .transformPosition(mPosition);
+                .transformPosition(position);
     }
 
     public abstract void repelBy(Vector3f center, float dist);
@@ -93,45 +87,45 @@ public abstract class Item {
 
 
     public Matrix4f getWorldMatrix() {
-        return new Matrix4f().identity().translate(mPosition).
-                rotateX((float) Math.toRadians(mRotation.x)).
-                rotateY((float) Math.toRadians(mRotation.y)).
-                rotateZ((float) Math.toRadians(mRotation.z)).
-                scale(mScale);
+        return new Matrix4f().identity().translate(position).
+                rotateX((float) Math.toRadians(orientation.x)).
+                rotateY((float) Math.toRadians(orientation.y)).
+                rotateZ((float) Math.toRadians(orientation.z)).
+                scale(scale);
     }
 
     // ----- Getters and Setters -----
 
     //Scale
     public float getScale() {
-        return mScale;
+        return scale;
     }
 
     public void setScale(float val) {
-        mScale = val;
+        scale = val;
     }
 
 
     //Id
-    public String getId() {return mId;}
+    public String getId() {return id;}
 
 
     //Rotation
     public Vector3f getRotation() {
-        return mRotation;
+        return orientation;
     }
 
     public void setRotation(Vector3f rotation) {
-        this.mRotation = rotation;
+        this.orientation = rotation;
     }
 
 
     //Translation
     public Vector3f getPosition() {
-        return mPosition;
+        return position;
     }
 
-    public void setPosition(Vector3f pos){this.mPosition = pos;}
+    public void setPosition(Vector3f pos){this.position = pos;}
 
 
 }

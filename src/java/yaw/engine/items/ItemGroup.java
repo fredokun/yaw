@@ -25,7 +25,7 @@ public class ItemGroup extends Item {
 
 
     public ItemGroup(ItemGroup ig){
-        this(ig.mId,ig.mRotation,ig.mPosition,ig.mScale);
+        this(ig.mId,ig.orientation,ig.position,ig.scale);
     }
 
 
@@ -81,14 +81,14 @@ public class ItemGroup extends Item {
         x /= (items.size()*1.f);
         y /= (items.size()*1.f);
         z /= (items.size()*1.f);
-        mPosition = new Vector3f((float) x, (float) y, (float) z);
+        position = new Vector3f((float) x, (float) y, (float) z);
     }
 
     @Override
     public void rotate(float angle, float ax, float ay, float az) {
 
         for (Item item : items.values()){
-            item.rotateAround(angle, ax, ay, az, mPosition.x, mPosition.y, mPosition.z);
+            item.rotateAround(angle, ax, ay, az, position.x, position.y, position.z);
         }
 
     }
@@ -102,7 +102,7 @@ public class ItemGroup extends Item {
         new Matrix4f().translate(center)
                 .rotate((float) Math.toRadians(angle), ax, ay, az)
                 .translate(center.negate())
-                .transformPosition(mPosition);
+                .transformPosition(position);
     }
 
     @Override
@@ -118,7 +118,7 @@ public class ItemGroup extends Item {
     @Override
     public void revolveAround(Vector3f center, float degX, float degY, float degZ) {
 
-        Vector4f pos = new Vector4f(mPosition, 1f);
+        Vector4f pos = new Vector4f(position, 1f);
         pos.add(-center.x, -center.y, -center.z, 0);
         Matrix4f trans = new Matrix4f();
         trans.rotateX((float) Math.toRadians(degX));
@@ -126,19 +126,19 @@ public class ItemGroup extends Item {
         trans.rotateZ((float) Math.toRadians(degZ));
         trans.transform(pos);
         pos.add(center.x, center.y, center.z, 0);
-        mPosition = new Vector3f(pos.x, pos.y, pos.z);
+        position = new Vector3f(pos.x, pos.y, pos.z);
 
     }
 
     @Override
     public void repelBy(Vector3f center, float dist) {
-        Vector3f dif = new Vector3f(mPosition.x - center.x, mPosition.y - center.y, mPosition.z - center.z);
+        Vector3f dif = new Vector3f(position.x - center.x, position.y - center.y, position.z - center.z);
         float norm = dif.length();
         if (norm != 0) {
             float move = (dist / norm) + 1;
             dif.mul(move);
             dif.add(center);
-            mPosition = dif;
+            position = dif;
         }
 
     }
@@ -167,19 +167,19 @@ public class ItemGroup extends Item {
     }
 
     public void setPosition(Vector3f pos) {
-        float x = pos.x - mPosition.x, y = pos.y - mPosition.y, z = pos.z - mPosition.z;
+        float x = pos.x - position.x, y = pos.y - position.y, z = pos.z - position.z;
         for (String s : items.keySet()) {
             ItemObject i = items.get(s);
             i.translate(x, y, z);
             items.put(s,i);
         }
-        mPosition = pos;
+        position = pos;
     }
 
     public void separate(float dist) {
         for (String s : items.keySet()) {
             ItemObject i = items.get(s);
-            i.repelBy(mPosition, dist);
+            i.repelBy(position, dist);
         }
     }
 
