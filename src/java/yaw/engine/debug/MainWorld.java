@@ -82,9 +82,9 @@ public class MainWorld {
         world.getCamera().translate(0, 2, 7);
         while (true) {
             //world.getCamera().rotate(0, 5, 0); /* Allows to advance the edge in the scene 3D. */
-            g1.rotate(-1, -1, -1);
+            g1.rotateX(1);
 
-            g2.rotate(-1, -1, -1);
+            g2.rotateY(1);
             /* world.c.translate(0,0,-5); */
             Thread.sleep(50); /* Allows to see the block (cube) move at constant rate. */
         }
