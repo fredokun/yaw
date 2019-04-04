@@ -114,12 +114,13 @@
 (defn create-item!
   "Create an item in the `world` with the
   specified id, position, mesh"
-  [world & {:keys [id position scale mesh]
-            :or   {id       "can't read the doc..."
-                   position [0 0 -2]
+  [world id & {:keys [x y z scale mesh]
+            :or   {x 0 
+                   y 0
+                   z 2
                    scale    1
                    mesh     (create-mesh! world)}}]         ;;error here
-  (.createItem world id (float-array position) scale mesh))
+  (.createItemObject world id x y z scale mesh))
 
 (defn remove-item!
   "Remove the specified `item` from the `world`"
@@ -139,7 +140,7 @@
                    color    [0 0 1]
                    scale    1
                    position [0 0 -2]
-                   id       ""}}]
+                   id (str (gensym "block-"))}}]
   (create-item! world :id id
                 :position position
                 :scale scale
