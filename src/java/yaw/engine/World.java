@@ -1,5 +1,6 @@
 package yaw.engine;
 
+import org.joml.Quaternionf;
 import yaw.engine.camera.Camera;
 import yaw.engine.items.*;
 import yaw.engine.light.SceneLight;
@@ -114,19 +115,17 @@ public class World implements Runnable {
      * Create an item with the specified parameters and add it to the  world
      *
      * @param id        id
-     * @param pPosition position
+     * @param x         x coordinate
+     * @param y         y coordinate
+     * @param z         z coordinate
      * @param pScale    scale
      * @param pMesh     mesh
      * @return the item
      */
-    public ItemObject createItemObject(String id, float[] pPosition, float pScale, Mesh pMesh) {
-        if (pPosition.length != 3) {
-            throw new RuntimeException("Position must represent a 3D position because we live in a 3D world");
-        }
-        ItemObject lItem = new ItemObject(id, new Vector3f(pPosition[0], pPosition[1], pPosition[2])
-                                      , new Vector3f(), pScale, pMesh);
+    public ItemObject createItemObject(String id, float x, float y, float z, float pScale, Mesh pMesh) {
+        ItemObject lItem = new ItemObject(id, new Vector3f(x, y, z)
+                                      , new Quaternionf(), pScale, pMesh);
 
-                id, pPosition, pScale, pMesh);
         mSceneVertex.add(lItem);
         return lItem;
     }
@@ -189,19 +188,18 @@ public class World implements Runnable {
      * Create a bounding box with the specified parameters and add it to the  world
      *
      * @param id        id
-     * @param pPosition position
+     * @param x         x coordinate
+     * @param y         y coordinate
+     * @param z         z coordinate
      * @param pScale    scale
      * @return BoundingBox
      */
-    public HitBox createHitBox(String id, float[] pPosition, float pScale, float[] pLength){
-        Mesh appearance = MeshBuilder.generateBoundingBox(pLength[0], pLength[1], pLength[2]);
-        appearance.getMaterial().setColor(new Vector3f(0,255,0));
-        HitBox hb = new HitBox(id, new Vector3f(pPosition[0], pPosition[1], pPosition[2]), new Vector3f(), pScale, appearance);
+    public HitBox createHitBox(String id, float x, float y, float z, float pScale, float[] pLength){
+        HitBox hb = new HitBox(id, new Vector3f(x, y, z), new Quaternionf(), pScale, 1.0f, 1.0f, 1.0f);
         mSceneVertex.add(hb);
         return hb;
 
     }
-
 
 
     public boolean isInCollision(HitBox hb1, HitBox hb2) {
@@ -265,18 +263,6 @@ public class World implements Runnable {
     }
 
     /**
-     * Clone the specified item and add itto the scene
-     *
-     * @param pItem item to be cloned
-     * @return the cloned item
-     */
-    public ItemObject clone(ItemObject pItem) {
-        ItemObject item = mNucleus.createItemREF(pItem);
-        mSceneVertex.add(item);
-        return item;
-    }
-
-    /**
      * Remove the specified item from the world
      *
      * @param pItem the item
@@ -290,8 +276,8 @@ public class World implements Runnable {
      *
      * @return group of item
      */
-    public ItemGroup createGroup() {
-        ItemGroup group = mNucleus.createItemGroupREF();
+    public ItemGroup createGroup(String id) {
+        ItemGroup group = new ItemGroup(id);
         mItemGroupArrayList.add(group);
         return group;
     }
@@ -302,10 +288,8 @@ public class World implements Runnable {
      * @param pGroup the specified group
      */
     public void removeGroup(ItemGroup pGroup) {
+        pGroup.removeAll();
         mItemGroupArrayList.remove(pGroup);
-        for (String nameItem : pGroup.getItems().keySet()) {
-            pGroup.remove(pGroup.getItems().get(nameItem));
-        }
     }
 
     // UpdateRate: FIXED

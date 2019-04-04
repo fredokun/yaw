@@ -241,23 +241,23 @@
 
 (defn set-ambient-light!
   "Set the ambient light of the world"
-  [world l]
-    (.setAmbient (lights world) l))
+  [world l
+    (.setAmbient (lights world) l)])
 
 (defn set-sun!
   "Set the sun of the world"
-  [world l]
-    (.setSun (lights world) l))
+  [world l
+    (.setSun (lights world) l)])
 
 (defn set-point-light!
   "Set the `n`th pointlight with the given `color`, `position`, `itensity`, and attenuation factors"
-  [world n l]
-    (.setPointLight (lights world) l n))
+  [world n l
+    (.setPointLight (lights world) l n)])
 
 (defn set-spot-light!
   "Set the `n`th spotlight with the given `color`, `intensity`, `position`, `direction` and attenuation factors"
-  [world n l]
-    (.setSpotLight (lights world) l n))
+  [world n l
+    (.setSpotLight (lights world) l n)])
 
 ;;COLLISIONS------------------------------------------------------
 
@@ -323,5 +323,4 @@
                                  z 0}}]
   (.translate item x y z))
 
-(defn clone! [world item] (.clone world item))
 

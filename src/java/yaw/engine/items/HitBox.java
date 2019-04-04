@@ -24,6 +24,7 @@ public class HitBox extends ItemObject {
     public HitBox(String id, Vector3f position, Quaternionf orientation, float scale
             , float xLength, float yLength, float zLength) {
         super(id, position, orientation, scale, MeshBuilder.generateBoundingBox(xLength, yLength, zLength));
+        getMesh().getMaterial().setColor(new Vector3f(0,255,0));
     }
 
 

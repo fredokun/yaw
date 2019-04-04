@@ -43,7 +43,7 @@ public class RotatingCube implements UpdateCallback {
 			prevDeltaRefreshMillis = currentMillis;
 		}
 
-		cube.rotate(0.0f, 3.1415925f * speed * (float) deltaTime, 0.0f);
+		cube.rotateXYZ(0.0f, 3.1415925f * speed * (float) deltaTime, 0.0f);
 
 
 
@@ -56,8 +56,7 @@ public class RotatingCube implements UpdateCallback {
 		
 		World world = new World(0, 0, 800, 600);
 		
-		float[] pos = { 0f, 0f, -2f };
-		ItemObject cube = world.createItemObject("cube", pos, 1.0f, cubem);
+		ItemObject cube = world.createItemObject("cube", 0f, 0f, -2f, 1.0f, cubem);
 		cube.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
 
 		RotatingCube rCube = new RotatingCube(cube);

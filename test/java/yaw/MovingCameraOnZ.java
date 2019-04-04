@@ -69,7 +69,7 @@ public class MovingCameraOnZ implements UpdateCallback {
 
         for (int i = 0; i < 5; i++) {
 
-            ItemObject item = world.createItemObject(i + "", f, 1, MeshBuilder.generateBlock(1, 1, 1));
+            ItemObject item = world.createItemObject(i + "", 0.0f, 0.0f, 0.0f, 1, MeshBuilder.generateBlock(1, 1, 1));
             item.translate(i,i,i);
 
             if (i % 3 == 0)

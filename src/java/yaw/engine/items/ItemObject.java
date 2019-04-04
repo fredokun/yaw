@@ -23,6 +23,8 @@ public class ItemObject extends Item {
     public ItemObject(String id, Vector3f position, Quaternionf orientation, float scale, Mesh mesh){
         super(id, position, orientation, scale);
         this.mesh= mesh;
+        worldMatrix = new Matrix4f();
+        invalidate();
     }
 
     public void buildWorldMatrix() {

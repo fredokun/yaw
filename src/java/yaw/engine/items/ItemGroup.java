@@ -17,24 +17,35 @@ public class ItemGroup extends Item {
        items = new HashMap<String, Item>();
     }
 
+    public ItemGroup(String id) {
+        this(id, new Vector3f(0f, 0f, 0f), new Quaternionf(), 1.0f);
+    }
+
     /** this method adds an item to the group, updates the weight and the center.
      *
-     * @param s name of the add item
-     * @param i the Item
+     * @param id the identity of the item (must be unique)
+     * @param item the Item to add
+     * @throws Error if the group already contains an item with the same id
      */
-    public void add(String s, Item i) {
-        //center = new Vector3f((float) ((center.x * ratioGr) + (i.getPosition().x * ratioI)), (float) ((center.y * ratioGr) + (i.getPosition().y * ratioI)), (float) ((center.z * ratioGr) + (i.getPosition().z * ratioI)));
-        items.put(s, i);
+    public void add(String id, Item item) {
+        if(items.containsKey(id)) {
+            throw new Error("The group already contains an item with identity: " + id);
+        }
+        items.put(id, item);
         positionAtCentroid();
     }
 
 
     /** remove the item i from the group, update the center and the weight
      *
-     * @param itemId the item to remove
+     * @param id the item to remove
+     * @throws Error if there is no item with such identity inside the group
      */
-    public void remove(String itemId) {
-        items.remove(itemId);
+    public void remove(String id) {
+        if(!items.containsKey(id)) {
+            throw new Error("The group does not contains an item with identity: " + id);
+        }
+        items.remove(id);
         positionAtCentroid();
     }
 
@@ -75,12 +86,26 @@ public class ItemGroup extends Item {
         }
     }
 
-    protected Item fetchChild(String id) {
+    /**
+     * Fetch an item contained in the group
+     * @param id the identifier of the item in the group
+     * @return the found item, if any
+     * @throws Error in case there is no such child
+     */
+    public Item fetchItem(String id) {
         Item child = items.get(id);
         if (child == null) {
             throw new Error("No such child in group: " + id);
         }
         return child;
+    }
+
+    public HitBox fetchHitBox(String id) {
+        Item item = fetchItem(id);
+        if(!(item instanceof HitBox)) {
+            throw new Error("The group does not contain an hitbox with id: "+id);
+        }
+        return (HitBox) item;
     }
 
     @Override
@@ -131,4 +156,8 @@ public class ItemGroup extends Item {
         }
     }
 
+    public void removeAll() {
+        items.clear();
+        position=new Vector3f(0f, 0f, 0f);
+    }
 }

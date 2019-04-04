@@ -91,22 +91,16 @@ public class HitboxRotate implements UpdateCallback {
 
 
         //Creation of the First group
-        ItemGroup gr1 = new ItemGroup();
-        ItemObject c1 = world.createItemObject("1", f, 1, MeshBuilder.generateBlock(1, 1, 1));
+        ItemGroup gr1 = new ItemGroup("gr1");
+        ItemObject c1 = world.createItemObject("1", 0.0f, 0.0f, 0.0f, 1, MeshBuilder.generateBlock(1, 1, 1));
         gr1.add("item",c1);
         //HitBox i = world.createHitBox("c1 first bounding box",f,1f,tabA);
         //i.setPosition(new Vector3f(f[0]+0.f,f[1]+0.f,f[2]+0.25f));
-        ItemObject i = world.createItemObject("c1 first bounding", f, 1, MeshBuilder.generateBlock(1, 1, 0.5f));
-        i.setPosition(new Vector3f(f[0]+0.f,f[1]+0.f,f[2]+0.25f));
+        HitBox i = world.createHitBox("c1 first bounding"
+                , f[0]+0.f,f[1]+0.f,f[2]+0.25f, 1, tabA);
         gr1.add("hitbox 1", i);
-        HitBox i2 = world.createHitBox("c1 second bounding box",f,1f,tabA);
-        i2.setPosition(new Vector3f(f[0]-0.f,f[1]-0.f,f[2]-0.25f));
+        HitBox i2 = world.createHitBox("c1 second bounding box",f[0]-0.f, f[1]-0.f, f[2]-0.25f,1f,tabA);
         gr1.add("hitbox 2", i2);
-
-
-
-
-
 
         //System.out.println("Collision ?: " + Collision.isInCollision(c1, c2));
         //System.out.println("Collision ?: " + Collision.isCollision(c1, c2));

@@ -64,42 +64,9 @@ public class WorldNucleus {
         return lMesh;
     }
 
-    public ItemObject createItemREF(ItemObject pItem) {
-        return new ItemObject(pItem);
-    }
-
-    public Item createItemREF(Item pItem) {
-        return pItem.clone();
-    }
-
-    public ItemGroup createItemGroupREF() {
-        return new ItemGroup();
-    }
 
     public Skybox createSkybox(float pWidth, float pLength, float pHeight, Vector3f pVector3f) {
         return new Skybox(pWidth, pLength, pHeight, pVector3f);
-    }
-
-    //REFACTORING TEST
-
-
-    public ItemObject createItemREF(String pId, float[] pPosition, float pScale, Mesh pMesh) {
-        ItemObject item = new ItemObject(pId, pPosition, pScale, pMesh);
-
-        return item;
-    }
-
-
-
-
-
-
-
-    public HitBox createHitbox(String id, float[] pPosition, float pScale, float[] pLength) {
-        Mesh appearance = MeshBuilder.generateBoundingBox(pLength[0], pLength[1], pLength[2]);
-        appearance.getMaterial().setColor(new Vector3f(0,255,0));
-
-        return new HitBox(id, new Vector3f(pPosition[0], pPosition[1], pPosition[2]), new Vector3f(), pScale, appearance);
     }
 
 }
