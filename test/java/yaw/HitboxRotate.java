@@ -54,7 +54,7 @@ public class HitboxRotate implements UpdateCallback {
         System.out.println("Group pos=" + cube_1_hitbox.getPosition());
         System.out.println("Hitbox1 pos=" + cube_1_hitbox.fetchItem("hitbox 1").getPosition());
         System.out.println("Hitbox2 pos=" + cube_1_hitbox.fetchItem("hitbox 2").getPosition());
-        cube_1_hitbox.rotateX(1f);
+        cube_1_hitbox.rotateZ(1f);
 
     }
 
@@ -82,13 +82,6 @@ public class HitboxRotate implements UpdateCallback {
 
 
 
-        //Initial position for the cubes
-        float[] f = new float[]{0.f, 0.f, 0.f};
-
-
-        //Dimensions of each hitbox
-        float[] tabA = {1.0f, 1.0f, 0.5f};
-
 
         //Creation of the First group
         ItemGroup gr1 = new ItemGroup("gr1");
@@ -97,9 +90,9 @@ public class HitboxRotate implements UpdateCallback {
         //HitBox i = world.createHitBox("c1 first bounding box",f,1f,tabA);
         //i.setPosition(new Vector3f(f[0]+0.f,f[1]+0.f,f[2]+0.25f));
         HitBox i = world.createHitBox("c1 first bounding"
-                , f[0]+0.f,f[1]+0.f,f[2]+0.25f, 1, tabA);
+                , 0.f,0.f,0.25f, 1, 1.0f, 1.0f, 0.5f);
         gr1.add("hitbox 1", i);
-        HitBox i2 = world.createHitBox("c1 second bounding box",f[0]-0.f, f[1]-0.f, f[2]-0.25f,1f,tabA);
+        HitBox i2 = world.createHitBox("c1 second bounding box",-0.f, -0.f, -0.25f,1f, 1.0f, 1.0f, 0.5f);
         gr1.add("hitbox 2", i2);
 
         //System.out.println("Collision ?: " + Collision.isInCollision(c1, c2));

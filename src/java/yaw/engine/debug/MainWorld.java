@@ -36,14 +36,12 @@ public class MainWorld {
         c2.setPosition(-3, 0, 0); *//* Allows to resize our Pyramid. *//*
         c2.translate(10, 0, 0); *//* Allows to resize our Pyramid.*//*
         c2.rotate(-3, 2, 0);*/
-        float[] f = new float[]{0.f, 0.f, -2.f};
         (new Thread(world)).start();/* Launches the thread responsible for the display and our game loop. */
 
 
         ItemGroup g1 = new ItemGroup("g1");
         ItemObject c1 = world.createItemObject("1", 0.0f, 0.0f, -2.0f, 1, MeshBuilder.generateHalfBlock(1, 1, 1));
-        float[] tab = {1.0f, 1.0f, 1.0f}; // a cube
-        HitBox i = world.createHitBox("c1 first bounding box",0.0f, 0.0f, -2.0f, 1f, tab);
+        HitBox i = world.createHitBox("c1 first bounding box",0.0f, 0.0f, -2.0f, 1f, 1.0f, 1.0f, 1.0f);
         g1.add("cube", c1);
         g1.add("hitbox", i);
 
@@ -51,10 +49,9 @@ public class MainWorld {
 
 
         ItemGroup g2 = new ItemGroup("g2");
-        float[] tab2 = {1.0f, 1.0f, 1.0f}; // a rectangle
         ItemObject c2 = world.createItemObject("2", 0.0f, 0.0f, -2.0f, 1
                 , MeshBuilder.generateHalfBlock(1, 1, 1));
-        HitBox i2 = world.createHitBox("c1 first bounding box",0.0f, 0.0f, -2.0f,1f,tab2);
+        HitBox i2 = world.createHitBox("c1 first bounding box",0.0f, 0.0f, -2.0f,1f, 1.0f, 1.0f, 1.0f);
         g2.add("cube", c2);
         g2.add("hitbox", i2);
 

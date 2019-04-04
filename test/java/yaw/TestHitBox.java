@@ -101,21 +101,15 @@ public class TestHitBox implements UpdateCallback {
 
 
 
-        //Initial position for the cubes
-        float[] f = new float[]{0.f, 0.f, 0.f};
-
-
-        //Dimensions of each hitbox
-        float[] tabA = {1.0f, 1.0f, 0.5f};
 
 
         //Creation of the First group
         ItemGroup gr1 = new ItemGroup("gr1");
         ItemObject c1 = world.createItemObject("1", 0.0f, 0.0f, 0.0f, 1, MeshBuilder.generateHalfBlock(1, 1, 1));
         gr1.add("item",c1);
-        HitBox i = world.createHitBox("c1 first bounding box",f[0]+0.f,f[1]+0.f, f[2]+0.25f,1f,tabA);
+        HitBox i = world.createHitBox("c1 first bounding box",0.f,0.f, 0.25f,1f,1.0f, 1.0f, 0.5f);
         gr1.add("hitbox 1", i);
-        HitBox i2 = world.createHitBox("c1 second bounding box",f[0]+0.f,f[1]+0.f, f[2]-0.25f,1f,tabA);
+        HitBox i2 = world.createHitBox("c1 second bounding box",0.f,0.f, -0.25f,1f, 1.0f, 1.0f, 0.5f);
         gr1.add("hitbox 2", i2);
 
 
@@ -124,17 +118,14 @@ public class TestHitBox implements UpdateCallback {
         ItemGroup gr2 = new ItemGroup("gr2");
         ItemObject c2 = world.createItemObject("2", 0.0f, 0.0f, 0.0f, 1, MeshBuilder.generateHalfBlock(1, 1, 1));
         gr2.add("item",c2);
-        HitBox j = world.createHitBox("c1 first bounding box",0.0f, 0.0f, 2.25f,1f,tabA);
+        HitBox j = world.createHitBox("c1 first bounding box",0.0f, 0.0f, 2.25f,1f, 1.0f, 1.0f, 0.5f);
         gr2.add("hitbox 1", j);
-        HitBox j2 = world.createHitBox("c1 second bounding box",0.0f, 0.0f, 1.72f,1f,tabA);
+        HitBox j2 = world.createHitBox("c1 second bounding box",0.0f, 0.0f, 1.72f,1f, 1.0f, 1.0f, 0.5f);
         gr2.add("hitbox 2", j2);
         gr2.translate(3,0,0);
 
-
-
         //System.out.println("Collision ?: " + Collision.isInCollision(c1, c2));
         //System.out.println("Collision ?: " + Collision.isCollision(c1, c2));
-
 
         /* Creating Light for Our World */
         world.getSceneLight().setSun(new DirectionalLight(new Vector3f(1, 1, 1), 1, new Vector3f(0, -1, 1)));

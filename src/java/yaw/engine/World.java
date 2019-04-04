@@ -194,8 +194,8 @@ public class World implements Runnable {
      * @param pScale    scale
      * @return BoundingBox
      */
-    public HitBox createHitBox(String id, float x, float y, float z, float pScale, float[] pLength){
-        HitBox hb = new HitBox(id, new Vector3f(x, y, z), new Quaternionf(), pScale, 1.0f, 1.0f, 1.0f);
+    public HitBox createHitBox(String id, float x, float y, float z, float pScale, float xLength, float yLength, float zLength){
+        HitBox hb = new HitBox(id, new Vector3f(x, y, z), new Quaternionf(), pScale, xLength, yLength, zLength);
         mSceneVertex.add(hb);
         return hb;
 
