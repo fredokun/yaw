@@ -1,13 +1,13 @@
 package yaw.engine.items;
 
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
+import org.joml.*;
+import org.joml.Math;
 
 /**
  * Abstract class representing the common features of 3D items.
  */
 public abstract class Item {
+
     /** String identifier of the item. */
     private String id;
 
@@ -15,11 +15,10 @@ public abstract class Item {
     protected Vector3f position;
 
     /** Orientation of the Item. */
-    protected Vector3f orientation;
+    protected Quaternionf orientation;
 
     /** Scaling factor (1.0f default) */
     protected float scale;
-
 
     /**
      * Create a new item with the speficied values.
@@ -28,11 +27,20 @@ public abstract class Item {
      * @param orientation the initial orientation (angles in degrees)
      * @param scale the initial scaling factor
      */
-    public Item(String id, Vector3f position, Vector3f orientation, float scale) {
+    public Item(String id, Vector3f position, Quaternionf orientation, float scale) {
         this.id = id;
         this.position = position;
         this.orientation = orientation;
         this.scale = scale;
+    }
+
+    /**
+     * Convert degrees to radians
+     * @param angle expressed in degrees
+     * @return the same angle in radians
+     */
+    public static float toRadians(float angle) {
+        return (float) Math.toRadians(angle);
     }
 
     /* ----- Getters and Setters ----- */
@@ -40,10 +48,11 @@ public abstract class Item {
     public String getId() {return id;}
 
 
-    public Vector3f getOrientation() {
+    public Quaternionf getOrientation() {
         return orientation;
     }
-    public void setOrientation(Vector3f orientation) {
+
+    protected void setOrientation(Quaternionf orientation) {
         this.orientation = orientation;
     }
 
@@ -51,17 +60,23 @@ public abstract class Item {
     public Vector3f getPosition() {
         return position;
     }
-    public void setPosition(Vector3f pos){this.position = pos;}
+
+    protected void setPosition(Vector3f pos){
+        this.position = pos;
+    }
 
     public float getScale() {
         return scale;
     }
-    public void setScale(float val) {
+
+    public void scale(float val) {
         scale = val;
+        invalidate();
     }
 
     /* ----- Transformations ----- */
 
+    public abstract void invalidate();
 
     /** Translation
      *
@@ -71,6 +86,7 @@ public abstract class Item {
      */
     public void translate(float tx, float ty, float tz) {
         position.add(tx, ty, tz);
+        invalidate();
     }
 
     /**
@@ -78,7 +94,8 @@ public abstract class Item {
      * @param angle of rotation (in degree)
      */
     public void rotateX(float angle) {
-        rotateAxis(angle, new Vector3f(1.0f, 0.0f, 0.0f));
+        orientation.rotateX(toRadians(angle));
+        invalidate();
     }
 
     /**
@@ -86,7 +103,8 @@ public abstract class Item {
      * @param angle of rotation (in degree)
      */
     public void rotateY(float angle) {
-        rotateAxis(angle, new Vector3f(0.0f, 1.0f, 0.0f));
+        orientation.rotateY(toRadians(angle));
+        invalidate();
     }
 
     /**
@@ -94,48 +112,94 @@ public abstract class Item {
      * @param angle of rotation (in degree)
      */
     public void rotateZ(float angle) {
-        rotateAxis(angle, new Vector3f(0.0f, 0.0f, 1.0f));
+        orientation.rotateZ(toRadians(angle));
+        invalidate();
     }
 
+    /**
+     * Rotation along three axes (Euler angles rotation)
+     * @param angleX angle of rotation along axis X (in degrees)
+     * @param angleY same for axis Y
+     * @param angleZ same for axis Z
+     */
+    public void rotateXYZ(float angleX, float angleY, float angleZ) {
+        orientation.rotateXYZ(toRadians(angleX), toRadians(angleY), toRadians(angleZ));
+        invalidate();
+    }
+
+    /**
+     * Rotation of given angle along an axis
+     * @param angle angle of rotation in degrees
+     * @param axis axis of rotation
+     */
     public void rotateAxis(float angle, Vector3f axis) {
-        new Matrix3f().rotate((float) Math.toRadians(angle), axis).transform(orientation);
+        orientation.rotateAxis(toRadians(angle), axis);
+        invalidate();
     }
 
-    public void rotateAxisAround(float angle, float ax, float ay, float az, float cx, float cy, float cz) {
-        Vector3f center = new Vector3f(cx, cy, cz);
+    /**
+     * Rotation of given angle along an axis, and aroung the specified center
+     * @param angle the angle of rotation (in degrees)
+     * @param axis the axis of rotation
+     * @param center the center of rotation
+     */
+    public void rotateAxisAround(float angle, Vector3f axis, Vector3f center) {
+        // change orientation
+        orientation.rotateAxis(toRadians(angle), axis);
+
+        // change position
         new Matrix4f().translate(center)
-                .rotate((float) Math.toRadians(angle), ax, ay, az)
+                .rotate(toRadians(angle), axis)
                 .translate(center.negate())
                 .transformPosition(position);
+
+        invalidate();
     }
 
-    /**Make an Item revolve around a point, like a planet around a star
-     *
-     * @param center the central point on which the item will revolve
-     * @param degX   degree of rotation on axis X
-     * @param degY   degree of rotation on axis Y
-     * @param degZ   degree of rotation on axis Z
+    /**
+     * Rotate along X axis, around center
+     * @param angle of rotation (in degree)
+     * @param center the center of rotation
      */
-    public abstract void revolveAround(Vector3f center, float degX, float degY, float degZ);
+    public final void rotateXAround(float angle, Vector3f center) {
+        rotateAxisAround(angle, new Vector3f(1.0f, 0.0f, 0.0f), center);
+    }
 
+    /**
+     * Rotate along Y axis, around center
+     * @param angle of rotation (in degree)
+     * @param center the center of rotation
+     */
+    public final void rotateYAround(float angle, Vector3f center) {
+        rotateAxisAround(angle, new Vector3f(0.0f, 1.0f, 0.0f), center);
+    }
 
-    public abstract void repelBy(Vector3f center, float dist);
+    /**
+     * Rotate along Z axis, around center
+     * @param angle of rotation (in degree)
+     * @param center the center of rotation
+     */
+    public final void rotateZAround(float angle, Vector3f center) {
+        rotateAxisAround(angle, new Vector3f(0.0f, 0.0f, 1.0f), center);
+    }
 
-
-
-    //Method for future input feature
-    public abstract void update();
-
-
-    public Matrix4f getWorldMatrix() {
-        return new Matrix4f().identity().translate(position).
-                rotateX((float) Math.toRadians(orientation.x)).
-                rotateY((float) Math.toRadians(orientation.y)).
-                rotateZ((float) Math.toRadians(orientation.z)).
-                scale(scale);
+    /**
+     * Rotation along three axes (Euler angles rotation), around center
+     * @param angleX angle of rotation along axis X (in degrees)
+     * @param angleY same for axis Y
+     * @param angleZ same for axis Z
+     * @param center the center of rotation
+     */
+    public final void rotateXYZAround(float angleX, float angleY, float angleZ, Vector3f center) {
+        AxisAngle4f aaxis = new AxisAngle4f(new Quaternionf().rotationXYZ(toRadians(angleX)
+                                                    , toRadians(angleY)
+                                                    , toRadians(angleZ)));
+        rotateAxisAround(aaxis.angle, new Vector3f(aaxis.x, aaxis.y, aaxis.z), center);
     }
 
 
+    // XXX : use this ?
+    //public abstract void repelBy(Vector3f center, float dist);
 
 }
 

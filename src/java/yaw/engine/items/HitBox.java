@@ -1,9 +1,11 @@
 package yaw.engine.items;
 
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import yaw.engine.collision.Collision;
 import yaw.engine.meshs.Mesh;
+import yaw.engine.meshs.MeshBuilder;
 
 import java.util.ArrayList;
 
@@ -19,8 +21,9 @@ public class HitBox extends ItemObject {
      * @param pScale        HitBox scale
      * @param mesh          Mesh associated to the HitBox
      */
-    public HitBox(String pId, Vector3f pRotation, Vector3f pPosition, float pScale, Mesh mesh){
-        super(pId,pRotation,pPosition,pScale,mesh);
+    public HitBox(String id, Vector3f position, Quaternionf orientation, float scale
+            , float xLength, float yLength, float zLength) {
+        super(id, position, orientation, scale, MeshBuilder.generateBoundingBox(xLength, yLength, zLength));
     }
 
 
@@ -30,6 +33,9 @@ public class HitBox extends ItemObject {
      * @return          true if item is touching the hitbox which is calling the method
      */
     public boolean isIsCollisionWith(HitBox item){
+
+        // TODO: containment should be a collision
+
         ArrayList<Vector4f> listVertexboundingBox1 = Collision.tabToListVertex(this);
         ArrayList<Vector4f> listVertexboundingBox2 = Collision.tabToListVertex(item);
 
@@ -50,6 +56,8 @@ public class HitBox extends ItemObject {
                         listVertexboundingBox2.get(tabIndexFaces[j]), listVertexboundingBox2.get(tabIndexFaces[j + 1]),
                         listVertexboundingBox2.get(tabIndexFaces[j + 2]), listVertexboundingBox2.get(tabIndexFaces[j + 3])))
                     return true;
+
+        // XXX: the rest is superfluous ?
 
         // test if edges of boundingBox2 intersect faces of boundingBox1
         for (int i = 0; i < tabIndexEdges.length; i += 2)
