@@ -44,7 +44,7 @@ public class RotatingCube implements UpdateCallback {
 			prevDeltaRefreshMillis = currentMillis;
 		}
 
-		cube.rotateXYZ(0f, 3.1415925f * speed * (float) deltaTime, 0f);
+		//cube.rotateXYZ(0f, 3.1415925f * speed * (float) deltaTime, 0f);
 		cube.rotateZAround(1f, new Vector3f(0f, 0f, -3f));
 		//cube.rotateX(0.0f);
 		//cube.rotateY(3.1415925f * speed * (float) deltaTime);

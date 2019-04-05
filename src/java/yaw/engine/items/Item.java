@@ -43,6 +43,10 @@ public abstract class Item {
         return (float) Math.toRadians(angle);
     }
 
+    public static float toDegrees(float angle) {
+        return (float) Math.toDegrees(angle);
+    }
+
     /* ----- Getters and Setters ----- */
 
     public String getId() {return id;}
@@ -194,7 +198,7 @@ public abstract class Item {
         AxisAngle4f aaxis = new AxisAngle4f(new Quaternionf().rotationXYZ(toRadians(angleX)
                                                     , toRadians(angleY)
                                                     , toRadians(angleZ)));
-        rotateAxisAround(aaxis.angle, new Vector3f(aaxis.x, aaxis.y, aaxis.z), center);
+        rotateAxisAround(toDegrees(aaxis.angle), new Vector3f(aaxis.x, aaxis.y, aaxis.z), center);
     }
 
 

@@ -32,7 +32,7 @@ public class ItemGroup extends Item {
             throw new Error("The group already contains an item with identity: " + id);
         }
         items.put(id, item);
-        positionAtCentroid();
+        //positionAtCentroid();
     }
 
 
@@ -46,7 +46,7 @@ public class ItemGroup extends Item {
             throw new Error("The group does not contains an item with identity: " + id);
         }
         items.remove(id);
-        positionAtCentroid();
+       //positionAtCentroid();
     }
 
     public void invalidate() {
@@ -154,6 +154,7 @@ public class ItemGroup extends Item {
         for(Item item : items.values()) {
             item.rotateAxisAround(angle, axis, position);
         }
+        //positionAtCentroid();
     }
 
     public void removeAll() {
