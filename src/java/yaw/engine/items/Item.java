@@ -152,10 +152,16 @@ public abstract class Item {
         orientation.rotateAxis(toRadians(angle), axis);
 
         // change position
-        new Matrix4f().translate(center)
+        new Matrix4f().rotateAround(new Quaternionf(new AxisAngle4f(toRadians(angle), axis)), center.x, center.y, center.z)
+                .transformPosition(position);
+
+/*
+        new Matrix4f()
+                .translate(center)
                 .rotate(toRadians(angle), axis)
                 .translate(center.negate())
                 .transformPosition(position);
+*/
 
         invalidate();
     }
