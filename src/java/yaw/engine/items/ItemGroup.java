@@ -114,47 +114,52 @@ public class ItemGroup extends Item {
         for(Item item : items.values()) {
             item.rotateXAround(angle, position);
         }
+        positionAtCentroid();
     }
 
     @Override
     public void rotateY(float angle) {
-        super.rotateY(angle);
+        //super.rotateY(angle);
         for(Item item : items.values()) {
             item.rotateYAround(angle, position);
         }
+        positionAtCentroid();
     }
 
     @Override
     public void rotateZ(float angle) {
-        super.rotateZ(angle);
+        //super.rotateZ(angle);
         for(Item item : items.values()) {
             item.rotateZAround(angle, position);
         }
+        positionAtCentroid();
     }
 
     @Override
     public void rotateXYZ(float angleX, float angleY, float angleZ) {
-        super.rotateXYZ(angleX, angleY, angleZ);
+        //super.rotateXYZ(angleX, angleY, angleZ);
         for(Item item : items.values()) {
             item.rotateXYZAround(angleX, angleY, angleZ, position);
         }
+        positionAtCentroid();
     }
 
     @Override
     public void rotateAxis(float angle, Vector3f axis) {
-        super.rotateAxis(angle, axis);
+        //super.rotateAxis(angle, axis);
         for(Item item : items.values()) {
-            item.rotateAxisAround(angle, axis, position);
+            item.rotateAxisAround(angle, axis.normalize(), position);
         }
+        positionAtCentroid();
     }
 
     @Override
     public void rotateAxisAround(float angle, Vector3f axis, Vector3f center) {
-        super.rotateAxisAround(angle, axis, center);
+        //super.rotateAxisAround(angle, axis, center);
         for(Item item : items.values()) {
-            item.rotateAxisAround(angle, axis, position);
+            item.rotateAxisAround(angle, axis.normalize(), center);
         }
-        //positionAtCentroid();
+        positionAtCentroid();
     }
 
     public void removeAll() {

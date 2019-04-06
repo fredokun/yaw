@@ -148,6 +148,7 @@ public abstract class Item {
      * @param center the center of rotation
      */
     public void rotateAxisAround(float angle, Vector3f axis, Vector3f center) {
+        axis = axis.normalize();
         // change orientation
         orientation.rotateAxis(toRadians(angle), axis);
 
@@ -203,7 +204,7 @@ public abstract class Item {
     public final void rotateXYZAround(float angleX, float angleY, float angleZ, Vector3f center) {
         AxisAngle4f aaxis = new AxisAngle4f(new Quaternionf().rotationXYZ(toRadians(angleX)
                                                     , toRadians(angleY)
-                                                    , toRadians(angleZ)));
+                                                    , toRadians(angleZ))).normalize();
         rotateAxisAround(toDegrees(aaxis.angle), new Vector3f(aaxis.x, aaxis.y, aaxis.z), center);
     }
 

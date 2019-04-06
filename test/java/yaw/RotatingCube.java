@@ -15,7 +15,7 @@ public class RotatingCube implements UpdateCallback {
 	private static long deltaRefreshMillis = 1000;
 	private long prevDeltaRefreshMillis = 0;
 	private ItemObject cube ;
-	private float speed = 100;
+	private float speed = 40;
 	
 	public RotatingCube(ItemObject cube) {
 		this.cube = cube;
@@ -44,10 +44,11 @@ public class RotatingCube implements UpdateCallback {
 			prevDeltaRefreshMillis = currentMillis;
 		}
 
-		cube.rotateXYZ(0f, 3.1415925f * speed * (float) deltaTime, 0f);
-		cube.rotateZAround(1f, new Vector3f(0f, 0f, -3f));
+		//cube.rotateXYZ(0f, 3.1415925f * speed * (float) deltaTime, 0f);
+		//cube.rotateZAround(1f, new Vector3f(0f, 0f, -3f));
+		cube.rotateZ(3.1415925f * speed * (float) deltaTime);
+		cube.rotateXYZAround(0f, 3.1415925f * speed * (float) deltaTime, 0f, new Vector3f(0f, 0f, -10f));
 		//cube.rotateX(0.0f);
-		//cube.rotateY(3.1415925f * speed * (float) deltaTime);
 
 
 	}
