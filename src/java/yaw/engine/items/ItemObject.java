@@ -1,114 +1,65 @@
 package yaw.engine.items;
 
 import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import yaw.engine.meshs.Material;
 import yaw.engine.meshs.Mesh;
 
 /**
- * Basic Item implementing all the Item methods. This is were all the moves are done for Items and Hitboxes
+ * An ItemObject is a concrete 3D item associated to a Mesh
  */
 public class ItemObject extends Item {
 
-    protected Mesh mesh;
+    /** The mesh (geometry) of the object. */
+    private Mesh mesh;
+
+    /** The transformation matrix to world coordinates */
+    private Matrix4f worldMatrix;
 
 
 
-    public ItemObject(String pId, Vector3f pRotation, Vector3f pPosition, float pScale, Mesh mesh){
-        super(pId,pRotation,pPosition,pScale);
+    public ItemObject(String id, Vector3f position, Quaternionf orientation, float scale, Mesh mesh){
+        super(id, position, orientation, scale);
         this.mesh= mesh;
+        worldMatrix = new Matrix4f();
+        invalidate();
     }
 
-
-
-
-    public ItemObject(String pId, float[] pPosition, float pScale, Mesh mesh){
-        super(pId,pPosition,pScale);
-        this.mesh= mesh;
+    public void buildWorldMatrix() {
+        worldMatrix.identity()
+                .translate(getPosition())
+                .rotate(getOrientation())
+                .scale(getScale());
     }
 
-
-    public ItemObject(ItemObject item){
-        super(item);
-    }
-
-
-
-
-
-
-    @Override
-    public Item clone() {
-        return new ItemObject(this);
+    public Matrix4f getWorldMatrix() {
+        return worldMatrix;
     }
 
     @Override
-    public void rotate(float x, float y, float z) {
-        this.setRotation(getRotation().add(x, y, z));
+    public void invalidate() {
+        buildWorldMatrix();
     }
 
-    @Override
-    public void translate(float x, float y, float z) {
-        this.setPosition(this.getPosition().add(x,y,z));
-        this.updateCenter(this.getPosition());
-
-    }
-
-    @Override
-    public void revolveAround(Vector3f center, float degX, float degY, float degZ) {
-        Vector4f pos = new Vector4f(mPosition, 1f);
-        pos.add(-center.x, -center.y, -center.z, 0);
-        Matrix4f trans = new Matrix4f();
-        trans.rotateX((float) Math.toRadians(degX));
-        trans.rotateY((float) Math.toRadians(degY));
-        trans.rotateZ((float) Math.toRadians(degZ));
-        trans.transform(pos);
-        pos.add(center.x, center.y, center.z, 0);
-        mPosition = new Vector3f(pos.x, pos.y, pos.z);
-    }
-
-    @Override
     public void repelBy(Vector3f center, float dist) {
-        Vector3f dif = new Vector3f(mPosition.x - center.x, mPosition.y - center.y, mPosition.z - center.z);
+        Vector3f dif = new Vector3f(position.x - center.x, position.y - center.y, position.z - center.z);
         float norm = dif.length();
         if (norm != 0) {
             float move = (dist / norm) + 1;
             dif.mul(move);
             dif.add(center);
-            mPosition = dif;
+            position = dif;
         }
     }
 
 
-
-    // MeshOld Gestion
+    /**
+     * Get the mesh (geometry) of the item
+     */
     public Mesh getMesh(){ return mesh; }
 
-    public float getReflectance() {
-        return this.getMesh().getMaterial().getReflectance();
-    }
-
-    public void setReflectance(float refl) {
-        this.getMesh().getMaterial().setReflectance(refl);
-    }
-
-    public Vector3f getColor() {
-        return this.getMesh().getMaterial().getColor();
-    }
-
-    public void setColor(Vector3f color) {
-        this.getMesh().setMaterial(new Material(color, 0.f));
-    }
 
 
-    // In case of input Feature
-    @Override
-    public void update() {
-
-    }
-
-    public void updateCenter(Vector3f new_center) {
-        mCenter = new_center;
-    }
 }

@@ -84,7 +84,7 @@
   :dependencies ~all-dependencies
   :min-lein-version "2.1.0"
   :jvm-opts ^:replace ~(jvm-opts)
-  :source-paths ["src/clojure"]
+  :source-paths ["src/clojure" "examples"]
   :java-source-paths ["src/java"]
   :test-paths ["test" "src/test"])
 

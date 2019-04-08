@@ -52,7 +52,7 @@ public class TestCeilingCamera implements UpdateCallback {
         float[] f = new float[]{0.f, 0.f, 0.f};
 
         for (int i = 0; i < 10; i++) {
-            ItemObject item = world.createItemObject(i + "", f, 1, MeshBuilder.generateBlock(1, 1, 1));
+            ItemObject item = world.createItemObject(i + "", 0.0f, 0.0f, 0.0f, 1, MeshBuilder.generateBlock(1, 1, 1));
             item.translate(i,i,i);
 
             if (i % 3 == 0)

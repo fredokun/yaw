@@ -13,58 +13,6 @@ import java.util.ArrayList;
 public class Collision {
 
     /**
-     * Return true if Bouding Box of items in parameter are in collision else false
-     * and return false if items haven't boundingBox defined
-     *
-     * @param item1
-     * @param item2
-     * @return isInCollision
-     */
-    /*public static boolean isInCollision(ItemObject item1, ItemObject item2) {
-        if (item1.gethi() == null && item2.getBoundingBox() == null) {
-            System.out.println("One or both item have not boundingBox defined -> can't check collision");
-            return false;
-        }
-
-        ArrayList<Vector4f> listVertexboundingBox1 = tabToListVertex(item1.getBoundingBox());
-        ArrayList<Vector4f> listVertexboundingBox2 = tabToListVertex(item2.getBoundingBox());
-
-        // index of faces
-        // implication of vertex in faces
-        // example: face(0,1,2,3) / face(1,2,6,5) / ...
-        int[] tabIndexFaces = {0, 1, 2, 3, 1, 2, 6, 5, 0, 3, 7, 4, 1, 5, 4, 0, 2, 3, 7, 6, 4, 5, 6, 7};
-
-        // index of edges
-        // implication of vertex in edges
-        // example: edge(0,1) / edge(1,2) / edge(2,3) / ...
-        int[] tabIndexEdges = {0, 1, 1, 2, 2, 3, 3, 0, 1, 5, 5, 4, 4, 0, 5, 6, 4, 7, 6, 7, 6, 2, 3, 7};
-
-        // test if edges of boundingBox1 intersect faces of boundingBox2
-        for (int i = 0; i < tabIndexEdges.length; i += 2)
-            for (int j = 0; j < tabIndexFaces.length; j += 4)
-                if (isIntersectSegmentAndFace(listVertexboundingBox1.get(tabIndexEdges[i]), listVertexboundingBox1.get(tabIndexEdges[i + 1]),
-                        listVertexboundingBox2.get(tabIndexFaces[j]), listVertexboundingBox2.get(tabIndexFaces[j + 1]),
-                        listVertexboundingBox2.get(tabIndexFaces[j + 2]), listVertexboundingBox2.get(tabIndexFaces[j + 3])))
-                    return true;
-
-        // test if edges of boundingBox2 intersect faces of boundingBox1
-        for (int i = 0; i < tabIndexEdges.length; i += 2)
-            for (int j = 0; j < tabIndexFaces.length; j += 4)
-                if (isIntersectSegmentAndFace(listVertexboundingBox2.get(tabIndexEdges[i]), listVertexboundingBox2.get(tabIndexEdges[i + 1]),
-                        listVertexboundingBox1.get(tabIndexFaces[j]), listVertexboundingBox1.get(tabIndexFaces[j + 1]),
-                        listVertexboundingBox1.get(tabIndexFaces[j + 2]), listVertexboundingBox1.get(tabIndexFaces[j + 3])))
-                    return true;
-
-
-        return false;
-    }*/
-
-
-
-
-
-
-    /**
      * Returns true if the segment passes through the face
      * Segment define by 2 points (segmentStart, segmentEnd)
      * face define by 4 points (corner1Face, corner2Face, corner3Face, corner4Face)
@@ -124,27 +72,6 @@ public class Collision {
      * @param item item
      * @return listVertex
      */
-    public static ArrayList<Vector4f> tabToListVertex(ItemObject item) {
-        ArrayList<Vector4f> listVertex = new ArrayList<>();
-        for (int i = 0; i < item.getMesh().getVertices().length; i += 3) {
-            Vector4f vec = new Vector4f(item.getMesh().getVertices()[i], item.getMesh().getVertices()[i + 1]
-                    , item.getMesh().getVertices()[i + 2], 1.0f);
-            if (!isVecAlreadyAdd(listVertex, vec))
-                listVertex.add(vec);
-        }
-
-        //get Real position of vertex after rotation or translation
-        for (int i = 0; i < listVertex.size(); i++)
-            listVertex.set(i, listVertex.get(i).mul(item.getWorldMatrix()));
-
-
-        return listVertex;
-    }
-
-
-    // ---------- ITEM REFACTORING ----------
-
-    //used in the Item class refactoring
     public static ArrayList<Vector4f> tabToListVertex(HitBox item) {
         ArrayList<Vector4f> listVertex = new ArrayList<>();
         for (int i = 0; i < item.getMesh().getVertices().length; i += 3) {
@@ -161,14 +88,6 @@ public class Collision {
 
         return listVertex;
     }
-
-
-
-
-
-
-
-
 
     public static boolean isVecAlreadyAdd(ArrayList<Vector4f> listVertex, Vector4f vec) {
         for (Vector4f vector : listVertex) {

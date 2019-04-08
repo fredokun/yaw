@@ -49,21 +49,6 @@ public class SceneVertex {
 
     }
 
-    // REFACTORING TEST
-
-    /*public synchronized void add(ItemObject pItem) {
-        itemAdded = true;
-        //retrieve the stored mesh in the item
-        MeshOld lMesh = pItem.getMesh();
-        List<ItemObject> lItems = mMeshMap.get(lMesh);
-        if (lItems == null) {
-            lItems = new ArrayList<>();
-            mMeshMap.put(lMesh, lItems);
-            notInit.add(lMesh);
-        }
-        lItems.add(pItem);
-
-    }*/
 
     /**
      * Remove the specified item from the mMeshMap
@@ -118,15 +103,6 @@ public class SceneVertex {
             mMeshMap.remove(lMesh);
         }
     }
-
-    // XXX: remove?
-    /*Maybe
-    public void update() {
-        for (Mesh m : mMeshMap.keySet()) {
-            for (Item i : mMeshMap.get(m))
-                i.update();
-        }
-    }*/
 
     /**
      * Retrieve all the items of the scene
