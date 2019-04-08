@@ -36,35 +36,29 @@ public class MainWorld {
         c2.setPosition(-3, 0, 0); *//* Allows to resize our Pyramid. *//*
         c2.translate(10, 0, 0); *//* Allows to resize our Pyramid.*//*
         c2.rotate(-3, 2, 0);*/
-        float[] f = new float[]{0.f, 0.f, -2.f};
         (new Thread(world)).start();/* Launches the thread responsible for the display and our game loop. */
 
 
-        ItemGroup g1 = new ItemGroup();
-        ItemObject c1 = world.createItemObject("1", f, 1, MeshBuilder.generateHalfBlock(1, 1, 1));
-        float[] tab = {1.0f, 1.0f, 1.0f}; // a cube
-        HitBox i = world.createHitBox("c1 first bounding box",f,1f,tab);
-        i.setPosition(new Vector3f(f[0],f[1],f[2]));
+        ItemGroup g1 = new ItemGroup("g1");
+        ItemObject c1 = world.createItemObject("1", 0.0f, 0.0f, -2.0f, 1, MeshBuilder.generateHalfBlock(1, 1, 1));
+        HitBox i = world.createHitBox("c1 first bounding box",0.0f, 0.0f, -2.0f, 1f, 1.0f, 1.0f, 1.0f);
         g1.add("cube", c1);
         g1.add("hitbox", i);
 
 
 
 
-        ItemGroup g2 = new ItemGroup();
-        float[] tab2 = {1.0f, 1.0f, 1.0f}; // a rectangle
-        ItemObject c2 = world.createItemObject("2", f, 1, MeshBuilder.generateHalfBlock(1, 1, 1));
-        HitBox i2 = world.createHitBox("c1 first bounding box",f,1f,tab2);
-        i2.setPosition(new Vector3f(0f,0f,-2.f));
+        ItemGroup g2 = new ItemGroup("g2");
+        ItemObject c2 = world.createItemObject("2", 0.0f, 0.0f, -2.0f, 1
+                , MeshBuilder.generateHalfBlock(1, 1, 1));
+        HitBox i2 = world.createHitBox("c1 first bounding box",0.0f, 0.0f, -2.0f,1f, 1.0f, 1.0f, 1.0f);
         g2.add("cube", c2);
         g2.add("hitbox", i2);
 
-
-
         g1.translate(3, 0, 0);
         g2.translate(2, 2, 0);
-        g1.rotate(0, 0, 10);
-        g2.rotate(0, 10, 0);
+        g1.rotateXYZ(0, 0, 10);
+        g2.rotateXYZ(0, 10, 0);
 
         System.out.println("Collision ?: " + i.isIsCollisionWith(i2));
 
@@ -82,9 +76,9 @@ public class MainWorld {
         world.getCamera().translate(0, 2, 7);
         while (true) {
             //world.getCamera().rotate(0, 5, 0); /* Allows to advance the edge in the scene 3D. */
-            g1.rotate(-1, -1, -1);
+            g1.rotateX(1);
 
-            g2.rotate(-1, -1, -1);
+            g2.rotateY(1);
             /* world.c.translate(0,0,-5); */
             Thread.sleep(50); /* Allows to see the block (cube) move at constant rate. */
         }

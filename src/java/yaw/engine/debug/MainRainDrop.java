@@ -32,7 +32,8 @@ public class MainRainDrop {
         (new Thread(world)).start();/* Launches the thread responsible for the display and our game loop. */
 
         for (int i = 0; i < 7; i++) {
-            ItemObject item = world.createItemObject(i + "", f, 1, MeshBuilder.generateBlock(1, 1, 1));
+            ItemObject item = world.createItemObject(i + "", 0.0f, 0.0f, -2.0f, 1
+                    , MeshBuilder.generateBlock(1, 1, 1));
             item.translate((int) (Math.random() * 5), (int) (Math.random() * 5), (int) (Math.random() * 5));
             //item.rotate((int) (Math.random() * 90), (int) (Math.random() * 90), (int) (Math.random() * 90));
 

@@ -46,8 +46,8 @@ public class RotatingGroup implements UpdateCallback {
         }
 
         //cubes.rotate(0.0f, 3.1415925f * speed * (float) deltaTime, 0.0f);
-        cubes.fetchItem("first").rotate(0f, 1f, 0f);
-        cubes.rotate(0f, 0f, 1f);
+        cubes.fetchItem("first").rotateXYZ(0f, 1f, 0f);
+        cubes.rotateXYZ(0f, 0f, 1f);
 
         /*for(int i=0; i<cubes.getItems().size();i++){
             cubes.getItems().get(i).rotate(0.0f, -6.283f * speed * (float) deltaTime, 0.0f);
@@ -68,24 +68,18 @@ public class RotatingGroup implements UpdateCallback {
         world.getSceneLight().setSpotLight(new SpotLight(1, 300, 1, 0, 0, 10, 1f, 0, 0.1f, 0, 0, 0, -.1f, 10f), 1);
 
 
-        float[] pos = { -2.5f, 0f, -8f };
-        float[] pos2 = { 2.5f, 0f, -8f };
-        float[] pos3 = { 0f, 0f, -8f };
-
-
-        ItemObject cube = world.createItemObject("cube", pos, 1.0f, cubem);
+        ItemObject cube = world.createItemObject("cube", -2.5f, 0f, -8f, 1.0f, cubem);
         cube.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
-        ItemObject cube2 = world.createItemObject("cube2", pos2, 1.0f, cubem2);
+        ItemObject cube2 = world.createItemObject("cube2", 2.5f, 0f, -8f, 1.0f, cubem2);
         cube2.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
-        ItemObject cube3 = world.createItemObject("cube3", pos3, 1.0f, cubem3);
+        ItemObject cube3 = world.createItemObject("cube3", 0f, 0f, -8f, 1.0f, cubem3);
         cube2.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
-        ItemGroup g = new ItemGroup();
+        ItemGroup g = new ItemGroup("g");
         g.add("first",cube);
 
         g.add("second",cube2);
         //g.rotate(0, 45, 0);
 
-        System.out.println(g.getCenter());
         RotatingGroup rGroup = new RotatingGroup(g);
 
 

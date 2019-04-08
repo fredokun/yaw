@@ -44,7 +44,7 @@ public class DifferentLights implements UpdateCallback {
             prevDeltaRefreshMillis = currentMillis;
         }
 
-        cube.rotate(0.0f, 3.1415925f * speed * (float) deltaTime, 0.0f);
+        cube.rotateXYZ(0.0f, 3.1415925f * speed * (float) deltaTime, 0.0f);
 
 
     }
@@ -62,8 +62,7 @@ public class DifferentLights implements UpdateCallback {
         world.getSceneLight().getSpotTable()[2] = new SpotLight(255, 0, 0, -0.2f, 0.0f, 0, 1f, 0, 0.75f, 0, 0f, 0, -5, 3f);
         //world.getSceneLight().setSun(new DirectionalLight());
 
-        float[] pos = { 0f, 0f, -5f };
-        ItemObject cube = world.createItemObject("cube", pos, 1.0f, cubem);
+        ItemObject cube = world.createItemObject("cube", 0f, 0f, -5f, 1.0f, cubem);
         cube.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
         //cube.rotate(0,45,0);
         DifferentLights rCube = new DifferentLights(cube);

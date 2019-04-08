@@ -60,29 +60,26 @@ public class TestHitBoxDifferentPlan implements UpdateCallback {
 
         //Collision Test, this is testing the collision between each hitbox of each item for the example, this will not be the same for accurate tests
         cube_2_hitbox.translate(-0.01f,0,0);
-        if(cube_1_hitbox.getItems().get("hitbox 1") instanceof HitBox &&
-                cube_2_hitbox.getItems().get("hitbox 1") instanceof HitBox &&
-                cube_1_hitbox.getItems().get("hitbox 2") instanceof HitBox &&
-                cube_2_hitbox.getItems().get("hitbox 2") instanceof HitBox ){
-            HitBox hb_1_1 =  (HitBox)cube_1_hitbox.getItems().get("hitbox 1");
-            HitBox hb_1_2 =  (HitBox)cube_1_hitbox.getItems().get("hitbox 2");
-            HitBox hb_2_1 =  (HitBox)cube_2_hitbox.getItems().get("hitbox 1");
-            HitBox hb_2_2 =  (HitBox)cube_2_hitbox.getItems().get("hitbox 2");
-            if(hb_1_1.isIsCollisionWith(hb_2_1) || hb_1_1.isIsCollisionWith(hb_2_2) ||
-                    hb_1_2.isIsCollisionWith(hb_2_1) || hb_1_2.isIsCollisionWith(hb_2_2)){
-                System.out.println("There is a collision");
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
 
+        HitBox hb_1_1 =  cube_1_hitbox.fetchHitBox("hitbox 1");
+        HitBox hb_1_2 =  cube_1_hitbox.fetchHitBox("hitbox 2");
+        HitBox hb_2_1 =  cube_2_hitbox.fetchHitBox("hitbox 1");
+        HitBox hb_2_2 =  cube_2_hitbox.fetchHitBox("hitbox 2");
+
+        if(hb_1_1.isIsCollisionWith(hb_2_1) || hb_1_1.isIsCollisionWith(hb_2_2) ||
+                hb_1_2.isIsCollisionWith(hb_2_1) || hb_1_2.isIsCollisionWith(hb_2_2)){
+            System.out.println("There is a collision");
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
 
         }
 
-
     }
+
+
 
 
     public static void main(String[] args)  {
@@ -106,44 +103,27 @@ public class TestHitBoxDifferentPlan implements UpdateCallback {
         c2.translate(10, 0, 0); *//* Allows to resize our Pyramid.*//*
         c2.rotate(-3, 2, 0);*/
 
-
-
-        //Initial position for the cubes
-        float[] f = new float[]{0.f, 0.f, 0.f};
-
-
-        //Dimensions of each hitbox
-        float[] tabA = {1.0f, 1.0f, 0.5f};
-
-
         //Creation of the First group
-        ItemGroup gr1 = new ItemGroup();
-        ItemObject c1 = world.createItemObject("1", f, 1, MeshBuilder.generateHalfBlock(1, 1, 1));
+        ItemGroup gr1 = new ItemGroup("gr1");
+        ItemObject c1 = world.createItemObject("1", 0.0f, 0.0f, 0.0f, 1, MeshBuilder.generateHalfBlock(1, 1, 1));
         gr1.add("item",c1);
-        HitBox i = world.createHitBox("c1 first bounding box",f,1f,tabA);
-        i.setPosition(new Vector3f(f[0]+0.f,f[1]+0.f,f[2]+0.25f));
+        HitBox i = world.createHitBox("c1 first bounding box", 0.0f, 0.0f, 0.25f,1f, 1.0f, 1.0f, 0.5f);
         gr1.add("hitbox 1", i);
-        HitBox i2 = world.createHitBox("c1 second bounding box",f,1f,tabA);
-        i2.setPosition(new Vector3f(f[0]-0.f,f[1]-0.f,f[2]-0.25f));
+        HitBox i2 = world.createHitBox("c1 second bounding box", 0.0f, 0.0f, -0.25f,1f, 1.0f, 1.0f, 0.5f);
         gr1.add("hitbox 2", i2);
 
 
 
 
         //Creation of the second group
-        ItemGroup gr2 = new ItemGroup();
-        ItemObject c2 = world.createItemObject("2", f, 1, MeshBuilder.generateHalfBlock(1, 1, 1));
+        ItemGroup gr2 = new ItemGroup("gr2");
+        ItemObject c2 = world.createItemObject("2", 0.0f, 0.0f, 0.0f, 1, MeshBuilder.generateHalfBlock(1, 1, 1));
         gr2.add("item",c2);
-        HitBox j = world.createHitBox("c1 first bounding box",f,1f,tabA);
-        j.setPosition(new Vector3f(f[0]+0.f,f[1]+0.f,f[2]+0.25f));
+        HitBox j = world.createHitBox("c1 first bounding box", 0.0f, 0.0f, 0.25f,1f, 1.0f, 1.0f, 0.5f);
         gr2.add("hitbox 1", j);
-        HitBox j2 = world.createHitBox("c1 second bounding box",f,1f,tabA);
-        j2.setPosition(new Vector3f(f[0]-0.f,f[1]-0.f,f[2]-0.25f));
+        HitBox j2 = world.createHitBox("c1 second bounding box", 0.0f, 0.0f, -0.25f,1f, 1.0f, 1.0f, 0.5f);
         gr2.add("hitbox 2", j2);
         gr2.translate(0.75f,0,2);
-
-
-
 
 
         //System.out.println("Collision ?: " + Collision.isInCollision(c1, c2));
@@ -162,7 +142,7 @@ public class TestHitBoxDifferentPlan implements UpdateCallback {
 
         TestHitBoxDifferentPlan mBb = new TestHitBoxDifferentPlan(gr1, gr2);
 
-        gr1.rotate(0,45,0);
+        gr1.rotateXYZ(0,45,0);
         world.getCamera().translate(0,0,7);
 
         world.registerUpdateCallback(mBb);

@@ -44,8 +44,8 @@ public class TestRevolveAround implements UpdateCallback {
             prevDeltaRefreshMillis = currentMillis;
         }
 
-        cube.revolveAround(new Vector3f(0,0,0),0f,1f,0f);
-        cube.rotate(0,1,0);
+        cube.rotateXYZAround(0f, 1f, 0f,new Vector3f(0f, 0f, 0f));
+        cube.rotateXYZ(0,1,0);
 
 
 
@@ -59,8 +59,7 @@ public class TestRevolveAround implements UpdateCallback {
 
         World world = new World(0, 0, 800, 600);
         world.getCamera().setPosition(0,0,6);
-        float[] pos = { 0f, 0f, -2f };
-        ItemObject cube = world.createItemObject("cube", pos, 1.0f, cubem);
+        ItemObject cube = world.createItemObject("cube", 0f, 0f, -2f, 1.0f, cubem);
         cube.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
         //cube.setPosition(new Vector3f(0f,3f,0f));
         TestRevolveAround rCube = new TestRevolveAround(cube);
