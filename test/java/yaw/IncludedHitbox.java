@@ -4,7 +4,6 @@ import yaw.engine.UpdateCallback;
 import yaw.engine.World;
 import yaw.engine.items.HitBox;
 import yaw.engine.items.ItemGroup;
-import yaw.engine.items.ItemObject;
 import yaw.engine.light.AmbientLight;
 import yaw.engine.light.DirectionalLight;
 import yaw.engine.meshs.Mesh;
@@ -13,9 +12,9 @@ import yaw.engine.skybox.Skybox;
 import org.joml.Vector3f;
 
 /**
- * Test for HitBox on different plan
+ * Test class for Hit boxes: rotations, colllision, multi-bounding-box hitboxes
  */
-public class TestHitBoxDifferentPlan implements UpdateCallback {
+public class IncludedHitbox implements UpdateCallback {
     private int nbUpdates = 0;
     private double totalDeltaTime = 0.0;
     private static long deltaRefreshMillis = 1000;
@@ -24,7 +23,7 @@ public class TestHitBoxDifferentPlan implements UpdateCallback {
     private ItemGroup cube_2_hitbox ;
     private float speed = 10;
 
-    public TestHitBoxDifferentPlan(ItemGroup cubes_1, ItemGroup cubes_2) {
+    public IncludedHitbox(ItemGroup cubes_1, ItemGroup cubes_2) {
         this.cube_1_hitbox = cubes_1;
         this.cube_2_hitbox = cubes_2;
     }
@@ -59,27 +58,18 @@ public class TestHitBoxDifferentPlan implements UpdateCallback {
         //cube_2_hitbox.rotate(0f, 1f, 0f);
 
         //Collision Test, this is testing the collision between each hitbox of each item for the example, this will not be the same for accurate tests
-        cube_2_hitbox.translate(-0.01f,0,0);
-
+        //cube_2_hitbox.translate(-0.002f,0,0);
         HitBox hb_1_1 =  cube_1_hitbox.fetchHitBox("hitbox 1");
-        HitBox hb_1_2 =  cube_1_hitbox.fetchHitBox("hitbox 2");
         HitBox hb_2_1 =  cube_2_hitbox.fetchHitBox("hitbox 1");
-        HitBox hb_2_2 =  cube_2_hitbox.fetchHitBox("hitbox 2");
-
-        if(hb_1_1.intersect(hb_2_1) || hb_1_1.intersect(hb_2_2) ||
+        /*if(hb_1_1.intersect(hb_2_1) || hb_1_1.intersect(hb_2_2) ||
                 hb_1_2.intersect(hb_2_1) || hb_1_2.intersect(hb_2_2)){
             System.out.println("There is a collision");
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
+        }*/
+        if(hb_2_1.isContainedIn(hb_1_1)){
+            System.out.println("hitbox 2 is in hitbox 1");
         }
 
     }
-
-
 
 
     public static void main(String[] args)  {
@@ -103,32 +93,32 @@ public class TestHitBoxDifferentPlan implements UpdateCallback {
         c2.translate(10, 0, 0); *//* Allows to resize our Pyramid.*//*
         c2.rotate(-3, 2, 0);*/
 
+
+
+
+
         //Creation of the First group
         ItemGroup gr1 = new ItemGroup("gr1");
-        ItemObject c1 = world.createItemObject("1", 0.0f, 0.0f, 0.0f, 1, MeshBuilder.generateHalfBlock(1, 1, 1));
-        gr1.add("item",c1);
-        HitBox i = world.createHitBox("c1 first bounding box", 0.0f, 0.0f, 0.25f,1f, 1.0f, 1.0f, 0.5f);
+        //ItemObject c1 = world.createItemObject("1", 0.0f, 0.0f, 0.0f, 1, MeshBuilder.generateHalfBlock(1, 1, 1));
+        //gr1.add("item",c1);
+        HitBox i = world.createHitBox("c1 first bounding box",0.f,0.f, 0.25f,1f,1.0f, 1.0f, 1f);
+
         gr1.add("hitbox 1", i);
-        HitBox i2 = world.createHitBox("c1 second bounding box", 0.0f, 0.0f, -0.25f,1f, 1.0f, 1.0f, 0.5f);
-        gr1.add("hitbox 2", i2);
 
 
 
 
         //Creation of the second group
         ItemGroup gr2 = new ItemGroup("gr2");
-        ItemObject c2 = world.createItemObject("2", 0.0f, 0.0f, 0.0f, 1, MeshBuilder.generateHalfBlock(1, 1, 1));
-        gr2.add("item",c2);
-        HitBox j = world.createHitBox("c1 first bounding box", 0.0f, 0.0f, 0.25f,1f, 1.0f, 1.0f, 0.5f);
+        //ItemObject c2 = world.createItemObject("2", 0.0f, 0.0f, 0.0f, 0.5f, MeshBuilder.generateHalfBlock(1, 1, 1));
+        //gr2.add("item",c2);
+        HitBox j = world.createHitBox("c1 first bounding box",0.0f, 0.0f, 0.25f,0.05f, 1.0f, 1.0f, 1f);
         gr2.add("hitbox 1", j);
-        HitBox j2 = world.createHitBox("c1 second bounding box", 0.0f, 0.0f, -0.25f,1f, 1.0f, 1.0f, 0.5f);
-        gr2.add("hitbox 2", j2);
-        gr2.translate(0.75f,0,2);
 
+        //gr2.translate(1,0.35f,0);
 
         //System.out.println("Collision ?: " + Collision.isInCollision(c1, c2));
         //System.out.println("Collision ?: " + Collision.isCollision(c1, c2));
-
 
         /* Creating Light for Our World */
         world.getSceneLight().setSun(new DirectionalLight(new Vector3f(1, 1, 1), 1, new Vector3f(0, -1, 1)));
@@ -139,10 +129,9 @@ public class TestHitBoxDifferentPlan implements UpdateCallback {
         /* A skybox will allow us to set a background to give the illusion that our 3D world is bigger. */
         world.setSkybox(new Skybox(500, 500, 500, new Vector3f(0,0,0)));
 
+        gr1.rotateZ(45);
+        IncludedHitbox mBb = new IncludedHitbox(gr1, gr2);
 
-        TestHitBoxDifferentPlan mBb = new TestHitBoxDifferentPlan(gr1, gr2);
-
-        gr1.rotateXYZ(0,45,0);
         world.getCamera().translate(0,0,7);
 
         world.registerUpdateCallback(mBb);
