@@ -58,11 +58,11 @@ public class HitboxRotate implements UpdateCallback {
 
         /* working */
         //cube_1_hitbox.rotateX(1f);
-        cube_1_hitbox.rotateY(1f);
+        //cube_1_hitbox.rotateY(1f);
         //cube_1_hitbox.rotateZ(2f);
         //cube_1_hitbox.rotateXYZ(1f, 1f, 2f);
         //cube_1_hitbox.rotateZAround(1f, new Vector3f(0f, 0f, 0f));
-        cube_1_hitbox.rotateXYZAround(0f, 0f, 1f, new Vector3f(0f, 0f, 0f));
+        //cube_1_hitbox.rotateXYZAround(0f, 0f, 1f, new Vector3f(0f, 0f, 0f));
         //cube_1_hitbox.rotateAxisAround(1f, new Vector3f(0.5f, 1f, 1f), new Vector3f(1f, 0f, 2.0f));
         //cube_1_hitbox.rotateAxis(1f, new Vector3f(0.5f, 1f, 1f));
 

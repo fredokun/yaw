@@ -1,6 +1,7 @@
 package yaw.engine.debug;
 
 import yaw.engine.World;
+import yaw.engine.collision.Collision;
 import yaw.engine.items.HitBox;
 import yaw.engine.items.ItemGroup;
 import yaw.engine.items.ItemObject;
@@ -59,7 +60,7 @@ public class MainWorld {
         g1.rotateXYZ(0, 0, 10);
         g2.rotateXYZ(0, 10, 0);
 
-        System.out.println("Collision ?: " + i.intersect(i2));
+        System.out.println("Collision ?: " + i.isIsCollisionWith(i2));
 
 
         /* Creating Light for Our World */
