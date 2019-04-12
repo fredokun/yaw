@@ -1,18 +1,20 @@
 package yaw.engine;
 
 import org.joml.Quaternionf;
+import org.lwjgl.glfw.GLFWKeyCallback;
 import yaw.engine.camera.Camera;
 import yaw.engine.items.*;
 import yaw.engine.light.SceneLight;
 import yaw.engine.meshs.*;
+import yaw.engine.meshs.strategy.DefaultDrawingStrategy;
 import yaw.engine.skybox.Skybox;
 import org.joml.Vector3f;
 
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.glViewport;
-import static org.lwjgl.glfw.GLFW.glfwGetTime;
 
 /**
  * Allows the creation of the world and manages through a thread the events, the updates and the rendering to the screen at constant rate.
@@ -31,8 +33,9 @@ public class World implements Runnable {
     private boolean mLoop;
     private int initX, initY, initWidth, initHeight;
     private boolean initVSYNC;
-    private WorldNucleus mNucleus;
+
     private UpdateCallback updateCallback;
+    private InputCalback inputCallback;
 
     /**
      * Initializes the elements to create the window
@@ -65,19 +68,19 @@ public class World implements Runnable {
     }
 
     public World() {
-        this.mNucleus = WorldNucleus.getInstance();
-        this.mRenderer = mNucleus.createRenderer();
+        this.mRenderer = new Renderer();
         this.mCamerasList = new Vector<>();
-        this.mCamera = mNucleus.createCamera();
-        this.mSceneVertex = mNucleus.createSceneVertex();
-        this.mSceneLight = mNucleus.createSceneLight();
-        this.mCallback = mNucleus.createCallback();
+        this.mCamera = new Camera();
+        this.mSceneVertex = new SceneVertex();
+        this.mSceneLight = new SceneLight();
+        this.mCallback = new KeyCallbackTMP();
         this.mItemGroupArrayList = new Vector<>();
         this.mSkyboxToBeRemoved = new Vector<>();
         this.mLoop = true;
         this.initVSYNC = true;
         this.mStringTextureConcurrentHashMap = new ConcurrentHashMap<>();
-        updateCallback = null;
+        this.updateCallback = null;
+        this.inputCallback =null;
     }
 
     /**
@@ -124,7 +127,7 @@ public class World implements Runnable {
      */
     public ItemObject createItemObject(String id, float x, float y, float z, float pScale, Mesh pMesh) {
         ItemObject lItem = new ItemObject(id, new Vector3f(x, y, z)
-                                      , new Quaternionf(), pScale, pMesh);
+                , new Quaternionf(), pScale, pMesh);
 
         mSceneVertex.add(lItem);
         return lItem;
@@ -148,16 +151,17 @@ public class World implements Runnable {
             throw new RuntimeException("RGB must represent 3 colors");
         }
         Vector3f lMaterialColor = new Vector3f(rgb[0], rgb[1], rgb[2]);
-        Material lMaterial = mNucleus.createMaterial(lMaterialColor);
+        Material lMaterial = new Material(lMaterialColor);
         //Texture part
         if (pTextureName != null && !pTextureName.isEmpty()) {
             Texture lTexture = mStringTextureConcurrentHashMap.get(pTextureName);
             if (lTexture == null) {
-                lTexture = mNucleus.createTexture(pTextureName);
+                lTexture = new Texture(pTextureName);
             }
             lMaterial.setTexture(lTexture);
         }
-        Mesh lMesh = mNucleus.createMesh(pVertices, pTextCoords, pNormals, pIndices, pWeight);
+        Mesh lMesh = new Mesh(pVertices, pTextCoords, pNormals, pIndices, pWeight);
+        lMesh.setDrawingStrategy(new DefaultDrawingStrategy());
         lMesh.setMaterial(lMaterial);
         return lMesh;
     }
@@ -176,8 +180,9 @@ public class World implements Runnable {
             throw new RuntimeException("RGB must represent 3 colors");
         }
         Vector3f lMaterialColor = new Vector3f(rgb[0], rgb[1], rgb[2]);
-        Material lMaterial = mNucleus.createMaterial(lMaterialColor);
-        Mesh lMesh = mNucleus.createMesh(pVertices, pNormals, pIndices);
+        Material lMaterial = new Material(lMaterialColor);
+        Mesh lMesh = new Mesh(pVertices, pNormals, pIndices);
+        lMesh.setDrawingStrategy(new DefaultDrawingStrategy());
         lMesh.setMaterial(lMaterial);
         return lMesh;
     }
@@ -203,12 +208,15 @@ public class World implements Runnable {
 
 
     public boolean isInCollision(HitBox hb1, HitBox hb2) {
-        return hb1.isIsCollisionWith(hb2);
+        return hb1.intersect(hb2);
     }
 
     public synchronized void registerUpdateCallback(UpdateCallback cb) {
         updateCallback = cb;
     }
+
+    public synchronized void registerKeyCallback(KeyCallback key) { inputCallback = key;}
+
 
     /**
      * Allows to initialize the parameters of the class World.
@@ -233,7 +241,7 @@ public class World implements Runnable {
      * @param pB      b
      */
     public void setSkybox(float pWidth, float pLength, float pHeight, float pR, float pG, float pB) {
-        Skybox lSkybox = mNucleus.createSkybox(pWidth, pLength, pHeight, new Vector3f(pR, pG, pB));
+        Skybox lSkybox = new Skybox(pWidth, pLength, pHeight, new Vector3f(pR, pG, pB));
         setSkybox(lSkybox);
     }
 
@@ -297,6 +305,10 @@ public class World implements Runnable {
     private void UFRV() throws InterruptedException {
         double dt = 0.01; // Update Rate: 1 ~= 2 fps | 0.001 ~= 1000 fps
         /* Initialization of the window we currently use. */
+        int key;
+        int scancode;
+        int action;
+        int mods;
         glViewport(initX, initY, initWidth, initHeight);
         double beforeTime = glfwGetTime();
         double lag = 0d;
@@ -317,6 +329,29 @@ public class World implements Runnable {
                     lag -= dt;
                 }
             }
+
+
+            // TODO : is this going in the right direction ? is the idea to get the key pressed here and send its information to the KeyCallBack the right idea ?
+
+            if(Input.isKeyDown(GLFW_KEY_UP)){
+                key=GLFW_KEY_UP;
+                scancode= glfwGetKeyScancode(key);
+                action =GLFW_PRESS;
+                mods = 0;
+            }else{
+                key=GLFW_KEY_DOWN;
+                scancode= glfwGetKeyScancode(key);
+                action =GLFW_PRESS;
+                mods = 0;
+            }
+
+
+
+            if(inputCallback != null){
+                inputCallback.sendKey(key, scancode,action,mods);
+            }
+
+
 
             /*Clean the window*/
             boolean isResized = Window.clear();
@@ -440,7 +475,7 @@ public class World implements Runnable {
         return mSceneLight;
     }
 
-    public KeyCallback getCallback() {
+    public KeyCallbackTMP getCallback() {
         return mCallback;
     }
 }
