@@ -124,9 +124,9 @@ public class Camera {
     /**
      * Changes the position of the camera.
      *
-     * @param x coordinate X of the camera
-     * @param y coordinate Y of the camera
-     * @param z coordinate Z of the camera
+     * @param x coordonnée d'axe x
+     * @param y coordonnée d'axe y
+     * @param z coordonnée d'axe z
      */
     public void setPosition(float x, float y, float z) {
         this.position.x = x;
@@ -145,9 +145,9 @@ public class Camera {
     /**
      * Changes the orientation of the camera.
      *
-     * @param x coordinate X of the camera
-     * @param y coordinate Y of the camera
-     * @param z coordinate Z of the camera
+     * @param x coordonnée d'axe x
+     * @param y coordonnée d'axe y
+     * @param z coordonnée d'axe z
      */
     public void setOrientation(float x, float y, float z) {
         this.orientation.x = x;
@@ -261,6 +261,23 @@ public class Camera {
             float yP = getPosition().y;
             float zP = getPosition().z;
 
+
+
+
+
+
+            /*float distX = Math.abs(xO-xP);
+            float distY = Math.abs(yO-yP);
+            float distZ = Math.abs(zO-zP);
+
+            float percentX = distX / (distX + distY + distZ) * 0.1f;
+            float percentY = distY / (distX + distY + distZ) * 0.1f;
+            float percentZ = distZ / (distX + distY + distZ) * 0.1f;
+            System.out.println(percentX);
+            System.out.println(percentY);
+            System.out.println(percentZ);
+            System.out.println("");
+*/
             int signX=1;
             int signY=1;
             int signZ=1;
@@ -275,6 +292,8 @@ public class Camera {
                 signZ=-1;
             }
             this.setOrientation(0,0,45);
+            //this.updateCameraMat();
+            //this.translate(xP*0.01f*signX , yP*0.01f*signY , zP*0.01f*signZ  );
 
         }
         if(Input.isKeyDown(GLFW_KEY_A))

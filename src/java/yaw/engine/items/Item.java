@@ -97,28 +97,19 @@ public abstract class Item {
      * Rotate along X axis
      * @param angle of rotation (in degree)
      */
-    public void rotateX(float angle) {
-        orientation.rotateX(toRadians(angle));
-        invalidate();
-    }
+    public abstract void rotateX(float angle);
 
     /**
      * Rotate along Y axis
      * @param angle of rotation (in degree)
      */
-    public void rotateY(float angle) {
-        orientation.rotateY(toRadians(angle));
-        invalidate();
-    }
+    public abstract void rotateY(float angle);
 
     /**
      * Rotate along Z axis
      * @param angle of rotation (in degree)
      */
-    public void rotateZ(float angle) {
-        orientation.rotateZ(toRadians(angle));
-        invalidate();
-    }
+    public abstract void rotateZ(float angle);
 
     /**
      * Rotation along three axes (Euler angles rotation)
@@ -126,20 +117,14 @@ public abstract class Item {
      * @param angleY same for axis Y
      * @param angleZ same for axis Z
      */
-    public void rotateXYZ(float angleX, float angleY, float angleZ) {
-        orientation.rotateXYZ(toRadians(angleX), toRadians(angleY), toRadians(angleZ));
-        invalidate();
-    }
+    public abstract void rotateXYZ(float angleX, float angleY, float angleZ) ;
 
     /**
      * Rotation of given angle along an axis
      * @param angle angle of rotation in degrees
      * @param axis axis of rotation
      */
-    public void rotateAxis(float angle, Vector3f axis) {
-        orientation.rotateAxis(toRadians(angle), axis);
-        invalidate();
-    }
+    public abstract void rotateAxis(float angle, Vector3f axis) ;
 
     /**
      * Rotation of given angle along an axis, and aroung the specified center
@@ -147,52 +132,28 @@ public abstract class Item {
      * @param axis the axis of rotation
      * @param center the center of rotation
      */
-    public void rotateAxisAround(float angle, Vector3f axis, Vector3f center) {
-        axis = axis.normalize();
-        // change orientation
-        orientation.rotateAxis(toRadians(angle), axis);
-
-        // change position
-        new Matrix4f().rotateAround(new Quaternionf(new AxisAngle4f(toRadians(angle), axis)), center.x, center.y, center.z)
-                .transformPosition(position);
-
-/*
-        new Matrix4f()
-                .translate(center)
-                .rotate(toRadians(angle), axis)
-                .translate(center.negate())
-                .transformPosition(position);
-*/
-
-        invalidate();
-    }
+    public abstract void rotateAxisAround(float angle, Vector3f axis, Vector3f center);
 
     /**
      * Rotate along X axis, around center
      * @param angle of rotation (in degree)
      * @param center the center of rotation
      */
-    public final void rotateXAround(float angle, Vector3f center) {
-        rotateAxisAround(angle, new Vector3f(1.0f, 0.0f, 0.0f), center);
-    }
+    public  abstract void rotateXAround(float angle, Vector3f center) ;
 
     /**
      * Rotate along Y axis, around center
      * @param angle of rotation (in degree)
      * @param center the center of rotation
      */
-    public final void rotateYAround(float angle, Vector3f center) {
-        rotateAxisAround(angle, new Vector3f(0.0f, 1.0f, 0.0f), center);
-    }
+    public abstract void rotateYAround(float angle, Vector3f center) ;
 
     /**
      * Rotate along Z axis, around center
      * @param angle of rotation (in degree)
      * @param center the center of rotation
      */
-    public final void rotateZAround(float angle, Vector3f center) {
-        rotateAxisAround(angle, new Vector3f(0.0f, 0.0f, 1.0f), center);
-    }
+    public abstract void rotateZAround(float angle, Vector3f center);
 
     /**
      * Rotation along three axes (Euler angles rotation), around center
@@ -201,12 +162,7 @@ public abstract class Item {
      * @param angleZ same for axis Z
      * @param center the center of rotation
      */
-    public final void rotateXYZAround(float angleX, float angleY, float angleZ, Vector3f center) {
-        AxisAngle4f aaxis = new AxisAngle4f(new Quaternionf().rotationXYZ(toRadians(angleX)
-                                                    , toRadians(angleY)
-                                                    , toRadians(angleZ))).normalize();
-        rotateAxisAround(toDegrees(aaxis.angle), new Vector3f(aaxis.x, aaxis.y, aaxis.z), center);
-    }
+    public abstract void rotateXYZAround(float angleX, float angleY, float angleZ, Vector3f center) ;
 
 
     // XXX : use this ?
