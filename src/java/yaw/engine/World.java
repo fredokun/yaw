@@ -26,7 +26,7 @@ public class World implements Runnable {
     private Vector<Camera> mCamerasList;
     private Renderer mRenderer;
     private SceneLight mSceneLight;
-    private KeyCallbackTMP mCallback;
+    private KeyCallback mCallback;
     private Vector<ItemGroup> mItemGroupArrayList;
     private Skybox mSkybox = null;
     private ConcurrentHashMap<String, Texture> mStringTextureConcurrentHashMap;
@@ -35,7 +35,7 @@ public class World implements Runnable {
     private boolean initVSYNC;
 
     private UpdateCallback updateCallback;
-    private KeyCallback keyCallback;
+    private InputCalback inputCallback;
 
     /**
      * Initializes the elements to create the window
@@ -80,7 +80,7 @@ public class World implements Runnable {
         this.initVSYNC = true;
         this.mStringTextureConcurrentHashMap = new ConcurrentHashMap<>();
         this.updateCallback = null;
-        this.keyCallback=null;
+        this.inputCallback =null;
     }
 
     /**
@@ -127,7 +127,7 @@ public class World implements Runnable {
      */
     public ItemObject createItemObject(String id, float x, float y, float z, float pScale, Mesh pMesh) {
         ItemObject lItem = new ItemObject(id, new Vector3f(x, y, z)
-                                      , new Quaternionf(), pScale, pMesh);
+                , new Quaternionf(), pScale, pMesh);
 
         mSceneVertex.add(lItem);
         return lItem;
@@ -215,7 +215,7 @@ public class World implements Runnable {
         updateCallback = cb;
     }
 
-    public synchronized void registerKeyCallback(KeyCallback key) { keyCallback = key;}
+    public synchronized void registerKeyCallback(KeyCallback key) { inputCallback = key;}
 
 
     /**
@@ -347,8 +347,8 @@ public class World implements Runnable {
 
 
 
-            if(keyCallback!= null){
-                keyCallback.sendKey(key, scancode,action,mods);
+            if(inputCallback != null){
+                inputCallback.sendKey(key, scancode,action,mods);
             }
 
 
