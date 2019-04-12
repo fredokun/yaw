@@ -20,9 +20,9 @@ public class MainRainDrop {
         //THE WORLD IS NOW INIT IN THE THREAD
         //testing texture here
         /*Float[] f = new Float[]{0.f, 0.f, -2.f};
-        Item c1 = world.createItem("1", f, 1, MeshBuilderOld.generateBlock(1, 1, 1));
+        Item c1 = world.createItem("1", f, 1, MeshBuilder.generateBlock(1, 1, 1));
 
-        Item c2 = world.createItem("2", f, 3, MeshBuilderOld.generateTetrahedron());
+        Item c2 = world.createItem("2", f, 3, MeshBuilder.generateTetrahedron());
 
         c1.translate(0, 0, 0); *//* Allows to resize our block.*//*
         c2.setPosition(-3, 0, 0); *//* Allows to resize our Pyramid. *//*

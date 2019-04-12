@@ -64,9 +64,15 @@ public class TestHitBox implements UpdateCallback {
         HitBox hb_1_2 =  cube_1_hitbox.fetchHitBox("hitbox 2");
         HitBox hb_2_1 =  cube_2_hitbox.fetchHitBox("hitbox 1");
         HitBox hb_2_2 =  cube_2_hitbox.fetchHitBox("hitbox 2");
-        if(hb_1_1.intersect(hb_2_1) || hb_1_1.intersect(hb_2_2) ||
-                hb_1_2.intersect(hb_2_1) || hb_1_2.intersect(hb_2_2)){
+        if(hb_1_1.isIsCollisionWith(hb_2_1) || hb_1_1.isIsCollisionWith(hb_2_2) ||
+                hb_1_2.isIsCollisionWith(hb_2_1) || hb_1_2.isIsCollisionWith(hb_2_2)){
             System.out.println("There is a collision");
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
         }
 
     }
@@ -112,11 +118,11 @@ public class TestHitBox implements UpdateCallback {
         ItemGroup gr2 = new ItemGroup("gr2");
         ItemObject c2 = world.createItemObject("2", 0.0f, 0.0f, 0.0f, 1, MeshBuilder.generateHalfBlock(1, 1, 1));
         gr2.add("item",c2);
-        HitBox j = world.createHitBox("c1 first bounding box",0.0f, 0.0f, 0.25f,1f, 1.0f, 1.0f, 0.5f);
+        HitBox j = world.createHitBox("c1 first bounding box",0.0f, 0.0f, 2.25f,1f, 1.0f, 1.0f, 0.5f);
         gr2.add("hitbox 1", j);
-        HitBox j2 = world.createHitBox("c1 second bounding box",0.0f, 0.0f, -0.25f,1f, 1.0f, 1.0f, 0.5f);
+        HitBox j2 = world.createHitBox("c1 second bounding box",0.0f, 0.0f, 1.72f,1f, 1.0f, 1.0f, 0.5f);
         gr2.add("hitbox 2", j2);
-        gr2.translate(5,0,0);
+        gr2.translate(3,0,0);
 
         //System.out.println("Collision ?: " + Collision.isInCollision(c1, c2));
         //System.out.println("Collision ?: " + Collision.isCollision(c1, c2));
