@@ -64,8 +64,8 @@ public class TestHitBox implements UpdateCallback {
         HitBox hb_1_2 =  cube_1_hitbox.fetchHitBox("hitbox 2");
         HitBox hb_2_1 =  cube_2_hitbox.fetchHitBox("hitbox 1");
         HitBox hb_2_2 =  cube_2_hitbox.fetchHitBox("hitbox 2");
-        if(hb_1_1.isIsCollisionWith(hb_2_1) || hb_1_1.isIsCollisionWith(hb_2_2) ||
-                hb_1_2.isIsCollisionWith(hb_2_1) || hb_1_2.isIsCollisionWith(hb_2_2)){
+        if(hb_1_1.collidesWith(hb_2_1) || hb_1_1.collidesWith(hb_2_2) ||
+                hb_1_2.collidesWith(hb_2_1) || hb_1_2.collidesWith(hb_2_2)){
             System.out.println("There is a collision");
             try {
                 Thread.sleep(3000);

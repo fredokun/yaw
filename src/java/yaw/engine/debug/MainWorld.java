@@ -59,7 +59,7 @@ public class MainWorld {
         g1.rotateXYZ(0, 0, 10);
         g2.rotateXYZ(0, 10, 0);
 
-        System.out.println("Collision ?: " + i.intersect(i2));
+        System.out.println("Collision ?: " + i.collidesWith(i2));
 
 
         /* Creating Light for Our World */

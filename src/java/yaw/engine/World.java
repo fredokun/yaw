@@ -1,13 +1,13 @@
 package yaw.engine;
 
 import org.joml.Quaternionf;
-import org.lwjgl.glfw.GLFWKeyCallback;
 import yaw.engine.camera.Camera;
 import yaw.engine.items.*;
 import yaw.engine.light.SceneLight;
 import yaw.engine.meshs.*;
 import yaw.engine.meshs.strategy.DefaultDrawingStrategy;
 import yaw.engine.skybox.Skybox;
+import yaw.engine.util.InputCallback;
 import org.joml.Vector3f;
 
 import java.util.Vector;
@@ -26,7 +26,7 @@ public class World implements Runnable {
     private Vector<Camera> mCamerasList;
     private Renderer mRenderer;
     private SceneLight mSceneLight;
-    private KeyCallback mCallback;
+    private KeyCallback keyCallback;
     private Vector<ItemGroup> mItemGroupArrayList;
     private Skybox mSkybox = null;
     private ConcurrentHashMap<String, Texture> mStringTextureConcurrentHashMap;
@@ -35,7 +35,7 @@ public class World implements Runnable {
     private boolean initVSYNC;
 
     private UpdateCallback updateCallback;
-    private InputCalback inputCallback;
+    private InputCallback inputCallback;
 
     /**
      * Initializes the elements to create the window
@@ -73,7 +73,6 @@ public class World implements Runnable {
         this.mCamera = new Camera();
         this.mSceneVertex = new SceneVertex();
         this.mSceneLight = new SceneLight();
-        this.mCallback = new KeyCallbackTMP();
         this.mItemGroupArrayList = new Vector<>();
         this.mSkyboxToBeRemoved = new Vector<>();
         this.mLoop = true;
@@ -81,6 +80,8 @@ public class World implements Runnable {
         this.mStringTextureConcurrentHashMap = new ConcurrentHashMap<>();
         this.updateCallback = null;
         this.inputCallback =null;
+        // TODO : this old keyCallback mechanism should be removed
+        this.keyCallback = new KeyCallback();
     }
 
     /**
@@ -208,14 +209,18 @@ public class World implements Runnable {
 
 
     public boolean isInCollision(HitBox hb1, HitBox hb2) {
-        return hb1.intersect(hb2);
+        return hb1.collidesWith(hb2);
     }
 
     public synchronized void registerUpdateCallback(UpdateCallback cb) {
         updateCallback = cb;
     }
 
-    public synchronized void registerKeyCallback(KeyCallback key) { inputCallback = key;}
+    public synchronized void registerInputCallback(InputCallback callback) {
+        inputCallback = callback;
+    }
+
+    public synchronized void registerKeyCallback(KeyCallback key) { keyCallback = key;}
 
 
     /**
@@ -321,7 +326,7 @@ public class World implements Runnable {
             //refressh rate ??
 //            Thread.sleep(20); // XXX ? Why sleep ?
             mCamera.update();
-            mCallback.update();
+            keyCallback.update();
 
             if(updateCallback != null) {
                 while (lag >= dt) {
@@ -392,7 +397,7 @@ public class World implements Runnable {
             //refressh rate ??
             Thread.sleep(20); // XXX ? Why sleep ?
             mCamera.update();
-            mCallback.update();
+            keyCallback.update();
 
             /*Clean the window*/
             boolean isResized = Window.clear();
@@ -475,8 +480,5 @@ public class World implements Runnable {
         return mSceneLight;
     }
 
-    public KeyCallbackTMP getCallback() {
-        return mCallback;
-    }
 }
 

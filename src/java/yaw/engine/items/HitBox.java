@@ -33,7 +33,7 @@ public class HitBox extends ItemObject {
      * @param item      the second hitbox to test collision with
      * @return          true if item is touching the hitbox which is calling the method
      */
-    public boolean isIsCollisionWith(HitBox item){
+    public boolean collidesWith(HitBox item){
 
         // TODO: containment should be a collision
 
