@@ -2,10 +2,9 @@ package yaw.engine.debug;
 
 
 import yaw.engine.World;
-import yaw.engine.items.Item;
-import yaw.engine.meshs.MeshBuilder;
+import yaw.engine.items.ItemObject;
 import yaw.engine.meshs.Texture;
-
+import yaw.engine.meshs.MeshBuilder;
 /**
  * The Main Class that launches our game engine.
  */
@@ -33,16 +32,17 @@ public class MainRainDrop {
         (new Thread(world)).start();/* Launches the thread responsible for the display and our game loop. */
 
         for (int i = 0; i < 7; i++) {
-            Item item = world.createItem(i + "", f, 1, MeshBuilder.generateBlock(1, 1, 1));
+            ItemObject item = world.createItemObject(i + "", 0.0f, 0.0f, -2.0f, 1
+                    , MeshBuilder.generateBlock(1, 1, 1));
             item.translate((int) (Math.random() * 5), (int) (Math.random() * 5), (int) (Math.random() * 5));
             //item.rotate((int) (Math.random() * 90), (int) (Math.random() * 90), (int) (Math.random() * 90));
 
             if (i % 3 == 0)
-                item.getAppearance().getMaterial().setTexture(new Texture("/ressources/grassblock.png"));
+                item.getMesh().getMaterial().setTexture(new Texture("/ressources/grassblock.png"));
             else if (i % 3 == 1)
-                item.getAppearance().getMaterial().setTexture(new Texture("/ressources/sand.png"));
+                item.getMesh().getMaterial().setTexture(new Texture("/ressources/sand.png"));
             else
-                item.getAppearance().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
+                item.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
         }
 
 

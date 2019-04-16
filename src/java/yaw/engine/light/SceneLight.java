@@ -68,6 +68,10 @@ public class SceneLight {
             lightPos.x = aux.x;
             lightPos.y = aux.y;
             lightPos.z = aux.z;
+
+            //Bug correction
+            currPointLight.setPosition(lightPos);
+
             sh.setUniform("pointLights", currPointLight, i);
         }
 
@@ -85,6 +89,9 @@ public class SceneLight {
             lightPos.x = aux.x;
             lightPos.y = aux.y;
             lightPos.z = aux.z;
+
+            //Bug Correction
+            currSpotLight.setPosition(lightPos);
 
             sh.setUniform("spotLights", currSpotLight, i);
         }

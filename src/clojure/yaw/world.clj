@@ -61,7 +61,7 @@
 ;;Since we completely destroy the old architecture we will migrate the basic method to this module
 ;;README ONLY USE WORLD IT is A FACADE, no DIRECT USE OF MANAGEMENT/BUILDER TOOLS
 
-;; Mesh Functions------------------------------------------------
+;; MeshOld Functions------------------------------------------------
 ;; TODO: delete this when `create-simple-mesh` is stable (and we can handle texture)
 
 (defn create-mesh!
@@ -114,12 +114,13 @@
 (defn create-item!
   "Create an item in the `world` with the
   specified id, position, mesh"
-  [world & {:keys [id position scale mesh]
-            :or   {id       "can't read the doc..."
-                   position [0 0 -2]
+  [world id & {:keys [x y z scale mesh]}
+            :or   {x 0 
+                   y 0
+                   z 2
                    scale    1
-                   mesh     (create-mesh! world)}}]         ;;error here
-  (.createItem world id (float-array position) scale mesh))
+                   mesh     (create-mesh! world)}]         ;;error here
+  (.createItemObject world id x y z scale mesh))
 
 (defn remove-item!
   "Remove the specified `item` from the `world`"
@@ -139,7 +140,7 @@
                    color    [0 0 1]
                    scale    1
                    position [0 0 -2]
-                   id       ""}}]
+                   id (str (gensym "block-"))}}]
   (create-item! world :id id
                 :position position
                 :scale scale
@@ -241,23 +242,23 @@
 
 (defn set-ambient-light!
   "Set the ambient light of the world"
-  [world l]
-    (.setAmbient (lights world) l))
+  [world l
+    (.setAmbient (lights world) l)])
 
 (defn set-sun!
   "Set the sun of the world"
-  [world l]
-    (.setSun (lights world) l))
+  [world l
+    (.setSun (lights world) l)])
 
 (defn set-point-light!
   "Set the `n`th pointlight with the given `color`, `position`, `itensity`, and attenuation factors"
-  [world n l]
-    (.setPointLight (lights world) l n))
+  [world n l
+    (.setPointLight (lights world) l n)])
 
 (defn set-spot-light!
   "Set the `n`th spotlight with the given `color`, `intensity`, `position`, `direction` and attenuation factors"
-  [world n l]
-    (.setSpotLight (lights world) l n))
+  [world n l
+    (.setSpotLight (lights world) l n)])
 
 ;;COLLISIONS------------------------------------------------------
 
@@ -323,5 +324,4 @@
                                  z 0}}]
   (.translate item x y z))
 
-(defn clone! [world item] (.clone world item))
 
