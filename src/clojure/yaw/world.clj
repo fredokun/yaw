@@ -120,6 +120,7 @@
                       mesh     (create-mesh! world)}}]         ;;error here
   (.createItemObject world id (position 0) (position 1) (position 2) scale mesh))
 
+  
 (defn remove-item!
   "Remove the specified `item` from the `world`"
   [world item]
@@ -139,7 +140,7 @@
                    scale    1
                    position [0 0 -2]
                    id (str (gensym "block-"))}}]
-  (create-item! world :id id
+  (create-item! world id
                 :position position
                 :scale scale
                 :mesh (create-simple-mesh! world :rgb color)))
@@ -152,8 +153,8 @@
                    color    [0 0 1]
                    scale    1
                    position [0 0 -2]
-                   id       ""}}]
-  (create-item! world :id id
+                   id (str (gensym "pyra-"))}}]
+  (create-item! world id
                 :position position
                 :scale scale
                 :mesh (create-simple-mesh! world :rgb color :geometry (yaw.mesh/pyramid-geometry))))
@@ -315,7 +316,8 @@
                        :or   {x 0
                               y 0
                               z 0}}]
-  (.rotate item x y z))
+  (.rotateXYZ item x y z))
+
 (defn translate! [item & {:keys [x y z]
                           :or   {x 0
                                  y 0
