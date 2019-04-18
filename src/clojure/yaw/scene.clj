@@ -230,7 +230,7 @@
                               :rgb (second (:mat params)))
                            i (w/create-item!
                               (:world @univ)
-                              :id (str id)
+                              (str id)
                               :position (:pos params)
                               :scale (:scale params)
                               :mesh m)]
