@@ -121,11 +121,19 @@
    (mod (+ y (:y rotation)) 360)
    (mod (+ z (:z rotation)) 360)])
 
+(def +space-key+ (atom false))
+
+(w/register-input-callback! (:world @+myctrl+)
+ (fn [key _ action _]
+   (if (and (= key 32) ; HACK: GLFW constant for spacebar!
+            (= action 1)) ; HACK: GLFW_PRESS
+     (swap! +space-key+ (fn [old] (not old))))))
+
 (defn update-cube-state [{pos :pos
                           rot :rot
                           delta :delta}]
   (let [checks (pos-check pos)
-        rotation' (update-rot rot)
+        rotation' (if @+space-key+ (update-rot rot) rot)
         delta' (update-delta checks delta)]
     {:pos (mapv + pos delta')
      :rot rotation'

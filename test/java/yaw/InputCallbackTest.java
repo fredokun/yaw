@@ -8,7 +8,7 @@ import yaw.engine.camera.Camera;
 import yaw.engine.items.ItemObject;
 import yaw.engine.meshs.MeshBuilder;
 import yaw.engine.meshs.Texture;
-import yaw.engine.util.InputCallback;
+import yaw.engine.InputCallback;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -4,7 +4,7 @@
             [yaw.render :as render :refer [render!]]))
 
 ;;{
-;; ## Reactive atoms
+;; # Reactive atoms
 ;;
 ;; Once again inspired by reagent, we introduce a notion of *reactive atom* which
 ;; is a specialiized form of a Clojure atom.
@@ -95,16 +95,22 @@
       queue)
     []))
 
+;; TODO: handle args, remove the wrapping inside a vector
+;; TODO (later): don't use an agent but rather an atom with an
+;; immutable queue (with limited size)...
 (defn dispatch [[id & args]]
   (when (keyword? id)
     (send event-queue conj id)
     (send event-queue handle-event)))
 
+;;{
+;; TODO : comments in markdown
+;;}
 
 (defn activate! [controller vscene]
   (dispatch [:react/initialize])
   (render/render! controller vscene)
   (let [update (create-update-ratom controller)]
-    (add-watch update :update-yaw (fn [_ _ _ _]
-                                    (dispatch [:react/frame-update])))))
+    (add-watch update :update-yaw (fn [_ _ _ delta-time]
+                                    (dispatch [:react/frame-update delta-time])))))
 

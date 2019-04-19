@@ -17,7 +17,7 @@ public class Window {
     public static GLCapabilities caps;
 
 
-    private static long windowHandle;
+    /* package */ static long windowHandle;
     private static int width;
     private static int height;
     private static boolean resized;
@@ -56,7 +56,7 @@ public class Window {
 
         /* This function sets the key callback of the specified window,
            which is called when a key is pressed, repeated or released.*/
-        glfwSetKeyCallback(windowHandle, keyCallback = new Input());
+        // glfwSetKeyCallback(windowHandle, keyCallback = new Input());
 
         /* Setup resize callback
            This function sets the size callback of the specified window, which is called when the window is resized.

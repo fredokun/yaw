@@ -218,7 +218,7 @@
                        :actual tag}))
       (run!
        (fn [[action & details]]
-         (println details)
+         ;; (println details)
          (case action
            :item/add (let [[id params] details
                            params (merge {:mat [:color [1 1 1]] :scale 1 :pos [0 0 0] :rot [0 0 0]}

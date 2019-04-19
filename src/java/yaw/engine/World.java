@@ -1,13 +1,15 @@
 package yaw.engine;
 
 import org.joml.Quaternionf;
+import org.lwjgl.glfw.GLFWKeyCallback;
+import org.lwjgl.glfw.GLFWKeyCallbackI;
 import yaw.engine.camera.Camera;
 import yaw.engine.items.*;
 import yaw.engine.light.SceneLight;
 import yaw.engine.meshs.*;
 import yaw.engine.meshs.strategy.DefaultDrawingStrategy;
 import yaw.engine.skybox.Skybox;
-import yaw.engine.util.InputCallback;
+import yaw.engine.InputCallback;
 import org.joml.Vector3f;
 
 import java.util.Vector;
@@ -36,6 +38,7 @@ public class World implements Runnable {
 
     private UpdateCallback updateCallback;
     private InputCallback inputCallback;
+    private GLFWKeyCallbackI glfwKeyCallback;
 
     /**
      * Initializes the elements to create the window
@@ -217,8 +220,21 @@ public class World implements Runnable {
     }
 
     public synchronized void registerInputCallback(InputCallback callback) {
+        if (inputCallback != null) {
+            throw new Error("Input callback already registered");
+        }
         inputCallback = callback;
+        glfwKeyCallback = new GLFWKeyCallbackI() {
+            @Override
+            public void invoke(long window, int key, int scancode, int action, int mods) {
+                System.out.println("Key pressed (java): key=" + Integer.toString(key));
+                callback.sendKey(key, scancode, action, mods);
+            }
+        };
+
+        glfwSetKeyCallback(Window.windowHandle, GLFWKeyCallback.create(glfwKeyCallback));
     }
+
 
     public synchronized void registerKeyCallback(KeyCallback key) { keyCallback = key;}
 
@@ -334,28 +350,6 @@ public class World implements Runnable {
                     lag -= dt;
                 }
             }
-
-
-            // TODO : is this going in the right direction ? is the idea to get the key pressed here and send its information to the KeyCallBack the right idea ?
-
-            if(Input.isKeyDown(GLFW_KEY_UP)){
-                key=GLFW_KEY_UP;
-                scancode= glfwGetKeyScancode(key);
-                action =GLFW_PRESS;
-                mods = 0;
-            }else{
-                key=GLFW_KEY_DOWN;
-                scancode= glfwGetKeyScancode(key);
-                action =GLFW_PRESS;
-                mods = 0;
-            }
-
-
-
-            if(inputCallback != null){
-                inputCallback.sendKey(key, scancode,action,mods);
-            }
-
 
 
             /*Clean the window*/

@@ -2,7 +2,7 @@
   (:import (yaw.engine.meshs MeshBuilder)
            (yaw.engine.items Item)
            (yaw.engine World
-                       UpdateCallback)
+                       InputCallback)
            (yaw.engine.light AmbientLight DirectionalLight PointLight SpotLight)
            (yaw.engine.camera Camera))
   (:require [yaw.mesh]))
@@ -43,20 +43,23 @@
   (swap! univ assoc-in [:meshes id] mesh))
 
 ;;CALLBACKS---------------------------------------------------------------
-(defn callmap "Retrieve the `world` callback map"
-  [world] (.getCallback world))
 
-(defn register-callback! "Add a callback to the `world` callmap"
-  [world name f]
-  (.registerCallback (callmap world) name f))
+(defn register-input-callback! 
+  "Register the input callback for low-level keyboard management."
+  [world callback]
+  (let [cb (reify yaw.engine.InputCallback
+             (sendKey [this key scancode action mode]
+               (println "key event! key=" key " scancode=" scancode "action=" action "mode=" mode)
+               (callback key scancode action mode)))]
+    (println "[input callback] cb=" cb "world=" world)
+    (.registerInputCallback world cb)))
 
-(defn clear-callback! "Remove the named callback from the `world` callmap"
-  [world name]
-  (.clearCallback (callmap world) name))
 
-(defn clear-keystroke! "Remove the specified function from the callback corresponding to the specified key"
-  [world key f]
-  (.clearFunctionOfKey (callmap world) key f))
+;; TODO
+;; (defn unregister-input-callback!
+;;   "Unregister the current input callback (if any)"
+;;   [world]
+;;   )
 
 ;;Since we completely destroy the old architecture we will migrate the basic method to this module
 ;;README ONLY USE WORLD IT is A FACADE, no DIRECT USE OF MANAGEMENT/BUILDER TOOLS
