@@ -47,11 +47,11 @@
 (defn register-input-callback! 
   "Register the input callback for low-level keyboard management."
   [world callback]
-  (let [cb (reify yaw.engine.InputCallback
+  (let [cb (reify InputCallback
              (sendKey [this key scancode action mode]
-               (println "key event! key=" key " scancode=" scancode "action=" action "mode=" mode)
+               ;; (println "key event! key=" key " scancode=" scancode "action=" action "mode=" mode)
                (callback key scancode action mode)))]
-    (println "[input callback] cb=" cb "world=" world)
+    ;; (println "[input callback] cb=" cb "world=" world)
     (.registerInputCallback world cb)))
 
 
