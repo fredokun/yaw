@@ -39,6 +39,8 @@ public class World implements Runnable {
     private UpdateCallback updateCallback;
     private InputCallback inputCallback;
     private GLFWKeyCallbackI glfwKeyCallback;
+    private volatile boolean initialized;
+
 
     /**
      * Initializes the elements to create the window
@@ -52,6 +54,7 @@ public class World implements Runnable {
     public World(int pInitX, int pInitY, int pInitWidth, int pInitHeight, boolean pInitVSYNC) {
         this(pInitX, pInitY, pInitWidth, pInitHeight);
         this.initVSYNC = pInitVSYNC;
+        this.initialized = false;
     }
 
     /**
@@ -82,7 +85,7 @@ public class World implements Runnable {
         this.initVSYNC = true;
         this.mStringTextureConcurrentHashMap = new ConcurrentHashMap<>();
         this.updateCallback = null;
-        this.inputCallback =null;
+        this.inputCallback = null;
         // TODO : this old keyCallback mechanism should be removed
         this.keyCallback = new KeyCallback();
     }
@@ -220,19 +223,14 @@ public class World implements Runnable {
     }
 
     public synchronized void registerInputCallback(InputCallback callback) {
-        if (inputCallback != null) {
+        if(inputCallback != null) {
             throw new Error("Input callback already registered");
         }
         inputCallback = callback;
-        glfwKeyCallback = new GLFWKeyCallbackI() {
-            @Override
-            public void invoke(long window, int key, int scancode, int action, int mods) {
-                System.out.println("Key pressed (java): key=" + Integer.toString(key));
-                callback.sendKey(key, scancode, action, mods);
-            }
-        };
 
-        glfwSetKeyCallback(Window.windowHandle, GLFWKeyCallback.create(glfwKeyCallback));
+        if(initialized) {
+            Window.getGLFWKeyCallback().registerInputCallback(callback);
+        }
     }
 
 
@@ -244,11 +242,16 @@ public class World implements Runnable {
      *
      * @throws Exception Exception
      */
-    public void init() throws Exception {
+    public synchronized void init() throws Exception {
         Window.init(initWidth, initHeight, initVSYNC);
         // Create the rendering logic of our game.
         mRenderer.init();
 
+        if(inputCallback != null) {
+            Window.getGLFWKeyCallback().registerInputCallback(inputCallback);
+        }
+
+        initialized = true;
     }
 
     /**
