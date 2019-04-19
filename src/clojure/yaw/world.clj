@@ -1,7 +1,5 @@
 (ns yaw.world
-  (:import (yaw.engine.meshs MeshBuilder)
-           (yaw.engine.items Item)
-           (yaw.engine World
+  (:import (yaw.engine World
                        InputCallback)
            (yaw.engine.light AmbientLight DirectionalLight PointLight SpotLight)
            (yaw.engine.camera Camera))
@@ -308,6 +306,11 @@
   "Get a new group created in the `world`"
   [world]
   (.createGroup world))
+
+(defn group-add!
+  "Add the specified `item` to the `group`."
+  [group item]
+  (.add group item))
 
 (defn remove-group!
   "Remove the specified group from the `world`"
