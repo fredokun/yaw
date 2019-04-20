@@ -66,8 +66,8 @@ public class TestHitBoxDifferentPlan implements UpdateCallback {
         HitBox hb_2_1 =  cube_2_hitbox.fetchHitBox("hitbox 1");
         HitBox hb_2_2 =  cube_2_hitbox.fetchHitBox("hitbox 2");
 
-        if(hb_1_1.isIsCollisionWith(hb_2_1) || hb_1_1.isIsCollisionWith(hb_2_2) ||
-                hb_1_2.isIsCollisionWith(hb_2_1) || hb_1_2.isIsCollisionWith(hb_2_2)){
+        if(hb_1_1.collidesWith(hb_2_1) || hb_1_1.collidesWith(hb_2_2) ||
+                hb_1_2.collidesWith(hb_2_1) || hb_1_2.collidesWith(hb_2_2)){
             System.out.println("There is a collision");
             try {
                 Thread.sleep(3000);
@@ -148,16 +148,6 @@ public class TestHitBoxDifferentPlan implements UpdateCallback {
         world.registerUpdateCallback(mBb);
 
 
-        Thread th = new Thread(world);
-        th.start();
-
-
-
-        try {
-            th.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
 

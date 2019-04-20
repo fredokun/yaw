@@ -88,15 +88,8 @@ public class MovingCameraOnZ implements UpdateCallback {
         world.registerUpdateCallback(movingCamera);
 
 
-        Thread th = new Thread(world);
-        th.start();
-
-
-        try {
-            th.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        world.launch();
+        world.waitFortermination();
     }
 
 }
