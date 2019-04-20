@@ -24,10 +24,9 @@
              width  800
              height 600
              vsync true}}]
-  (let [world (World. x y width height vsync)
-        thread (future world)]
-    (.start (Thread. world))
-    (atom {:world world :thread thread
+  (let [world (World. x y width height vsync)]
+    (.launch world)
+    (atom {:world world
            :meshes {:mesh/box (yaw.mesh/box-geometry)
                     :mesh/cone (yaw.mesh/cone-geometry)
                     :mesh/pyramid (yaw.mesh/pyramid-geometry)}
