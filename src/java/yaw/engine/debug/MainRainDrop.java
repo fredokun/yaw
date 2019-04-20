@@ -29,7 +29,7 @@ public class MainRainDrop {
         c2.translate(10, 0, 0); *//* Allows to resize our Pyramid.*//*
         c2.rotate(-3, 2, 0);*/
         float[] f = new float[]{0.f, 0.f, -2.f};
-        (new Thread(world)).start();/* Launches the thread responsible for the display and our game loop. */
+        world.launch();/* Launches the thread responsible for the display and our game loop. */
 
         for (int i = 0; i < 7; i++) {
             ItemObject item = world.createItemObject(i + "", 0.0f, 0.0f, -2.0f, 1

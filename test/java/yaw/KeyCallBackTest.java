@@ -57,15 +57,10 @@ public class KeyCallBackTest implements InputCallback {
         ItemObject cube = world.createItemObject("cube", 0f, 0f, -2f, 1.0f, MeshBuilder.generateBlock(1, 1, 1));
         cube.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
         world.getCamera().setPosition(0,0,3);
-        Thread th = new Thread(world);
-        th.start();
 
+        world.launch();
+        world.waitFortermination();
 
-        try {
-            th.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
 

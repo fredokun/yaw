@@ -145,16 +145,9 @@ public class TestHitBox implements UpdateCallback {
         world.registerUpdateCallback(mBb);
 
 
-        Thread th = new Thread(world);
-        th.start();
+        world.launch();
+        world.waitFortermination();
 
-
-
-        try {
-            th.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
 

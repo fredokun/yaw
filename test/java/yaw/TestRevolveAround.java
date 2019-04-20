@@ -66,15 +66,8 @@ public class TestRevolveAround implements UpdateCallback {
 
         world.registerUpdateCallback(rCube);
 
-        Thread th = new Thread(world);
-        th.start();
-
-
-        try {
-            th.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        world.launch();
+        world.waitFortermination();
     }
 
 }
