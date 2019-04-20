@@ -17,13 +17,18 @@ public class Window {
     public static GLCapabilities caps;
 
 
-    private static long windowHandle;
+    /* package */ static long windowHandle;
     private static int width;
     private static int height;
     private static boolean resized;
     /* Protect from Garbage Collector errors. */
-    private static GLFWKeyCallback keyCallback;
+    private static KeyInput keyCallback;
     private static GLFWWindowSizeCallback windowSizeCallback;
+
+
+    /* package */ static synchronized KeyInput getGLFWKeyCallback() {
+        return keyCallback;
+    }
 
     /**
      * Initializes and opens a window.
@@ -56,7 +61,7 @@ public class Window {
 
         /* This function sets the key callback of the specified window,
            which is called when a key is pressed, repeated or released.*/
-        glfwSetKeyCallback(windowHandle, keyCallback = new Input());
+        glfwSetKeyCallback(windowHandle, keyCallback = new KeyInput());
 
         /* Setup resize callback
            This function sets the size callback of the specified window, which is called when the window is resized.

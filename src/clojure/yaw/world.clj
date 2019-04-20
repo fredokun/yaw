@@ -1,8 +1,6 @@
 (ns yaw.world
-  (:import (yaw.engine.meshs MeshBuilder)
-           (yaw.engine.items Item)
-           (yaw.engine World
-                       UpdateCallback)
+  (:import (yaw.engine World
+                       InputCallback)
            (yaw.engine.light AmbientLight DirectionalLight PointLight SpotLight)
            (yaw.engine.camera Camera))
   (:require [yaw.mesh]))
@@ -26,10 +24,9 @@
              width  800
              height 600
              vsync true}}]
-  (let [world (World. x y width height vsync)
-        thread (future world)]
-    (.start (Thread. world))
-    (atom {:world world :thread thread
+  (let [world (World. x y width height vsync)]
+    (.launch world)
+    (atom {:world world
            :meshes {:mesh/box (yaw.mesh/box-geometry)
                     :mesh/cone (yaw.mesh/cone-geometry)
                     :mesh/pyramid (yaw.mesh/pyramid-geometry)}
@@ -43,25 +40,28 @@
   (swap! univ assoc-in [:meshes id] mesh))
 
 ;;CALLBACKS---------------------------------------------------------------
-(defn callmap "Retrieve the `world` callback map"
-  [world] (.getCallback world))
 
-(defn register-callback! "Add a callback to the `world` callmap"
-  [world name f]
-  (.registerCallback (callmap world) name f))
+(defn register-input-callback! 
+  "Register the input callback for low-level keyboard management."
+  [world callback]
+  (let [cb (reify InputCallback
+             (sendKey [this key scancode action mode]
+               ;; (println "key event! key=" key " scancode=" scancode "action=" action "mode=" mode)
+               (callback key scancode action mode)))]
+    ;; (println "[input callback] cb=" cb "world=" world)
+    (.registerInputCallback world cb)))
 
-(defn clear-callback! "Remove the named callback from the `world` callmap"
-  [world name]
-  (.clearCallback (callmap world) name))
 
-(defn clear-keystroke! "Remove the specified function from the callback corresponding to the specified key"
-  [world key f]
-  (.clearFunctionOfKey (callmap world) key f))
+;; TODO
+;; (defn unregister-input-callback!
+;;   "Unregister the current input callback (if any)"
+;;   [world]
+;;   )
 
 ;;Since we completely destroy the old architecture we will migrate the basic method to this module
 ;;README ONLY USE WORLD IT is A FACADE, no DIRECT USE OF MANAGEMENT/BUILDER TOOLS
 
-;; Mesh Functions------------------------------------------------
+;; MeshOld Functions------------------------------------------------
 ;; TODO: delete this when `create-simple-mesh` is stable (and we can handle texture)
 
 (defn create-mesh!
@@ -114,13 +114,13 @@
 (defn create-item!
   "Create an item in the `world` with the
   specified id, position, mesh"
-  [world & {:keys [id position scale mesh]
-            :or   {id       "can't read the doc..."
-                   position [0 0 -2]
-                   scale    1
-                   mesh     (create-mesh! world)}}]         ;;error here
-  (.createItem world id (float-array position) scale mesh))
+  [world id & {:keys [position scale mesh]
+               :or   {position [0 0 2] 
+                      scale    1
+                      mesh     (create-mesh! world)}}]         ;;error here
+  (.createItemObject world id (position 0) (position 1) (position 2) scale mesh))
 
+  
 (defn remove-item!
   "Remove the specified `item` from the `world`"
   [world item]
@@ -139,8 +139,8 @@
                    color    [0 0 1]
                    scale    1
                    position [0 0 -2]
-                   id       ""}}]
-  (create-item! world :id id
+                   id (str (gensym "block-"))}}]
+  (create-item! world id
                 :position position
                 :scale scale
                 :mesh (create-simple-mesh! world :rgb color)))
@@ -153,8 +153,8 @@
                    color    [0 0 1]
                    scale    1
                    position [0 0 -2]
-                   id       ""}}]
-  (create-item! world :id id
+                   id (str (gensym "pyra-"))}}]
+  (create-item! world id
                 :position position
                 :scale scale
                 :mesh (create-simple-mesh! world :rgb color :geometry (yaw.mesh/pyramid-geometry))))
@@ -164,7 +164,7 @@
 
 (defn camera "Retrieve the main camera of the world" [world] (.getCamera world))
 
-(defn clear-cameras! "Remove all the cameras from the `world`" [world] (.emptyListCamera world))
+(defn clear-cameras! "Remove all the cameras from the `world`" [world] (.clearCameras world))
 
 (defn add-camera!
   "Add a camera to the `world`"
@@ -306,6 +306,11 @@
   [world]
   (.createGroup world))
 
+(defn group-add!
+  "Add the specified `item` to the `group`."
+  [group item]
+  (.add group item))
+
 (defn remove-group!
   "Remove the specified group from the `world`"
   [world group]
@@ -316,12 +321,12 @@
                        :or   {x 0
                               y 0
                               z 0}}]
-  (.rotate item x y z))
+  (.rotateXYZ item x y z))
+
 (defn translate! [item & {:keys [x y z]
                           :or   {x 0
                                  y 0
                                  z 0}}]
   (.translate item x y z))
 
-(defn clone! [world item] (.clone world item))
 

@@ -1,154 +1,211 @@
 package yaw.engine.items;
 
-import yaw.engine.meshs.Material;
-import org.joml.Vector3f;
+import org.joml.*;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-public class ItemGroup {
-    /**
-     * Class which will contain items with coordinates specific to the center of the group
+/**
+ *  A Group is a container for items.
+ *  The natural position of a group is at the centroid of its contained items.
+ */
+public class ItemGroup extends Item {
+    private Map<String, Item> items;
+
+    public ItemGroup(String id, Vector3f position, Quaternionf orientation, float scale){
+       super(id, position, orientation, scale);
+       items = new HashMap<String, Item>();
+    }
+
+    public ItemGroup(String id) {
+        this(id, new Vector3f(0f, 0f, 0f), new Quaternionf(), 1.0f);
+    }
+
+    /** this method adds an item to the group, updates the weight and the center.
      *
-     * @param items           new ArrayList<Item>
-     * @param center          Vector3f
-     * @param weight          int
+     * @param id the identity of the item (must be unique)
+     * @param item the Item to add
+     * @throws Error if the group already contains an item with the same id
      */
-
-
-    public Vector3f mCenter;
-    private ArrayList<Item> mItems;
-    private int mWeight;
-
-    public ItemGroup() {
-        mItems = new ArrayList<>();
-        mCenter = new Vector3f();
-        mWeight = 0;
+    public void add(String id, Item item) {
+        if(items.containsKey(id)) {
+            throw new Error("The group already contains an item with identity: " + id);
+        }
+        items.put(id, item);
+        positionAtCentroid();
     }
 
-    public ItemGroup(ArrayList<Item> objs) {
-        mItems = objs;
-        mWeight = 0;
+
+    /** remove the item i from the group, update the center and the weight
+     *
+     * @param id the item to remove
+     * @throws Error if there is no item with such identity inside the group
+     */
+    public void remove(String id) {
+        if(!items.containsKey(id)) {
+            throw new Error("The group does not contains an item with identity: " + id);
+        }
+        items.remove(id);
+        positionAtCentroid();
+    }
+
+    public void invalidate() {
+        // do nothing for group
+    }
+
+
+    public Vector3f computeCentroid() {
         double x = 0, y = 0, z = 0;
-        for (Item i : objs) {
-            int w = i.getAppearance().getWeight();
-            x += i.getPosition().x * w;
-            y += i.getPosition().y * w;
-            z += i.getPosition().z * w;
-            mWeight += w;
+        for (Item item  : items.values()) {
+            x += item.getPosition().x ;
+            y += item.getPosition().y ;
+            z += item.getPosition().z ;
+
         }
-        x /= mWeight;
-        y /= mWeight;
-        z /= mWeight;
-        mCenter = new Vector3f((float) x, (float) y, (float) z);
+        x /= (items.size()*1.f);
+        y /= (items.size()*1.f);
+        z /= (items.size()*1.f);
+        return new Vector3f((float) x, (float) y, (float) z);
     }
 
     /**
-     * Add an item in group and update center
+     * Update the center of the group so that it is placed at the centroid
+     * wrt. the contained items.
+     * This must be called when the position of an item of the group also
+     * changes.
      */
-    public void add(Item i) {
-        int nWeight = mWeight + i.getAppearance().getWeight();
-        double ratioGr = mWeight / (double) nWeight, ratioI = i.getAppearance().getWeight() / (double) nWeight;
-        mWeight = nWeight;
-        mCenter = new Vector3f((float) ((mCenter.x * ratioGr) + (i.getPosition().x * ratioI)), (float) ((mCenter.y * ratioGr) + (i.getPosition().y * ratioI)), (float) ((mCenter.z * ratioGr) + (i.getPosition().z * ratioI)));
-        mItems.add(i);
-        i.addToGroup(this);
+    public void positionAtCentroid(){
+        setPosition(computeCentroid());
     }
 
-    /**
-     * remove an item of the group and update center
-     */
-    public void remove(Item i) {
-        mItems.remove(i);
-        i.removeFromGroup(this);
-        this.mWeight -= i.getAppearance().getWeight();
-        updateCenter();
-    }
-
-    public void updateCenter() {
-        double x = 0, y = 0, z = 0;
-        for (Item i : mItems) {
-            int w = i.getAppearance().getWeight();
-            x += i.getPosition().x * w;
-            y += i.getPosition().y * w;
-            z += i.getPosition().z * w;
-        }
-        x /= mWeight;
-        y /= mWeight;
-        z /= mWeight;
-        mCenter = new Vector3f((float) x, (float) y, (float) z);
-    }
-
-    /**
-     * Apply translation for all items in the group
-     */
-    public void translate(Vector3f translation) {
-        for (Item i : mItems)
-            i.getPosition().add(translation);
-    }
-
-    /**
-     * Apply translation for all items in the group
-     */
-    public void translate(float x, float y, float z) {
-        Vector3f translation = new Vector3f(x, y, z);
-        for (Item i : mItems)
-            i.getPosition().add(translation);
-    }
-
-    /**
-     * Rotate all items in the group
-     */
-    public void rotate(Vector3f rotation) {
-        for (Item i : mItems) {
-            i.getRotation().add(rotation);
-            i.revolveAround(mCenter, rotation.x, rotation.y, rotation.z);
+    @Override
+    public void translate(float tx, float ty, float tz) {
+        super.translate(tx, ty, tz);
+        for(Item item : items.values()) {
+            item.translate(tx, ty, tz);
         }
     }
 
     /**
-     * Rotate all items in the group
+     * Fetch an item contained in the group
+     * @param id the identifier of the item in the group
+     * @return the found item, if any
+     * @throws Error in case there is no such child
      */
-    public void rotate(float x, float y, float z) {
-        Vector3f rotation = new Vector3f(x, y, z);
-        for (Item i : mItems) {
-            i.getRotation().add(rotation);
-            i.revolveAround(mCenter, rotation.x, rotation.y, rotation.z);
+    public Item fetchItem(String id) {
+        Item child = items.get(id);
+        if (child == null) {
+            throw new Error("No such child in group: " + id);
         }
+        return child;
     }
 
-    public void setPosition(float x, float y, float z) {
-        setPosition(new Vector3f(x, y, z));
-    }
-
-    public void setPosition(Vector3f pos) {
-        float x = pos.x - mCenter.x, y = pos.y - mCenter.y, z = pos.z - mCenter.z;
-        for (Item i : mItems) {
-            i.translate(x, y, z, this);
+    public HitBox fetchHitBox(String id) {
+        Item item = fetchItem(id);
+        if(!(item instanceof HitBox)) {
+            throw new Error("The group does not contain an hitbox with id: "+id);
         }
-        mCenter = pos;
+        return (HitBox) item;
     }
 
-    public void separate(float dist) {
-        for (Item i : mItems)
-            i.repelBy(mCenter, dist);
+    @Override
+    public void rotateX(float angle) {
+        //super.rotateX(angle);
+        for(Item item : items.values()) {
+            item.rotateXAround(angle, position);
+        }
+        positionAtCentroid();
     }
 
-    public void setColor(float r, float g, float b) {
-        for (Item i : mItems)
-            i.getAppearance().setMaterial(new Material(new Vector3f(r, g, b), 0.f));
+    @Override
+    public void rotateY(float angle) {
+        //super.rotateY(angle);
+        for(Item item : items.values()) {
+            item.rotateYAround(angle, position);
+        }
+        positionAtCentroid();
     }
 
-    public void setColor(Vector3f color) {
-        for (Item i : mItems)
-            i.getAppearance().setMaterial(new Material(color, 0.f));
+    @Override
+    public void rotateZ(float angle) {
+        //super.rotateZ(angle);
+        for(Item item : items.values()) {
+            item.rotateZAround(angle, position);
+        }
+        positionAtCentroid();
     }
 
-    public void multScale(float val) {
-        for (Item i : mItems)
-            i.setScale(i.getScale() * val);
+    @Override
+    public void rotateXYZ(float angleX, float angleY, float angleZ) {
+        //super.rotateXYZ(angleX, angleY, angleZ);
+        for(Item item : items.values()) {
+            item.rotateXYZAround(angleX, angleY, angleZ, position);
+        }
+        positionAtCentroid();
     }
 
-    public ArrayList<Item> getItems() {
-        return mItems;
+    @Override
+    public void rotateAxis(float angle, Vector3f axis) {
+        //super.rotateAxis(angle, axis);
+        for(Item item : items.values()) {
+            item.rotateAxisAround(angle, axis.normalize(), position);
+        }
+        positionAtCentroid();
+    }
+
+    @Override
+    public void rotateAxisAround(float angle, Vector3f axis, Vector3f center) {
+        //super.rotateAxisAround(angle, axis, center);
+        for(Item item : items.values()) {
+            item.rotateAxisAround(angle, axis.normalize(), center);
+        }
+        positionAtCentroid();
+    }
+
+    /**
+     * Rotation along three axes (Euler angles rotation), around center
+     * @param angleX angle of rotation along axis X (in degrees)
+     * @param angleY same for axis Y
+     * @param angleZ same for axis Z
+     * @param center the center of rotation
+     */
+    public void rotateXYZAround(float angleX, float angleY, float angleZ, Vector3f center) {
+        AxisAngle4f aaxis = new AxisAngle4f(new Quaternionf().rotationXYZ(toRadians(angleX)
+                , toRadians(angleY)
+                , toRadians(angleZ))).normalize();
+        rotateAxisAround(toDegrees(aaxis.angle), new Vector3f(aaxis.x, aaxis.y, aaxis.z), center);
+    }
+
+
+    /**
+     * Rotate along X axis, around center
+     * @param angle of rotation (in degree)
+     * @param center the center of rotation
+     */
+    public void rotateXAround(float angle, Vector3f center) {
+        rotateAxisAround(angle, new Vector3f(1.0f, 0.0f, 0.0f), center);
+    }
+
+    /**
+     * Rotate along Y axis, around center
+     * @param angle of rotation (in degree)
+     * @param center the center of rotation
+     */
+    public void rotateYAround(float angle, Vector3f center) {
+        rotateAxisAround(angle, new Vector3f(0.0f, 1.0f, 0.0f), center);
+    }
+
+    /**
+     * Rotate along Z axis, around center
+     * @param angle of rotation (in degree)
+     * @param center the center of rotation
+     */
+    public void rotateZAround(float angle, Vector3f center) {
+        rotateAxisAround(angle, new Vector3f(0.0f, 0.0f, 1.0f), center);
+    }
+
+    public void removeAll() {
+        items.clear();
+        position=new Vector3f(0f, 0f, 0f);
     }
 }

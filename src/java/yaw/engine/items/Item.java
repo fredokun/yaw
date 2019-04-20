@@ -1,224 +1,173 @@
 package yaw.engine.items;
 
-import yaw.engine.meshs.Material;
-import yaw.engine.meshs.Mesh;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
+import org.joml.*;
+import org.joml.Math;
 
-import java.util.ArrayList;
+/**
+ * Abstract class representing the common features of 3D items.
+ */
+public abstract class Item {
 
-public class Item {
+    /** String identifier of the item. */
+    private String id;
 
-    private Mesh mAppearance;
-    private float mScale;
-    private Vector3f mRotation;
-    private Vector3f mPosition;
-    private ArrayList<ItemGroup> mGroups;
-    private Item mBoundingBox;
-    private boolean mIsBoundingBox;
-    private String mId;
+    /** Position of (the center) of the Item in the World coordinates system. */
+    protected Vector3f position;
+
+    /** Orientation of the Item. */
+    protected Quaternionf orientation;
+
+    /** Scaling factor (1.0f default) */
+    protected float scale;
 
     /**
-     * Construct a item with the specified mesh, scale, rotation, translation and
-     * an item can be in several groups of items
-     *
-     * @param pId            id of th item
-     * @param pRotation      rotation vector3f
-     * @param pPosition      position vector3f
-     * @param pScale         scale
-     * @param pAppearance    mesh
-     * @param pGroups        itemGoup
+     * Create a new item with the speficied values.
+     * @param id the (unique) identifier for the item
+     * @param position the initial world-coordinates position
+     * @param orientation the initial orientation (angles in degrees)
+     * @param scale the initial scaling factor
      */
-    public Item(String pId, Vector3f pRotation, Vector3f pPosition, float pScale, boolean isBoundingBox, Mesh pAppearance, ArrayList<ItemGroup> pGroups) {
-        mAppearance = pAppearance;
-        mScale = pScale;
-        mRotation = pRotation;
-        mPosition = pPosition;
-        mGroups = pGroups == null ? new ArrayList<>() : pGroups;
-        mId = pId;
-        mBoundingBox = null;
-        mIsBoundingBox = isBoundingBox;
+    public Item(String id, Vector3f position, Quaternionf orientation, float scale) {
+        this.id = id;
+        this.position = position;
+        this.orientation = orientation;
+        this.scale = scale;
     }
 
     /**
-     * Clone source
-     *
-     * @param source source
+     * Convert degrees to radians
+     * @param angle expressed in degrees
+     * @return the same angle in radians
      */
-    public Item(Item source) {
-        this(source.getId() + source.toString(),
-                new Vector3f(source.mRotation),
-                new Vector3f(source.mPosition),
-                source.mScale,
-                source.mIsBoundingBox,
-                source.mAppearance,
-                null);
+    public static float toRadians(float angle) {
+        return (float) Math.toRadians(angle);
     }
 
-    /**
-     * Create an item with the specified id position mesh and scale
-     * pPosition size must be 3
-     *
-     * @param pId       id
-     * @param pPosition position
-     * @param pMesh     mesh
-     * @param pScale    scale
-     */
-    public Item(String pId, float[] pPosition, float pScale, boolean pIsBoundingBox, Mesh pMesh) {
-        this(pId, new Vector3f(), new Vector3f(pPosition[0], pPosition[1], pPosition[2]), pScale, pIsBoundingBox, pMesh, null);
+    public static float toDegrees(float angle) {
+        return (float) Math.toDegrees(angle);
     }
 
-    public Item clone() {
+    /* ----- Getters and Setters ----- */
 
-        return new Item(this);
+    public String getId() {return id;}
+
+
+    public Quaternionf getOrientation() {
+        return orientation;
     }
 
-    public void rotate(float x, float y, float z) {
-        this.setRotation(getRotation().add(x, y, z));
-        if (mBoundingBox != null)
-            this.mBoundingBox.rotate(x, y, z);
+    protected void setOrientation(Quaternionf orientation) {
+        this.orientation = orientation;
     }
 
-    public void setPosition(float x, float y, float z) {
-        setPosition(new Vector3f(x, y, z), null);
-    }
 
-    public void setPosition(Vector3f pos, ItemGroup g) {
-        this.mPosition = pos;
-        for (ItemGroup gr : mGroups) {
-            if (gr != g)
-                gr.updateCenter();
-        }
-    }
-
-    public void translate(float x, float y, float z) {
-        translate(x, y, z, null);
-        if (mBoundingBox != null)
-            this.mBoundingBox.translate(x, y, z, null);
-    }
-
-    public void translate(float x, float y, float z, ItemGroup g) {
-        Vector3f old = getPosition(), vect = new Vector3f(x + old.x, y + old.y, z + old.z);
-        this.setPosition(vect, g);
-    }
-
-    //Group Moves
-    public void revolveAround(Vector3f center, float degX, float degY, float degZ) {
-        Vector4f pos = new Vector4f(mPosition, 1f);
-        pos.add(-center.x, -center.y, -center.z, 0);
-        Matrix4f trans = new Matrix4f();
-        trans.rotateX((float) Math.toRadians(degX));
-        trans.rotateY((float) Math.toRadians(degY));
-        trans.rotateZ((float) Math.toRadians(degZ));
-        trans.transform(pos);
-        pos.add(center.x, center.y, center.z, 0);
-        mPosition = new Vector3f(pos.x, pos.y, pos.z);
-    }
-
-    public void repelBy(Vector3f center, float dist) {
-        Vector3f dif = new Vector3f(mPosition.x - center.x, mPosition.y - center.y, mPosition.z - center.z);
-        float norm = dif.length();
-        if (norm != 0) {
-            float move = (dist / norm) + 1;
-            dif.mul(move);
-            dif.add(center);
-            mPosition = dif;
-        }
-    }
-
-    // Don't use in Clojure addToGroup and removeFromGroup
-    public void addToGroup(ItemGroup g) {
-        mGroups.add(g);
-    }
-
-    public void removeFromGroup(ItemGroup g) {
-        mGroups.remove(g);
-    }
-
-    // Input Function
-    public void update() {
-    }
-
-    // Material getter
-    public void setColor(float r, float g, float b) {
-        this.getAppearance().setMaterial(new Material(new Vector3f(r, g, b), 0.f));
-    }
-
-    // OpenGl function
-    public Matrix4f getWorldMatrix() {
-        return new Matrix4f().identity().translate(mPosition).
-                rotateX((float) Math.toRadians(mRotation.x)).
-                rotateY((float) Math.toRadians(mRotation.y)).
-                rotateZ((float) Math.toRadians(mRotation.z)).
-                scale(mScale);
-    }
-
-    //Scale
-    public float getScale() {
-        return mScale;
-    }
-
-    public void setScale(float val) {
-        mScale = val;
-    }
-
-    public String getId() {
-        return mId;
-    }
-
-    //Rotation
-    public Vector3f getRotation() {
-        return mRotation;
-    }
-
-    public void setRotation(Vector3f rotation) {
-        this.mRotation = rotation;
-    }
-
-    //Translation
     public Vector3f getPosition() {
-        return mPosition;
+        return position;
     }
 
-    public void setPosition(Vector3f pos) {
-        setPosition(pos, null);
+    protected void setPosition(Vector3f pos){
+        this.position = pos;
     }
 
-    // Groups Management
-    public ArrayList<ItemGroup> getGroups() {
-        return mGroups;
+    public float getScale() {
+        return scale;
     }
 
-    public Mesh getAppearance() {
-        return mAppearance;
+    public void scale(float val) {
+        scale = val;
+        invalidate();
     }
 
-    public float getReflectance() {
-        return this.getAppearance().getMaterial().getReflectance();
+    /* ----- Transformations ----- */
+
+    public abstract void invalidate();
+
+    /** Translation
+     *
+     * @param tx the distance that we want the Item to move on axis X
+     * @param ty the distance that we want the Item to move on axis Y
+     * @param tz the distance that we want the Item to move on axis Z
+     */
+    public void translate(float tx, float ty, float tz) {
+        position.add(tx, ty, tz);
+        invalidate();
     }
 
-    public void setReflectance(float refl) {
-        this.getAppearance().getMaterial().setReflectance(refl);
-    }
+    /**
+     * Rotate along X axis
+     * @param angle of rotation (in degree)
+     */
+    public abstract void rotateX(float angle);
 
-    public Vector3f getColor() {
-        return this.getAppearance().getMaterial().getColor();
-    }
+    /**
+     * Rotate along Y axis
+     * @param angle of rotation (in degree)
+     */
+    public abstract void rotateY(float angle);
 
-    public void setColor(Vector3f color) {
-        this.getAppearance().setMaterial(new Material(color, 0.f));
-    }
+    /**
+     * Rotate along Z axis
+     * @param angle of rotation (in degree)
+     */
+    public abstract void rotateZ(float angle);
 
-    public Item getBoundingBox() {
-        return this.mBoundingBox;
-    }
+    /**
+     * Rotation along three axes (Euler angles rotation)
+     * @param angleX angle of rotation along axis X (in degrees)
+     * @param angleY same for axis Y
+     * @param angleZ same for axis Z
+     */
+    public abstract void rotateXYZ(float angleX, float angleY, float angleZ) ;
 
-    public boolean isBoundingBox() {
-        return mIsBoundingBox;
-    }
+    /**
+     * Rotation of given angle along an axis
+     * @param angle angle of rotation in degrees
+     * @param axis axis of rotation
+     */
+    public abstract void rotateAxis(float angle, Vector3f axis) ;
 
-    public void setBoundingBox(Item item) {
-        this.mBoundingBox = item;
-    }
+    /**
+     * Rotation of given angle along an axis, and aroung the specified center
+     * @param angle the angle of rotation (in degrees)
+     * @param axis the axis of rotation
+     * @param center the center of rotation
+     */
+    public abstract void rotateAxisAround(float angle, Vector3f axis, Vector3f center);
+
+    /**
+     * Rotate along X axis, around center
+     * @param angle of rotation (in degree)
+     * @param center the center of rotation
+     */
+    public  abstract void rotateXAround(float angle, Vector3f center) ;
+
+    /**
+     * Rotate along Y axis, around center
+     * @param angle of rotation (in degree)
+     * @param center the center of rotation
+     */
+    public abstract void rotateYAround(float angle, Vector3f center) ;
+
+    /**
+     * Rotate along Z axis, around center
+     * @param angle of rotation (in degree)
+     * @param center the center of rotation
+     */
+    public abstract void rotateZAround(float angle, Vector3f center);
+
+    /**
+     * Rotation along three axes (Euler angles rotation), around center
+     * @param angleX angle of rotation along axis X (in degrees)
+     * @param angleY same for axis Y
+     * @param angleZ same for axis Z
+     * @param center the center of rotation
+     */
+    public abstract void rotateXYZAround(float angleX, float angleY, float angleZ, Vector3f center) ;
+
+
+    // XXX : use this ?
+    //public abstract void repelBy(Vector3f center, float dist);
+
 }
+
+
