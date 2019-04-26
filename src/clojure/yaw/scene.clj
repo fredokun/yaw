@@ -249,7 +249,7 @@
          (case action
            :group/add (let [[id {params :params items :items}] details
                             params (merge {:scale 1 :pos [0 0 0] :rot [0 0 0]} params)
-                            group (w/new-group! (:wolrd @univ))
+                            group (w/new-group! (:world @univ) id)
                             list-items (map (fn [{id :id-kw params :params}]
                                               (let [params (merge {:mat [:color [1 1 1]] :scale 1 :pos [0 0 0] :rot [0 0 0]}
                                                                   params)
@@ -265,13 +265,19 @@
                                                        :scale (:scale params)
                                                        :mesh m)]
                                                 (apply w/rotate! i (u/explode (:rot params)))
-                                                i)) items)]
-                        (reduce (fn [_ i]
-                                  (w/group-add! group i)) nil list-items)
+                                                [id  i])) items)]
+                        (reduce (fn [_ [id i]]
+                                  (w/group-add! group (str id) i)) nil list-items)
                         (swap! univ assoc-in [:groups id] group)
                         (swap! univ assoc-in [:data :groups id] {:params params :items items}))
-           :group/rotate (throw (ex-info "Unimplemented action"))
-           :group/translate (throw (ex-info "Unimplemented action"))
+           :group/translate (let [[id [x y z]] details
+                                  group (get-in @univ [:groups id])]
+                             (swap! univ update-in [:data :group id :pos] #(mapv + % [x y z]))
+                             (w/translate! group :x x :y y :z z))
+           :group/rotate (let [[id [x y z]] details
+                               group (get-in @univ [:groups id])]
+                          (swap! univ update-in [:data :groups id :rot] #(mapv + % [x y z]))
+                          (w/rotate! group :x x :y y :z z))
            :group/rescale (throw (ex-info "Unimplemented action"))
            :item/add (let [[id params] details
                            params (merge {:mat [:color [1 1 1]] :scale 1 :pos [0 0 0] :rot [0 0 0]}

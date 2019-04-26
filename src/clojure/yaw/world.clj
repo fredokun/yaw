@@ -304,13 +304,13 @@
 
 (defn new-group!
   "Get a new group created in the `world`"
-  [world]
-  (.createGroup world))
+  [world id]
+  (.createGroup world (str id)))
 
 (defn group-add!
   "Add the specified `item` to the `group`."
-  [group item]
-  (.add group item))
+  [group id item]
+  (.add group (str id) item))
 
 (defn remove-group!
   "Remove the specified group from the `world`"
