@@ -29,7 +29,8 @@
     (atom {:world world
            :meshes {:mesh/box (yaw.mesh/box-geometry)
                     :mesh/cone (yaw.mesh/cone-geometry)
-                    :mesh/pyramid (yaw.mesh/pyramid-geometry)}
+                    :mesh/pyramid (yaw.mesh/pyramid-geometry)
+                    :mesh/cuboid (yaw.mesh/cuboid-geometry)}
            :data empty-item-map
            :items {}
            :components {}})))

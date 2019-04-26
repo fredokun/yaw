@@ -14,6 +14,7 @@
      :separator m
      :content (let [[kw v] v]
                 (case kw
+                  :group (assoc-in m [:groups (:id-kw v)] {:params (:params v) :items (:items v)})
                   :item (assoc-in m [:items (:id-kw v)] (:params v))
                   :camera (assoc-in m [:cameras (:id-kw v)] (:params v))
                   :light (let [[kw v] v]
@@ -74,6 +75,30 @@
                                 :mesh (action-value d :item/remesh id
                                                     (-> old id :mesh) v
                                                     get-new)))
+                            d v)))
+             acc new))
+
+(defn- diff-groups
+  "Reduces the given old and new group maps to a sequence of effect representations it conjoins to the accumulator"
+  [acc old new]
+  (reduce-kv (fn [d id v]
+               (if (not (contains? old id))
+                 (conj d [:group/add id v])
+                 (reduce-kv (fn [d keyword v]
+                              (case keyword
+                                :params (reduce-kv (fn [d p v]
+                                                     (case p
+                                                       :rot (action-value d :group/rotate id
+                                                                          (-> old id :params :rot) v
+                                                                          vec-diff)
+                                                       :pos (action-value d :group/translate id
+                                                                          (-> old id :params :pos) v
+                                                                          vec-diff)
+                                                       :scale (action-value d :group/rescale id
+                                                                            (-> old id :params :scale) v
+                                                                            get-new)))
+                                                   d v)
+                                :items d));;TODO
                             d v)))
              acc new))
 
@@ -188,13 +213,15 @@
 
 (defn diff
   [scene-old scene-new]
-  (diff-items (diff-cameras (diff-lights [:diff]
-                                         (:lights scene-old)
-                                         (:lights scene-new))
-                            (:cameras scene-old)
-                            (:cameras scene-new))
-              (:items scene-old)
-              (:items scene-new)))
+  (diff-groups (diff-items (diff-cameras (diff-lights [:diff]
+                                                      (:lights scene-old)
+                                                      (:lights scene-new))
+                                         (:cameras scene-old)
+                                         (:cameras scene-new))
+                           (:items scene-old)
+                           (:items scene-new))
+               (:groups scene-old)
+               (:groups scene-new)))
 
 ;; (defn diff
 ;;   "Gives the diff of two intermediary scenes"
@@ -220,6 +247,32 @@
        (fn [[action & details]]
          ;; (println details)
          (case action
+           :group/add (let [[id {params :params items :items}] details
+                            params (merge {:scale 1 :pos [0 0 0] :rot [0 0 0]} params)
+                            group (w/new-group! (:wolrd @univ))
+                            list-items (map (fn [{id :id-kw params :params}]
+                                              (let [params (merge {:mat [:color [1 1 1]] :scale 1 :pos [0 0 0] :rot [0 0 0]}
+                                                                  params)
+                                                    m (get (:meshes @univ) (:mesh params))
+                                                    m (w/create-simple-mesh!
+                                                       (:world @univ)
+                                                       :geometry m
+                                                       :rgb (second (:mat params)))
+                                                    i (w/create-item!
+                                                       (:world @univ)
+                                                       (str id)
+                                                       :position (:pos params)
+                                                       :scale (:scale params)
+                                                       :mesh m)]
+                                                (apply w/rotate! i (u/explode (:rot params)))
+                                                i)) items)]
+                        (reduce (fn [_ i]
+                                  (w/group-add! group i)) nil list-items)
+                        (swap! univ assoc-in [:groups id] group)
+                        (swap! univ assoc-in [:data :groups id] {:params params :items items}))
+           :group/rotate (throw (ex-info "Unimplemented action"))
+           :group/translate (throw (ex-info "Unimplemented action"))
+           :group/rescale (throw (ex-info "Unimplemented action"))
            :item/add (let [[id params] details
                            params (merge {:mat [:color [1 1 1]] :scale 1 :pos [0 0 0] :rot [0 0 0]}
                                          params)
