@@ -98,7 +98,7 @@
                                                                             (-> old id :params :scale) v
                                                                             get-new)))
                                                    d v)
-                                :items d));;TODO
+                                :items d));;TODO if we can move an item of the group independently
                             d v)))
              acc new))
 
@@ -268,15 +268,17 @@
                                                 [id  i])) items)]
                         (reduce (fn [_ [id i]]
                                   (w/group-add! group (str id) i)) nil list-items)
+                        ;; (apply w/translate! group (u/explode (:pos params)))
+                        ;; (apply w/rotate! group (u/explode (:rot params)))
                         (swap! univ assoc-in [:groups id] group)
                         (swap! univ assoc-in [:data :groups id] {:params params :items items}))
            :group/translate (let [[id [x y z]] details
                                   group (get-in @univ [:groups id])]
-                             (swap! univ update-in [:data :group id :pos] #(mapv + % [x y z]))
+                             (swap! univ update-in [:data :groups id :params :pos] #(mapv + % [x y z]))
                              (w/translate! group :x x :y y :z z))
            :group/rotate (let [[id [x y z]] details
                                group (get-in @univ [:groups id])]
-                          (swap! univ update-in [:data :groups id :rot] #(mapv + % [x y z]))
+                          (swap! univ update-in [:data :groups id :params :rot] #(mapv + % [x y z]))
                           (w/rotate! group :x x :y y :z z))
            :group/rescale (throw (ex-info "Unimplemented action"))
            :item/add (let [[id params] details

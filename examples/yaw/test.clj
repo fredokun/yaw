@@ -68,7 +68,7 @@
                        :scale 1}
    [:item :test/box {:mesh :mesh/box
                      :pos [0 0 -5]
-                     :rot [0 0 0]
+                     :rot [34 32 0]
                      :mat :red
                      :scale 0.3}]
    [:item :test/box2 {:mesh :mesh/box
@@ -96,8 +96,8 @@
 
 (def +myctrl+ (w/start-universe!))
 
-(def +cube-state+ (r/reactive-atom +myctrl+ {:pos [3 0 -5]
-                                             :delta [0 0.001 0]}))
+(def +cube-state+ (r/reactive-atom +myctrl+ {:pos [0 0 -5]
+                                             :delta [0.01 0 0]}))
 
 (render/render! +myctrl+ [scene +cube-state+])
 
