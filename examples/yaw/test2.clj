@@ -1,6 +1,6 @@
 (ns yaw.test2
   "A simple 3D example using a reagent-like approach."
-  (:require 
+  (:require
    [clojure.set :as set]
    [yaw.world :as w]
    [yaw.reaction :as r]
