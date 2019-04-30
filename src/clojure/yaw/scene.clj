@@ -285,7 +285,7 @@
                         ;; (apply w/translate! group (u/explode (:pos params)))
                         ;; (apply w/rotate! group (u/explode (:rot params))) ;;To uncomment when rotate with [0 0 0] works
                         (swap! univ assoc-in [:groups id] group)
-                        (swap! univ assoc-in [:data :groups id] {:params params :items items}))
+                        (swap! univ assoc-in [:data :groups id] {:params params :items items :hitboxes hitboxes}))
            :group/translate (let [[id [x y z]] details
                                   group (get-in @univ [:groups id])]
                               (swap! univ update-in [:data :groups id :params :pos] #(mapv + % [x y z]))

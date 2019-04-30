@@ -24,8 +24,9 @@
                       :mat :red
                       :scale 0.3}]
    [:hitbox :test/hitbox {:pos [0 0 -5]
-                          :scale 1
-                          :length [1 1 1]}]
+                          :scale 0.6
+                          :length [1 1 1]}
+    [{:groupe-id :test/group :hitbox-id :test/hitbox :collision-handler (fn [] (+ 1 1))}]]
    ])
 
 

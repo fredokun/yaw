@@ -55,10 +55,14 @@
                                         ; PARAMS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (s/def :yaw.spec.values/pos :yaw.spec.values.vector/gen)
 (s/def :yaw.spec.values/rot :yaw.spec.values.vector/gen)
-(s/def :yaw.spec.values/length :yaw.spec.values.vector/gen)
 (s/def :yaw.spec.values/scale number?)
 (s/def :yaw.spec.values/dim :yaw.spec.values.vector/gen)
 (s/def :yaw.spec.values/texture string?)
+;;HitBox
+(s/def :yaw.spec.values/length :yaw.spec.values.vector/gen)
+(s/def :yaw.spec.values/group-id keyword?)
+(s/def :yaw.spec.values/hitbox-id keyword?)
+(s/def :yaw.spec.values/collision-handler fn?)
 
 (s/def :yaw.spec.values/color
   (s/conformer
@@ -143,13 +147,19 @@
 
                                         ; HITBOXES ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(s/def :yaw.spec.scene/collision
+  (s/keys :req-un [:yaw.spec.values/group-id
+                   :yaw.spec.values/hitbox-id
+                   :yaw.spec.values/collision-handler]))
+
 (s/def :yaw.spec.scene/hitbox
   (s/cat :tag #{:hitbox}
          :id-kw qualified-keyword?
          :params (s/keys :req-un [:yaw.spec.values/pos
                                   :yaw.spec.values/length]
                          :opt-un [:yaw.spec.values/rot
-                                  :yaw.spec.values/scale])))
+                                  :yaw.spec.values/scale])
+         :on-collision (s/? (s/+ (s/spec :yaw.spec.scene/collision)))))
 
                                         ; GROUPS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (s/def :yaw.spec.scene/group

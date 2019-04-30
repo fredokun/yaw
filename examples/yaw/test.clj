@@ -62,15 +62,19 @@
                        :rot [0 60 0]
                        :scale 1}
    [:item :test/box {:mesh :mesh/box
-                     :pos [0 0 -2]
+                     :pos [0 0 -5]
                      :rot [34 32 0]
                      :mat :red
                      :scale 0.3}]
    [:item :test/box2 {:mesh :mesh/box
-                      :pos [-1 0 -2]
+                      :pos [-1 0 -5]
                       :rot [0 0 0]
                       :mat :red
-                      :scale 0.3}]]
+                      :scale 0.3}]
+   [:hitbox :test/hitbox {:pos [0 0 -5]
+                          :scale 0.6
+                          :length [1 1 1]}]
+   ]
   )
 
 (defn scene

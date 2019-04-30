@@ -265,13 +265,11 @@
 (defn create-hitbox!
   "Create a hitbox in the `world` with the
   specified id, position, length, scale"
-  [world & {:keys [id position length scale]
-            :or   {id       "can't read the doc..."
-                   position [0 0 -2]
-                   length   [1 1 1]
-                   scale    1}}]
-
-  (.createHitbox world
+  [world id & {:keys [position length scale]
+               :or   {position [0 0 -2]
+                      length   [1 1 1]
+                      scale 1}}]
+  (.createHitBox world
                  id
                  (get position 0) (get position 1) (get position 2)
                  scale
