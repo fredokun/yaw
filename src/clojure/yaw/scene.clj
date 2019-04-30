@@ -287,9 +287,25 @@
                         (swap! univ assoc-in [:groups id] group)
                         (swap! univ assoc-in [:data :groups id] {:params params :items items :hitboxes hitboxes}))
            :group/translate (let [[id [x y z]] details
-                                  group (get-in @univ [:groups id])]
+                                  group (get-in @univ [:groups id])
+                                  hitboxes (get-in @univ [:data :groups id :hitboxes])]
                               (swap! univ update-in [:data :groups id :params :pos] #(mapv + % [x y z]))
-                              (w/translate! group :x x :y y :z z))
+                              (w/translate! group :x x :y y :z z)
+                              (if-not (nil? hitboxes)
+                                (reduce (fn [_ {id :id-kw on-collision :on-collision}]
+                                          (if-not (nil? on-collision)
+                                            (let [hitbox (w/fetch-hitbox! group id)]
+                                              (reduce (fn [_ {group-id :group-id hitbox-id :hitbox-id collision-handler :collision-handler}]
+                                                        (let [group-collided? (get-in @univ [:groups group-id])
+                                                              hitbox-collided? (w/fetch-hitbox! group-collided? hitbox-id)]
+                                                          (if (w/check-collision! (:world @univ) hitbox hitbox-collided?)
+                                                            (collision-handler)
+                                                            nil)))
+                                                      nil on-collision))
+                                            nil))
+                                        nil hitboxes)
+                                nil))
+
            :group/rotate (let [[id [x y z]] details
                                group (get-in @univ [:groups id])]
                            (swap! univ update-in [:data :groups id :params :rot] #(mapv + % [x y z]))

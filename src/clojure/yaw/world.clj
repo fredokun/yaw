@@ -281,6 +281,11 @@
   [world item1 item2]
   (.isInCollision world item1 item2))
 
+(defn fetch-hitbox!
+  "Fetch the hitbox id of the group"
+  [group id]
+  (.fetchHitBox group (str id)))
+
 ;;SKYBOX MANAGEMENT---------------------------------------------------
 (defn skybox "Retrieve the skybox of the world" [world] (.getSkybox world))
 

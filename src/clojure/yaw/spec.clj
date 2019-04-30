@@ -159,7 +159,7 @@
                                   :yaw.spec.values/length]
                          :opt-un [:yaw.spec.values/rot
                                   :yaw.spec.values/scale])
-         :on-collision (s/? (s/+ (s/spec :yaw.spec.scene/collision)))))
+         :on-collision (s/? (s/spec (s/+ (s/spec :yaw.spec.scene/collision))))))
 
                                         ; GROUPS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (s/def :yaw.spec.scene/group
