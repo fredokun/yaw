@@ -58,21 +58,16 @@
 (defn the-cube
   "Create a cube with its position linked to the `pos` reactive atom."
   [state]
-  ;; [:item :test/box {:mesh :mesh/box
-  ;;                   :pos (:pos @state)
-  ;;                   :rot [0 0 0]
-  ;;                   :mat :red
-  ;;                   :scale 0.3}]
   [:group :test/group {:pos (:pos @state)
-                       :rot [0 0 0]
+                       :rot [0 60 0]
                        :scale 1}
    [:item :test/box {:mesh :mesh/box
-                     :pos [0 0 -5]
+                     :pos [0 0 -2]
                      :rot [34 32 0]
                      :mat :red
                      :scale 0.3}]
    [:item :test/box2 {:mesh :mesh/box
-                      :pos [-1 0 -5]
+                      :pos [-1 0 -2]
                       :rot [0 0 0]
                       :mat :red
                       :scale 0.3}]]

@@ -55,6 +55,7 @@
                                         ; PARAMS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (s/def :yaw.spec.values/pos :yaw.spec.values.vector/gen)
 (s/def :yaw.spec.values/rot :yaw.spec.values.vector/gen)
+(s/def :yaw.spec.values/length :yaw.spec.values.vector/gen)
 (s/def :yaw.spec.values/scale number?)
 (s/def :yaw.spec.values/dim :yaw.spec.values.vector/gen)
 (s/def :yaw.spec.values/texture string?)
@@ -140,6 +141,16 @@
         :spot :yaw.spec.scene.light/spot
         :point :yaw.spec.scene.light/point))
 
+                                        ; HITBOXES ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(s/def :yaw.spec.scene/hitbox
+  (s/cat :tag #{:hitbox}
+         :id-kw qualified-keyword?
+         :params (s/keys :req-un [:yaw.spec.values/pos
+                                  :yaw.spec.values/length]
+                         :opt-un [:yaw.spec.values/rot
+                                  :yaw.spec.values/scale])))
+
                                         ; GROUPS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (s/def :yaw.spec.scene/group
   (s/cat :tag #{:group}
@@ -147,7 +158,8 @@
          :params (s/keys :req-un [:yaw.spec.values/pos]
                          :opt-un [:yaw.spec.values/rot
                                   :yaw.spec.values/scale])
-         :items (s/+ (s/spec :yaw.spec.scene/item))))
+         :items (s/+ (s/spec :yaw.spec.scene/item))
+         :hitboxes (s/* (s/spec :yaw.spec.scene/hitbox))))
 
                                         ; SKYBOX ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (s/def :yaw.spec.scene/skybox

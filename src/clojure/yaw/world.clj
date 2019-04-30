@@ -262,8 +262,8 @@
 
 ;;COLLISIONS------------------------------------------------------
 
-(defn create-bouding-box!
-  "Create a boundingbox in the `world` with the
+(defn create-hitbox!
+  "Create a hitbox in the `world` with the
   specified id, position, length, scale"
   [world & {:keys [id position length scale]
             :or   {id       "can't read the doc..."
@@ -271,11 +271,12 @@
                    length   [1 1 1]
                    scale    1}}]
 
-  (.createBoundingBox world id (float-array position) scale (float-array length)))
-(defn add-bounding-box!
-  "Add the specified 'bounding box' to the specified 'item'"
-  [item bounding-box]
-  (.setBoundingBox item bounding-box))
+  (.createHitbox world
+                 id
+                 (get position 0) (get position 1) (get position 2)
+                 scale
+                 (get length 0) (get length 1) (get length 2)))
+
 (defn check-collision!
   "Check if 2 items are in collision in the `world` with the
   specified items"

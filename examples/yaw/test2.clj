@@ -7,17 +7,6 @@
    [yaw.render :as render]))
 
 
-
-
-(defn the-cube
-  "Create a cube with its position linked to the `pos` reactive atom."
-  [state]
-  [:item :test/cuboid {:mesh :mesh/box
-                    :pos (:pos state)
-                    :rot [0 0 0]
-                    :mat :red
-                    :scale 0.3}])
-
 (defn the-group
   "Create a cube with its position linked to the `pos` reactive atom."
   [state]
@@ -25,15 +14,19 @@
                        :rot [0 0 0]
                        :scale 1}
    [:item :test/box {:mesh :mesh/box
-                        :pos [0 0 -5]
-                        :rot [0 0 0]
-                        :mat :red
-                        :scale 0.3}]
+                     :pos [0 0 -5]
+                     :rot [0 0 0]
+                     :mat :red
+                     :scale 0.3}]
    [:item :test/box2 {:mesh :mesh/box
-                        :pos [-2 0 -5]
-                        :rot [0 0 0]
-                        :mat :red
-                     :scale 0.3}]])
+                      :pos [-2 0 -5]
+                      :rot [0 0 0]
+                      :mat :red
+                      :scale 0.3}]
+   [:hitbox :test/hitbox {:pos [0 0 -5]
+                          :scale 1
+                          :length [1 1 1]}]
+   ])
 
 
 

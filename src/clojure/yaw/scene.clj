@@ -14,7 +14,7 @@
      :separator m
      :content (let [[kw v] v]
                 (case kw
-                  :group (assoc-in m [:groups (:id-kw v)] {:params (:params v) :items (:items v)})
+                  :group (assoc-in m [:groups (:id-kw v)] {:params (:params v) :items (:items v) :hitboxes (:hitboxes v)})
                   :item (assoc-in m [:items (:id-kw v)] (:params v))
                   :camera (assoc-in m [:cameras (:id-kw v)] (:params v))
                   :light (let [[kw v] v]
@@ -98,7 +98,8 @@
                                                                             (-> old id :params :scale) v
                                                                             get-new)))
                                                    d v)
-                                :items d));;TODO if we can move an item of the group independently
+                                :items d ;;TODO if we can move an item of the group independently
+                                :hitboxes d))
                             d v)))
              acc new))
 
@@ -247,7 +248,7 @@
        (fn [[action & details]]
          ;; (println details)
          (case action
-           :group/add (let [[id {params :params items :items}] details
+           :group/add (let [[id {params :params items :items hitboxes :hitboxes}] details
                             params (merge {:scale 1 :pos [0 0 0] :rot [0 0 0]} params)
                             group (w/new-group! (:world @univ) id)
                             list-items (map (fn [{id :id-kw params :params}]
@@ -265,21 +266,34 @@
                                                        :scale (:scale params)
                                                        :mesh m)]
                                                 (apply w/rotate! i (u/explode (:rot params)))
-                                                [id  i])) items)]
+                                                [id  i])) items)
+                            list-hitboxes (map (fn [{id :id-kw params :params}]
+                                                 (let [params (merge {:scale 1 :pos [0 0 0] :rot [0 0 0] :length [1 1 1]}
+                                                                     params)
+                                                       h (w/create-hitbox!
+                                                          (:world @univ)
+                                                          (str id)
+                                                          :position (:pos params)
+                                                          :length (:length params)
+                                                          :scale (:scale params))]
+                                                   (apply w/rotate! h (u/explode (:rot params)))
+                                                   [id  h])) hitboxes)]
                         (reduce (fn [_ [id i]]
                                   (w/group-add! group (str id) i)) nil list-items)
+                        (reduce (fn [_ [id h]]
+                                  (w/group-add! group (str id) h)) nil list-hitboxes)
                         ;; (apply w/translate! group (u/explode (:pos params)))
-                        ;; (apply w/rotate! group (u/explode (:rot params)))
+                        ;; (apply w/rotate! group (u/explode (:rot params))) ;;To uncomment when rotate with [0 0 0] works
                         (swap! univ assoc-in [:groups id] group)
                         (swap! univ assoc-in [:data :groups id] {:params params :items items}))
            :group/translate (let [[id [x y z]] details
                                   group (get-in @univ [:groups id])]
-                             (swap! univ update-in [:data :groups id :params :pos] #(mapv + % [x y z]))
-                             (w/translate! group :x x :y y :z z))
+                              (swap! univ update-in [:data :groups id :params :pos] #(mapv + % [x y z]))
+                              (w/translate! group :x x :y y :z z))
            :group/rotate (let [[id [x y z]] details
                                group (get-in @univ [:groups id])]
-                          (swap! univ update-in [:data :groups id :params :rot] #(mapv + % [x y z]))
-                          (w/rotate! group :x x :y y :z z))
+                           (swap! univ update-in [:data :groups id :params :rot] #(mapv + % [x y z]))
+                           (w/rotate! group :x x :y y :z z))
            :group/rescale (throw (ex-info "Unimplemented action"))
            :item/add (let [[id params] details
                            params (merge {:mat [:color [1 1 1]] :scale 1 :pos [0 0 0] :rot [0 0 0]}
