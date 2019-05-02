@@ -282,7 +282,7 @@
                                   (w/group-add! group (str id) i)) nil list-items)
                         (reduce (fn [_ [id h]]
                                   (w/group-add! group (str id) h)) nil list-hitboxes)
-                        ;; (apply w/translate! group (u/explode (:pos params)))
+                        (apply w/translate! group (u/explode (:pos params)))
                         ;; (apply w/rotate! group (u/explode (:rot params))) ;;To uncomment when rotate with [0 0 0] works
                         (swap! univ assoc-in [:groups id] group)
                         (swap! univ assoc-in [:data :groups id] {:params params :items items :hitboxes hitboxes}))
