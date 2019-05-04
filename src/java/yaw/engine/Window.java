@@ -22,12 +22,19 @@ public class Window {
     private static int height;
     private static boolean resized;
     /* Protect from Garbage Collector errors. */
+    //3D click
+    private static MouseInput mouseCallback;
     private static KeyInput keyCallback;
     private static GLFWWindowSizeCallback windowSizeCallback;
 
 
     /* package */ static synchronized KeyInput getGLFWKeyCallback() {
         return keyCallback;
+    }
+
+    //3D click
+    public static synchronized  MouseInput getGLFWMouseCallback(){
+        return mouseCallback;
     }
 
     /**
@@ -63,6 +70,11 @@ public class Window {
            which is called when a key is pressed, repeated or released.*/
         glfwSetKeyCallback(windowHandle, keyCallback = new KeyInput());
 
+        /*
+            3D click
+         */
+
+        glfwSetMouseButtonCallback(windowHandle, mouseCallback= new MouseInput());
         /* Setup resize callback
            This function sets the size callback of the specified window, which is called when the window is resized.
            The callback is provided with the size, in screen coordinates, of the client area of the window.*/
