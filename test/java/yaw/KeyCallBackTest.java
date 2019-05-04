@@ -8,13 +8,14 @@ import yaw.engine.camera.Camera;
 import yaw.engine.items.ItemObject;
 import yaw.engine.meshs.MeshBuilder;
 import yaw.engine.meshs.Texture;
+import yaw.engine.InputCallback;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-public class KeyCallBackTest implements KeyCallback {
+public class KeyCallBackTest implements InputCallback {
     private int key;
     private int scancode;
     private int action;
@@ -52,19 +53,14 @@ public class KeyCallBackTest implements KeyCallback {
     public static void main(String[] args){
         World world = new World(0, 0, 800, 600);
         KeyCallBackTest key = new KeyCallBackTest(world.getCamera());
-        world.registerKeyCallback(key);
+        world.registerInputCallback(key);
         ItemObject cube = world.createItemObject("cube", 0f, 0f, -2f, 1.0f, MeshBuilder.generateBlock(1, 1, 1));
         cube.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
         world.getCamera().setPosition(0,0,3);
-        Thread th = new Thread(world);
-        th.start();
 
+        world.launch();
+        world.waitFortermination();
 
-        try {
-            th.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
 

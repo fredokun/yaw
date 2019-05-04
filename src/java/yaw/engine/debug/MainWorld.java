@@ -35,8 +35,7 @@ public class MainWorld {
         c2.setPosition(-3, 0, 0); *//* Allows to resize our Pyramid. *//*
         c2.translate(10, 0, 0); *//* Allows to resize our Pyramid.*//*
         c2.rotate(-3, 2, 0);*/
-        (new Thread(world)).start();/* Launches the thread responsible for the display and our game loop. */
-
+        world.launch();/* Launches the thread responsible for the display and our game loop. */
 
         ItemGroup g1 = new ItemGroup("g1");
         ItemObject c1 = world.createItemObject("1", 0.0f, 0.0f, -2.0f, 1, MeshBuilder.generateHalfBlock(1, 1, 1));
@@ -59,7 +58,7 @@ public class MainWorld {
         g1.rotateXYZ(0, 0, 10);
         g2.rotateXYZ(0, 10, 0);
 
-        System.out.println("Collision ?: " + i.intersect(i2));
+        System.out.println("Collision ?: " + i.collidesWith(i2));
 
 
         /* Creating Light for Our World */
