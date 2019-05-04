@@ -164,10 +164,13 @@ public class ItemObject extends Item {
      * @param center the center of rotation
      */
     public void rotateXYZAround(float angleX, float angleY, float angleZ, Vector3f center) {
-        AxisAngle4f aaxis = new AxisAngle4f(new Quaternionf().rotationXYZ(toRadians(angleX)
-                , toRadians(angleY)
-                , toRadians(angleZ))).normalize();
-        rotateAxisAround(toDegrees(aaxis.angle), new Vector3f(aaxis.x, aaxis.y, aaxis.z), center);
+        if(!(angleX == 0 && angleY == 0 && angleZ == 0)) {
+            AxisAngle4f aaxis = new AxisAngle4f(new Quaternionf().rotationXYZ(toRadians(angleX)
+                    , toRadians(angleY)
+                    , toRadians(angleZ))).normalize();
+            System.out.println(aaxis.x + " " + aaxis.y + " " + aaxis.z + " ");
+            rotateAxisAround(toDegrees(aaxis.angle), new Vector3f(aaxis.x, aaxis.y, aaxis.z), center);
+        }
     }
 
 
