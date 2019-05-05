@@ -6,6 +6,15 @@
             [clojure.spec.alpha :as s]
             [clojure.data]))
 
+;;{
+;; The function take a scene and check if the scene is correct.
+;; After the check, it takes each element of the scene in order to create a structure used later
+;; for the diff.
+
+;; At the beginning, the structure looks like this:
+;; {:cameras {}, :lights {:ambient nil, :sun nil, :points {}, :spots {}}, :groups {}, :items {}}
+;; then it's filled with the element of the scene
+;;}
 (defn item-map
   "Reducing function that adds a conformed item to a pre-existing map"
   ([] empty-item-map)
@@ -78,27 +87,39 @@
                             d v)))
              acc new))
 
+;;{
+;; The function will mark every differences between the groups of the old and the new scene
+;; with every actions needed to switch the old one to the new one
+;;}
 (defn- diff-groups
   "Reduces the given old and new group maps to a sequence of effect representations it conjoins to the accumulator"
   [acc old new]
   (reduce-kv (fn [d id v]
                (if (not (contains? old id))
+                 ;;If in the old scene the group didn't exist, we mark that we want to create it in the new scene
                  (conj d [:group/add id v])
+                 ;;Else we check and mark the differences
                  (reduce-kv (fn [d keyword v]
                               (case keyword
                                 :params (reduce-kv (fn [d p v]
                                                      (case p
+                                                       ;;We check if there is a diffence in the rotation
+                                                       ;;If yes we mark the difference
                                                        :rot (action-value d :group/rotate id
                                                                           (-> old id :params :rot) v
                                                                           vec-diff)
+                                                       ;;Same with the position
                                                        :pos (action-value d :group/translate id
                                                                           (-> old id :params :pos) v
                                                                           vec-diff)
+                                                       ;;Same with the scale
                                                        :scale (action-value d :group/rescale id
                                                                             (-> old id :params :scale) v
                                                                             get-new)))
                                                    d v)
-                                :items d ;;TODO if we can move an item of the group independently
+                                ;;TODO later if we want move an item of the group independently
+                                :items d
+                                ;;Same with the hitboxes
                                 :hitboxes d))
                             d v)))
              acc new))
@@ -213,6 +234,8 @@
              acc new))
 
 (defn diff
+  "Mark every differences between `scene-old` and `scene-new` and return the struture
+  describing every actions needed to switch the old scene to the new scene"
   [scene-old scene-new]
   (diff-groups (diff-items (diff-cameras (diff-lights [:diff]
                                                       (:lights scene-old)
@@ -248,9 +271,15 @@
        (fn [[action & details]]
          ;; (println details)
          (case action
-           :group/add (let [[id {params :params items :items hitboxes :hitboxes}] details
+           :group/add (let [;;Destructuring the variable details in order to retrieve informations
+                            [id {params :params items :items hitboxes :hitboxes}] details
+                            ;;Retrieve the parameters of the group, with default values when parameters are not defined
                             params (merge {:scale 1 :pos [0 0 0] :rot [0 0 0]} params)
+                            ;;Create a group that will be added later in the world
                             group (w/new-group! (:world @univ) id)
+                            ;;For each item specified in the group, we create and stock it
+                            ;;Given this implementation, we still can't create a group in another group
+                            ;;TODO later
                             list-items (map (fn [{id :id-kw params :params}]
                                               (let [params (merge {:mat [:color [1 1 1]] :scale 1 :pos [0 0 0] :rot [0 0 0]}
                                                                   params)
@@ -267,23 +296,29 @@
                                                        :mesh m)]
                                                 (apply w/rotate! i (u/explode (:rot params)))
                                                 [id  i])) items)
+                            ;;Same thing but for the hitboxes of the group
                             list-hitboxes (map (fn [{id :id-kw params :params}]
                                                  (let [params (merge {:scale 1 :pos [0 0 0] :rot [0 0 0] :length [1 1 1]}
                                                                      params)
                                                        h (w/create-hitbox!
                                                           (:world @univ)
-                                                          (str id)
+                                                          id
                                                           :position (:pos params)
                                                           :length (:length params)
                                                           :scale (:scale params))]
                                                    (apply w/rotate! h (u/explode (:rot params)))
                                                    [id  h])) hitboxes)]
+                        ;;We add each item we created in the group
                         (reduce (fn [_ [id i]]
                                   (w/group-add! group (str id) i)) nil list-items)
+                        ;;Same with the hitboxes
                         (reduce (fn [_ [id h]]
                                   (w/group-add! group (str id) h)) nil list-hitboxes)
+                        ;;We now place the group in the world
+                        ;;and since the items and hitboxes are linked to the group, they are also moved
                         (apply w/translate! group (u/explode (:pos params)))
-                        ;; (apply w/rotate! group (u/explode (:rot params))) ;;To uncomment when rotate with [0 0 0] works
+                        ;; To uncomment later when rotate with [0 0 0] works
+                        ;; (apply w/rotate! group (u/explode (:rot params)))
                         (swap! univ assoc-in [:groups id] group)
                         (swap! univ assoc-in [:data :groups id] {:params params :items items :hitboxes hitboxes}))
            :group/translate (let [[id [x y z]] details
@@ -291,21 +326,25 @@
                                   hitboxes (get-in @univ [:data :groups id :hitboxes])]
                               (swap! univ update-in [:data :groups id :params :pos] #(mapv + % [x y z]))
                               (w/translate! group :x x :y y :z z)
+                              ;;Here we check the hitboxes if there are
                               (if-not (nil? hitboxes)
                                 (reduce (fn [_ {id :id-kw on-collision :on-collision}]
+                                          ;;For each hitbox, we look if it has collision handlers
                                           (if-not (nil? on-collision)
+                                            ;;If yes, we begin with fetching the hitbox
                                             (let [hitbox (w/fetch-hitbox! group id)]
                                               (reduce (fn [_ {group-id :group-id hitbox-id :hitbox-id collision-handler :collision-handler}]
+                                                        ;;Then for each collision handler, we fetch the group then the hitbox specified
                                                         (let [group-collided? (get-in @univ [:groups group-id])
                                                               hitbox-collided? (w/fetch-hitbox! group-collided? hitbox-id)]
                                                           (if (w/check-collision! (:world @univ) hitbox hitbox-collided?)
+                                                            ;;If the hitboxes are in collision, we execute the collision-handler
                                                             (collision-handler)
                                                             nil)))
                                                       nil on-collision))
                                             nil))
                                         nil hitboxes)
                                 nil))
-
            :group/rotate (let [[id [x y z]] details
                                group (get-in @univ [:groups id])]
                            (swap! univ update-in [:data :groups id :params :rot] #(mapv + % [x y z]))
