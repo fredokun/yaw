@@ -52,6 +52,48 @@
             {:n [-1 0 0]
              :v [:c :h :g]}]}))
 
+(defn cuboid-geometry
+  "Generate a box mesh.
+
+  Create a low-level geometry object from a high-level simple keyword map."
+  [& {:keys [anchor scale]
+      :or {anchor [0 0 0]
+           scale [1 1 1]}}]
+  (let [v (anchor-fun anchor scale)]
+
+    {:vertices {:a (v [1 3 1])
+                :b (v [1 -3 1])
+                :c (v [-1 -3 1])
+                :d (v [-1 3 1])
+                :e (v [1 3 -1])
+                :f (v [1 -3 -1])
+                :g (v [-1 -3 -1])
+                :h (v [-1 3 -1])}
+     :tris [{:n [0 0 1]
+             :v [:a :c :b]}
+            {:n [0 0 1]
+             :v [:a :d :c]}
+            {:n [0 0 -1]
+             :v [:e :f :h]}
+            {:n [0 0 -1]
+             :v [:f :g :h]}
+            {:n [0 1 0]
+             :v [:a :e :h]}
+            {:n [0 1 0]
+             :v [:a :h :d]}
+            {:n [0 -1 0]
+             :v [:b :c :f]}
+            {:n [0 -1 0]
+             :v [:f :c :g]}
+            {:n [1 0 0]
+             :v [:a :f :e]}
+            {:n [1 0 0]
+             :v [:a :b :f]}
+            {:n [-1 0 0]
+             :v [:d :h :c]}
+            {:n [-1 0 0]
+             :v [:c :h :g]}]}))
+
 (defn pyramid-geometry
   "Generate a squared-based pyramid mesh
 
@@ -183,4 +225,5 @@
   (case kw
     :mesh/box (box-geometry)
     :mesh/pyramid (pyramid-geometry)
-    :mesh/cone (cone-geometry)))
+    :mesh/cone (cone-geometry)
+    :mesh/cuboid (cuboid-geometry)))

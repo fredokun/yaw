@@ -91,7 +91,7 @@
     (let [fun (get @event-handlers (first queue))]
       (when (not (nil? fun)) (fun))
       (send event-queue rest)
-      (send event-queue handle-event)
+      ;; (send event-queue handle-event)
       queue)
     []))
 
