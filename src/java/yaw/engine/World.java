@@ -199,6 +199,14 @@ public class World  {
         mainLoop.registerInputCallback(callback);
     }
 
+    //3D click
+    public void registerMouseCallback(Mouse3DClickCallBack callback) {
+        mainLoop.registerMouse3DClickCallBack(callback);
+    }
+
+
+
+
     /**
      * Gets an empty camera list
      */
@@ -286,5 +294,6 @@ public class World  {
     public void setSkybox(Skybox pSkybox) {
         mainLoop.setSkybox(pSkybox);
     }
+
 }
 
