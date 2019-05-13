@@ -11,6 +11,7 @@ import yaw.engine.camera.Camera;
 import yaw.engine.collision.Collision;
 import yaw.engine.items.HitBox;
 import yaw.engine.items.ItemObject;
+import yaw.engine.meshs.Mesh;
 import yaw.engine.meshs.MeshBuilder;
 import yaw.engine.meshs.Texture;
 
@@ -26,10 +27,17 @@ public class MouseClickTest implements Mouse3DClickCallBack {
     private int mods;
     private Camera camera;
     private HitBox hitbox;
+    private World world;
 
-    public MouseClickTest(Camera c, HitBox h){
+    public MouseClickTest(Camera c, HitBox h, World w){
         this.camera=c;
         this.hitbox=h;
+        this.world=w;
+    }
+
+    static Mesh createCube() {
+        Mesh mesh = MeshBuilder.generateBlock(1, 1, 1);
+        return mesh;
     }
 
     @Override
@@ -38,26 +46,9 @@ public class MouseClickTest implements Mouse3DClickCallBack {
         this.button = button;
         this.action = action;
         this.mods = mods;
-        Vector3f v = null;
-        Vector3f v2 = null;
         if(button==GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-            v = RayCaster.getWorldRay(window, camera);
-            Vector4f V = new Vector4f(v, 1);
-            v2 = new Vector3f(v.x,v.y,v.z*10);
-            Vector4f V2 = new Vector4f(v2, 1);
-            Vector4f cam = new Vector4f(camera.position,1);
-            ArrayList<Vector4f> vertex = HitBox.tabToListVertex(hitbox);
-            int[] tabIndexFaces = {0, 1, 2, 3, 1, 2, 6, 5, 0, 3, 7, 4, 1, 5, 4, 0, 2, 3, 7, 6, 4, 5, 6, 7};
-
-
-            boolean isIntersect = false;
-            for (int j = 0; j < tabIndexFaces.length; j += 4) {
-                if (HitBox.isIntersectSegmentAndFace(V, V2,
-                        vertex.get(tabIndexFaces[j]), vertex.get(tabIndexFaces[j + 1]),
-                        vertex.get(tabIndexFaces[j + 2]), vertex.get(tabIndexFaces[j + 3]))) {
-                    hitbox.rotateX(45);
-                    break;
-                }
+            if(RayCaster.isHitBoxClicked(window, hitbox, camera)){
+                hitbox.rotateX(45);
             }
         }
 
@@ -70,12 +61,12 @@ public class MouseClickTest implements Mouse3DClickCallBack {
         World world = new World(0, 0, 800, 600);
 
 
-        HitBox h = world.createHitBox("cube", 0f, 0f, -2f, 1.0f, 1, 1, 1);
-        MouseClickTest key = new MouseClickTest(world.getCamera(), h);
+        HitBox h = world.createHitBox("cube", 0f, 0f, -25f, 4f, 1, 1, 1);
+        MouseClickTest key = new MouseClickTest(world.getCamera(), h, world);
         world.registerMouseCallback(key);
         //ItemObject cube = world.createHitBox("cube", 0f, 0f, -2f, 1.0f, MeshBuilder.generateBlock(1, 1, 1));
         //cube.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
-        world.getCamera().setPosition(0,0,5);
+        world.getCamera().translate(0,0,0);
         //world.getCamera().rotate(0,180,0);
         world.launch();
         world.waitFortermination();
