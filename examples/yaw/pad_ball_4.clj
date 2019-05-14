@@ -368,6 +368,10 @@
    [:hitbox :test/ball-hitbox {:pos [0 0 0]
                                :scale 0.4
                                :length [1 1 1]}
+    ;; :collisions [[:pad-group1 :hitbox-top  #(react/dispatch [::ball-collision-top1])]
+    ;;              [:test/pad-group1 :test/pad-hitbox-middle-1 #(react/dispatch [::ball-collision-middle1])]
+    ;;              ... etc ...]  
+
     [{:group-id :test/pad-group-1 :hitbox-id :test/pad-hitbox-top-1 :collision-handler #(react/dispatch [::ball-collision-top1])}
      {:group-id :test/pad-group-1 :hitbox-id :test/pad-hitbox-middle-1 :collision-handler #(react/dispatch [::ball-collision-middle1])}
      {:group-id :test/pad-group-1 :hitbox-id :test/pad-hitbox-bottom-1 :collision-handler #(react/dispatch [::ball-collision-bottom1])}
