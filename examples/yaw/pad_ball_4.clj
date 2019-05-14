@@ -3,7 +3,8 @@
    [clojure.set :as set]
    [yaw.world :as world]
    [yaw.reaction :as react]
-   [yaw.render :as render]))
+   [yaw.render :as render]
+   [yaw.keyboard :as kbd]))
 
 (def +myctrl+ (world/start-universe!))
 
@@ -77,6 +78,37 @@
      (cond
        (= @pad2-input :up) (react/dispatch [::move-up-pad2])
        (= @pad2-input :down) (react/dispatch [::move-down-pad2])))))
+
+(comment
+  (react/register-event
+   :react/frame-update
+   (fn [_] ;; le delta est passé en argument
+     (let [pad1 (react/read-state ::pad1-state)
+           pad2 (react/read-state ::pad2-state)]
+       (do
+         (react/dispatch [::move-ball])
+         (cond
+           (:move-down pad1) (react/dispatch-sync [::move-down-pad1])
+           (:move-up pad1) (react/dispatch-sync [::move-down-pad1]))
+         (cond
+           (:move-down pad2) (react/dispatch-sync [::move-down-pad2])
+           (:move-up pad2) (react/dispatch-sync [::move-down-pad2]))))))
+
+  (react/register-event 
+   :kbd/key-update
+   (fn [kdb-state]
+     (cond
+       (#{:kdb/up-arrow :kbd/down-arrow} (:keydowns kbd-state)) nil
+       ;; up-arrow
+       (:kbd/up-arrow (:keys kbd-state)) 
+       (react/update-state ::pad1-state (fn [st] (assoc st :move-up true)))
+       ;; down-arrow
+       (:kbd/down-arrow (:keys kbd-state)) 
+       (react/update-state ::pad1-state (fn [st] (assoc st :move-down true)))
+       ;; etc ..;
+       )))
+)
+
 
 (react/register-event
  ::move-up-pad1
@@ -234,7 +266,7 @@
                                   (cond
 
                                     ;;Pad1 Move Up
-                                    (and (= key 265) ; HACK: GLFW constant for up arrow!
+                                    (and (= key (kbd/key :up-arrow)) ; HACK: GLFW constant for up arrow!
                                          (= action 1)) ; HACK: GLFW_PRESS
                                     (swap! pad1-input (fn [_] :up))
                                     (and (= key 265) ; HACK: GLFW constant for up arrow!
@@ -281,55 +313,47 @@
 ;;; The view part
 ;;; =====================
 
-(defn the-pad1
-  [state]
-  [:group :test/pad-group-1
-   {:pos (:pos @state)
-    :rot [0 0 0]
-    :scale 1}
-   [:item :test/pad-item-1
-    {:mesh :mesh/cuboid
-     :pos [0 0 0]
-     :rot [0 0 0]
-     :mat :red
-     :scale 0.3}]
-   [:hitbox :test/pad-hitbox-top-1
-    {:pos [0 0.6 0]
-     :scale 0.6
-     :length [1 1 1]}]
-   [:hitbox :test/pad-hitbox-middle-1
-    {:pos [0 0 0]
-     :scale 0.6
-     :length [1 1 1]}]
-   [:hitbox :test/pad-hitbox-bottom-1
-    {:pos [0 -0.6 0]
-     :scale 0.6
-     :length [1 1 1]}]])
+(defn mk-pad-kw [prefix id]
+  (keyword "test" (str "pad-" prefix "-" id)))
 
-(defn the-pad2
-  [state]
-  [:group :test/pad-group-2
-   {:pos (:pos @state)
-    :rot [0 0 0]
-    :scale 1}
-   [:item :test/pad-item-2
-    {:mesh :mesh/cuboid
-     :pos [0 0 0]
-     :rot [0 0 0]
-     :mat :red
-     :scale 0.3}]
-   [:hitbox :test/pad-hitbox-top-2
-    {:pos [0 0.6 0]
-     :scale 0.6
-     :length [1 1 1]}]
-   [:hitbox :test/pad-hitbox-middle-2
-    {:pos [0 0 0]
-     :scale 0.6
-     :length [1 1 1]}]
-   [:hitbox :test/pad-hitbox-bottom-2
-    {:pos [0 -0.6 0]
-     :scale 0.6
-     :length [1 1 1]}]])
+;; (mk-pad-kw "group" 1)
+;; => :test/pad-group-1
+
+(defn pad-keywords [id]
+  [(mk-pad-kw "group" id)
+   (mk-pad-kw "item" id)
+   (mk-pad-kw "hitbox-top" id)
+   (mk-pad-kw "hitbox-middle" id)
+   (mk-pad-kw "hitbox-bottom" id)])
+
+(defn the-pad [id]
+  (let [[group item htop hmid hbot] (pad-keywords id)]
+    (fn [state]
+      [:group group
+       {:pos (:pos @state)
+        :rot [0 0 0]
+        :scale 1}
+       [:item item
+        {:mesh :mesh/cuboid
+         :pos [0 0 0]
+         :rot [0 0 0]
+         :mat :red
+         :scale 0.3}]
+       [:hitbox htop
+        {:pos [0 0.6 0]
+         :scale 0.6
+         :length [1 1 1]}]
+       [:hitbox hmid
+        {:pos [0 0 0]
+         :scale 0.6
+         :length [1 1 1]}]
+       [:hitbox hbot
+        {:pos [0 -0.6 0]
+         :scale 0.6
+         :length [1 1 1]}]])))
+
+(def the-pad1 (the-pad 1))
+(def the-pad2 (the-pad 2))
 
 (defn the-ball
   [state]

@@ -75,6 +75,10 @@
 (defn update-state [id val]
   (swap! (id @app-db) val))
 
+(defn read-state 
+  ([] @app-db)
+  ([id] (get @app-db id)))
+
 (defn subscribe [controller v]
   (let [id (first v)
         fun (get @subscriptions id)
