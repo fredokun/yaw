@@ -1,4 +1,4 @@
-(ns yaw.pad-ball-4
+(ns yaw.pong
   (:require 
    [clojure.set :as set]
    [yaw.world :as world]
@@ -7,36 +7,49 @@
    [yaw.keyboard :as kbd]))
 
 (def +myctrl+ (world/start-universe!))
+(def S 0.005)
+(def A 0.01)
+(def MAX-X 0.10)
+(def MAX-Y 0.04)
+(def nb-ticks 200)
 
 (declare update-ball-state)
+(declare move-pad)
+(declare modif-ball)
 
 ;;; =====================
-;;; The state part
+;;; The states part
 ;;; =====================
 
 (def init-pad1-state
   {:pos [3 0 -5]
-   :delta [0 0.04 0]})
+   :delta [0 0.08 0]})
 
 (def init-pad2-state
   {:pos [-3 0 -5]
-   :delta [0 0.04 0]})
+   :delta [0 0.08 0]})
 
 (def init-ball-state
-  {:pos [-2 0 -5]
+  {:pos [0 0 -5]
    :delta [0.04 0 0]})
 
-(react/register-state ::pad1-state {:pos [3 0 -5]
-                                    :delta [0 0.05 0]})
+;; state of the left pad
+(react/register-state ::pad1-state init-pad1-state)
 
-(react/register-state ::pad2-state {:pos [-3 0 -5]
-                                    :delta [0 0.05 0]})
-
-(react/register-state ::ball-state {:pos [-2 0 -5]
-                                    :delta [0.02 0 0]})
-
+;; state containing the movement of the left pad
 (react/register-state ::pad1-action :nil)
+
+;; state of the right pad
+(react/register-state ::pad2-state init-pad2-state)
+
+;; state containing the movement of the right pad
 (react/register-state ::pad2-action :nil)
+
+;; state of the ball
+(react/register-state ::ball-state init-ball-state)
+
+;; a counter in order to know when we need to increase the speed of the ball
+(react/register-state ::counter 0)
 
 ;;; =====================
 ;;; Subscription(s)
@@ -57,102 +70,96 @@
  (fn [db]
    (::ball-state  db)))
 
-;;; ====================
+;;; ==============
 ;;; Event handlers
-;;; ====================
+;;; ==============
 
-(react/register-event
- :react/initialize
- (fn []
-   (react/init-state ::pad1-state init-pad1-state)
-   (react/init-state ::pad2-state init-pad2-state)
-   (react/init-state ::ball-state init-ball-state)))
-
+;;{
+;; The :react/frame-update event does 4 actions:
+;; * It dispatches an event to move the ball
+;; * It dispatches an event to move the right pad
+;; * It dispatches an event to move the left pad
+;; * It increments ::counter
+;; * If the state ::counter is modulo nb-tick, it increases the speed of the ball
+;;}
 (react/register-event
  :react/frame-update
  (fn [_]
    (let [pad1-action (react/read-state ::pad1-action)
-         pad2-action (react/read-state ::pad2-action)]
+         pad2-action (react/read-state ::pad2-action)
+         counter (react/read-state ::counter)]
      (do
+       (react/update-state ::counter inc)
+       (if (zero? (mod (react/read-state ::counter) nb-ticks))
+         (react/update-state ::ball-state (fn [old]
+                                            (let [x (get-in old [:delta 0])]
+                                              (if (neg? x)
+                                                (assoc-in old [:delta 0] (Math/max (- MAX-X) (- x S)))
+                                                (assoc-in old [:delta 0] (Math/min MAX-X (+ x S))))))))
        (react/dispatch [::move-ball])
-       (cond
-         (= pad1-action :up) (react/dispatch [::move-up-pad1])
-         (= pad1-action :down) (react/dispatch [::move-down-pad1]))
-       (cond
-         (= pad2-action :up) (react/dispatch [::move-up-pad2])
-         (= pad2-action :down) (react/dispatch [::move-down-pad2]))))))
-
+       (if-not (= pad1-action :nil)
+         (react/dispatch [::move-pad1 pad1-action]))
+       (if-not (= pad2-action :nil)
+         (react/dispatch [::move-pad2 pad2-action]))))))
 
 ;;{
 ;; How to handle the keyboard input:
 ;; * The pad at the right side move with the up and down arrow
 ;; * The pad at the left side move with E and D
 ;;
-;; The inputs only change the atoms "pad2-input" and "pad1-input"
+;; The inputs only change the state "::pad1-action" and "::pad1-action"
 ;; who can contain :up, :down or :nil
-;; When pressing the key to move up (resp. move down), the atom becomes :up (resp. down)
-;; until the key is released or when the key to move down (resp. move up) is pressed.
-;; If it's released, the atom become :nil and if the key to move down (resp. move up) is pressed, it becomes :down (resp :up).
-;; If the atom contains :up (resp. :down) and the key to move down (resp. move up) is released, the atom doesn't change.
-;;
-;; The event frame-update move the pads following the values of the atoms
+;; When the key to move up and the key to move down are pressed simultanously,
+;; the state becomes :nil
+;; When pressing the key to move up (resp. move down), the state becomes :up (resp. down)
+;; until the key is released
+;; The event frame-update move the pads following the states
 ;;}
 (react/register-event
  :react/key-update
  (fn [kbd-state]
+   ;; Pad 1 action (right side)
    (cond
-     (and (:up kbd-state) (:down kbd-state))
-     (react/update-state ::pad1-action (fn [_] :nil))
+     ;; if we want to move up and down at the same time
+     (and (:up kbd-state) (:down kbd-state)) (react/update-state ::pad1-action (fn [_] :nil))
      ;; up-arrow
      (:up kbd-state) (react/update-state ::pad1-action (fn [_] :up))
      ;; down-arrow
      (:down kbd-state) (react/update-state ::pad1-action (fn [_] :down))
+     ;; no moves
      :else (react/update-state ::pad1-action (fn [_] :nil)))
+   ;;Pad 2 action (left side)
    (cond
-     (and (:e kbd-state) (:d kbd-state))
-     (react/update-state ::pad2-action (fn [_] :nil))
-     ;; key E
+     ;; if we want to move up and down at the same time
+     (and (:e kbd-state) (:d kbd-state)) (react/update-state ::pad2-action (fn [_] :nil))
+     ;; E key
      (:e kbd-state) (react/update-state ::pad2-action (fn [_] :up))
-     ;; key D
+     ;; D key
      (:d kbd-state) (react/update-state ::pad2-action (fn [_] :down))
+     ;; no moves
      :else (react/update-state ::pad2-action (fn [_] :nil)))))
 
+;;{
+;; Event to move the left pad, the handler takes a direction in order
+;; to know where to move it
+;;}
 (react/register-event
- ::move-up-pad1
- (fn []
-   (react/update-state ::pad1-state 
-                       (fn [{pos :pos
-                             delta :delta}]
-                         {:pos (mapv + pos delta)
-                          :delta delta}))))
+ ::move-pad1
+ (fn [direction]
+   (react/update-state ::pad1-state #(move-pad direction %))))
 
+;;{
+;; Event to move the right pad, the handler takes a direction in order
+;; to know where to move it
+;;}
 (react/register-event
- ::move-down-pad1
- (fn []
-   (react/update-state ::pad1-state 
-                       (fn [{pos :pos
-                             delta :delta}]
-                         {:pos (mapv - pos delta)
-                          :delta delta}))))
+ ::move-pad2
+ (fn [direction]
+   (react/update-state ::pad2-state #(move-pad direction %))))
 
-(react/register-event
- ::move-up-pad2
- (fn []
-   (react/update-state ::pad2-state 
-                       (fn [{pos :pos
-                             delta :delta}]
-                         {:pos (mapv + pos delta)
-                          :delta delta}))))
-
-(react/register-event
- ::move-down-pad2
- (fn []
-   (react/update-state ::pad2-state 
-                       (fn [{pos :pos
-                             delta :delta}]
-                         {:pos (mapv - pos delta)
-                          :delta delta}))))
-
+;;{
+;; Event to move the ball
+;;}
 (react/register-event
  ::move-ball
  (fn []
@@ -161,91 +168,58 @@
                              delta :delta}]
                          {:pos (mapv + pos delta) :delta delta}))))
 
-;;=======================
-;;Hitbox collision events
-;;=======================
-
-;;Event called when the ball collide with the upper part of Pad 1
+;;{
+;; Event called when the ball collides with something
+;; The handler takes 3 arguments:
+;; * `obj` : what kind of object the ball collided
+;; * `side` : what side is the object
+;; * `part` : what part of the object (if it's precised)
+;;}
 (react/register-event
- ::ball-collision-top1
- (fn []
-   (react/update-state ::ball-state
-                       (fn [{pos :pos
-                             delta :delta}]
-                         (let [delta' (assoc delta 0 (- (Math/abs (get delta 0))))
-                               delta' (assoc delta' 1 0.01)]
-                           {:pos pos :delta delta'})))))
+ ::ball-collision
+ (fn [obj side part]
+   (react/update-state ::ball-state #(modif-ball obj side part %))))
 
-;;Event called when the ball collide with the middle part of Pad 1
+;;{
+;; Event called when the ball need to be reinitialize after one side scored
+;;}
 (react/register-event
- ::ball-collision-middle1
- (fn []
-   (react/update-state ::ball-state
-                       (fn [{pos :pos
-                             delta :delta}]
-                         {:pos pos :delta (assoc delta 0 (- (Math/abs (get delta 0))))}))))
+ ::score
+ (fn [scorer]
+   (react/update-state ::counter (fn [_] 0))
+   (react/update-state ::ball-state (fn [_]
+                                      (case scorer
+                                        :left-pad init-ball-state
+                                        :right-pad (assoc-in init-ball-state
+                                                             [:delta 0]
+                                                             (- (get-in init-ball-state [:delta 0]))))))))
 
-;;Event called when the ball collide with the lower part of Pad 1
-(react/register-event
- ::ball-collision-bottom1
- (fn []
-   (react/update-state ::ball-state
-                       (fn [{pos :pos
-                             delta :delta}]
-                         (let [delta' (assoc delta 0 (- (Math/abs (get delta 0))))
-                               delta' (assoc delta' 1 -0.01)]
-                           {:pos pos :delta delta'})))))
+;;===========
+;; Functions
+;;===========
 
-;;Event called when the ball collide with the upper part of Pad 2
-(react/register-event
- ::ball-collision-top2
- (fn []
-   (react/update-state ::ball-state
-                       (fn [{pos :pos
-                             delta :delta}]
-                         (let [delta' (assoc delta 0 (Math/abs (get delta 0)))
-                               delta' (assoc delta' 1 0.01)]
-                           {:pos pos :delta delta'})))))
+(defn move-pad [direction {pos :pos delta :delta}]
+  (let [op (case direction
+             :up +
+             :down -)]
+    {:pos (mapv op pos delta)
+     :delta delta}))
 
-;;Event called when the ball collide with the middle part of Pad 2
-(react/register-event
- ::ball-collision-middle2
- (fn []
-   (react/update-state ::ball-state
-                       (fn [{pos :pos
-                             delta :delta}]
-                         {:pos pos :delta (assoc delta 0 (Math/abs (get delta 0)))}))))
-
-;;Event called when the ball collide with the bottom part of Pad 2
-(react/register-event
- ::ball-collision-bottom2
- (fn []
-   (react/update-state ::ball-state
-                       (fn [{pos :pos
-                             delta :delta}]
-                         (let [delta' (assoc delta 0 (Math/abs (get delta 0)))
-                               delta' (assoc delta' 1 -0.01)]
-                           {:pos pos :delta delta'})))))
-
-;;Event called when the ball collide with the upper wall
-(react/register-event
- ::ball-collision-wall1
- (fn []
-   (react/update-state ::ball-state
-                       (fn [{pos :pos
-                             delta :delta}]
-                         (let [delta' (assoc delta 1 (- (Math/abs (get delta 1))))]
-                           {:pos pos :delta delta'})))))
-
-;;Event called when the ball collide with the bottom wall
-(react/register-event
- ::ball-collision-wall2
- (fn []
-   (react/update-state ::ball-state
-                       (fn [{pos :pos
-                             delta :delta}]
-                         (let [delta' (assoc delta 1 (Math/abs (get delta 1)))]
-                           {:pos pos :delta delta'})))))
+(defn modif-ball [obj side part {pos :pos delta :delta}]
+  (case obj
+    :wall (let [y (case side
+                    :top (- (Math/abs (get delta 1)))
+                    :bottom (Math/abs (get delta 1)))]
+            {:pos pos :delta (assoc delta 1 y)})
+    :pad (let [x (case side
+                   :right (- (Math/abs (get delta 0)))
+                   :left (Math/abs (get delta 0)))
+               y (case part
+                   :top (Math/min MAX-Y (+ (get delta 1) A))
+                   :middle (get delta 1)
+                   :bottom (Math/max (- MAX-Y) (- (get delta 1) A)))
+               z (get delta 2)]
+           {:pos pos :delta [x y z]})))
 
 ;;; =====================
 ;;; The view part
@@ -306,19 +280,16 @@
    [:hitbox :test/ball-hitbox {:pos [0 0 0]
                                :scale 0.4
                                :length [1 1 1]}
-    ;; :collisions [[:pad-group1 :hitbox-top  #(react/dispatch [::ball-collision-top1])]
-    ;;              [:test/pad-group1 :test/pad-hitbox-middle-1 #(react/dispatch [::ball-collision-middle1])]
-    ;;              ... etc ...]  
-
-    [:test/pad-group-1 :test/pad-hitbox-top-1 #(react/dispatch [::ball-collision-top1])]
-     [:test/pad-group-1 :test/pad-hitbox-middle-1 #(react/dispatch [::ball-collision-middle1])]
-     [:test/pad-group-1 :test/pad-hitbox-bottom-1 #(react/dispatch [::ball-collision-bottom1])]
-     [:test/pad-group-2 :test/pad-hitbox-top-2 #(react/dispatch [::ball-collision-top2])]
-     [:test/pad-group-2 :test/pad-hitbox-middle-2 #(react/dispatch [::ball-collision-middle2])]
-     [:test/pad-group-2 :test/pad-hitbox-bottom-2 #(react/dispatch [::ball-collision-bottom2])]
-     [:test/wall-group-1 :test/wall-hitbox-1 #(react/dispatch [::ball-collision-wall1])]
-     [:test/wall-group-2 :test/wall-hitbox-2 #(react/dispatch [::ball-collision-wall2])]
-     ]])
+    [:test/pad-group-1 :test/pad-hitbox-top-1 #(react/dispatch [::ball-collision :pad :right :top])]
+    [:test/pad-group-1 :test/pad-hitbox-middle-1 #(react/dispatch [::ball-collision :pad :right :middle])]
+    [:test/pad-group-1 :test/pad-hitbox-bottom-1 #(react/dispatch [::ball-collision :pad :right :bottom])]
+    [:test/pad-group-2 :test/pad-hitbox-top-2 #(react/dispatch [::ball-collision :pad :left :top])]
+    [:test/pad-group-2 :test/pad-hitbox-middle-2 #(react/dispatch [::ball-collision :pad :left :middle])]
+    [:test/pad-group-2 :test/pad-hitbox-bottom-2 #(react/dispatch [::ball-collision :pad :left :bottom])]
+    [:test/wall-group-1 :test/wall-hitbox-1 #(react/dispatch [::ball-collision :wall :top nil])]
+    [:test/wall-group-2 :test/wall-hitbox-2 #(react/dispatch [::ball-collision :wall :bottom nil])]
+    [:test/wall-group-3 :test/wall-hitbox-3 #(react/dispatch [::score :left-pad])]
+    [:test/wall-group-4 :test/wall-hitbox-4 #(react/dispatch [::score :right-pad])]]])
 
 (defn the-wall
   [state id]
@@ -333,7 +304,7 @@
    [:hitbox (keyword "test" (str "wall-hitbox-" id)) {:pos [0 0 0]
                                                       :rot (:rot state)
                                                       :scale (* 2 (:scale state))
-                                                      :length [0.99 2.99 0.99]}]
+                                                      :length [1 3 1]}]
    ])
 
 (defn scene []
@@ -343,6 +314,8 @@
    [:light ::light {:color :yellow :pos [0.5 0 -4]}]
    [the-wall {:pos [0 4.5 -5] :rot [0 0 90] :scale 2} 1]
    [the-wall {:pos [0 -4.5 -5] :rot [0 0 90] :scale 2} 2]
+   [the-wall {:pos [8 0 -5] :rot [0 0 0] :scale 2} 3]
+   [the-wall {:pos [-8 0 -5] :rot [0 0 0] :scale 2} 4]
    (let [pad-state1 (react/subscribe +myctrl+ [::pad1-changed])]
      [the-pad1 pad-state1])
    (let [pad-state2 (react/subscribe +myctrl+ [::pad2-changed])]
