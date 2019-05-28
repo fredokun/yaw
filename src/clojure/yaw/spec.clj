@@ -147,10 +147,14 @@
 
                                         ; HITBOXES ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+; (s/def :yaw.spec.scene/collision
+;   (s/keys :req-un [:yaw.spec.values/group-id
+;                    :yaw.spec.values/hitbox-id
+;                    :yaw.spec.values/collision-handler]))
 (s/def :yaw.spec.scene/collision
-  (s/keys :req-un [:yaw.spec.values/group-id
-                   :yaw.spec.values/hitbox-id
-                   :yaw.spec.values/collision-handler]))
+  (s/cat :group-id (s/spec :yaw.spec.values/group-id)
+         :hitbox-id (s/spec :yaw.spec.values/hitbox-id)
+         :collision-handler (s/spec :yaw.spec.values/collision-handler)))
 
 (s/def :yaw.spec.scene/hitbox
   (s/cat :tag #{:hitbox}
@@ -159,7 +163,7 @@
                                   :yaw.spec.values/length]
                          :opt-un [:yaw.spec.values/rot
                                   :yaw.spec.values/scale])
-         :on-collision (s/? (s/spec (s/+ (s/spec :yaw.spec.scene/collision))))))
+         :on-collision (s/* (s/spec :yaw.spec.scene/collision))))
 
                                         ; GROUPS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (s/def :yaw.spec.scene/group

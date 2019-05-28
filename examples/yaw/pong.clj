@@ -266,44 +266,44 @@
                                   (cond
 
                                     ;;Pad1 Move Up
-                                    (and (= key (kbd/key :up-arrow)) ; HACK: GLFW constant for up arrow!
-                                         (= action 1)) ; HACK: GLFW_PRESS
+                                    (and (= key (kbd/key :up-arrow))
+                                         (= action (kbd/action :pressed)))
                                     (swap! pad1-input (fn [_] :up))
-                                    (and (= key 265) ; HACK: GLFW constant for up arrow!
-                                         (= action 0)) ; HACK: GLFW_RELEASE
+                                    (and (= key (kbd/key :up-arrow))
+                                         (= action (kbd/action :released)))
                                     (swap! pad1-input (fn [old]
                                                              (if (= old :up)
                                                                :nil
                                                                old)))
 
                                     ;;Pad1 Move Down
-                                    (and (= key 264) ; HACK: GLFW constant for down arrow!
-                                         (= action 1)) ; HACK: GLFW_PRESS
+                                    (and (= key (kbd/key :down-arrow))
+                                         (= action (kbd/action :pressed)))
                                     (swap! pad1-input (fn [_] :down))
-                                    (and (= key 264) ; HACK: GLFW constant for down arrow!
-                                         (= action 0)) ; HACK: GLFW_RELEASE
+                                    (and (= key (kbd/key :down-arrow))
+                                         (= action (kbd/action :released)))
                                     (swap! pad1-input (fn [old]
                                                              (if (= old :down)
                                                                :nil
                                                                old)))
 
                                     ;;Pad2 Move Up
-                                    (and (= key 87) ; HACK: GLFW constant for Z!
-                                         (= action 1)) ; HACK: GLFW_PRESS
+                                    (and (= key (kbd/key :z))
+                                         (= action (kbd/action :pressed)))
                                     (swap! pad2-input (fn [_] :up))
-                                    (and (= key 87) ; HACK: GLFW constant for Z!
-                                         (= action 0)) ; HACK: GLFW_RELEASE
+                                    (and (= key (kbd/key :z))
+                                         (= action (kbd/action :released)))
                                     (swap! pad2-input (fn [old]
                                                             (if (= old :up)
                                                               :nil
                                                               old)))
 
                                     ;;Pad2 Move Down
-                                    (and (= key 83) ; HACK: GLFW constant for down arrow!
-                                         (= action 1)) ; HACK: GLFW_PRESS
+                                    (and (= key (kbd/key :s))
+                                         (= action (kbd/action :pressed)))
                                     (swap! pad2-input (fn [_] :down))
-                                    (and (= key 83) ; HACK: GLFW constant for down arrow!
-                                         (= action 0)) ; HACK: GLFW_RELEASE
+                                    (and (= key (kbd/key :s))
+                                         (= action (kbd/action :released)))
                                     (swap! pad2-input (fn [old]
                                                             (if (= old :down)
                                                               :nil
@@ -372,15 +372,15 @@
     ;;              [:test/pad-group1 :test/pad-hitbox-middle-1 #(react/dispatch [::ball-collision-middle1])]
     ;;              ... etc ...]  
 
-    [{:group-id :test/pad-group-1 :hitbox-id :test/pad-hitbox-top-1 :collision-handler #(react/dispatch [::ball-collision-top1])}
-     {:group-id :test/pad-group-1 :hitbox-id :test/pad-hitbox-middle-1 :collision-handler #(react/dispatch [::ball-collision-middle1])}
-     {:group-id :test/pad-group-1 :hitbox-id :test/pad-hitbox-bottom-1 :collision-handler #(react/dispatch [::ball-collision-bottom1])}
-     {:group-id :test/pad-group-2 :hitbox-id :test/pad-hitbox-top-2 :collision-handler #(react/dispatch [::ball-collision-top2])}
-     {:group-id :test/pad-group-2 :hitbox-id :test/pad-hitbox-middle-2 :collision-handler #(react/dispatch [::ball-collision-middle2])}
-     {:group-id :test/pad-group-2 :hitbox-id :test/pad-hitbox-bottom-2 :collision-handler #(react/dispatch [::ball-collision-bottom2])}
-     {:group-id :test/wall-group-1 :hitbox-id :test/wall-hitbox-1 :collision-handler #(react/dispatch [::ball-collision-wall1])}
-     {:group-id :test/wall-group-2 :hitbox-id :test/wall-hitbox-2 :collision-handler #(react/dispatch [::ball-collision-wall2])}
-     ]]])
+    [:test/pad-group-1 :test/pad-hitbox-top-1 #(react/dispatch [::ball-collision-top1])]
+     [:test/pad-group-1 :test/pad-hitbox-middle-1 #(react/dispatch [::ball-collision-middle1])]
+     [:test/pad-group-1 :test/pad-hitbox-bottom-1 #(react/dispatch [::ball-collision-bottom1])]
+     [:test/pad-group-2 :test/pad-hitbox-top-2 #(react/dispatch [::ball-collision-top2])]
+     [:test/pad-group-2 :test/pad-hitbox-middle-2 #(react/dispatch [::ball-collision-middle2])]
+     [:test/pad-group-2 :test/pad-hitbox-bottom-2 #(react/dispatch [::ball-collision-bottom2])]
+     [:test/wall-group-1 :test/wall-hitbox-1 #(react/dispatch [::ball-collision-wall1])]
+     [:test/wall-group-2 :test/wall-hitbox-2 #(react/dispatch [::ball-collision-wall2])]
+     ]])
 
 (defn the-wall
   [state id]
