@@ -76,7 +76,6 @@
 (defonce event-handlers (atom {}))
 (def event-queue (agent []))
 
-
 (defn register-state [id val]
   (swap! app-db (fn [old]
                   (assoc old id (atom val)))))
@@ -99,6 +98,8 @@
   ([] @app-db)
   ([id] @(get @app-db id)))
 
+;;v is a vector, maybe we can find a value to pass args
+;;or we need to remove the vector and just pass the id
 (defn subscribe [controller v]
   (let [id (first v)
         fun (get @subscriptions id)
@@ -116,18 +117,15 @@
           fun (get @event-handlers id)]
       (if-not (nil? fun)
         (apply fun args))
-      (send event-queue rest)
-      queue)
-    []))
+      (rest queue))
+    queue))
 
-;; TODO: handle args, remove the wrapping inside a vector
 ;; TODO (later): don't use an agent but rather an atom with an
 ;; immutable queue (with limited size)...
 (defn dispatch [[id & args]]
   (when (keyword? id)
     (send event-queue conj [id args])
     (send event-queue handle-event)))
-
 
 (defn dispatch-sync
   "Treatement the event synchronously instead of putting it in the file"
@@ -136,10 +134,6 @@
     (let [fun (get @event-handlers id)]
       (if-not (nil? fun)
         (apply fun args)))))
-
-;;{
-;; TODO : comments in markdown
-;;}
 
 (defn activate! [controller vscene]
   (dispatch-sync [:react/initialize])

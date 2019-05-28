@@ -259,6 +259,27 @@
 ;;                 (get to-del :items {})
 ;;                 (get to-add :items {}))))
 
+(defn apply-collision
+  "This function take a `group` an its `hitboxes` and looks in the `univ`
+  if they are in collision with the concerned hitboxes, apply the collision handlers
+  if they are"
+  [univ group hitboxes]
+  (if-not (nil? hitboxes)
+    (run! (fn [{id :id-kw on-collision :on-collision}]
+            ;;For each hitbox, we look if it has collision handlers
+            (if-not (nil? on-collision)
+              ;;If yes, we begin with fetching the hitbox
+              (let [hitbox (w/fetch-hitbox! group id)]
+                (run! (fn [{group-id :group-id hitbox-id :hitbox-id collision-handler :collision-handler}]
+                        ;;Then for each collision handler, we fetch the group then the hitbox specified
+                        (let [group-collided? (get-in @univ [:groups group-id])
+                              hitbox-collided? (w/fetch-hitbox! group-collided? hitbox-id)]
+                          (if (w/check-collision! (:world @univ) hitbox hitbox-collided?)
+                            ;;If the hitboxes are in collision, we execute the collision-handler
+                            (collision-handler))))
+                      on-collision))))
+          hitboxes)))
+
 (defn display-diff!
   "Takes a universe and a diff, and executes the effects described by the diff"
   [univ diff]
@@ -276,44 +297,36 @@
                             ;;Retrieve the parameters of the group, with default values when parameters are not defined
                             params (merge {:scale 1 :pos [0 0 0] :rot [0 0 0]} params)
                             ;;Create a group that will be added later in the world
-                            group (w/new-group! (:world @univ) id)
-                            ;;For each item specified in the group, we create and stock it
-                            ;;Given this implementation, we still can't create a group in another group
-                            ;;TODO later
-                            list-items (map (fn [{id :id-kw params :params}]
-                                              (let [params (merge {:mat [:color [1 1 1]] :scale 1 :pos [0 0 0] :rot [0 0 0]}
-                                                                  params)
-                                                    m (get (:meshes @univ) (:mesh params))
-                                                    m (w/create-simple-mesh!
-                                                       (:world @univ)
-                                                       :geometry m
-                                                       :rgb (second (:mat params)))
-                                                    i (w/create-item!
-                                                       (:world @univ)
-                                                       (str id)
-                                                       :position (:pos params)
-                                                       :scale (:scale params)
-                                                       :mesh m)]
-                                                (apply w/rotate! i (u/explode (:rot params)))
-                                                [id  i])) items)
-                            ;;Same thing but for the hitboxes of the group
-                            list-hitboxes (map (fn [{id :id-kw params :params}]
-                                                 (let [params (merge {:scale 1 :pos [0 0 0] :rot [0 0 0] :length [1 1 1]}
-                                                                     params)
-                                                       h (w/create-hitbox!
-                                                          (:world @univ)
-                                                          id
-                                                          :position (:pos params)
-                                                          :length (:length params)
-                                                          :scale (:scale params))]
-                                                   (apply w/rotate! h (u/explode (:rot params)))
-                                                   [id  h])) hitboxes)]
-                        ;;We add each item we created in the group
-                        (reduce (fn [_ [id i]]
-                                  (w/group-add! group (str id) i)) nil list-items)
+                            group (w/new-group! (:world @univ) id)]
+                        ;;For each item specified in the group, we create it and add it in the group
+                        (run! (fn [{id :id-kw params :params}]
+                                (let [params (merge {:mat [:color [1 1 1]] :scale 1 :pos [0 0 0] :rot [0 0 0]}
+                                                    params)
+                                      m (get (:meshes @univ) (:mesh params))
+                                      m (w/create-simple-mesh!
+                                         (:world @univ)
+                                         :geometry m
+                                         :rgb (second (:mat params)))
+                                      i (w/create-item!
+                                         (:world @univ)
+                                         (str id)
+                                         :position (:pos params)
+                                         :scale (:scale params)
+                                         :mesh m)]
+                                  (apply w/rotate! i (u/explode (:rot params)))
+                                  (w/group-add! group (str id) i))) items)
                         ;;Same with the hitboxes
-                        (reduce (fn [_ [id h]]
-                                  (w/group-add! group (str id) h)) nil list-hitboxes)
+                        (run! (fn [{id :id-kw params :params}]
+                                (let [params (merge {:scale 1 :pos [0 0 0] :rot [0 0 0] :length [1 1 1]}
+                                                    params)
+                                      h (w/create-hitbox!
+                                         (:world @univ)
+                                         id
+                                         :position (:pos params)
+                                         :length (:length params)
+                                         :scale (:scale params))]
+                                  (apply w/rotate! h (u/explode (:rot params)))
+                                  (w/group-add! group (str id) h))) hitboxes)
                         ;;We now place the group in the world
                         ;;and since the items and hitboxes are linked to the group, they are also moved
                         (apply w/translate! group (u/explode (:pos params)))
@@ -326,29 +339,13 @@
                                   hitboxes (get-in @univ [:data :groups id :hitboxes])]
                               (swap! univ update-in [:data :groups id :params :pos] #(mapv + % [x y z]))
                               (w/translate! group :x x :y y :z z)
-                              ;;Here we check the hitboxes if there are
-                              (if-not (nil? hitboxes)
-                                (reduce (fn [_ {id :id-kw on-collision :on-collision}]
-                                          ;;For each hitbox, we look if it has collision handlers
-                                          (if-not (nil? on-collision)
-                                            ;;If yes, we begin with fetching the hitbox
-                                            (let [hitbox (w/fetch-hitbox! group id)]
-                                              (reduce (fn [_ {group-id :group-id hitbox-id :hitbox-id collision-handler :collision-handler}]
-                                                        ;;Then for each collision handler, we fetch the group then the hitbox specified
-                                                        (let [group-collided? (get-in @univ [:groups group-id])
-                                                              hitbox-collided? (w/fetch-hitbox! group-collided? hitbox-id)]
-                                                          (if (w/check-collision! (:world @univ) hitbox hitbox-collided?)
-                                                            ;;If the hitboxes are in collision, we execute the collision-handler
-                                                            (collision-handler)
-                                                            nil)))
-                                                      nil on-collision))
-                                            nil))
-                                        nil hitboxes)
-                                nil))
+                              (apply-collision univ group hitboxes))
            :group/rotate (let [[id [x y z]] details
-                               group (get-in @univ [:groups id])]
+                               group (get-in @univ [:groups id])
+                               hitboxes (get-in @univ [:data :groups id :hitboxes])]
                            (swap! univ update-in [:data :groups id :params :rot] #(mapv + % [x y z]))
-                           (w/rotate! group :x x :y y :z z))
+                           (w/rotate! group :x x :y y :z z)
+                           (apply-collision univ group hitboxes))
            :group/rescale (throw (ex-info "Unimplemented action"))
            :item/add (let [[id params] details
                            params (merge {:mat [:color [1 1 1]] :scale 1 :pos [0 0 0] :rot [0 0 0]}
