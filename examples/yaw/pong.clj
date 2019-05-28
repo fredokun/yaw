@@ -8,22 +8,11 @@
 
 (def +myctrl+ (world/start-universe!))
 
-(declare pad2-input)
-(declare pad1-input)
 (declare update-ball-state)
 
 ;;; =====================
 ;;; The state part
 ;;; =====================
-
-(react/register-state ::pad1-state {:pos [3 0 -5]
-                                    :delta [0 0.05 0]})
-
-(react/register-state ::pad2-state {:pos [-3 0 -5]
-                                    :delta [0 0.05 0]})
-
-(react/register-state ::ball-state {:pos [-2 0 -5]
-                                    :delta [0.02 0 0]})
 
 (def init-pad1-state
   {:pos [3 0 -5]
@@ -36,6 +25,18 @@
 (def init-ball-state
   {:pos [-2 0 -5]
    :delta [0.04 0 0]})
+
+(react/register-state ::pad1-state {:pos [3 0 -5]
+                                    :delta [0 0.05 0]})
+
+(react/register-state ::pad2-state {:pos [-3 0 -5]
+                                    :delta [0 0.05 0]})
+
+(react/register-state ::ball-state {:pos [-2 0 -5]
+                                    :delta [0.02 0 0]})
+
+(react/register-state ::pad1-action :nil)
+(react/register-state ::pad2-action :nil)
 
 ;;; =====================
 ;;; Subscription(s)
@@ -69,46 +70,52 @@
 
 (react/register-event
  :react/frame-update
- (fn []
-   (do
-     (react/dispatch [::move-ball])
-     (cond
-       (= @pad1-input :up) (react/dispatch [::move-up-pad1])
-       (= @pad1-input :down) (react/dispatch [::move-down-pad1]))
-     (cond
-       (= @pad2-input :up) (react/dispatch [::move-up-pad2])
-       (= @pad2-input :down) (react/dispatch [::move-down-pad2])))))
+ (fn [_]
+   (let [pad1-action (react/read-state ::pad1-action)
+         pad2-action (react/read-state ::pad2-action)]
+     (do
+       (react/dispatch [::move-ball])
+       (cond
+         (= pad1-action :up) (react/dispatch [::move-up-pad1])
+         (= pad1-action :down) (react/dispatch [::move-down-pad1]))
+       (cond
+         (= pad2-action :up) (react/dispatch [::move-up-pad2])
+         (= pad2-action :down) (react/dispatch [::move-down-pad2]))))))
 
-(comment
-  (react/register-event
-   :react/frame-update
-   (fn [_] ;; le delta est passé en argument
-     (let [pad1 (react/read-state ::pad1-state)
-           pad2 (react/read-state ::pad2-state)]
-       (do
-         (react/dispatch [::move-ball])
-         (cond
-           (:move-down pad1) (react/dispatch-sync [::move-down-pad1])
-           (:move-up pad1) (react/dispatch-sync [::move-down-pad1]))
-         (cond
-           (:move-down pad2) (react/dispatch-sync [::move-down-pad2])
-           (:move-up pad2) (react/dispatch-sync [::move-down-pad2]))))))
 
-  (react/register-event 
-   :kbd/key-update
-   (fn [kdb-state]
-     (cond
-       (#{:kdb/up-arrow :kbd/down-arrow} (:keydowns kbd-state)) nil
-       ;; up-arrow
-       (:kbd/up-arrow (:keys kbd-state)) 
-       (react/update-state ::pad1-state (fn [st] (assoc st :move-up true)))
-       ;; down-arrow
-       (:kbd/down-arrow (:keys kbd-state)) 
-       (react/update-state ::pad1-state (fn [st] (assoc st :move-down true)))
-       ;; etc ..;
-       )))
-)
-
+;;{
+;; How to handle the keyboard input:
+;; * The pad at the right side move with the up and down arrow
+;; * The pad at the left side move with E and D
+;;
+;; The inputs only change the atoms "pad2-input" and "pad1-input"
+;; who can contain :up, :down or :nil
+;; When pressing the key to move up (resp. move down), the atom becomes :up (resp. down)
+;; until the key is released or when the key to move down (resp. move up) is pressed.
+;; If it's released, the atom become :nil and if the key to move down (resp. move up) is pressed, it becomes :down (resp :up).
+;; If the atom contains :up (resp. :down) and the key to move down (resp. move up) is released, the atom doesn't change.
+;;
+;; The event frame-update move the pads following the values of the atoms
+;;}
+(react/register-event
+ :react/key-update
+ (fn [kbd-state]
+   (cond
+     (and (:up kbd-state) (:down kbd-state))
+     (react/update-state ::pad1-action (fn [_] :nil))
+     ;; up-arrow
+     (:up kbd-state) (react/update-state ::pad1-action (fn [_] :up))
+     ;; down-arrow
+     (:down kbd-state) (react/update-state ::pad1-action (fn [_] :down))
+     :else (react/update-state ::pad1-action (fn [_] :nil)))
+   (cond
+     (and (:e kbd-state) (:d kbd-state))
+     (react/update-state ::pad2-action (fn [_] :nil))
+     ;; key E
+     (:e kbd-state) (react/update-state ::pad2-action (fn [_] :up))
+     ;; key D
+     (:d kbd-state) (react/update-state ::pad2-action (fn [_] :down))
+     :else (react/update-state ::pad2-action (fn [_] :nil)))))
 
 (react/register-event
  ::move-up-pad1
@@ -239,75 +246,6 @@
                              delta :delta}]
                          (let [delta' (assoc delta 1 (Math/abs (get delta 1)))]
                            {:pos pos :delta delta'})))))
-
-;;==============
-;;Keyboard input
-;;==============
-
-(defonce pad2-input (atom :nil))
-(defonce pad1-input (atom :nil))
-
-;;{
-;; How to handle the keyboard input:
-;; * The pad at the right side move with the up and down arrow
-;; * The pad at the left side move with Z and S
-;;
-;; The inputs only change the atoms "pad2-input" and "pad1-input"
-;; who can contain :up, :down or :nil
-;; When pressing the key to move up (resp. move down), the atom becomes :up (resp. down)
-;; until the key is released or when the key to move down (resp. move up) is pressed.
-;; If it's released, the atom become :nil and if the key to move down (resp. move up) is pressed, it becomes :down (resp :up).
-;; If the atom contains :up (resp. :down) and the key to move down (resp. move up) is released, the atom doesn't change.
-;;
-;; The event frame-update move the pads following the values of the atoms
-;;}
-(world/register-input-callback! (:world @+myctrl+)
-                                (fn [key _ action _]
-                                  (cond
-
-                                    ;;Pad1 Move Up
-                                    (and (= key (kbd/key :up-arrow))
-                                         (= action (kbd/action :pressed)))
-                                    (swap! pad1-input (fn [_] :up))
-                                    (and (= key (kbd/key :up-arrow))
-                                         (= action (kbd/action :released)))
-                                    (swap! pad1-input (fn [old]
-                                                             (if (= old :up)
-                                                               :nil
-                                                               old)))
-
-                                    ;;Pad1 Move Down
-                                    (and (= key (kbd/key :down-arrow))
-                                         (= action (kbd/action :pressed)))
-                                    (swap! pad1-input (fn [_] :down))
-                                    (and (= key (kbd/key :down-arrow))
-                                         (= action (kbd/action :released)))
-                                    (swap! pad1-input (fn [old]
-                                                             (if (= old :down)
-                                                               :nil
-                                                               old)))
-
-                                    ;;Pad2 Move Up
-                                    (and (= key (kbd/key :z))
-                                         (= action (kbd/action :pressed)))
-                                    (swap! pad2-input (fn [_] :up))
-                                    (and (= key (kbd/key :z))
-                                         (= action (kbd/action :released)))
-                                    (swap! pad2-input (fn [old]
-                                                            (if (= old :up)
-                                                              :nil
-                                                              old)))
-
-                                    ;;Pad2 Move Down
-                                    (and (= key (kbd/key :s))
-                                         (= action (kbd/action :pressed)))
-                                    (swap! pad2-input (fn [_] :down))
-                                    (and (= key (kbd/key :s))
-                                         (= action (kbd/action :released)))
-                                    (swap! pad2-input (fn [old]
-                                                            (if (= old :down)
-                                                              :nil
-                                                              old))))))
 
 ;;; =====================
 ;;; The view part

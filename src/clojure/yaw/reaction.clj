@@ -1,7 +1,8 @@
 (ns yaw.reaction
   (:require [clojure.set :as set]
             [yaw.ratom :as ratom]
-            [yaw.render :as render :refer [render!]]))
+            [yaw.render :as render :refer [render!]]
+            [yaw.keyboard :as kbd]))
 
 ;;{
 ;; # Reactive atoms
@@ -51,6 +52,25 @@
                                        (swap! ratom (fn [_] delta-time)))))
     ratom))
 
+(defn create-keyboard-atom [universe]
+  (let [world (:world @universe)
+        keyboard-state (atom #{})]
+    (.registerInputCallback
+     world
+     (reify yaw.engine.InputCallback
+       (sendKey [this key scancode action mode]
+         (cond
+           (and (= action (kbd/actioncode :pressed))
+                (not (contains? @keyboard-state (kbd/key key)))) (swap! keyboard-state conj (kbd/key key))
+           (and (= action (kbd/actioncode :released))
+                (contains? @keyboard-state (kbd/key key))) (swap! keyboard-state disj (kbd/key key))))))
+    keyboard-state))
+
+
+;;==============
+;; Reframe-like
+;;==============
+
 (defonce app-db (atom {}))
 (defonce subscriptions (atom {}))
 (defonce event-handlers (atom {}))
@@ -77,7 +97,7 @@
 
 (defn read-state 
   ([] @app-db)
-  ([id] (get @app-db id)))
+  ([id] @(get @app-db id)))
 
 (defn subscribe [controller v]
   (let [id (first v)
@@ -92,10 +112,11 @@
 
 (defn handle-event [queue]
   (if (pos-int? (count queue))
-    (let [fun (get @event-handlers (first queue))]
-      (when (not (nil? fun)) (fun))
+    (let [[id args] (first queue)
+          fun (get @event-handlers id)]
+      (if-not (nil? fun)
+        (apply fun args))
       (send event-queue rest)
-      ;; (send event-queue handle-event)
       queue)
     []))
 
@@ -104,17 +125,29 @@
 ;; immutable queue (with limited size)...
 (defn dispatch [[id & args]]
   (when (keyword? id)
-    (send event-queue conj id)
+    (send event-queue conj [id args])
     (send event-queue handle-event)))
+
+
+(defn dispatch-sync
+  "Treatement the event synchronously instead of putting it in the file"
+  [[id & args]]
+  (if (keyword? id)
+    (let [fun (get @event-handlers id)]
+      (if-not (nil? fun)
+        (apply fun args)))))
 
 ;;{
 ;; TODO : comments in markdown
 ;;}
 
 (defn activate! [controller vscene]
-  (dispatch [:react/initialize])
+  (dispatch-sync [:react/initialize])
   (render/render! controller vscene)
-  (let [update (create-update-ratom controller)]
+  (let [update (create-update-ratom controller)
+        keyboard (create-keyboard-atom controller)]
     (add-watch update :update-yaw (fn [_ _ _ delta-time]
-                                    (dispatch [:react/frame-update delta-time])))))
+                                    (dispatch-sync [:react/frame-update delta-time])))
+    (add-watch keyboard :keyboard-yaw (fn [_ _ _ keyboard-state]
+                                        (dispatch-sync [:react/key-update keyboard-state])))))
 
