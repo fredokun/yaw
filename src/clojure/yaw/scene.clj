@@ -10,7 +10,6 @@
 ;; The function take a scene and check if the scene is correct.
 ;; After the check, it takes each element of the scene in order to create a structure used later
 ;; for the diff.
-
 ;; At the beginning, the structure looks like this:
 ;; {:cameras {}, :lights {:ambient nil, :sun nil, :points {}, :spots {}}, :groups {}, :items {}}
 ;; then it's filled with the element of the scene
@@ -247,18 +246,6 @@
                (:groups scene-old)
                (:groups scene-new)))
 
-;; (defn diff
-;;   "Gives the diff of two intermediary scenes"
-;;   [scene-old scene-new]
-;;   (let [[to-del to-add _] (clojure.data/diff scene-old scene-new)]
-;;     (diff-items (diff-cameras (diff-lights [:diff]
-;;                                            (get to-del :lights {})
-;;                                            (get to-add :lights {}))
-;;                               (get to-del :cameras {})
-;;                               (get to-add :cameras {}))
-;;                 (get to-del :items {})
-;;                 (get to-add :items {}))))
-
 (defn apply-collision
   "This function take a `group` an its `hitboxes` and looks in the `univ`
   if they are in collision with the concerned hitboxes, apply the collision handlers
@@ -290,7 +277,6 @@
                        :actual tag}))
       (run!
        (fn [[action & details]]
-         ;; (println details)
          (case action
            :group/add (let [;;Destructuring the variable details in order to retrieve informations
                             [id {params :params items :items hitboxes :hitboxes}] details

@@ -106,9 +106,10 @@
         state (fun @app-db)
         ratom (reactive-atom controller @state)]
     (do
-      ;; TODO Find a way to use a unique key
-      (add-watch state :k (fn [_ _ _ new]
-                            (swap! ratom (fn [_] new))))
+      ;; Use Ratom address as unique id for the watch
+      ;; maybe find a cleaner way to do so
+      (add-watch state (keyword (str ratom)) (fn [_ _ _ new]
+                                               (swap! ratom (fn [_] new))))
       ratom)))
 
 (defn handle-event [queue]

@@ -147,10 +147,6 @@
 
                                         ; HITBOXES ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-; (s/def :yaw.spec.scene/collision
-;   (s/keys :req-un [:yaw.spec.values/group-id
-;                    :yaw.spec.values/hitbox-id
-;                    :yaw.spec.values/collision-handler]))
 (s/def :yaw.spec.scene/collision
   (s/cat :group-id (s/spec :yaw.spec.values/group-id)
          :hitbox-id (s/spec :yaw.spec.values/hitbox-id)
@@ -263,7 +259,6 @@
                    :yaw.scene.internal.lights/points
                    :yaw.scene.internal.lights/spots]))
 
-; Groups are still an uncertain idea
 (s/def :yaw.scene.internal/scene
   (s/keys :req-un [:yaw.scene.internal/items
                    :yaw.scene.internal/lights
