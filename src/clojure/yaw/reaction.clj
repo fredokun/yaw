@@ -54,16 +54,25 @@
 
 (defn create-keyboard-atom [universe]
   (let [world (:world @universe)
-        keyboard-state (atom #{})]
+        keyboard-state (atom {:keysdown #{}})]
     (.registerInputCallback
      world
      (reify yaw.engine.InputCallback
        (sendKey [this key scancode action mode]
-         (cond
-           (and (= action (kbd/actioncode :pressed))
-                (not (contains? @keyboard-state (kbd/key key)))) (swap! keyboard-state conj (kbd/key key))
-           (and (= action (kbd/actioncode :released))
-                (contains? @keyboard-state (kbd/key key))) (swap! keyboard-state disj (kbd/key key))))))
+         (let [action (kbd/action action)
+               key (kbd/key key)]
+           (if (or (= action :press) (= action :release))
+             (swap! keyboard-state
+                    (fn [old-state]
+                      (case action
+                        :press (assoc old-state
+                                      :key key
+                                      :action action
+                                      :keysdown (conj (:keysdown old-state) key))
+                        :release (assoc old-state
+                                        :key key
+                                        :action action
+                                        :keysdown (disj (:keysdown old-state) key))))))))))
     keyboard-state))
 
 
@@ -76,31 +85,46 @@
 (defonce event-handlers (atom {}))
 (def event-queue (agent []))
 
-(defn register-state [id val]
+(defn register-state
+  "Register a state `id` in ap-db with the value `val`"
+  [id val]
   (swap! app-db (fn [old]
                   (assoc old id (atom val)))))
 
-(defn register-subscription [id f]
+(defn register-subscription
+  "Register a subcription `id` in subscriptions with a function
+  `f` returning a state of ap-db"
+  [id f]
   (swap! subscriptions (fn [old]
                          (assoc old id f))))
 
-(defn register-event [id f]
+(defn register-event
+  "Register an event `id` in event-handlers with its handler `f`"
+  [id f]
   (swap! event-handlers (fn [old]
                           (assoc old id f))))
 
-(defn init-state  [id val]
+;; init-state isn't really use, we should use use update-state instead
+(defn init-state [id val]
   (swap! (id @app-db) (fn [_] val)))
 
-(defn update-state [id val]
-  (swap! (id @app-db) val))
+(defn update-state
+  "Change the value of the  state `id` by using a function `f`
+  that takes the former value and calculate a new one"
+  [id f]
+  (swap! (id @app-db) f))
 
-(defn read-state 
+(defn read-state
+  "Read app-db or read a state `id` in app-db"
   ([] @app-db)
   ([id] @(get @app-db id)))
 
 ;;v is a vector, maybe we can find a value to pass args
 ;;or we need to remove the vector and just pass the id
-(defn subscribe [controller v]
+(defn subscribe
+  "Subscribe to a state in app-db by giving the id of the subscription
+  and return a ratom linked with the state"
+  [controller v]
   (let [id (first v)
         fun (get @subscriptions id)
         state (fun @app-db)
@@ -112,7 +136,9 @@
                                                (swap! ratom (fn [_] new))))
       ratom)))
 
-(defn handle-event [queue]
+(defn handle-event
+  "Function to treat events of the agent"
+  [queue]
   (if (pos-int? (count queue))
     (let [[id args] (first queue)
           fun (get @event-handlers id)]
@@ -123,7 +149,9 @@
 
 ;; TODO (later): don't use an agent but rather an atom with an
 ;; immutable queue (with limited size)...
-(defn dispatch [[id & args]]
+(defn dispatch
+  "Send an event to the agent in order to be treated asynchronously"
+  [[id & args]]
   (when (keyword? id)
     (send event-queue conj [id args])
     (send event-queue handle-event)))
@@ -136,13 +164,17 @@
       (if-not (nil? fun)
         (apply fun args)))))
 
-(defn activate! [controller vscene]
+(defn activate!
+  "Function to start and render a scene"
+  [controller vscene]
   (dispatch-sync [:react/initialize])
   (render/render! controller vscene)
   (let [update (create-update-ratom controller)
         keyboard (create-keyboard-atom controller)]
     (add-watch update :update-yaw (fn [_ _ _ delta-time]
+                                    ;;Maybe just dispatch instead of dispatch-sync ?
                                     (dispatch-sync [:react/frame-update delta-time])))
     (add-watch keyboard :keyboard-yaw (fn [_ _ _ keyboard-state]
+                                        ;;Maybe just dispatch instead of dispatch-sync ?
                                         (dispatch-sync [:react/key-update keyboard-state])))))
 

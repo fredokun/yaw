@@ -3,14 +3,14 @@
 
 (defn actioncode [action]
   (case action
-    :pressed 1
-    :released 0
+    :release 0
+    :press 1
     :repeat 2))
 
 (defn action [code]
   (case code
-    1 :pressed
-    0 :released
+    0 :release
+    1 :press
     2 :repeat))
 
 (defn keycode [keyval]

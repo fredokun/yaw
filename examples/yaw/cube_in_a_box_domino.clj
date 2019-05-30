@@ -39,7 +39,7 @@
 
 (react/register-event
  :react/frame-update
- (fn []
+ (fn [_]
    ;; (println "[event] frame-update => ::move-cube")
    (react/dispatch [::move-cube])))
 

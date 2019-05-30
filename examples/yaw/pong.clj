@@ -9,7 +9,7 @@
 (def +myctrl+ (world/start-universe!))
 (def S 0.005)
 (def A 0.01)
-(def MAX-X 0.10)
+(def MAX-X 0.15)
 (def MAX-Y 0.04)
 (def nb-ticks 200)
 
@@ -121,21 +121,21 @@
    ;; Pad 1 action (right side)
    (cond
      ;; if we want to move up and down at the same time
-     (and (:up kbd-state) (:down kbd-state)) (react/update-state ::pad1-action (fn [_] :nil))
+     (and (:up (:keysdown kbd-state)) (:down (:keysdown kbd-state))) (react/update-state ::pad1-action (fn [_] :nil))
      ;; up-arrow
-     (:up kbd-state) (react/update-state ::pad1-action (fn [_] :up))
+     (:up (:keysdown kbd-state)) (react/update-state ::pad1-action (fn [_] :up))
      ;; down-arrow
-     (:down kbd-state) (react/update-state ::pad1-action (fn [_] :down))
+     (:down (:keysdown kbd-state)) (react/update-state ::pad1-action (fn [_] :down))
      ;; no moves
      :else (react/update-state ::pad1-action (fn [_] :nil)))
    ;;Pad 2 action (left side)
    (cond
      ;; if we want to move up and down at the same time
-     (and (:e kbd-state) (:d kbd-state)) (react/update-state ::pad2-action (fn [_] :nil))
+     (and (:e (:keysdown kbd-state)) (:d (:keysdown kbd-state))) (react/update-state ::pad2-action (fn [_] :nil))
      ;; E key
-     (:e kbd-state) (react/update-state ::pad2-action (fn [_] :up))
+     (:e (:keysdown kbd-state)) (react/update-state ::pad2-action (fn [_] :up))
      ;; D key
-     (:d kbd-state) (react/update-state ::pad2-action (fn [_] :down))
+     (:d (:keysdown kbd-state)) (react/update-state ::pad2-action (fn [_] :down))
      ;; no moves
      :else (react/update-state ::pad2-action (fn [_] :nil)))))
 
@@ -309,7 +309,7 @@
 
 (defn scene []
   [:scene
-   [:ambient {:color :white :i 0.4}]
+   [:ambient {:color :white :i 0.7}]
    [:sun {:color :red :i 1 :dir [-1 0 0]}]
    [:light ::light {:color :yellow :pos [0.5 0 -4]}]
    [the-wall {:pos [0 4.5 -5] :rot [0 0 90] :scale 2} 1]
