@@ -38,9 +38,22 @@ public class MainLoop implements Runnable {
     private int initX, initY, initWidth, initHeight;
     private boolean initVSYNC;
 
+
+    //3D click
+
+    private RayCaster rayCaster= new RayCaster();
+    private Vector3f mousePosition = null;
+
     private UpdateCallback updateCallback;
     private InputCallback inputCallback;
+    private Mouse3DClickCallBack mouseCallback;
     private volatile boolean initialized;
+
+    /*
+     GetCameraMat -> ProjectionMatrix
+     camera.setupviewmatrix -> viewMAtrix
+
+     */
 
 
     /**
@@ -203,6 +216,26 @@ public class MainLoop implements Runnable {
         }
     }
 
+    //3D click
+
+    public synchronized void registerMouse3DClickCallBack(Mouse3DClickCallBack mc){
+        if(mouseCallback != null) {
+            throw new Error("Input callback already registered");
+        }
+        mouseCallback = mc;
+
+        if(initialized) {
+            Window.getGLFWMouseCallback().registerMouseCallback(mc);
+        }
+    }
+
+
+
+
+
+
+    // End 3D click
+
     /**
      * Allows to initialize the parameters of the class World.
      *
@@ -215,6 +248,10 @@ public class MainLoop implements Runnable {
 
         if(inputCallback != null) {
             Window.getGLFWKeyCallback().registerInputCallback(inputCallback);
+        }
+
+        if(mouseCallback != null) {
+            Window.getGLFWMouseCallback().registerMouseCallback(mouseCallback);
         }
 
         initialized = true;
@@ -233,6 +270,7 @@ public class MainLoop implements Runnable {
             double framet = nowTime - beforeTime;
             beforeTime = nowTime;
             lag += framet;
+            //mousePosition=RayCaster.getWorldRay(Window.windowHandle, mCamera);
 
             //refresh rate ??
 //            Thread.sleep(20); // XXX ? Why sleep ?
