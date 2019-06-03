@@ -47,6 +47,7 @@
 ;; When a keyboard inputs is detected, the callback is called
 ;; The callback takes a key, a scancode, an action and a mode in its parameters
 ;;}
+;; To remove since the way the keyboard is handled has changed
 (defn register-input-callback! 
   "Register the input callback for low-level keyboard management."
   [world callback]

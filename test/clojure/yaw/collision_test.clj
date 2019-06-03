@@ -19,8 +19,7 @@
    [:hitbox :test/hitbox1 {:pos [0 0 0]
                           :scale 0.6
                           :length [1 1 1]}
-    [{:group-id :test/group2 :hitbox-id :test/hitbox2
-      :collision-handler #(println "COLLISION")}]]])
+    [:test/group2 :test/hitbox2 #(println "COLLISION")]]])
 
 (defn scene
   [group-state]
