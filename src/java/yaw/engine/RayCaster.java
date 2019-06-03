@@ -29,28 +29,29 @@ public class RayCaster {
         double mouse_x = xBuffer.get(0);
         double mouse_y = yBuffer.get(0);
 
-
-
         float x = (2.0f * (float)mouse_x) / 800 - 1.0f;
         float y = 1.0f- (2.0f * (float)mouse_y) / 600;
 
 
-
         Vector4f ray_clip = new Vector4f(x, y,-1, 1);
-        Matrix4f projection = c.getCameraMat();
-        Matrix4f view = c.setupViewMatrix();
+
+        Matrix4f projection = new Matrix4f(c.getCameraMat());
+
         Matrix4f inv_projection = projection.invert();
+
+        Matrix4f view = c.setupViewMatrix();
+
 
         Vector4f eyeC=new Vector4f();
         inv_projection.transform(ray_clip, eyeC);
+
         Vector4f eyeCoords = new Vector4f(eyeC.x, eyeC.y, -1 ,0);
-        view = view.invert();
+
+
         Vector4f rayW= new Vector4f();
         view.transform(eyeCoords, rayW);
         Vector3f worldRay = new Vector3f(rayW.x, rayW.y, rayW.z);
-
         worldRay.normalize();
-
         return worldRay;
     }
 
