@@ -58,6 +58,11 @@
 (s/def :yaw.spec.values/scale number?)
 (s/def :yaw.spec.values/dim :yaw.spec.values.vector/gen)
 (s/def :yaw.spec.values/texture string?)
+;;HitBox
+(s/def :yaw.spec.values/length :yaw.spec.values.vector/gen)
+(s/def :yaw.spec.values/group-id keyword?)
+(s/def :yaw.spec.values/hitbox-id keyword?)
+(s/def :yaw.spec.values/collision-handler fn?)
 
 (s/def :yaw.spec.values/color
   (s/conformer
@@ -140,6 +145,22 @@
         :spot :yaw.spec.scene.light/spot
         :point :yaw.spec.scene.light/point))
 
+                                        ; HITBOXES ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(s/def :yaw.spec.scene/collision
+  (s/cat :group-id (s/spec :yaw.spec.values/group-id)
+         :hitbox-id (s/spec :yaw.spec.values/hitbox-id)
+         :collision-handler (s/spec :yaw.spec.values/collision-handler)))
+
+(s/def :yaw.spec.scene/hitbox
+  (s/cat :tag #{:hitbox}
+         :id-kw qualified-keyword?
+         :params (s/keys :req-un [:yaw.spec.values/pos
+                                  :yaw.spec.values/length]
+                         :opt-un [:yaw.spec.values/rot
+                                  :yaw.spec.values/scale])
+         :on-collision (s/* (s/spec :yaw.spec.scene/collision))))
+
                                         ; GROUPS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (s/def :yaw.spec.scene/group
   (s/cat :tag #{:group}
@@ -147,7 +168,8 @@
          :params (s/keys :req-un [:yaw.spec.values/pos]
                          :opt-un [:yaw.spec.values/rot
                                   :yaw.spec.values/scale])
-         :items (s/+ (s/spec :yaw.spec.scene/item))))
+         :items (s/+ (s/spec :yaw.spec.scene/item))
+         :hitboxes (s/* (s/spec :yaw.spec.scene/hitbox))))
 
                                         ; SKYBOX ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (s/def :yaw.spec.scene/skybox
@@ -237,7 +259,6 @@
                    :yaw.scene.internal.lights/points
                    :yaw.scene.internal.lights/spots]))
 
-; Groups are still an uncertain idea
 (s/def :yaw.scene.internal/scene
   (s/keys :req-un [:yaw.scene.internal/items
                    :yaw.scene.internal/lights

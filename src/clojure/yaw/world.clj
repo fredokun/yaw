@@ -29,7 +29,8 @@
     (atom {:world world
            :meshes {:mesh/box (yaw.mesh/box-geometry)
                     :mesh/cone (yaw.mesh/cone-geometry)
-                    :mesh/pyramid (yaw.mesh/pyramid-geometry)}
+                    :mesh/pyramid (yaw.mesh/pyramid-geometry)
+                    :mesh/cuboid (yaw.mesh/cuboid-geometry)}
            :data empty-item-map
            :items {}
            :components {}})))
@@ -41,6 +42,12 @@
 
 ;;CALLBACKS---------------------------------------------------------------
 
+;;{
+;; Register a callback to a given world
+;; When a keyboard inputs is detected, the callback is called
+;; The callback takes a key, a scancode, an action and a mode in its parameters
+;;}
+;; To remove since the way the keyboard is handled has changed
 (defn register-input-callback! 
   "Register the input callback for low-level keyboard management."
   [world callback]
@@ -120,7 +127,6 @@
                       mesh     (create-mesh! world)}}]         ;;error here
   (.createItemObject world id (position 0) (position 1) (position 2) scale mesh))
 
-  
 (defn remove-item!
   "Remove the specified `item` from the `world`"
   [world item]
@@ -261,25 +267,28 @@
 
 ;;COLLISIONS------------------------------------------------------
 
-(defn create-bouding-box!
-  "Create a boundingbox in the `world` with the
+(defn create-hitbox!
+  "Create a hitbox in the `world` with the
   specified id, position, length, scale"
-  [world & {:keys [id position length scale]
-            :or   {id       "can't read the doc..."
-                   position [0 0 -2]
-                   length   [1 1 1]
-                   scale    1}}]
+  [world id & {:keys [position length scale]
+               :or   {position [0 0 -2]
+                      length   [1 1 1]
+                      scale 1}}]
+  (.createHitBox world
+                 (str id)
+                 (get position 0) (get position 1) (get position 2)
+                 scale
+                 (get length 0) (get length 1) (get length 2)))
 
-  (.createBoundingBox world id (float-array position) scale (float-array length)))
-(defn add-bounding-box!
-  "Add the specified 'bounding box' to the specified 'item'"
-  [item bounding-box]
-  (.setBoundingBox item bounding-box))
 (defn check-collision!
-  "Check if 2 items are in collision in the `world` with the
-  specified items"
-  [world item1 item2]
-  (.isInCollision world item1 item2))
+  "Check if 2 hitboxes are in collision in the `world`"
+  [world hitbox1 hitbox2]
+  (.isInCollision world hitbox1 hitbox2))
+
+(defn fetch-hitbox!
+  "Fetch and return the hitbox of the given a `group` and its `id`"
+  [group id]
+  (.fetchHitBox group (str id)))
 
 ;;SKYBOX MANAGEMENT---------------------------------------------------
 (defn skybox "Retrieve the skybox of the world" [world] (.getSkybox world))
@@ -299,17 +308,19 @@
   (.removeSkybox world))
 
 ;;GROUP MANAGEMENT---------------------------------------------------------
-(defn groups "Retrieve the groups of the `world`" [world] (into [] (.getItemGroupArrayList world)))
+(defn groups "Retrieve the groups of the `world`"
+  [world]
+  (into [] (.getItemGroupArrayList world)))
 
 (defn new-group!
-  "Get a new group created in the `world`"
-  [world]
-  (.createGroup world))
+  "Create and return a new group in the `world` with the given `id`"
+  [world id]
+  (.createGroup world (str id)))
 
 (defn group-add!
-  "Add the specified `item` to the `group`."
-  [group item]
-  (.add group item))
+  "Add the specified item or hitbox with the given the `id` to the `group`."
+  [group id item]
+  (.add group (str id) item))
 
 (defn remove-group!
   "Remove the specified group from the `world`"

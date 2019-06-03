@@ -6,6 +6,14 @@
             [clojure.spec.alpha :as s]
             [clojure.data]))
 
+;;{
+;; The function take a scene and check if the scene is correct.
+;; After the check, it takes each element of the scene in order to create a structure used later
+;; for the diff.
+;; At the beginning, the structure looks like this:
+;; {:cameras {}, :lights {:ambient nil, :sun nil, :points {}, :spots {}}, :groups {}, :items {}}
+;; then it's filled with the element of the scene
+;;}
 (defn item-map
   "Reducing function that adds a conformed item to a pre-existing map"
   ([] empty-item-map)
@@ -14,6 +22,7 @@
      :separator m
      :content (let [[kw v] v]
                 (case kw
+                  :group (assoc-in m [:groups (:id-kw v)] {:params (:params v) :items (:items v) :hitboxes (:hitboxes v)})
                   :item (assoc-in m [:items (:id-kw v)] (:params v))
                   :camera (assoc-in m [:cameras (:id-kw v)] (:params v))
                   :light (let [[kw v] v]
@@ -74,6 +83,43 @@
                                 :mesh (action-value d :item/remesh id
                                                     (-> old id :mesh) v
                                                     get-new)))
+                            d v)))
+             acc new))
+
+;;{
+;; The function will mark every differences between the groups of the old and the new scene
+;; with every actions needed to switch the old one to the new one
+;;}
+(defn- diff-groups
+  "Reduces the given old and new group maps to a sequence of effect representations it conjoins to the accumulator"
+  [acc old new]
+  (reduce-kv (fn [d id v]
+               (if (not (contains? old id))
+                 ;;If in the old scene the group didn't exist, we mark that we want to create it in the new scene
+                 (conj d [:group/add id v])
+                 ;;Else we check and mark the differences
+                 (reduce-kv (fn [d keyword v]
+                              (case keyword
+                                :params (reduce-kv (fn [d p v]
+                                                     (case p
+                                                       ;;We check if there is a diffence in the rotation
+                                                       ;;If yes we mark the difference
+                                                       :rot (action-value d :group/rotate id
+                                                                          (-> old id :params :rot) v
+                                                                          vec-diff)
+                                                       ;;Same with the position
+                                                       :pos (action-value d :group/translate id
+                                                                          (-> old id :params :pos) v
+                                                                          vec-diff)
+                                                       ;;Same with the scale
+                                                       :scale (action-value d :group/rescale id
+                                                                            (-> old id :params :scale) v
+                                                                            get-new)))
+                                                   d v)
+                                ;;TODO later if we want move an item of the group independently
+                                :items d
+                                ;;Same with the hitboxes
+                                :hitboxes d))
                             d v)))
              acc new))
 
@@ -187,26 +233,39 @@
              acc new))
 
 (defn diff
+  "Mark every differences between `scene-old` and `scene-new` and return the struture
+  describing every actions needed to switch the old scene to the new scene"
   [scene-old scene-new]
-  (diff-items (diff-cameras (diff-lights [:diff]
-                                         (:lights scene-old)
-                                         (:lights scene-new))
-                            (:cameras scene-old)
-                            (:cameras scene-new))
-              (:items scene-old)
-              (:items scene-new)))
+  (diff-groups (diff-items (diff-cameras (diff-lights [:diff]
+                                                      (:lights scene-old)
+                                                      (:lights scene-new))
+                                         (:cameras scene-old)
+                                         (:cameras scene-new))
+                           (:items scene-old)
+                           (:items scene-new))
+               (:groups scene-old)
+               (:groups scene-new)))
 
-;; (defn diff
-;;   "Gives the diff of two intermediary scenes"
-;;   [scene-old scene-new]
-;;   (let [[to-del to-add _] (clojure.data/diff scene-old scene-new)]
-;;     (diff-items (diff-cameras (diff-lights [:diff]
-;;                                            (get to-del :lights {})
-;;                                            (get to-add :lights {}))
-;;                               (get to-del :cameras {})
-;;                               (get to-add :cameras {}))
-;;                 (get to-del :items {})
-;;                 (get to-add :items {}))))
+(defn apply-collision
+  "This function take a `group` an its `hitboxes` and looks in the `univ`
+  if they are in collision with the concerned hitboxes, apply the collision handlers
+  if they are"
+  [univ group hitboxes]
+  (if-not (nil? hitboxes)
+    (run! (fn [{id :id-kw on-collision :on-collision}]
+            ;;For each hitbox, we look if it has collision handlers
+            (if-not (nil? on-collision)
+              ;;If yes, we begin with fetching the hitbox
+              (let [hitbox (w/fetch-hitbox! group id)]
+                (run! (fn [{group-id :group-id hitbox-id :hitbox-id collision-handler :collision-handler}]
+                        ;;Then for each collision handler, we fetch the group then the hitbox specified
+                        (let [group-collided? (get-in @univ [:groups group-id])
+                              hitbox-collided? (w/fetch-hitbox! group-collided? hitbox-id)]
+                          (if (w/check-collision! (:world @univ) hitbox hitbox-collided?)
+                            ;;If the hitboxes are in collision, we execute the collision-handler
+                            (collision-handler))))
+                      on-collision))))
+          hitboxes)))
 
 (defn display-diff!
   "Takes a universe and a diff, and executes the effects described by the diff"
@@ -218,8 +277,62 @@
                        :actual tag}))
       (run!
        (fn [[action & details]]
-         ;; (println details)
          (case action
+           :group/add (let [;;Destructuring the variable details in order to retrieve informations
+                            [id {params :params items :items hitboxes :hitboxes}] details
+                            ;;Retrieve the parameters of the group, with default values when parameters are not defined
+                            params (merge {:scale 1 :pos [0 0 0] :rot [0 0 0]} params)
+                            ;;Create a group that will be added later in the world
+                            group (w/new-group! (:world @univ) id)]
+                        ;;For each item specified in the group, we create it and add it in the group
+                        (run! (fn [{id :id-kw params :params}]
+                                (let [params (merge {:mat [:color [1 1 1]] :scale 1 :pos [0 0 0] :rot [0 0 0]}
+                                                    params)
+                                      m (get (:meshes @univ) (:mesh params))
+                                      m (w/create-simple-mesh!
+                                         (:world @univ)
+                                         :geometry m
+                                         :rgb (second (:mat params)))
+                                      i (w/create-item!
+                                         (:world @univ)
+                                         (str id)
+                                         :position (:pos params)
+                                         :scale (:scale params)
+                                         :mesh m)]
+                                  (apply w/rotate! i (u/explode (:rot params)))
+                                  (w/group-add! group (str id) i))) items)
+                        ;;Same with the hitboxes
+                        (run! (fn [{id :id-kw params :params}]
+                                (let [params (merge {:scale 1 :pos [0 0 0] :rot [0 0 0] :length [1 1 1]}
+                                                    params)
+                                      h (w/create-hitbox!
+                                         (:world @univ)
+                                         id
+                                         :position (:pos params)
+                                         :length (:length params)
+                                         :scale (:scale params))]
+                                  (apply w/rotate! h (u/explode (:rot params)))
+                                  (w/group-add! group (str id) h))) hitboxes)
+                        ;;We now place the group in the world
+                        ;;and since the items and hitboxes are linked to the group, they are also moved
+                        (apply w/translate! group (u/explode (:pos params)))
+                        ;; To uncomment later when rotate with [0 0 0] works
+                        ;; (apply w/rotate! group (u/explode (:rot params)))
+                        (swap! univ assoc-in [:groups id] group)
+                        (swap! univ assoc-in [:data :groups id] {:params params :items items :hitboxes hitboxes}))
+           :group/translate (let [[id [x y z]] details
+                                  group (get-in @univ [:groups id])
+                                  hitboxes (get-in @univ [:data :groups id :hitboxes])]
+                              (swap! univ update-in [:data :groups id :params :pos] #(mapv + % [x y z]))
+                              (w/translate! group :x x :y y :z z)
+                              (apply-collision univ group hitboxes))
+           :group/rotate (let [[id [x y z]] details
+                               group (get-in @univ [:groups id])
+                               hitboxes (get-in @univ [:data :groups id :hitboxes])]
+                           (swap! univ update-in [:data :groups id :params :rot] #(mapv + % [x y z]))
+                           (w/rotate! group :x x :y y :z z)
+                           (apply-collision univ group hitboxes))
+           :group/rescale (throw (ex-info "Unimplemented action"))
            :item/add (let [[id params] details
                            params (merge {:mat [:color [1 1 1]] :scale 1 :pos [0 0 0] :rot [0 0 0]}
                                          params)
