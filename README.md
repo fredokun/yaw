@@ -1,5 +1,7 @@
 # Yaw : live-coding a (simple) 3D world
 
+**IMPORTANT**: this repository is in archive mode, the **Yaw** project is now developed at yaw-central: https://github.com/yaw-central
+
 **(ultimately) a 3D live-coding experience for Clojurians of all ages**
 
 (for now a dumb imperative (!) Clojure wrapper for LWJGL...)
